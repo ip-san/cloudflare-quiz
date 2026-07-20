@@ -1,0 +1,9 @@
+bunx lint-staged
+bunx vitest run --changed --reporter=dot
+
+# クイズデータが変更された場合のみ、構造検証とアドバイザリlintを実行する
+if git diff --cached --name-only | grep -q '^src/data/quizzes\.json$'; then
+  node scripts/quiz-utils.mjs check
+  node scripts/quiz-utils.mjs check-ellipsis
+  node scripts/quiz-lint.mjs all --dry-run
+fi

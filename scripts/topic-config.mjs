@@ -1,429 +1,228 @@
 /**
  * Centralized topic-specific configuration for quiz build scripts.
  *
- * All doc pages, category mappings, backtick-lint term lists, and
- * terminology corrections that were previously scattered across
- * fetch-docs.mjs, quiz-constants.mjs, and quiz-lint.mjs are
- * consolidated here as single-source-of-truth exports.
+ * All doc pages, backtick-lint term lists, and terminology corrections
+ * used by quiz-lint.mjs / quiz-fact-check.mjs / quiz-cross-check.mjs /
+ * fetch-docs.mjs are consolidated here as single-source-of-truth exports.
+ *
+ * Doc pages mirror VALID_DOC_PAGES in
+ * src/infrastructure/validation/quizContentQuality.test.ts — keep both in
+ * sync when a quiz references a new developers.cloudflare.com page.
  */
 
 // ============================================================
 // Documentation Pages
 // ============================================================
 
-/** All official doc pages (used by fetch-docs.mjs for caching). */
+/**
+ * All official doc pages referenced by quizzes.json, used by fetch-docs.mjs
+ * for caching and by quiz-lint.mjs (url check) for anchor validation.
+ * `name` is the path under https://developers.cloudflare.com/ (no leading/
+ * trailing slash) and doubles as the doc-source path in the
+ * cloudflare/cloudflare-docs GitHub repository.
+ */
 export const DOC_PAGES = [
-  // Core
-  { name: 'overview', url: 'https://code.claude.com/docs/en/overview' },
-  { name: 'quickstart', url: 'https://code.claude.com/docs/en/quickstart' },
-  { name: 'settings', url: 'https://code.claude.com/docs/en/settings' },
-  { name: 'memory', url: 'https://code.claude.com/docs/en/memory' },
-  // Interactive & Tools
-  { name: 'interactive-mode', url: 'https://code.claude.com/docs/en/interactive-mode' },
-  { name: 'how-claude-code-works', url: 'https://code.claude.com/docs/en/how-claude-code-works' },
-  // Extensions & Integration
-  { name: 'mcp', url: 'https://code.claude.com/docs/en/mcp' },
-  { name: 'hooks', url: 'https://code.claude.com/docs/en/hooks' },
-  { name: 'hooks-guide', url: 'https://code.claude.com/docs/en/hooks-guide' },
-  { name: 'discover-plugins', url: 'https://code.claude.com/docs/en/discover-plugins' },
-  { name: 'plugins', url: 'https://code.claude.com/docs/en/plugins' },
-  { name: 'plugins-reference', url: 'https://code.claude.com/docs/en/plugins-reference' },
-  { name: 'plugin-marketplaces', url: 'https://code.claude.com/docs/en/plugin-marketplaces' },
-  { name: 'sub-agents', url: 'https://code.claude.com/docs/en/sub-agents' },
-  { name: 'agent-teams', url: 'https://code.claude.com/docs/en/agent-teams' },
-  { name: 'skills', url: 'https://code.claude.com/docs/en/skills' },
-  // Advanced
-  { name: 'common-workflows', url: 'https://code.claude.com/docs/en/common-workflows' },
-  { name: 'checkpointing', url: 'https://code.claude.com/docs/en/checkpointing' },
-  { name: 'best-practices', url: 'https://code.claude.com/docs/en/best-practices' },
-  { name: 'model-config', url: 'https://code.claude.com/docs/en/model-config' },
-  { name: 'sandboxing', url: 'https://code.claude.com/docs/en/sandboxing' },
-  { name: 'headless', url: 'https://code.claude.com/docs/en/headless' },
-  // Customization & UI
-  { name: 'keybindings', url: 'https://code.claude.com/docs/en/keybindings' },
-  { name: 'output-styles', url: 'https://code.claude.com/docs/en/output-styles' },
-  { name: 'statusline', url: 'https://code.claude.com/docs/en/statusline' },
-  { name: 'terminal-config', url: 'https://code.claude.com/docs/en/terminal-config' },
-  { name: 'fast-mode', url: 'https://code.claude.com/docs/en/fast-mode' },
-  // Platforms & IDE
-  { name: 'vs-code', url: 'https://code.claude.com/docs/en/vs-code' },
-  { name: 'jetbrains', url: 'https://code.claude.com/docs/en/jetbrains' },
-  { name: 'desktop', url: 'https://code.claude.com/docs/en/desktop' },
-  { name: 'chrome', url: 'https://code.claude.com/docs/en/chrome' },
-  { name: 'slack', url: 'https://code.claude.com/docs/en/slack' },
-  // CI/CD & Automation
-  { name: 'github-actions', url: 'https://code.claude.com/docs/en/github-actions' },
-  { name: 'gitlab-ci-cd', url: 'https://code.claude.com/docs/en/gitlab-ci-cd' },
-  { name: 'scheduled-tasks', url: 'https://code.claude.com/docs/en/scheduled-tasks' },
-  { name: 'remote-control', url: 'https://code.claude.com/docs/en/remote-control' },
-  // Enterprise & Configuration
-  { name: 'server-managed-settings', url: 'https://code.claude.com/docs/en/server-managed-settings' },
-  { name: 'devcontainer', url: 'https://code.claude.com/docs/en/devcontainer' },
-  // Supplementary (not for referenceUrl but useful for fact-checking)
-  { name: 'permissions', url: 'https://code.claude.com/docs/en/permissions' },
-  { name: 'cli-reference', url: 'https://code.claude.com/docs/en/cli-reference' },
-  { name: 'setup', url: 'https://code.claude.com/docs/en/setup' },
-  { name: 'features-overview', url: 'https://code.claude.com/docs/en/features-overview' },
-  { name: 'desktop-quickstart', url: 'https://code.claude.com/docs/en/desktop-quickstart' },
-  { name: 'authentication', url: 'https://code.claude.com/docs/en/authentication' },
-  // Cloud & Provider
-  { name: 'claude-code-on-the-web', url: 'https://code.claude.com/docs/en/claude-code-on-the-web' },
-  { name: 'amazon-bedrock', url: 'https://code.claude.com/docs/en/amazon-bedrock' },
-  { name: 'google-vertex-ai', url: 'https://code.claude.com/docs/en/google-vertex-ai' },
-  { name: 'microsoft-foundry', url: 'https://code.claude.com/docs/en/microsoft-foundry' },
-  { name: 'llm-gateway', url: 'https://code.claude.com/docs/en/llm-gateway' },
-  // Enterprise & Security
-  { name: 'network-config', url: 'https://code.claude.com/docs/en/network-config' },
-  { name: 'third-party-integrations', url: 'https://code.claude.com/docs/en/third-party-integrations' },
-  { name: 'analytics', url: 'https://code.claude.com/docs/en/analytics' },
-  { name: 'monitoring-usage', url: 'https://code.claude.com/docs/en/monitoring-usage' },
-  { name: 'security', url: 'https://code.claude.com/docs/en/security' },
-  // Features
-  { name: 'code-review', url: 'https://code.claude.com/docs/en/code-review' },
-  { name: 'troubleshooting', url: 'https://code.claude.com/docs/en/troubleshooting' },
-  // New pages discovered from llms.txt
-  { name: 'changelog', url: 'https://code.claude.com/docs/en/changelog' },
-  { name: 'channels', url: 'https://code.claude.com/docs/en/channels' },
-  { name: 'channels-reference', url: 'https://code.claude.com/docs/en/channels-reference' },
-  { name: 'claude-directory', url: 'https://code.claude.com/docs/en/claude-directory' },
-  { name: 'commands', url: 'https://code.claude.com/docs/en/commands' },
-  { name: 'computer-use', url: 'https://code.claude.com/docs/en/computer-use' },
-  { name: 'context-window', url: 'https://code.claude.com/docs/en/context-window' },
-  { name: 'costs', url: 'https://code.claude.com/docs/en/costs' },
-  { name: 'data-usage', url: 'https://code.claude.com/docs/en/data-usage' },
-  { name: 'env-vars', url: 'https://code.claude.com/docs/en/env-vars' },
-  { name: 'fullscreen', url: 'https://code.claude.com/docs/en/fullscreen' },
-  { name: 'github-enterprise-server', url: 'https://code.claude.com/docs/en/github-enterprise-server' },
-  { name: 'legal-and-compliance', url: 'https://code.claude.com/docs/en/legal-and-compliance' },
-  { name: 'permission-modes', url: 'https://code.claude.com/docs/en/permission-modes' },
-  { name: 'platforms', url: 'https://code.claude.com/docs/en/platforms' },
-  { name: 'tools-reference', url: 'https://code.claude.com/docs/en/tools-reference' },
-  { name: 'voice-dictation', url: 'https://code.claude.com/docs/en/voice-dictation' },
-  { name: 'web-scheduled-tasks', url: 'https://code.claude.com/docs/en/web-scheduled-tasks' },
-  { name: 'zero-data-retention', url: 'https://code.claude.com/docs/en/zero-data-retention' },
-  // Auto-discovered from llms.txt (2026-04-04)
-  { name: 'desktop-scheduled-tasks', url: 'https://code.claude.com/docs/en/desktop-scheduled-tasks' },
-  { name: 'ultraplan', url: 'https://code.claude.com/docs/en/ultraplan' },
-  // Auto-discovered from llms.txt (2026-04-09)
-  { name: 'web-quickstart', url: 'https://code.claude.com/docs/en/web-quickstart' },
-  // Auto-discovered from llms.txt (2026-04-15)
-  { name: 'routines', url: 'https://code.claude.com/docs/en/routines' },
-  // Auto-discovered from llms.txt (2026-04-17)
-  { name: 'errors', url: 'https://code.claude.com/docs/en/errors' },
-  { name: 'plugin-dependencies', url: 'https://code.claude.com/docs/en/plugin-dependencies' },
-  { name: 'ultrareview', url: 'https://code.claude.com/docs/en/ultrareview' },
-  // Auto-discovered from llms.txt (2026-04-25)
-  { name: 'admin-setup', url: 'https://code.claude.com/docs/en/admin-setup' },
-  { name: 'auto-mode-config', url: 'https://code.claude.com/docs/en/auto-mode-config' },
-  { name: 'debug-your-config', url: 'https://code.claude.com/docs/en/debug-your-config' },
-  // Auto-discovered from llms.txt (2026-05-02)
-  { name: 'champion-kit', url: 'https://code.claude.com/docs/en/champion-kit' },
-  { name: 'communications-kit', url: 'https://code.claude.com/docs/en/communications-kit' },
-  { name: 'glossary', url: 'https://code.claude.com/docs/en/glossary' },
-  { name: 'troubleshoot-install', url: 'https://code.claude.com/docs/en/troubleshoot-install' },
-  // Auto-discovered from llms.txt (2026-05-08)
-  { name: 'deep-links', url: 'https://code.claude.com/docs/en/deep-links' },
-  // Auto-discovered from llms.txt (2026-05-12)
-  { name: 'agent-view', url: 'https://code.claude.com/docs/en/agent-view' },
-  { name: 'agents', url: 'https://code.claude.com/docs/en/agents' },
-  { name: 'claude-platform-on-aws', url: 'https://code.claude.com/docs/en/claude-platform-on-aws' },
-  { name: 'goal', url: 'https://code.claude.com/docs/en/goal' },
-  { name: 'worktrees', url: 'https://code.claude.com/docs/en/worktrees' },
-  // Auto-discovered from llms.txt (2026-05-16)
-  { name: 'desktop-changelog', url: 'https://code.claude.com/docs/en/desktop-changelog' },
-  // Auto-discovered from llms.txt (2026-05-22)
-  { name: 'managed-mcp', url: 'https://code.claude.com/docs/en/managed-mcp' },
-  { name: 'plugin-hints', url: 'https://code.claude.com/docs/en/plugin-hints' },
-  { name: 'prompt-caching', url: 'https://code.claude.com/docs/en/prompt-caching' },
-  { name: 'prompt-library', url: 'https://code.claude.com/docs/en/prompt-library' },
-  { name: 'sandbox-environments', url: 'https://code.claude.com/docs/en/sandbox-environments' },
-  { name: 'sessions', url: 'https://code.claude.com/docs/en/sessions' },
-  // Auto-discovered from llms.txt (2026-05-29)
-  { name: 'large-codebases', url: 'https://code.claude.com/docs/en/large-codebases' },
-  { name: 'security-guidance', url: 'https://code.claude.com/docs/en/security-guidance' },
-  { name: 'workflows', url: 'https://code.claude.com/docs/en/workflows' },
-  // Auto-discovered from llms.txt (2026-06-02)
-  { name: 'mcp-quickstart', url: 'https://code.claude.com/docs/en/mcp-quickstart' },
-  // Auto-discovered from llms.txt (2026-06-23)
-  { name: 'advisor', url: 'https://code.claude.com/docs/en/advisor' },
-  { name: 'artifacts', url: 'https://code.claude.com/docs/en/artifacts' },
-  { name: 'plugin-relevance', url: 'https://code.claude.com/docs/en/plugin-relevance' },
-  // Auto-discovered from llms.txt (2026-07-15)
-  { name: 'accessibility', url: 'https://code.claude.com/docs/en/accessibility' },
-  { name: 'claude-apps-gateway', url: 'https://code.claude.com/docs/en/claude-apps-gateway' },
-  { name: 'claude-apps-gateway-config', url: 'https://code.claude.com/docs/en/claude-apps-gateway-config' },
-  { name: 'claude-apps-gateway-deploy', url: 'https://code.claude.com/docs/en/claude-apps-gateway-deploy' },
-  { name: 'claude-apps-gateway-on-gcp', url: 'https://code.claude.com/docs/en/claude-apps-gateway-on-gcp' },
-  { name: 'claude-apps-gateway-spend-limits', url: 'https://code.claude.com/docs/en/claude-apps-gateway-spend-limits' },
-  { name: 'desktop-linux', url: 'https://code.claude.com/docs/en/desktop-linux' },
-  { name: 'desktop-wsl', url: 'https://code.claude.com/docs/en/desktop-wsl' },
-  { name: 'feature-availability', url: 'https://code.claude.com/docs/en/feature-availability' },
-  { name: 'gateways', url: 'https://code.claude.com/docs/en/gateways' },
-  { name: 'llm-gateway-connect', url: 'https://code.claude.com/docs/en/llm-gateway-connect' },
-  { name: 'llm-gateway-protocol', url: 'https://code.claude.com/docs/en/llm-gateway-protocol' },
-  { name: 'llm-gateway-rollout', url: 'https://code.claude.com/docs/en/llm-gateway-rollout' },
-  // Auto-discovered from llms.txt (2026-07-17)
-  { name: 'corporate-launcher', url: 'https://code.claude.com/docs/en/corporate-launcher' },
-  // Auto-discovered from llms.txt (2026-07-18)
-  { name: 'mobile', url: 'https://code.claude.com/docs/en/mobile' },
-  // Agent SDK (different domain)
-  { name: 'agent-sdk-overview', url: 'https://platform.claude.com/docs/en/agent-sdk/overview' },
-]
+  { name: 'ai-gateway' },
+  { name: 'ai-gateway/features/caching' },
+  { name: 'ai-gateway/configuration/fallbacks' },
+  { name: 'ai-gateway/observability/logging' },
+  { name: 'cache/advanced-configuration/cache-reserve' },
+  { name: 'cache/how-to/tiered-cache' },
+  { name: 'cloudflare-for-platforms/workers-for-platforms' },
+  { name: 'cloudflare-one/access-controls/policies' },
+  { name: 'd1' },
+  { name: 'd1/best-practices/local-development' },
+  { name: 'd1/best-practices/read-replication' },
+  { name: 'd1/best-practices/use-indexes' },
+  { name: 'd1/get-started' },
+  { name: 'd1/platform/limits' },
+  { name: 'd1/reference/community-projects' },
+  { name: 'd1/reference/migrations' },
+  { name: 'd1/reference/time-travel' },
+  { name: 'd1/sql-api/foreign-keys' },
+  { name: 'd1/worker-api/d1-database' },
+  { name: 'd1/worker-api/prepared-statements' },
+  { name: 'd1/wrangler-commands' },
+  { name: 'durable-objects' },
+  { name: 'durable-objects/api/alarms' },
+  { name: 'durable-objects/api/namespace' },
+  { name: 'durable-objects/api/sqlite-storage-api' },
+  { name: 'durable-objects/api/stub' },
+  { name: 'durable-objects/best-practices/rules-of-durable-objects' },
+  { name: 'durable-objects/best-practices/websockets' },
+  { name: 'durable-objects/concepts/what-are-durable-objects' },
+  { name: 'durable-objects/reference/data-location' },
+  { name: 'kv/api/list-keys' },
+  { name: 'kv/api/read-key-value-pairs' },
+  { name: 'kv/api/write-key-value-pairs' },
+  { name: 'kv/concepts/how-kv-works' },
+  { name: 'kv/get-started' },
+  { name: 'kv/platform/limits' },
+  { name: 'pages' },
+  { name: 'pages/configuration/build-caching' },
+  { name: 'pages/configuration/build-configuration' },
+  { name: 'pages/configuration/custom-domains' },
+  { name: 'pages/configuration/git-integration' },
+  { name: 'pages/configuration/headers' },
+  { name: 'pages/configuration/monorepos' },
+  { name: 'pages/configuration/preview-deployments' },
+  { name: 'pages/configuration/redirects' },
+  { name: 'pages/configuration/rollbacks' },
+  { name: 'pages/functions/bindings' },
+  { name: 'pages/functions/middleware' },
+  { name: 'pages/functions/routing' },
+  { name: 'pages/get-started/direct-upload' },
+  { name: 'queues' },
+  { name: 'queues/configuration/batching-retries' },
+  { name: 'queues/configuration/consumer-concurrency' },
+  { name: 'queues/configuration/dead-letter-queues' },
+  { name: 'queues/configuration/pull-consumers' },
+  { name: 'queues/reference/how-queues-works' },
+  { name: 'r2' },
+  { name: 'r2/api/s3/presigned-urls' },
+  { name: 'r2/api/tokens' },
+  { name: 'r2/api/workers/workers-api-reference' },
+  { name: 'r2/buckets' },
+  { name: 'r2/buckets/cors' },
+  { name: 'r2/buckets/event-notifications' },
+  { name: 'r2/buckets/object-lifecycles' },
+  { name: 'r2/buckets/public-buckets' },
+  { name: 'r2/buckets/storage-classes' },
+  { name: 'r2/data-migration/super-slurper' },
+  { name: 'r2/objects/upload-objects' },
+  { name: 'r2/pricing' },
+  { name: 'r2/reference/wrangler-commands' },
+  { name: 'vectorize' },
+  { name: 'vectorize/best-practices/create-indexes' },
+  { name: 'vectorize/best-practices/insert-vectors' },
+  { name: 'vectorize/platform/limits' },
+  { name: 'vectorize/reference/client-api' },
+  { name: 'vectorize/reference/metadata-filtering' },
+  { name: 'vectorize/reference/what-is-a-vector-database' },
+  { name: 'waf/rate-limiting-rules' },
+  { name: 'workers-ai' },
+  { name: 'workers-ai/configuration/bindings' },
+  { name: 'workers-ai/guides/tutorials/build-a-retrieval-augmented-generation-ai' },
+  { name: 'workers-ai/models' },
+  { name: 'workers' },
+  { name: 'workers/configuration/compatibility-dates' },
+  { name: 'workers/configuration/cron-triggers' },
+  { name: 'workers/configuration/placement' },
+  { name: 'workers/configuration/secrets' },
+  { name: 'workers/framework-guides/web-apps/nextjs' },
+  { name: 'workers/get-started/guide' },
+  { name: 'workers/observability/logs' },
+  { name: 'workers/platform/limits' },
+  { name: 'workers/platform/pricing' },
+  { name: 'workers/platform/storage-options' },
+  { name: 'workers/reference/how-workers-works' },
+  { name: 'workers/reference/migrate-to-module-workers' },
+  { name: 'workers/runtime-apis/bindings' },
+  { name: 'workers/runtime-apis/bindings/service-bindings' },
+  { name: 'workers/runtime-apis/cache' },
+  { name: 'workers/runtime-apis/context' },
+  { name: 'workers/runtime-apis/handlers/fetch' },
+  { name: 'workers/runtime-apis/html-rewriter' },
+  { name: 'workers/runtime-apis/nodejs' },
+  { name: 'workers/runtime-apis/request' },
+  { name: 'workers/runtime-apis/streams' },
+  { name: 'workers/static-assets' },
+  { name: 'workers/static-assets/binding' },
+  { name: 'workers/versions-and-deployments/gradual-deployments' },
+  { name: 'workers/versions-and-deployments/rollbacks' },
+  { name: 'workers/wrangler/commands' },
+  { name: 'workers/wrangler/configuration' },
+  { name: 'workers/wrangler/environments' },
+].map((p) => ({ ...p, url: `https://developers.cloudflare.com/${p.name}/` }))
+
+/**
+ * Per-category doc groupings and extra reference links.
+ * Not yet consumed by any script (reserved for future doc-coverage
+ * tooling) — kept empty rather than guessed to avoid silently-wrong data.
+ */
+export const CATEGORY_DOC_MAP = {}
+export const SUPPLEMENTARY_DOCS = []
+
+export const DOC_URL_PREFIX = 'https://developers.cloudflare.com/'
+/** No secondary doc domain is currently referenced by quizzes.json. */
+export const ADDITIONAL_DOC_PREFIXES = []
 
 // ============================================================
-// Category → Doc Page Mapping
+// Doc cache filename helpers (shared by fetch-docs.mjs / quiz-lint.mjs /
+// quiz-fact-check.mjs so the on-disk cache and the URL-derived page id
+// always agree without needing an alias table).
 // ============================================================
 
-/** Category to doc page mapping (used by verify-state.mjs and fetch-docs.mjs). */
-export const CATEGORY_DOC_MAP = {
-  memory: ['memory', 'best-practices', 'settings', 'server-managed-settings'],
-  skills: ['skills', 'sub-agents', 'best-practices', 'agent-teams'],
-  tools: ['how-claude-code-works', 'interactive-mode', 'sub-agents', 'vs-code', 'jetbrains'],
-  commands: [
-    'interactive-mode',
-    'cli-reference',
-    'common-workflows',
-    'headless',
-    'github-actions',
-    'gitlab-ci-cd',
-    'scheduled-tasks',
-    'data-usage',
-  ],
-  extensions: [
-    'mcp',
-    'hooks',
-    'hooks-guide',
-    'discover-plugins',
-    'plugins',
-    'plugins-reference',
-    'plugin-marketplaces',
-    'settings',
-    'chrome',
-    'slack',
-    'plugin-relevance',
-  ],
-  session: [
-    'how-claude-code-works',
-    'common-workflows',
-    'checkpointing',
-    'settings',
-    'model-config',
-    'sandboxing',
-    'fast-mode',
-    'remote-control',
-    'desktop',
-    'devcontainer',
-    'agent-view',
-    'data-usage',
-    'gateways',
-    'llm-gateway-connect',
-    'llm-gateway-protocol',
-    'llm-gateway-rollout',
-    'desktop-linux',
-    'desktop-wsl',
-    'feature-availability',
-    'claude-apps-gateway',
-    'corporate-launcher',
-    'mobile',
-    'claude-apps-gateway-config',
-    'claude-apps-gateway-spend-limits',
-  ],
-  keyboard: [
-    'interactive-mode',
-    'common-workflows',
-    'keybindings',
-    'statusline',
-    'terminal-config',
-    'output-styles',
-    'accessibility',
-  ],
-  bestpractices: ['best-practices', 'model-config', 'common-workflows', 'sandboxing', 'advisor', 'artifacts'],
-  sdk: [
-    'agent-sdk-overview',
-    'authentication',
-    'overview',
-    'quickstart',
-    'interactive-mode',
-    'third-party-integrations',
-  ],
+export function docPageToFilename(name) {
+  return `${name.replace(/\//g, '__')}.md`
 }
 
-/** Supplementary doc URLs (used by verify-state.mjs). */
-export const SUPPLEMENTARY_DOCS = [
-  'settings',
-  'permissions',
-  'overview',
-  'agent-sdk-overview',
-  'setup',
-  'features-overview',
-  'desktop-quickstart',
-  'authentication',
-]
-
-// ============================================================
-// Struggle Detection (shared by session-analysis.mjs, realtime-struggle.mjs)
-// ============================================================
-
-/** Frustration keyword regex for struggle signal detection. */
-export const FRUSTRATION_REGEX =
-  /なぜ|どうして|違う|おかしい|壊れ|動かない|エラー|失敗|ダメ|うまくいかない|wrong|broken|doesn't work|failed|error/i
-
-// ============================================================
-// Session Analysis Keywords (used by collect-session.mjs, session-analysis.mjs)
-// ============================================================
-
-/** Category → keyword mapping for session prompt scoring. */
-export const CATEGORY_KEYWORDS = {
-  memory: ['CLAUDE.md', 'claude.md', 'memory', 'MEMORY.md', '/memory', '/init', 'rules/', '@import'],
-  skills: ['skill', 'SKILL.md', '/batch', '/loop', '/schedule', 'context: fork', 'frontmatter'],
-  tools: ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'WebFetch', 'tool_use'],
-  commands: [
-    '/compact',
-    '/clear',
-    '/resume',
-    '/model',
-    '/context',
-    '/branch',
-    '/voice',
-    '/rewind',
-    'claude -p',
-    '--bare',
-  ],
-  extensions: ['MCP', 'mcp', 'hook', 'Hook', 'plugin', 'subagent', 'Agent', 'Chrome', 'Slack'],
-  session: ['コンテキスト', 'token', 'compact', 'checkpoint', 'resume', 'session', 'fork', 'worktree', 'effort'],
-  keyboard: ['Ctrl+', 'Shift+', 'Alt+', 'Esc', 'Tab', 'shortcut', 'vim', 'keybind'],
-  bestpractices: ['plan mode', 'Plan', 'verify', 'test', 'review', 'IMPORTANT', 'best practice'],
-  sdk: [
-    'Agent SDK',
-    'Anthropic API',
-    'Claude API',
-    '@anthropic-ai/sdk',
-    '@anthropic-ai/claude-agent-sdk',
-    'messages.create',
-    'Anthropic Console',
-    'Workbench',
-    'Managed Agents',
-    'API キー',
-    'API Key',
-  ],
-}
-
-/** Topic → keyword mapping for session topic detection. */
-export const TOPIC_KEYWORDS = {
-  'CLAUDE.mdの書き方': ['CLAUDE.md', '/init', 'ルール', '指示'],
-  コンテキスト管理: ['コンテキスト', '/compact', '/clear', 'context', '圧縮'],
-  MCP: ['MCP', 'mcp', 'ツール連携', 'stdio'],
-  Hooks: ['hook', 'Hook', 'フック', 'PreToolUse', 'PostToolUse'],
-  サブエージェント: ['subagent', 'サブエージェント', 'Agent', 'worktree', '並列'],
-  Skills: ['skill', 'SKILL.md', 'スキル', 'frontmatter'],
-  デバッグ: ['debug', 'デバッグ', 'エラー', 'error', 'バグ'],
-  テスト: ['test', 'テスト', 'vitest', 'playwright'],
-  'CI/CD': ['CI', 'GitHub Actions', 'deploy', 'デプロイ'],
-  セキュリティ: ['security', 'セキュリティ', 'permission', 'sandbox'],
-  コスト管理: ['cost', 'コスト', '料金', 'effort'],
+export function filenameToDocPage(filename) {
+  return filename.replace(/\.md$/, '').replace(/__/g, '/')
 }
 
 // ============================================================
-// URL Validation
-// ============================================================
-
-/** Primary domain prefix for referenceUrl validation in quiz-lint. */
-export const DOC_URL_PREFIX = 'https://code.claude.com/docs/'
-
-/** Additional valid domain prefixes for referenceUrl (e.g. related docs sites). */
-export const ADDITIONAL_DOC_PREFIXES = ['https://platform.claude.com/docs/']
-
-// ============================================================
-// Backtick-Lint Term Lists
+// Backtick Lint Terms
 // ============================================================
 
 /**
- * Terms that should ALWAYS be wrapped in backticks when appearing
- * outside of an existing backtick span in quiz text fields.
+ * Terms that should always be backtick-formatted when they appear in quiz
+ * text. Empty arrays are valid — the corresponding lint rule simply becomes
+ * a no-op (e.g. Cloudflare docs have no "slash command" or IDE-tool-name
+ * concept, unlike the Claude Code docs this config was originally modeled
+ * on).
  */
 export const BACKTICK_TERMS = {
-  /** File paths & config files — sorted by length descending to match longer paths first. */
-  filePaths: [
-    '~/.claude/settings.json',
-    '~/.claude/CLAUDE.md',
-    '~/.claude/commands/',
-    '~/.claude/skills/',
-    '.claude/settings.json',
-    '.claude/commands/',
-    '.claude/rules/',
-    '.claude/skills/',
-    '.claude/tmp/',
-    'CLAUDE.local.md',
-    'CLAUDE.md',
-    'settings.json',
-    'package.json',
-    '.gitignore',
-    '.clauderc',
-    '.mcp.json',
-  ].sort((a, b) => b.length - a.length),
-
-  /** Slash commands regex pattern. */
-  slashCommands:
-    /(?<!`|[/\w])(\/(init|memory|compact|clear|rewind|status|model|config|hooks|login|logout|bug|review|terminal-setup|teleport|doctor|cost|vim|rename|todos|tasks|search|ide|project|help|mcp|diff|permissions|listen))(?![-\w]|`)/g,
-
-  /** Hook event names (PascalCase). */
-  hookEvents: [
-    'PreToolUse',
-    'PostToolUse',
-    'UserPromptSubmit',
-    'Stop',
-    'SubagentStop',
-    'SessionStart',
-    'SessionEnd',
-    'Notification',
-    'PermissionRequest',
-    'TeammateIdle',
-    'TaskCompleted',
-    'ConfigChange',
-    'WorktreeCreate',
-  ],
-
-  /** Built-in tool names (Agent/Task excluded — too many false positives with "Agent SDK" etc.). */
-  toolNames: ['Bash', 'Read', 'Write', 'Edit', 'Glob', 'Grep', 'WebFetch', 'WebSearch', 'NotebookEdit', 'TodoWrite'],
-
-  /** Config keys (camelCase / kebab-case identifiers from settings) — sorted by length descending. */
+  // Config / project file names.
+  filePaths: ['wrangler.toml', 'wrangler.jsonc', '.dev.vars', 'schema.sql', 'package.json'],
+  // No slash-command concept in Cloudflare docs — kept as a never-matching
+  // pattern so quiz-lint.mjs's dispatch code stays uniform across topics.
+  slashCommands: /(?!x)x/,
+  // Workers export handler method names (fetch/scheduled/queue/email/alarm).
+  hookEvents: ['fetch', 'scheduled', 'queue', 'email', 'alarm', 'tail'],
+  // No IDE-tool-name concept for this topic.
+  toolNames: [],
+  // wrangler.toml / wrangler.jsonc configuration keys.
   configKeys: [
-    'allowed-tools',
-    'allowedTools',
-    'context: fork',
-    'defaultMode',
-    'allowManagedHooksOnly',
-    'permissions.deny',
-    'permissions.allow',
-    'spinnerVerbs.mode',
-    'spinnerVerbs.verbs',
-    'spinnerVerbs',
-    'deniedMcpServers',
-    'allowedMcpServers',
-    'alwaysThinkingEnabled',
-    'availableModels',
-    'hookSpecificOutput',
-  ].sort((a, b) => b.length - a.length),
-
-  /** CLI commands (full invocations) — longer patterns first to match greedily. */
+    'compatibility_date',
+    'compatibility_flags',
+    'account_id',
+    'workers_dev',
+    'kv_namespaces',
+    'd1_databases',
+    'r2_buckets',
+    'durable_objects',
+    'queues.producers',
+    'queues.consumers',
+    'vars',
+    'routes',
+    'triggers.crons',
+    'migrations',
+    'assets',
+    'placement.mode',
+    'observability.enabled',
+    'limits.cpu_ms',
+  ],
+  // Full wrangler CLI invocations.
   cliCommands: [
-    'git reset --hard',
-    'git worktree remove',
-    'brew install --cask claude-code',
-    'npm test',
-    'npm install',
-    'npm run',
-    'git commit',
-    'git push',
-    'git stash',
-    'git reset',
-    'git worktree',
-    'claude --resume',
-    'claude --continue',
-    'claude --review',
-    'claude --teleport',
-    'claude install-mcp',
-    'nvm use',
+    'wrangler dev',
+    'wrangler deploy',
+    'wrangler tail',
+    'wrangler login',
+    'wrangler whoami',
+    'wrangler secret put',
+    'wrangler d1 execute',
+    'wrangler d1 migrations apply',
+    'wrangler d1 migrations create',
+    'wrangler kv key put',
+    'wrangler kv key get',
+    'wrangler kv namespace create',
+    'wrangler r2 object put',
+    'wrangler r2 bucket create',
+    'wrangler queues consumer add',
+    'wrangler pages deploy',
+    'wrangler versions deploy',
+    'wrangler triggers deploy',
   ],
 }
 
@@ -432,88 +231,41 @@ export const BACKTICK_TERMS = {
 // ============================================================
 
 /**
- * Known incorrect terms -> correct terms.
- * Built from known-issues.md and verified facts in MEMORY.md.
+ * Seed list of unambiguous terminology/casing corrections. Left empty by
+ * design — an earlier draft included a "`wrangler.json` isn't a real config
+ * file, only `wrangler.jsonc` is" entry, which turned out to be wrong: as of
+ * Wrangler v3.91, `wrangler.json` *and* `wrangler.jsonc` are both supported
+ * (see workers/wrangler/configuration in the official docs). That entry
+ * would have flagged correct quiz content as an error. Add entries here
+ * only after confirming them against the fetched doc cache or the official
+ * site, not from memory — see quiz-fact-check.mjs for the same discipline
+ * applied to KNOWN_NONEXISTENT_TERMS below.
  */
-export const TERMINOLOGY_DICT = [
-  // Official names
-  { wrong: 'Azure Foundry', correct: 'Microsoft Foundry', caseInsensitive: false },
-  // "Claude Code SDK" — skip if context is clearly historical (e.g., "旧称", "以前は")
-  { wrong: 'Claude Code SDK', correct: 'Claude Agent SDK', caseInsensitive: false, skipIfHistorical: true },
-  // Non-existent commands/features (only flag in explanation, not in wrong-answer options)
-  // skipIfNegated: true — explanations that legitimately teach "X does not exist"
-  //   have to quote X; don't flag them when "存在しません" / "does not exist" is nearby.
-  {
-    wrong: 'claude commit',
-    correct: null,
-    message: '`claude commit` サブコマンドは存在しません',
-    skipWrongOptions: true,
-    skipIfNegated: true,
-  },
-  {
-    wrong: /(?<!`)\/teleport(?!`)/,
-    correct: null,
-    message: '`/teleport` はスラッシュコマンドではなく `claude --teleport` CLIフラグです',
-    skipWrongOptions: true,
-    skipIfNegated: true,
-  },
-  // Terminology precision
-  { wrong: 'allowed_tools', correct: 'allowed-tools', caseInsensitive: false },
-  // Common misspellings in Japanese context
-  { wrong: 'Exntended Thinking', correct: 'Extended Thinking', caseInsensitive: false },
-  // Deprecated terminology
-  {
-    wrong: /(?<!\w)Task\s+tool(?!\w)/i,
-    correct: null,
-    message: 'CLI では Agent ツールに改名済み（SDK の allowedTools では Task を使用）',
-  },
-]
+export const TERMINOLOGY_DICT = []
 
 // ============================================================
-// Negation detection (shared by quiz-lint, quiz-fact-check, pre-lint)
+// Negation Detection
 // ============================================================
 
 /**
- * Patterns that indicate a term is being used in a negation context
- * (e.g. "does not exist"). When a term match falls inside a ~40-char
- * window of these markers, lint checks suppress the flag so quizzes
- * that teach "X does not exist" don't get flagged for quoting X.
- *
- * Single source of truth — edits here propagate to every lint script
- * via import. Don't duplicate this regex; import this constant and
- * (optionally) isInNegationWindow instead.
+ * Matches phrases indicating the surrounding text asserts that something
+ * does NOT exist / is NOT supported. Used to suppress false-positive
+ * terminology/fact-check flags on quizzes that intentionally teach
+ * "X is not a real feature".
  */
 export const NEGATION_MARKERS =
-  /存在しません|存在しない|ありません|ではない|ではなく|サポートされていない|未提供|未サポート|does not exist|is not (a|an) |isn't a[n ]|no such/i
-
-/**
- * Returns true if the term's first occurrence in `text` sits within
- * `windowChars` of a negation marker (before or after).
- */
-export function isInNegationWindow(text, term, windowChars = 40) {
-  const idx = typeof text === 'string' ? text.indexOf(term) : -1
-  if (idx < 0) return false
-  const start = Math.max(0, idx - windowChars)
-  const end = idx + term.length + windowChars
-  return NEGATION_MARKERS.test(text.slice(start, end))
-}
+  /存在しません|存在しない|サポートされていません|サポートしていません|廃止|非推奨|できません|ではありません|does not exist|is not supported|does not support|was removed|deprecated/i
 
 // ============================================================
-// Known-nonexistent terms (error when used without negation)
+// Known-Nonexistent Terms
 // ============================================================
 
 /**
- * Features that genuinely don't exist in Claude Code. If a quiz mentions
- * them in a positive context (no negation marker nearby), that's a
- * factual error in the quiz — not just a style issue.
- *
- * quiz-fact-check.mjs checks this list after the normal "term-not-in-docs"
- * sweep to catch the reverse pattern: the term happens to appear in a doc
- * fragment but the quiz is still using it as if it were a real feature.
+ * Features/terms confirmed NOT to exist (or not to work as commonly
+ * assumed), for use by quiz-fact-check.mjs's "positive mention of a
+ * nonexistent feature" check. Left empty by design: entries here must be
+ * independently verified against official docs before being added, since a
+ * wrong entry would cause the quality gate to flag *correct* content as an
+ * error. Add entries as they are confirmed during manual review.
  */
-export const KNOWN_NONEXISTENT_TERMS = [
-  { term: 'claude commit', reason: 'CLI サブコマンドではない（git commit を直接使う）' },
-  { term: '/summarize', reason: '存在しない。/rewind の "Summarize from here" に統合済み' },
-  { term: '/todos', reason: 'commands.md から削除済み（/tasks に統合）' },
-  { term: 'Azure Foundry', reason: '正式名称は "Microsoft Foundry"' },
-]
+export const KNOWN_NONEXISTENT_TERMS = []

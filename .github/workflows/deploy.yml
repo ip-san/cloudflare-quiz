@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -40,7 +42,23 @@ jobs:
         if: matrix.task == 'validate'
         run: node scripts/quiz-utils.mjs check
 
+  # Advisory quiz-content review (backtick/terminology/distractor/difficulty
+  # lint + cross-question contradiction check). Both scripts always exit 0
+  # by design — findings need human judgement, not an automatic fail — so
+  # this job is purely for visibility in PR logs, not a blocking gate.
+  quiz-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: node scripts/quiz-lint.mjs all --dry-run
+      - run: node scripts/quiz-cross-check.mjs
+
   build:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: check
     runs-on: ubuntu-latest
     steps:

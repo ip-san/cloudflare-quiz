@@ -68,8 +68,29 @@ bun run quiz:check             # クイズデータの整合性チェック（ID
 bun run quiz:randomize          # correctIndex の偏り解消
 bun run quiz:stats               # クイズデータの統計表示
 
+bun run check                     # 品質ゲート一式（typecheck + lint + test + quiz:check + quiz:lint:dry）
+
 bun run generate-icons             # public/icons/ のアイコンを build/icon.svg から再生成
 ```
+
+### 品質ゲート・問題レビュー機構
+
+構造的な検証（Zod スキーマ、vitest によるコンテンツ品質テスト）に加え、機械的なレビュー支援ツールを備えています。
+
+```bash
+bun run quiz:lint                  # バッククォート不足を自動修正 + 用語/distractor/difficulty をレポート
+bun run quiz:lint:dry              # 自動修正せずレポートのみ（CI・pre-commit で使用）
+bun run quiz:cross-check           # 問題間の矛盾（数値の食い違い等）を検出
+
+bun run docs:fetch                 # developers.cloudflare.com のMarkdownソースをローカルにキャッシュ
+bun run quiz:lint:url               # referenceUrl の見出しアンカーをキャッシュと照合（要 docs:fetch）
+bun run quiz:fact-check             # 環境変数・CLIコマンド・設定キーをキャッシュと照合（要 docs:fetch）
+```
+
+- `quiz:lint` / `quiz:cross-check` はネットワーク不要で、常に exit code 0（構造検証ではなく人手レビュー支援のため、自動でビルドを落とさない）。
+- `quiz:lint:url` / `quiz:fact-check` は `docs:fetch` で取得したキャッシュ（`.claude/tmp/docs/`, gitignore 済み）が必要。ドキュメントの見出し構造（MDXコンポーネント使用ページ等）によっては誤検知することがあるため、レビューの参考情報として扱ってください。
+- コミット時は Husky の pre-commit フックが lint-staged（biome）と変更ファイルの vitest、および `quizzes.json` 変更時は `quiz:check` / `quiz:lint` を自動実行します。
+- CI（`.github/workflows/deploy.yml`）は PR 作成時に typecheck/lint/test/`quiz:check` をブロッキングで実行し、`quiz-lint`/`quiz-cross-check` の結果を非ブロッキングで可視化します。
 
 ### 技術スタック
 

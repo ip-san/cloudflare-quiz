@@ -17,10 +17,26 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "npx playwright test",
     "test:e2e:ui": "npx playwright test --ui",
+    "check": "bun run typecheck && bun run lint && bun run test && bun run quiz:check && bun run quiz:lint:dry",
     "quiz:randomize": "node scripts/quiz-utils.mjs randomize",
     "quiz:stats": "node scripts/quiz-utils.mjs stats",
     "quiz:check": "node scripts/quiz-utils.mjs check && node scripts/quiz-utils.mjs check-ellipsis",
-    "generate-icons": "node scripts/generate-icons.mjs"
+    "quiz:lint": "node scripts/quiz-lint.mjs all",
+    "quiz:lint:dry": "node scripts/quiz-lint.mjs all --dry-run",
+    "quiz:lint:backtick": "node scripts/quiz-lint.mjs backtick",
+    "quiz:lint:url": "node scripts/quiz-lint.mjs url",
+    "quiz:lint:terminology": "node scripts/quiz-lint.mjs terminology",
+    "quiz:lint:distractor": "node scripts/quiz-lint.mjs distractor",
+    "quiz:lint:difficulty": "node scripts/quiz-lint.mjs difficulty",
+    "quiz:fact-check": "node scripts/quiz-fact-check.mjs",
+    "quiz:cross-check": "node scripts/quiz-cross-check.mjs",
+    "docs:fetch": "node scripts/fetch-docs.mjs",
+    "docs:fetch:status": "node scripts/fetch-docs.mjs --status",
+    "generate-icons": "node scripts/generate-icons.mjs",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mjs}": "biome check --write --no-errors-on-unmatched"
   },
   "dependencies": {
     "lucide-react": "^1.17.0",
@@ -41,7 +57,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.8",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.1.0",
     "postcss": "^8.5.15",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.3.0",
