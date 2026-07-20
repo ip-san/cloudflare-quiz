@@ -82,9 +82,7 @@ export function ModeSelection() {
           )}
 
           {/* First-time user: simplified entry point */}
-          {userProgress.totalAttempts === 0 && (
-            <FirstTimeGuide onOpenModes={() => setOpenMenuWithModes(true)} />
-          )}
+          {userProgress.totalAttempts === 0 && <FirstTimeGuide onOpenModes={() => setOpenMenuWithModes(true)} />}
 
           {/* Quiz mode launcher — for returning users */}
           {userProgress.totalAttempts > 0 && (

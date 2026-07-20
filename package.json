@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "format": "biome format --write src/ scripts/",
     "format:check": "biome format src/ scripts/",
-    "lint": "biome lint src/ scripts/",
+    "lint": "biome check src/ scripts/",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

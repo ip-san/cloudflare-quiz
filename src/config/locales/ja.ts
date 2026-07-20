@@ -628,5 +628,4 @@ export const ja: LocaleConfig = {
     allow: '許可する',
     later: '今はしない',
   },
-
 }

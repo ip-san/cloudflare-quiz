@@ -86,8 +86,20 @@ describe('AdaptiveDifficultyService', () => {
       const progress = UserProgress.create({
         totalAttempts: 10,
         categoryProgress: {
-          'kv-cache': { categoryId: 'kv-cache', totalQuestions: 10, attemptedQuestions: 5, correctAnswers: 4, accuracy: 80 },
-          workers: { categoryId: 'workers', totalQuestions: 10, attemptedQuestions: 5, correctAnswers: 4, accuracy: 80 },
+          'kv-cache': {
+            categoryId: 'kv-cache',
+            totalQuestions: 10,
+            attemptedQuestions: 5,
+            correctAnswers: 4,
+            accuracy: 80,
+          },
+          workers: {
+            categoryId: 'workers',
+            totalQuestions: 10,
+            attemptedQuestions: 5,
+            correctAnswers: 4,
+            accuracy: 80,
+          },
         },
       })
       const result = AdaptiveDifficultyService.reorderByAdaptiveDifficulty(questions, progress)
@@ -131,7 +143,13 @@ describe('AdaptiveDifficultyService', () => {
       const progress = UserProgress.create({
         totalAttempts: 10,
         categoryProgress: {
-          workers: { categoryId: 'workers', totalQuestions: 10, attemptedQuestions: 5, correctAnswers: 4, accuracy: 80 },
+          workers: {
+            categoryId: 'workers',
+            totalQuestions: 10,
+            attemptedQuestions: 5,
+            correctAnswers: 4,
+            accuracy: 80,
+          },
         },
       })
       const result = AdaptiveDifficultyService.reorderByAdaptiveDifficulty(questions, progress)

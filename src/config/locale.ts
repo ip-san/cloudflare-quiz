@@ -652,7 +652,6 @@ export interface LocaleConfig {
     readonly allow: string
     readonly later: string
   }
-
 }
 
 // ============================================================

@@ -250,7 +250,13 @@ const cloudflareTheme: ThemeConfig = {
     { name: 'エッジ入門者', icon: '🌱', color: 'text-claude-orange', bg: 'bg-claude-orange/10', req: null },
     { name: 'エッジ学習者', icon: '📚', color: 'text-blue-600', bg: 'bg-blue-500/10', req: '正答率50%以上' },
     { name: 'エッジ実践者', icon: '🚀', color: 'text-green-600', bg: 'bg-green-500/10', req: '正答率70%以上' },
-    { name: 'エッジ推進者', icon: '⚡', color: 'text-purple-600', bg: 'bg-purple-500/10', req: '正答率80% + 半数以上学習' },
+    {
+      name: 'エッジ推進者',
+      icon: '⚡',
+      color: 'text-purple-600',
+      bg: 'bg-purple-500/10',
+      req: '正答率80% + 半数以上学習',
+    },
     {
       name: 'エッジ牽引役',
       icon: '👑',
@@ -449,7 +455,11 @@ const cloudflareTheme: ThemeConfig = {
       realWorldExample: '例: Durable Objects を使えば、同時アクセスされてもカウンターの値が正しく保たれます',
     },
     5: {
-      learningPoints: ['Cloudflare Pages でのデプロイ方法', 'Git 連携による自動ビルド', 'Pages Functions との組み合わせ'],
+      learningPoints: [
+        'Cloudflare Pages でのデプロイ方法',
+        'Git 連携による自動ビルド',
+        'Pages Functions との組み合わせ',
+      ],
       encouragement: 'フロントエンドのデプロイは、Git 連携さえ済ませればほとんど自動で進みます。',
       realWorldExample: '例: main ブランチに push するだけで、ビルドから公開までが自動的に完了します',
     },
@@ -480,7 +490,12 @@ const cloudflareTheme: ThemeConfig = {
     reply: '⎔ Starting local server...',
     replyCont: 'Ready on http://localhost:8787',
   },
-  tutorialBubbles: ['KV に値を保存して', 'D1 にテーブルを作って', 'R2 にファイルをアップロードして', 'Pages にデプロイして'],
+  tutorialBubbles: [
+    'KV に値を保存して',
+    'D1 にテーブルを作って',
+    'R2 にファイルをアップロードして',
+    'Pages にデプロイして',
+  ],
   tutorialCapabilities: [
     { label: 'エッジ実行' },
     { label: 'ストレージ連携' },
