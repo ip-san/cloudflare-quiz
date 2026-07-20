@@ -137,7 +137,7 @@ describe('GrowthTrackingService', () => {
       const history = GrowthTrackingService.loadHistory()
       const second = { ...history[0], date: '2026-01-01', patterns: ['同じ修正を繰り返し指示'] }
       localStorage.setItem(
-        `${localStorage.getItem('cloudflare-codex-quiz-pattern-history') ? '' : ''}cloudflare-codex-quiz-pattern-history`,
+        `${localStorage.getItem('cloudflare-quiz-pattern-history') ? '' : ''}cloudflare-quiz-pattern-history`,
         JSON.stringify([second, history[0]])
       )
       const result = GrowthTrackingService.compareWithPrevious([], ['テスト用の長いプロンプト文字列です'])

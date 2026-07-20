@@ -1,6 +1,6 @@
 {
   "title": "Cloudflare Master Quiz",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "quizzes": [
     {
       "id": "wk-001",
@@ -7925,6 +7925,3725 @@
               "heading": "メタデータ",
               "items": [
                 "最大1024 bytes"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk-013",
+      "category": "workers",
+      "difficulty": "beginner",
+      "question": "HTMLRewriterは何をするためのAPIですか?",
+      "options": [
+        {
+          "text": "Workerがレスポンスとして返すHTMLドキュメントを、ストリーミングしながらパース・書き換えできるAPI"
+        },
+        {
+          "text": "HTMLファイルをMarkdownに自動変換するAPI",
+          "wrongFeedback": "HTMLRewriterはフォーマット変換ツールではなく、HTML要素をパース・書き換えるためのAPIです。"
+        },
+        {
+          "text": "ブラウザ側でDOMを操作するためのクライアントサイドAPI",
+          "wrongFeedback": "HTMLRewriterはブラウザではなくWorkers(エッジ)側で動作するサーバーサイドのAPIです。"
+        },
+        {
+          "text": "HTMLの構文エラーを検出してビルド時にエラーを出す静的解析ツール",
+          "wrongFeedback": "静的解析やビルド時のリンターではなく、実行時にレスポンスのHTMLをストリーミングしながら書き換えるランタイムAPIです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "HTMLRewriterは、Worker内でHTMLドキュメントをjQueryのような感覚でパース・書き換えできるAPIです。\n{{diagram:0}}\n`.on(selector, handler)`や`.onDocument(handler)`で要素/ドキュメント全体に対するハンドラを登録し、`transform(response)`でレスポンスに適用します。ドキュメント全体をメモリにバッファせずストリーミング処理するため、大きなHTMLでも効率的に扱えます。オリジンのHTMLにリンク書き換えやパーソナライズ、A/Bテスト用のコンテンツ差し替えなどを、エッジで動的に行う用途によく使われます。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/html-rewriter/",
+      "hint": "「ストリーミング」と「HTML書き換え」という2つのキーワードに注目しましょう。",
+      "tags": [
+        "workers",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "HTMLRewriterの処理フロー",
+          "steps": [
+            {
+              "text": "オリジンからHTML取得",
+              "sub": "fetch(originRequest)"
+            },
+            {
+              "text": "HTMLRewriterで書き換え",
+              "sub": "要素/ドキュメントハンドラを適用"
+            },
+            {
+              "text": "書き換え後のHTMLを返却",
+              "sub": "ストリーミングでクライアントへ配信"
+            }
+          ]
+        },
+        {
+          "type": "config",
+          "label": "HTMLRewriterの基本形",
+          "filepath": "src/index.js",
+          "lines": [
+            {
+              "text": "const rewriter = new HTMLRewriter()"
+            },
+            {
+              "text": "  .on('a', {",
+              "highlight": true
+            },
+            {
+              "text": "    element(el) { el.setAttribute('href', '/new-path') }"
+            },
+            {
+              "text": "  })"
+            },
+            {
+              "text": "return rewriter.transform(originResponse)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk-014",
+      "category": "workers",
+      "difficulty": "intermediate",
+      "question": "Streams API(ReadableStream/TransformStream)をWorkerで使う主な利点は何ですか?",
+      "options": [
+        {
+          "text": "レスポンスのボディを自動的にJSON形式へ変換してくれる",
+          "wrongFeedback": "Streams APIは形式変換の機能ではありません。バイナリやテキストのチャンクをそのまま順次扱うための仕組みです。"
+        },
+        {
+          "text": "リクエスト/レスポンスのボディ全体をメモリにバッファせず、データをチャンク単位で逐次的に処理できるため、大きなペイロードもWorkerのメモリ制限内で扱いやすくなる"
+        },
+        {
+          "text": "HTTP/1.1で届いた通信を自動的にHTTP/3へアップグレードする",
+          "wrongFeedback": "プロトコルバージョンのアップグレードとは無関係です。Streams APIはボディデータの扱い方に関するAPIです。"
+        },
+        {
+          "text": "複数のWorker間で同一のTCPコネクションを共有し、通信回数を減らす",
+          "wrongFeedback": "TCPコネクションの共有機能ではありません。Streams APIは1つのWorker内でのボディデータの逐次処理に関するAPIです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Streams APIを使うと、リクエストやレスポンスのボディをメモリに全部読み込んでから処理するのではなく、届いたチャンクから順次処理できます。\n{{diagram:0}}\nこれにより、巨大なファイルや動画などのペイロードでも、全体を一度にバッファすることなくWorkerのメモリ制限内で扱えます。`TransformStream`を使えば、読み込んだチャンクを変換しながらそのまま次の処理へ流すパイプライン的な処理も可能です。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/streams/",
+      "hint": "「全部読み込んでから処理する」のと「届いた分から処理する」の違いを考えましょう。",
+      "tags": [
+        "workers",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "バッファリング vs ストリーミング",
+          "columns": [
+            {
+              "heading": "バッファリング処理",
+              "items": [
+                "ボディ全体をメモリに読み込む",
+                "巨大ペイロードでメモリ圧迫のリスク",
+                "全読み込み後に処理開始"
+              ]
+            },
+            {
+              "heading": "ストリーミング処理(Streams API)",
+              "items": [
+                "チャンク単位で逐次読み込み",
+                "メモリ使用量を抑えられる",
+                "届いた分から処理を開始できる"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "TransformStreamのパイプライン",
+          "steps": [
+            {
+              "text": "受信ストリーム",
+              "sub": "request.body(ReadableStream)"
+            },
+            {
+              "text": "チャンクごとに変換",
+              "sub": "TransformStreamで加工"
+            },
+            {
+              "text": "送信ストリーム",
+              "sub": "new Response(stream)で返却"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk-015",
+      "category": "workers",
+      "difficulty": "intermediate",
+      "question": "wrangler設定ファイルの`compatibility_date`の役割として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Workerのソースコードを保存した日時を記録するだけのメタ情報",
+          "wrongFeedback": "単なる保存日時の記録ではなく、ランタイムの挙動を切り替えるための設定値です。"
+        },
+        {
+          "text": "デプロイ先のCloudflareデータセンターを地理的に優先順位付けする設定",
+          "wrongFeedback": "データセンターの地理的優先順位とは無関係です。実行場所の最適化にはSmart Placementなど別の仕組みがあります。"
+        },
+        {
+          "text": "Workersランタイムの挙動をその日付時点の仕様に固定し、Cloudflareがランタイムを更新しても既存Workerの動作が意図せず変わらないようにするための設定"
+        },
+        {
+          "text": "Free/Paidといった課金プランを切り替えるための設定",
+          "wrongFeedback": "課金プランの切り替えとは無関係です。compatibility_dateはあくまでランタイムの挙動バージョンを指定するものです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`compatibility_date`は、Workerが利用するランタイムの機能やバグ修正の挙動を、指定した日付時点の仕様に固定するための設定です。\n{{diagram:0}}\nCloudflareはランタイムを継続的に更新しますが、古い`compatibility_date`のWorkerは古い挙動のまま動き続けるため、意図しない破壊的変更を受けません。新機能を使いたい場合は、開発者が明示的に日付を更新することでオプトインします。個別の挙動だけを制御したい場合は`compatibility_flags`を併用します。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/configuration/compatibility-dates/",
+      "hint": "「ランタイムが更新されても、既存のWorkerの動作は変わってほしくない」という要求を考えましょう。",
+      "tags": [
+        "workers",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "compatibility_dateの設定例",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            {
+              "text": "{"
+            },
+            {
+              "text": "  \"compatibility_date\": \"2026-06-01\",",
+              "highlight": true
+            },
+            {
+              "text": "  \"compatibility_flags\": [\"nodejs_compat\"]"
+            },
+            {
+              "text": "}"
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "compatibility_dateの効果",
+          "steps": [
+            {
+              "text": "Cloudflareがランタイムを更新",
+              "sub": "新機能・仕様変更が追加される"
+            },
+            {
+              "text": "既存Workerはcompatibility_date時点の挙動を維持",
+              "sub": "意図しない破壊的変更を回避"
+            },
+            {
+              "text": "開発者が日付を更新して新挙動へオプトイン",
+              "sub": "任意のタイミングで移行"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk-016",
+      "category": "workers",
+      "difficulty": "intermediate",
+      "question": "Workers Static Assetsの`assets`バインディングについて正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "静的ファイルは常にWorkerスクリプトを経由してから配信され、直接配信されることはない",
+          "wrongFeedback": "デフォルトでは、リクエストに一致する静的アセットがあればWorkerスクリプトを経由せず直接配信され、一致しない場合にWorkerが呼び出されます(`run_worker_first`で挙動を変更可能)。"
+        },
+        {
+          "text": "`assets`バインディングを使うには、KVやD1のような別サービスへ静的ファイルを事前にアップロードしておく必要がある",
+          "wrongFeedback": "別サービスへの事前アップロードは不要です。Wranglerの設定でディレクトリを指定するだけで静的アセットを扱えます。"
+        },
+        {
+          "text": "静的アセットとWorkerスクリプトは同一プロジェクトに共存できず、必ず別々にデプロイする必要がある",
+          "wrongFeedback": "同一のWorkerプロジェクト内に静的アセットとスクリプトを共存させ、フルスタックアプリケーションとしてデプロイできます。"
+        },
+        {
+          "text": "Wranglerの設定で`assets`バインディングを有効にすると、Workerスクリプトから`env.ASSETS.fetch(request)`のようにして静的アセットへのリクエストを転送できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Workers Static Assetsでは、Wrangler設定でディレクトリと(任意で)`assets`バインディングを指定することで、静的ファイル一式をWorkerと同じプロジェクトにデプロイできます。\n{{diagram:0}}\nリクエストに一致する静的アセットがあれば、デフォルトではWorkerスクリプトを経由せず直接配信されます。動的な処理を挟みたい場合は、`env.ASSETS.fetch(request)`のようにWorkerスクリプトから明示的に静的アセットへリクエストを転送できます。実行順序は`run_worker_first`設定で変更可能です。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/static-assets/binding/",
+      "hint": "「一致する静的ファイルがある場合、Workerスクリプトは必ず呼ばれるのか」を考えましょう。",
+      "tags": [
+        "workers",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "assetsバインディングの設定例",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            {
+              "text": "{"
+            },
+            {
+              "text": "  \"assets\": {",
+              "highlight": true
+            },
+            {
+              "text": "    \"directory\": \"./public\","
+            },
+            {
+              "text": "    \"binding\": \"ASSETS\""
+            },
+            {
+              "text": "  }"
+            },
+            {
+              "text": "}"
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "リクエスト処理の流れ",
+          "steps": [
+            {
+              "text": "リクエスト受信",
+              "sub": "パスが静的アセットと一致するか判定"
+            },
+            {
+              "text": "一致する場合: 直接配信",
+              "sub": "Workerスクリプトを経由しない(デフォルト)"
+            },
+            {
+              "text": "一致しない/動的処理が必要な場合: Worker呼び出し",
+              "sub": "env.ASSETS.fetch(request)で転送も可能"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk-017",
+      "category": "workers",
+      "difficulty": "advanced",
+      "question": "Cloudflare WorkersのSmart Placementの仕組みとして正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "常にユーザーに最も近いエッジロケーションにWorkerを固定して実行する、デフォルトの配置戦略",
+          "wrongFeedback": "それはSmart Placementを使わない場合のデフォルト挙動です。Smart Placementは、バックエンドとのやり取りが多い場合にあえてユーザーから離れた場所で実行することがあります。"
+        },
+        {
+          "text": "Workerが呼び出すバックエンド(データベースやオリジンサーバーなど)への往復が多い場合、実行場所をユーザーの近くではなくバックエンドに近い場所へ自動的に移すことで、リクエスト全体のレイテンシを削減する仕組み"
+        },
+        {
+          "text": "開発者が事前に指定したデータセンターのリストの中から、リクエストごとに手動で実行場所を選択する仕組み",
+          "wrongFeedback": "Smart Placementは観測された実行時間などのデータに基づき、自動的に配置場所を決定する仕組みです。リクエストごとの手動選択ではありません。"
+        },
+        {
+          "text": "同じWorkerを複数のデータセンターで同時に並列実行し、最も速く完了した結果を採用する仕組み",
+          "wrongFeedback": "複数箇所で並列実行して結果を競わせる仕組みではありません。観測データに基づき最適な単一の実行場所を選ぶ仕組みです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Smart Placementは、Workerを有効化すると、様々なCloudflareロケーションでのリクエスト処理時間を継続的に観測します。\n{{diagram:0}}\nリクエストを受け付けた場所(ユーザーに近い場所)で実行するよりも、候補となる別の場所(バックエンドに近い場所など)で実行した方が明らかに高速だと判断された場合、その場所へリクエストを転送して実行します。バックエンドへの往復が多い「チャッティ」なAPI Workerを、データベースやオリジンに近い場所で動かすことで、フロントエンドはユーザーの近くに保ちつつ全体のレイテンシを改善できます。有効化されたリクエストには`cf-placement`ヘッダーが付与されます。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/configuration/smart-placement/",
+      "hint": "「ユーザーに近い場所」と「バックエンドに近い場所」のどちらが速いかを、Cloudflareが自動的に比較して決める仕組みです。",
+      "tags": [
+        "workers",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "Smart Placementによる実行場所の移動",
+          "nodes": [
+            {
+              "id": "user",
+              "text": "ユーザー",
+              "sub": "リクエスト送信元"
+            },
+            {
+              "id": "edge-near-user",
+              "text": "ユーザー近くのエッジ",
+              "sub": "リクエストを最初に受信"
+            },
+            {
+              "id": "edge-near-backend",
+              "text": "バックエンド近くのエッジ",
+              "sub": "Smart Placementで選ばれた実行場所"
+            },
+            {
+              "id": "backend",
+              "text": "バックエンド(DB/オリジン)",
+              "sub": "頻繁に呼び出される"
+            }
+          ],
+          "edges": [
+            {
+              "from": "user",
+              "to": "edge-near-user",
+              "label": "リクエスト受信"
+            },
+            {
+              "from": "edge-near-user",
+              "to": "edge-near-backend",
+              "label": "Smart Placementで転送"
+            },
+            {
+              "from": "edge-near-backend",
+              "to": "backend",
+              "label": "低レイテンシで多数回呼び出し"
+            }
+          ]
+        },
+        {
+          "type": "hierarchy",
+          "label": "選択肢の整理",
+          "items": [
+            {
+              "text": "バックエンドに近い場所へ自動移動(正解)",
+              "sub": "バックエンドとの往復が多い場合、実行場所をバックエンド側に移してレイテンシを削減する"
+            },
+            {
+              "text": "常にユーザー近くに固定",
+              "sub": "それはSmart Placementを使わない場合のデフォルト挙動"
+            },
+            {
+              "text": "手動でデータセンターを選択",
+              "sub": "観測データに基づき自動で決定される仕組みであり、手動選択ではない"
+            },
+            {
+              "text": "複数箇所で並列実行して競わせる",
+              "sub": "並列実行して結果を競わせる仕組みではなく、最適な単一の実行場所を選ぶ仕組み"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk-018",
+      "category": "workers",
+      "difficulty": "advanced",
+      "question": "Cloudflare Workersにおける「サブリクエスト」としてカウントされる操作の組み合わせとして適切なものはどれですか?",
+      "options": [
+        {
+          "text": "Worker内で発生した`console.log`の呼び出し回数のみ",
+          "wrongFeedback": "`console.log`はサブリクエストとしてカウントされません。ログ出力はネットワーク越しの呼び出しではないためです。"
+        },
+        {
+          "text": "Worker自身が受信した着信HTTPリクエストの数のみ",
+          "wrongFeedback": "それは着信リクエスト数です。サブリクエストは、Workerがリクエストを処理する過程で自ら発生させる送信側の呼び出しを指します。"
+        },
+        {
+          "text": "Worker内から発生する`fetch()`呼び出しに加え、KV・D1・R2・Durable Objectsなどのバインディング経由の呼び出しやCache API呼び出し"
+        },
+        {
+          "text": "同一アイソレート内でグローバルスコープに保持された変数へのアクセス回数",
+          "wrongFeedback": "変数へのアクセスはネットワーク越しの呼び出しではないため、サブリクエストにはカウントされません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "サブリクエストとは、1件の着信リクエストをWorkerが処理する過程で発生させる送信側の呼び出しのことです。\n{{diagram:0}}\n`fetch()`による外部/他Workerへのリクエストだけでなく、KV・D1・R2・Durable Objectsといったバインディング経由の呼び出しや、Cache APIの呼び出しもサブリクエストとしてカウントされます。Service Bindingsで複数のWorkerを連鎖させたり、1リクエスト内で多数のバインディング呼び出しを行ったりする設計では、この仕組みを理解しておかないと想定外に上限へ到達することがあります。上限はプランや設定によって異なり、必要に応じてWranglerの設定で調整できます。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/platform/limits/",
+      "hint": "「ネットワーク越しの送信側の呼び出しかどうか」を基準に、それぞれの選択肢を考えましょう。",
+      "tags": [
+        "workers",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "サブリクエストに含まれる操作",
+          "items": [
+            {
+              "text": "fetch()呼び出し",
+              "sub": "外部サイトや他Workerへのリクエスト"
+            },
+            {
+              "text": "KV / D1 / R2 / Durable Objectsのバインディング呼び出し",
+              "sub": "いずれもサブリクエストとしてカウントされる"
+            },
+            {
+              "text": "Cache APIの呼び出し",
+              "sub": "fetch()と同じ枠でカウントされる"
+            },
+            {
+              "text": "含まれないもの",
+              "sub": "console.logや着信リクエスト数、グローバル変数アクセスなど"
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "1件の着信リクエストから発生するサブリクエスト",
+          "steps": [
+            {
+              "text": "着信リクエストを受信",
+              "sub": "fetchハンドラが起動(サブリクエストにはカウントされない)"
+            },
+            {
+              "text": "処理中に複数の送信呼び出しが発生",
+              "sub": "fetch()やKV/D1/R2/Durable Objects呼び出し"
+            },
+            {
+              "text": "それぞれがサブリクエストとしてカウント",
+              "sub": "上限に達すると失敗する可能性がある"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wr-013",
+      "category": "wrangler",
+      "difficulty": "beginner",
+      "question": "初めてWrangler CLIを使ってCloudflareにデプロイする前に、CLIをCloudflareアカウントと連携（認証）するために実行するコマンドはどれですか？",
+      "options": [
+        {
+          "text": "`wrangler login`"
+        },
+        {
+          "text": "`wrangler auth --token`",
+          "wrongFeedback": "そのようなサブコマンドはありません。認証にはブラウザ経由のOAuthフローを開始する`wrangler login`を使います。"
+        },
+        {
+          "text": "`wrangler deploy --login`",
+          "wrongFeedback": "`wrangler deploy`にそのようなフラグはありません。認証は事前に`wrangler login`で行います。"
+        },
+        {
+          "text": "`wrangler init --auth`",
+          "wrongFeedback": "`wrangler init`にそのようなフラグはありません。認証は別の専用コマンドで行います。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`wrangler login` を実行するとブラウザが開き、Cloudflareアカウントへのアクセスを許可するOAuth認証フローが始まります。\n{{diagram:0}}\n認証が完了すると、ローカルにOAuthトークンが保存され、以降の `wrangler dev --remote` や `wrangler deploy` などのコマンドでそのアカウントの権限が使われます。現在ログイン中のアカウントを確認したい場合は `wrangler whoami` を使います。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#login",
+      "hint": "ブラウザでの認可フローを開始するコマンドです。",
+      "tags": [
+        "wrangler",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "wrangler login の実行例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "wrangler login"
+            },
+            {
+              "type": "response",
+              "text": "Allow Wrangler to access your Cloudflare account? (y/n)"
+            },
+            {
+              "type": "response",
+              "text": "✔ Successfully logged in."
+            }
+          ]
+        },
+        {
+          "type": "terminal",
+          "label": "現在の認証状態を確認",
+          "lines": [
+            {
+              "type": "command",
+              "text": "wrangler whoami"
+            },
+            {
+              "type": "response",
+              "text": "You are logged in with an OAuth Token, associated with the email you@example.com"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wr-014",
+      "category": "wrangler",
+      "difficulty": "intermediate",
+      "question": "WranglerはTOML形式（`wrangler.toml`）に加えて、コメントを書けるJSON形式でも設定ファイルを記述できます。その場合の正しいファイル名はどれですか？",
+      "options": [
+        {
+          "text": "`wrangler.config.json`",
+          "wrongFeedback": "Wranglerが認識する設定ファイル名ではありません。"
+        },
+        {
+          "text": "`wrangler.jsonc`"
+        },
+        {
+          "text": "`config/wrangler.json`",
+          "wrongFeedback": "プロジェクトルート以外のこのようなパス配置は、Wranglerが自動的には認識しません。"
+        },
+        {
+          "text": "`.wranglerrc.json`",
+          "wrongFeedback": "そのようなファイル名はWranglerでは使用されません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Wranglerはプロジェクトルートに置かれた `wrangler.toml` に加え、`wrangler.json` または `wrangler.jsonc`（コメント付きJSON）形式の設定ファイルもサポートしています。\n{{diagram:0}}\n記述できる項目はTOML版と同じで、好みや既存のツールチェインとの親和性に応じて選べます。ただし1つのプロジェクトに複数の設定ファイルを混在させるのは避け、どちらか一方の形式に統一するのが安全です。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
+      "hint": "『JSON with Comments』の略になっている拡張子を考えましょう。",
+      "tags": [
+        "wrangler",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "TOML と JSONC の対応例",
+          "columns": [
+            {
+              "heading": "wrangler.toml",
+              "items": [
+                "name = \"my-worker\"",
+                "compatibility_date = \"2026-07-01\""
+              ]
+            },
+            {
+              "heading": "wrangler.jsonc",
+              "items": [
+                "\"name\": \"my-worker\",",
+                "\"compatibility_date\": \"2026-07-01\" // コメント可"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wr-015",
+      "category": "wrangler",
+      "difficulty": "intermediate",
+      "question": "新しいKVネームスペースを実際にCloudflare上に作成し、`wrangler.toml` に紐付ける最初のステップとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`wrangler.toml` の `[[kv_namespaces]]` に `binding` と架空の `id` を書けば、デプロイ時に自動でネームスペースが作成される",
+          "wrongFeedback": "`id`は実際に存在するリソースのIDである必要があります。架空のIDを書いてもリソースは自動作成されません。先にCLIでリソースを作成する必要があります。"
+        },
+        {
+          "text": "Cloudflareダッシュボードでのみ作成可能で、Wrangler CLIからは作成できない",
+          "wrongFeedback": "`wrangler kv namespace create` などのCLIサブコマンドからも作成できます。ダッシュボード限定ではありません。"
+        },
+        {
+          "text": "`wrangler kv namespace create <名前>` を実行してネームスペースを作成し、返却された `id` を `wrangler.toml` に記述する"
+        },
+        {
+          "text": "`wrangler dev` を初回実行した時点で、`wrangler.toml` に書かれたすべてのバインディング用リソースが自動的に作成される",
+          "wrongFeedback": "`wrangler dev`はローカル開発サーバーの起動が目的で、本番用のリソースを自動作成する機能ではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "KVやD1、R2などのリソースは、`wrangler.toml` にバインディングを書くだけでは作成されません。まず `wrangler kv namespace create <名前>` のようなCLIサブコマンド（D1なら`wrangler d1 create`、R2なら`wrangler r2 bucket create`）を実行して実際のリソースをCloudflare上に作成し、\n{{diagram:0}}\n返却された `id`（やバケット名）を `wrangler.toml` の該当セクションに記述することで、初めてWorkerからバインディング経由でアクセスできるようになります。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/",
+      "hint": "設定ファイルにIDを書く前に、まず実体となるリソースそのものを作る必要があります。",
+      "tags": [
+        "wrangler",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "KVネームスペース作成の例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "wrangler kv namespace create MY_KV"
+            },
+            {
+              "type": "response",
+              "text": "🌀 Creating namespace with title \"my-worker-MY_KV\""
+            },
+            {
+              "type": "response",
+              "text": "✨ Success! Add the following to your configuration file:"
+            },
+            {
+              "type": "info",
+              "text": "{ binding = \"MY_KV\", id = \"abcd1234ef567890\" }"
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "CLIでのリソース作成からバインディングまで",
+          "steps": [
+            {
+              "text": "wrangler kv namespace createを実行",
+              "sub": "実リソースをCloudflare上に作成"
+            },
+            {
+              "text": "返却されたidをwrangler.tomlに記述",
+              "sub": "[[kv_namespaces]]セクション"
+            },
+            {
+              "text": "env.MY_KVとしてコードから利用可能に",
+              "sub": "wrangler dev/deploy双方で有効"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wr-016",
+      "category": "wrangler",
+      "difficulty": "intermediate",
+      "question": "Workerのコード内でNode.jsの組み込みモジュール（例: `node:buffer`）を使いたい場合、`wrangler.toml` にどのような設定を追加する必要がありますか？",
+      "options": [
+        {
+          "text": "何も追加しなくても、`compatibility_date` を最新の日付にするだけで自動的に使えるようになる",
+          "wrongFeedback": "`compatibility_date`を新しくするだけでは有効になりません。明示的な互換性フラグの指定が必要です。"
+        },
+        {
+          "text": "Node.jsランタイムを使うために `wrangler dev --node` を実行する",
+          "wrongFeedback": "そのようなフラグはなく、Workersランタイム自体はNode.jsとは異なる実行環境です。"
+        },
+        {
+          "text": "`[vars]` に `NODE_COMPAT = true` を追加する",
+          "wrongFeedback": "`[vars]`は単なる環境変数であり、ランタイムの互換性機能を切り替えるものではありません。"
+        },
+        {
+          "text": "`compatibility_flags = [\"nodejs_compat\"]` を追加する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cloudflare Workersは独自のランタイム上で動作しますが、`compatibility_flags` に `\"nodejs_compat\"` を指定すると、`node:buffer` や `node:events` といった一部のNode.js組み込みAPIが利用できるようになります。\n{{diagram:0}}\n互換性フラグは `compatibility_date` と組み合わせて `wrangler.toml` に明示的に記述する必要があり、書かなければ有効になりません。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/configuration/compatibility-dates/",
+      "hint": "日付だけでなく、機能を個別にオン/オフする配列の設定項目を考えましょう。",
+      "tags": [
+        "wrangler",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "compatibility_flags の設定例",
+          "filepath": "wrangler.toml",
+          "lines": [
+            {
+              "text": "name = \"my-worker\""
+            },
+            {
+              "text": "compatibility_date = \"2026-07-01\""
+            },
+            {
+              "text": "compatibility_flags = [\"nodejs_compat\"]",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wr-017",
+      "category": "wrangler",
+      "difficulty": "advanced",
+      "question": "新しいコードをいきなり100%のユーザーに公開するのではなく、まず一部のトラフィックだけに新バージョンを届けて問題がないか確認してから徐々に広げたい（Gradual Deployments）場合、どのような使い方が適切ですか？",
+      "options": [
+        {
+          "text": "通常どおり `wrangler deploy` を実行すれば、自動的に10%ずつ段階的にロールアウトされる",
+          "wrongFeedback": "通常の`wrangler deploy`は新バージョンへ即座に100%切り替えます。段階的な配信には別の仕組みが必要です。"
+        },
+        {
+          "text": "`wrangler versions upload` で新バージョンをアップロード（この時点ではトラフィックに反映されない）し、`wrangler versions deploy` でトラフィックの配分割合を指定しながら段階的に切り替える"
+        },
+        {
+          "text": "段階的リリースはCloudflareダッシュボードの専用画面でのみ行え、Wrangler CLIからは一切操作できない",
+          "wrongFeedback": "Wrangler CLIの`wrangler versions`コマンド群からも段階的リリースを操作できます。"
+        },
+        {
+          "text": "`wrangler deploy --percentage 10` のようなフラグを指定するだけで実現できる",
+          "wrongFeedback": "`wrangler deploy`にそのようなフラグはありません。段階的な配信には`wrangler versions upload`/`wrangler versions deploy`の仕組みを使います。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Gradual Deployments（段階的デプロイ）は、新しいバージョンをまず `wrangler versions upload` でアップロードするところから始まります。このコマンドはコードを新バージョンとして登録するだけで、即座にはトラフィックへ反映されません。\n{{diagram:0}}\nその後 `wrangler versions deploy` を使って、新旧バージョン間のトラフィック配分（例: 新バージョンに10%、旧バージョンに90%）を指定しながら段階的に切り替えていくことで、問題があった場合の影響範囲を最小限に抑えられます。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/configuration/versions-and-deployments/gradual-deployments/",
+      "hint": "『バージョンをアップロードする』ことと『デプロイしてトラフィックを配分する』ことが分かれている点がポイントです。",
+      "tags": [
+        "wrangler",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "バージョンのアップロード",
+          "lines": [
+            {
+              "type": "command",
+              "text": "wrangler versions upload"
+            },
+            {
+              "type": "response",
+              "text": "✔ Uploaded my-worker (Version ID: v2-abc123)"
+            },
+            {
+              "type": "info",
+              "text": "この時点ではトラフィックは旧バージョンのまま"
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "段階的デプロイの流れ",
+          "steps": [
+            {
+              "text": "wrangler versions upload",
+              "sub": "新バージョンを登録（トラフィック未反映）"
+            },
+            {
+              "text": "wrangler versions deploy",
+              "sub": "新旧バージョンへのトラフィック配分を指定"
+            },
+            {
+              "text": "問題なければ100%へ引き上げ",
+              "sub": "段階的に新バージョンへ完全移行"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wr-018",
+      "category": "wrangler",
+      "difficulty": "advanced",
+      "question": "`wrangler.toml` のトップレベルに `[vars]` で `API_URL = \"https://default.example.com\"` を定義し、さらに `[env.production]` にも別の値の `API_URL` を定義した場合、`wrangler deploy --env production` でデプロイしたWorkerから見える `API_URL` の値はどうなりますか？",
+      "options": [
+        {
+          "text": "`[env.production]` 側の値でトップレベルの値が上書きされ、`[env.production]` の値が使われる"
+        },
+        {
+          "text": "両方の値が配列としてマージされ、`API_URL` が複数の値を持つ配列になる",
+          "wrongFeedback": "`vars`の値は単純に上書きされる仕組みであり、自動的に配列へマージされることはありません。"
+        },
+        {
+          "text": "トップレベルの `[vars]` の値が常に優先され、`[env.production]` 側の指定は無視される",
+          "wrongFeedback": "優先順位が逆です。指定した環境（`--env`）の設定がトップレベルの値を上書きします。"
+        },
+        {
+          "text": "同じキーが重複しているため `wrangler deploy` はエラーを出して停止する",
+          "wrongFeedback": "環境ごとに同じキーを再定義して値を上書きするのは正常な使い方であり、エラーにはなりません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Wranglerの環境設定は、`[env.<name>]` 内で同じキーを再定義することでトップレベルの値を上書きする仕組みになっています。\n{{diagram:0}}\n`wrangler deploy --env production` のように環境を指定してデプロイすると、`[env.production]` に定義された `API_URL` の値が優先され、Workerからは上書き後の値が見えます。\n{{diagram:1}}\nなお `wrangler secret put` で登録するシークレットも環境ごとに独立して管理されており、`--env` を付けて登録した環境にのみ反映される点にも注意が必要です。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/environments/",
+      "hint": "環境固有の設定と共通設定、どちらが『優先』されるかを考えましょう。",
+      "tags": [
+        "wrangler",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "varsの環境別上書き",
+          "filepath": "wrangler.toml",
+          "lines": [
+            {
+              "text": "[vars]"
+            },
+            {
+              "text": "API_URL = \"https://default.example.com\""
+            },
+            {
+              "text": "[env.production]"
+            },
+            {
+              "text": "vars = { API_URL = \"https://api.example.com\" }",
+              "highlight": true
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "デプロイ方法ごとに見える値",
+          "columns": [
+            {
+              "heading": "wrangler deploy（--envなし）",
+              "items": [
+                "トップレベルの[vars]が使われる",
+                "API_URL = default.example.com"
+              ]
+            },
+            {
+              "heading": "wrangler deploy --env production",
+              "items": [
+                "[env.production]のvarsで上書き",
+                "API_URL = api.example.com"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kv-013",
+      "category": "kv-cache",
+      "difficulty": "beginner",
+      "type": "single",
+      "question": "Workerの中でWorkers KV namespaceにアクセスできるようにするための正しい設定方法はどれですか？",
+      "options": [
+        {
+          "text": "package.jsonのdependenciesにKV用パッケージを追加し、コード内でimportする",
+          "wrongFeedback": "Workers KVはnpmパッケージのimportではなく、wrangler.toml(またはwrangler.jsonc)でのバインディング設定によってenv経由で利用します。"
+        },
+        {
+          "text": "Workers KVは自動的にすべてのWorkerからグローバルにアクセス可能なため、事前設定は不要である",
+          "wrongFeedback": "アクセスには事前のバインディング設定が必要です。設定していないnamespaceには envからアクセスできません。"
+        },
+        {
+          "text": "wrangler.tomlに[[kv_namespaces]]でbindingとidを指定し、Worker内ではenv.<binding名>としてアクセスする"
+        },
+        {
+          "text": "Cloudflareダッシュボードでのみ設定でき、wrangler.tomlやwrangler.jsoncには一切記述できない",
+          "wrongFeedback": "wrangler.toml(またはwrangler.jsonc)の[[kv_namespaces]]セクションにbindingとidを記述する方法がサポートされています。ダッシュボードのみに限定されません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers KV namespaceをWorkerで使うには、wrangler.tomlに`[[kv_namespaces]]`ブロックを追加し、`binding`(Worker内での参照名)と`id`(namespaceのID)を指定します。\n{{diagram:0}}\nこの設定により、Worker内では`env.<binding名>`としてKVNamespaceオブジェクトにアクセスでき、get/put/list/deleteが呼び出せるようになります。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/kv/get-started/",
+      "hint": "設定ファイルの名前と、Worker内での参照方法(env.xxx)を思い出してみましょう。",
+      "tags": [
+        "kv-cache",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "wrangler.tomlでのKVバインディング設定",
+          "filepath": "wrangler.toml",
+          "lines": [
+            {
+              "text": "[[kv_namespaces]]"
+            },
+            {
+              "text": "binding = \"USERS_NOTIFICATION_CONFIG\"",
+              "highlight": true
+            },
+            {
+              "text": "id = \"<KV_NAMESPACE_ID>\"",
+              "highlight": true
+            }
+          ]
+        },
+        {
+          "type": "terminal",
+          "label": "Worker内でのアクセス",
+          "lines": [
+            {
+              "type": "info",
+              "text": "interface Env { USERS_NOTIFICATION_CONFIG: KVNamespace }"
+            },
+            {
+              "type": "command",
+              "text": "await env.USERS_NOTIFICATION_CONFIG.put(\"user_2\", \"disabled\")"
+            },
+            {
+              "type": "command",
+              "text": "const value = await env.USERS_NOTIFICATION_CONFIG.get(\"user_2\")"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kv-014",
+      "category": "kv-cache",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "数千件のキーバリューペアをWorkers KVにまとめて投入したい場合、適切な方法はどれですか？",
+      "options": [
+        {
+          "text": "Workers runtime binding(env.KV.put())には一括書き込み専用のメソッドが用意されているので、それを使う",
+          "wrongFeedback": "公式ドキュメントには「Bulk writes are not supported using the KV binding」と明記されており、Workersのruntime bindingには一括書き込み専用メソッドはありません。"
+        },
+        {
+          "text": "Cloudflare REST APIの一括書き込み用エンドポイント(またはWrangler CLI)を使う。1リクエストで最大10,000ペア、リクエスト全体で100メガバイト未満という制限がある"
+        },
+        {
+          "text": "KVには一括操作という概念自体が存在せず、必ず1件ずつ個別にリクエストを送る必要がある",
+          "wrongFeedback": "REST API(またはWrangler CLI)には一括書き込み専用のbulkエンドポイントが用意されています。"
+        },
+        {
+          "text": "一括書き込みはDurable Objectsのstorage.put()経由でのみ可能で、Workers KVには存在しない",
+          "wrongFeedback": "Durable Objectsの話ではありません。Workers KV自体にREST API経由のbulk書き込み機能があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Workers runtime binding(`env.KV.put()`)は1件ずつの書き込みのみをサポートしており、一括書き込み専用メソッドはありません。大量のキーバリューペアをまとめて投入するには、Cloudflare REST APIのbulk書き込みエンドポイント(またはそれをラップするWrangler CLI)を使用します。1回のリクエストで最大10,000ペア、リクエスト全体のサイズは100メガバイト未満という制限があります。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/kv/api/write-key-value-pairs/",
+      "hint": "「Workerの実行中に呼び出すbinding」と「管理用のREST API/CLI」は別物です。",
+      "tags": [
+        "kv-cache",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "書き込み方法の比較",
+          "columns": [
+            {
+              "heading": "Workers runtime binding",
+              "items": [
+                "env.KV.put()は1件ずつの書込みのみ",
+                "一括書込み専用メソッドはない"
+              ]
+            },
+            {
+              "heading": "REST API / Wrangler CLI",
+              "items": [
+                "bulk用エンドポイントで一括書込み可能",
+                "1リクエスト最大10,000ペア",
+                "リクエスト全体で100MB未満"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "大量データを投入する流れ",
+          "steps": [
+            {
+              "text": "データをJSON配列(key/value)にまとめる"
+            },
+            {
+              "text": "Cloudflare REST APIのbulkエンドポイント、またはwrangler kv bulk putを実行"
+            },
+            {
+              "text": "10,000ペア/100MBを超える場合は複数リクエストに分割"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kv-015",
+      "category": "kv-cache",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "Cache APIのmatch()メソッドで、POSTなどGET以外のメソッドのリクエストであっても、キャッシュされたレスポンスと照合したい場合に指定するオプションはどれですか？",
+      "options": [
+        {
+          "text": "{ ignoreSearch: true }",
+          "wrongFeedback": "Cloudflare WorkersのCache APIのmatch()は`ignoreSearch`オプションをサポートしていません。クエリ文字列を無視したい場合はput()時にクエリ文字列を除去して対応する必要があります。"
+        },
+        {
+          "text": "{ ignoreVary: true }",
+          "wrongFeedback": "`ignoreVary`オプションもCloudflare WorkersのCache APIのmatch()ではサポートされていません。"
+        },
+        {
+          "text": "{ forceMethod: \"GET\" }",
+          "wrongFeedback": "`forceMethod`というオプションはCache APIには存在しません。"
+        },
+        {
+          "text": "{ ignoreMethod: true }"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cache APIの`match(request, options)`は`ignoreMethod`(Boolean)のみをオプションとしてサポートしています。`true`を指定すると、実際のリクエストメソッドに関わらずGETリクエストとして扱われ、キャッシュとの照合が行われます。なお、Web標準のCache APIにある`ignoreSearch`や`ignoreVary`は、Cloudflare WorkersのCache APIではサポートされていません。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
+      "hint": "match()がサポートするオプションは1つだけです。",
+      "tags": [
+        "kv-cache",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "ignoreMethodの使用例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "const cache = caches.default"
+            },
+            {
+              "type": "command",
+              "text": "const response = await cache.match(request, { ignoreMethod: true })"
+            },
+            {
+              "type": "info",
+              "text": "→ POSTなどGET以外のメソッドでもGETとして照合される"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "match()でサポートされるオプション",
+          "columns": [
+            {
+              "heading": "サポートされる",
+              "items": [
+                "ignoreMethod"
+              ]
+            },
+            {
+              "heading": "サポートされない",
+              "items": [
+                "ignoreSearch",
+                "ignoreVary"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kv-016",
+      "category": "kv-cache",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "fetch()の第2引数に渡す`cf`オブジェクトで`cacheKey`を指定する目的として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "2つのリクエストがキャッシュ上で「同じ」とみなされるかどうかを決定する基準(キャッシュキー)をカスタマイズする"
+        },
+        {
+          "text": "Workers KVのキー名を上書きする",
+          "wrongFeedback": "cacheKeyはHTTPキャッシュ(Cache API/エッジキャッシュ)のキーを指す概念であり、Workers KVのキー名とは無関係です。"
+        },
+        {
+          "text": "レスポンスを保存する際の暗号化キーを指定する",
+          "wrongFeedback": "暗号化に関するオプションではありません。キャッシュの同一性判定に使う識別子を指定するものです。"
+        },
+        {
+          "text": "リクエストに付与する認証トークンを指定する",
+          "wrongFeedback": "認証とは無関係です。cacheKeyはキャッシュの識別に使われる文字列です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "「A request's cache key is what determines if two requests are the same for caching purposes」と公式ドキュメントにある通り、cacheKeyは2つのリクエストをキャッシュ上で同一とみなすかどうかの判定基準です。cf.cacheKeyで独自の文字列を指定すると、通常はURLなどから自動生成されるキーを上書きし、異なるURLでも同じキーなら同一のキャッシュエントリとして扱われます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
+      "hint": "「キャッシュが同じかどうかを判定する基準」という言葉から考えてみましょう。",
+      "tags": [
+        "kv-cache",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "cacheKeyによるキャッシュ同一性判定",
+          "steps": [
+            {
+              "text": "通常はURLなどからキャッシュキーが自動生成される"
+            },
+            {
+              "text": "cf.cacheKeyで独自のキー文字列を指定"
+            },
+            {
+              "text": "同じcacheKeyを持つリクエストは同じキャッシュエントリとして扱われる"
+            }
+          ]
+        },
+        {
+          "type": "terminal",
+          "label": "cf.cacheKeyの指定例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "await fetch(url, { cf: { cacheKey: \"product-list-v2\" } })"
+            },
+            {
+              "type": "info",
+              "text": "→ 異なるURLでも同じcacheKeyなら同一キャッシュとして扱われる"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kv-017",
+      "category": "kv-cache",
+      "difficulty": "advanced",
+      "type": "single",
+      "question": "Cloudflareの Tiered Cache の目的と仕組みとして正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "すべてのデータセンターが常に同じキャッシュ内容を複製し合うことで、Cache APIの結果整合性の問題を解消する機能",
+          "wrongFeedback": "Tiered Cacheはデータセンター間でキャッシュ内容を常に複製する機能ではありません。下位データセンターがミスした際に上位データセンターへ問い合わせる階層構造です。"
+        },
+        {
+          "text": "Workers KVの読み取りをより高速化するために、KVの値をキャッシュ専用のデータセンターに集約する機能",
+          "wrongFeedback": "Tiered CacheはHTTPキャッシュ(CDN)の仕組みであり、Workers KVの読み取りを扱う機能ではありません。"
+        },
+        {
+          "text": "下位(ユーザーに近い)データセンターでキャッシュミスした場合、オリジンに直接問い合わせるのではなく上位のデータセンターに問い合わせることで、オリジンへのリクエスト数を削減しキャッシュヒット率を高める仕組み"
+        },
+        {
+          "text": "オリジンサーバー側にCloudflareのキャッシュサーバーをインストールし、オリジン側でキャッシュを行う機能",
+          "wrongFeedback": "Tiered CacheはCloudflareのエッジ側(データセンター間の階層)で完結する機能で、オリジン側にソフトウェアをインストールするものではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Tiered Cacheは、Cloudflareのグローバルネットワークを下位層と上位層に分け、下位層(ユーザーに最も近いデータセンター)でキャッシュミスが発生した場合、直接オリジンに問い合わせるのではなく上位層のデータセンターに問い合わせる仕組みです。上位層もミスした場合のみオリジンと通信するため、オリジンへの接続が少数のデータセンターに集約され、リクエスト数の削減とキャッシュヒット率の向上が実現されます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/",
+      "hint": "「下位」と「上位」という2階層の言葉から仕組みを想像してみましょう。",
+      "tags": [
+        "kv-cache",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "Tiered Cacheの階層構造",
+          "nodes": [
+            {
+              "id": "lower",
+              "text": "下位データセンター",
+              "sub": "ユーザーに最も近い"
+            },
+            {
+              "id": "upper",
+              "text": "上位データセンター"
+            },
+            {
+              "id": "origin",
+              "text": "オリジンサーバー"
+            }
+          ],
+          "edges": [
+            {
+              "from": "lower",
+              "to": "upper",
+              "label": "ミス時に問い合わせ"
+            },
+            {
+              "from": "upper",
+              "to": "origin",
+              "label": "上位のみがオリジンと通信",
+              "dashed": true
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "Tiered Cacheのリクエストフロー",
+          "steps": [
+            {
+              "text": "ユーザーが最寄りの下位データセンターにリクエスト"
+            },
+            {
+              "text": "下位でキャッシュミス"
+            },
+            {
+              "text": "オリジンではなく上位データセンターに問い合わせ"
+            },
+            {
+              "text": "上位もミスの場合のみオリジンへアクセス"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kv-018",
+      "category": "kv-cache",
+      "difficulty": "advanced",
+      "type": "single",
+      "question": "Cloudflareの Cache Reserve について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Workers KVの別名であり、実体はCache Reserve = Workers KVである",
+          "wrongFeedback": "Cache ReserveはWorkers KVとは別の機能で、HTTPキャッシュのための永続的なキャッシュ層です。R2上に実装されています。"
+        },
+        {
+          "text": "R2ストレージ上に実装された永続的なキャッシュ層で、キャッシュ可能なコンテンツを通常より長く保持することでオリジンへの不要なトラフィックを削減する仕組み。初期保持期間は30日間で、アクセスがあるたびに保持期間がリセットされる"
+        },
+        {
+          "text": "オリジンからのレスポンスの実体は保存せず、アクセス統計だけを記録する軽量な仕組み",
+          "wrongFeedback": "Cache Reserveはレスポンスの実体(コンテンツそのもの)をR2に保存する仕組みです。統計情報のみを記録するものではありません。"
+        },
+        {
+          "text": "データセンター単位でしか有効にならない機能で、他のキャッシュ機能とは併用できない",
+          "wrongFeedback": "Cache Reserveは階層型キャッシュの最上位層として機能し、通常のエッジキャッシュ(Tiered Cacheなど)と組み合わせて使われる前提の機能です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cache Reserveは、R2の上に実装された大規模で永続的なキャッシュ層です。ウェブサイトのキャッシュ可能なコンテンツをR2に保存することでキャッシュの削除(エビクション)を防ぎ、オリジンへの不要なトラフィックを削減します。訪問者とオリジンの間に複数のキャッシュ層があり、コンテンツはオリジンから返ってきた際にCache Reserveへ書き込まれます。初期の保持期間は30日間ですが、その期間内に再度リクエストされると保持期間がリセットされ、アクセスの多いコンテンツはずっと保持されます。新鮮さの判定はEdge Cache TTLやオリジンのCache-Controlヘッダーに基づいて行われ、通常のCDNキャッシュと同様の挙動をします。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/cache-reserve/",
+      "hint": "「R2」「永続的」「30日間」というキーワードから考えてみましょう。",
+      "tags": [
+        "kv-cache",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "Cache Reserveの位置づけ",
+          "layers": [
+            {
+              "text": "ブラウザ/クライアント"
+            },
+            {
+              "text": "下位キャッシュ(データセンター)"
+            },
+            {
+              "text": "Cache Reserve",
+              "sub": "R2ベースの永続キャッシュ層"
+            },
+            {
+              "text": "オリジンサーバー"
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "Cache Reserveの保持期間",
+          "steps": [
+            {
+              "text": "コンテンツがオリジンから返却されCache Reserveに書き込まれる"
+            },
+            {
+              "text": "初期保持期間は30日間"
+            },
+            {
+              "text": "保持期間中にリクエストがあれば期間がリセットされる"
+            },
+            {
+              "text": "一定期間アクセスがなければ削除対象になる"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d1-013",
+      "category": "d1",
+      "difficulty": "beginner",
+      "question": "D1データベースの内容をSQLファイルとして書き出し、別のデータベースへ復元したい場合の正しい手順はどれですか？",
+      "options": [
+        {
+          "text": "`wrangler d1 backup create <name>` でバックアップを作成し、`wrangler d1 backup restore` で復元する",
+          "wrongFeedback": "そのような`backup`サブコマンドは存在しません。書き出しには`export`、復元には`execute`を使います。"
+        },
+        {
+          "text": "`wrangler d1 export <name> --output=backup.sql` でSQLファイルを書き出し、復元先で `wrangler d1 execute <name> --file=backup.sql` を実行する"
+        },
+        {
+          "text": "Cloudflareダッシュボードの「ダウンロード」ボタンを押すと自動的にJSON形式でエクスポートされる",
+          "wrongFeedback": "ダッシュボードからの自動JSONエクスポート機能はありません。CLIの`export`コマンドでSQLファイルとして書き出します。"
+        },
+        {
+          "text": "R2へのレプリケーションを設定するだけで自動的にバックアップされ、SQLファイルとしての書き出しは不要",
+          "wrongFeedback": "D1にはTime Travelというポイントインタイムリストアの仕組みはありますが、R2への自動レプリケーション機能はありません。他DBへの移行や外部保管にはSQLファイルとして明示的に`export`する必要があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`wrangler d1 export <name> --output=backup.sql` を実行すると、テーブル定義とデータを含むSQLダンプファイルを書き出せます。これを別のデータベースに取り込む場合は `wrangler d1 execute <name> --file=backup.sql` でSQLファイルを実行します。これはCloudflareが自動的に記録するTime Travel(過去の時点への復元)とは別の、ポータブルなSQLファイルとしてのバックアップ・移行手段です。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/d1/wrangler-commands/#export",
+      "hint": "「書き出し」と「取り込み」でコマンドが分かれています。",
+      "tags": [
+        "d1",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "SQLファイルへの書き出しと復元",
+          "lines": [
+            {
+              "type": "command",
+              "text": "wrangler d1 export my-database --output=backup.sql"
+            },
+            {
+              "type": "response",
+              "text": "✅ Exported to backup.sql"
+            },
+            {
+              "type": "command",
+              "text": "wrangler d1 execute new-database --file=backup.sql --remote"
+            },
+            {
+              "type": "response",
+              "text": "✅ Executed 42 statements"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "Time Travel と export の違い",
+          "columns": [
+            {
+              "heading": "Time Travel",
+              "items": [
+                "自動的に記録される変更履歴",
+                "過去30日以内の任意時点に復元",
+                "同一データベース内での巻き戻し"
+              ]
+            },
+            {
+              "heading": "wrangler d1 export",
+              "items": [
+                "明示的にSQLダンプを書き出す",
+                "別のデータベースへの移行や外部保管に利用",
+                "`execute --file`で取り込む"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d1-014",
+      "category": "d1",
+      "difficulty": "intermediate",
+      "question": "D1(SQLiteベース)における外部キー(FOREIGN KEY)制約の扱いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "標準的なSQLiteと同様にデフォルトでは無効になっており、Worker側で毎回`PRAGMA foreign_keys = ON;`を明示的に実行する必要がある",
+          "wrongFeedback": "D1では標準的なSQLiteと異なり、外部キー制約はデフォルトで有効(enforced)になっています。"
+        },
+        {
+          "text": "D1は外部キー制約という概念自体をサポートしておらず、整合性はすべてアプリケーション側で担保する必要がある",
+          "wrongFeedback": "D1はSQLiteエンジンをベースにしており、`FOREIGN KEY`制約の定義とその強制をサポートしています。"
+        },
+        {
+          "text": "標準的なSQLiteとは異なり、D1ではデフォルトで外部キー制約が有効(enforced)になっている"
+        },
+        {
+          "text": "外部キー制約はスキーマ定義時にのみ検証され、実際のINSERT/DELETE実行時には強制されない",
+          "wrongFeedback": "D1では外部キー制約が有効な場合、INSERT/UPDATE/DELETE実行時にも制約違反がチェックされ、違反時はエラーになります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "通常のSQLiteでは`PRAGMA foreign_keys`はデフォルトでOFFであり、有効化するには接続ごとに明示的な設定が必要です。しかしD1はこれとは異なり、デフォルトで外部キー制約が有効になっています。そのため、親テーブルに存在しない値を子テーブルに挿入しようとすると、明示的な設定をしなくてもエラーになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/d1/sql-api/foreign-keys/",
+      "hint": "「標準のSQLiteと違う」という点がこの問題のポイントです。",
+      "tags": [
+        "d1",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "標準SQLite と D1 の外部キー制約のデフォルト",
+          "columns": [
+            {
+              "heading": "標準的なSQLite",
+              "items": [
+                "`PRAGMA foreign_keys`はデフォルトOFF",
+                "有効化には接続ごとに明示的な設定が必要"
+              ]
+            },
+            {
+              "heading": "D1",
+              "items": [
+                "デフォルトで外部キー制約が有効",
+                "親に存在しない値の挿入は自動的にエラー"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d1-015",
+      "category": "d1",
+      "difficulty": "intermediate",
+      "question": "D1データベースをDrizzle ORMのようなTypeScript製ORMと連携させ、スキーマ定義や型安全なクエリビルダを使いたい場合、Cloudflareが提供・案内している仕組みはどれですか？",
+      "options": [
+        {
+          "text": "`drizzle-orm/d1` ドライバを使い、`drizzle(env.DB)` のようにD1のバインディングを渡してDrizzleのクライアントを初期化する"
+        },
+        {
+          "text": "D1にはORM機能が組み込まれており、追加のライブラリなしに`env.DB.orm()`を呼び出すだけで型安全なクエリビルダが使える",
+          "wrongFeedback": "D1自体にORM機能は組み込まれていません。Drizzleなど外部のORMライブラリと組み合わせて使う必要があります。"
+        },
+        {
+          "text": "DrizzleはNode.jsのファイルシステムAPIに依存しているため、Workers環境(D1)では動作しない",
+          "wrongFeedback": "Drizzleは`drizzle-orm/d1`という専用アダプタを提供しており、Workers環境でD1と組み合わせて利用できます。"
+        },
+        {
+          "text": "D1をDrizzleで使うには、まずMySQL互換モードをwrangler.tomlで有効にする設定が必要",
+          "wrongFeedback": "そのような互換モード設定は存在しません。D1はSQLite方言のため、Drizzleのsqlite用アダプタ(`drizzle-orm/d1`)をそのまま使います。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Drizzle ORMは`drizzle-orm/d1`という専用アダプタを提供しており、`drizzle(env.DB)`のようにD1のバインディングをそのまま渡すことでDrizzleのクライアントを初期化できます。これによりスキーマ定義・マイグレーション生成・型安全なクエリビルダをD1上で利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/d1/tutorials/using-drizzle-with-d1/",
+      "hint": "D1バインディングをそのままORMの初期化関数に渡す、というシンプルな連携方法です。",
+      "tags": [
+        "d1",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "Drizzle ORM の初期化例",
+          "filepath": "src/index.ts",
+          "lines": [
+            {
+              "text": "import { drizzle } from 'drizzle-orm/d1';"
+            },
+            {
+              "text": " "
+            },
+            {
+              "text": "const db = drizzle(env.DB);",
+              "highlight": true
+            },
+            {
+              "text": "const users = await db.select().from(usersTable);"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d1-016",
+      "category": "d1",
+      "difficulty": "intermediate",
+      "question": "1つのWorkerから、用途の異なる複数のD1データベース(例: メインDBと分析用DB)を使い分けたい場合、`wrangler.toml`をどのように設定すればよいですか？",
+      "options": [
+        {
+          "text": "1つの`[[d1_databases]]`ブロックの`database_id`に複数のIDを配列で指定する",
+          "wrongFeedback": "`[[d1_databases]]`ブロック1つにつき1つのデータベースを表します。複数のDBを使う場合はブロックを複数に分けて記述します。"
+        },
+        {
+          "text": "D1は1Workerにつき1データベースまでしかバインドできない制約があるため、DBごとに別のWorkerへ分割する必要がある",
+          "wrongFeedback": "そのような制約はなく、1つのWorkerに複数のD1データベースをバインドすることが可能です。"
+        },
+        {
+          "text": "`env.DB`という1つのバインディング名にすべてのデータベースをまとめておき、クエリ実行時に引数でデータベース名を切り替える",
+          "wrongFeedback": "D1のClient APIには実行時にデータベースを切り替える引数はありません。バインディングごとに別々の名前を割り当てます。"
+        },
+        {
+          "text": "`wrangler.toml`に`[[d1_databases]]`ブロックを複数記述し、それぞれに異なる`binding`名(例: `DB_MAIN`, `DB_ANALYTICS`)を設定する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`wrangler.toml`には`[[d1_databases]]`ブロックを複数書くことができ、それぞれに`binding`(Workerコードから参照する変数名)、`database_name`、`database_id`を個別に設定します。これにより、例えば`env.DB_MAIN`と`env.DB_ANALYTICS`のように、1つのWorkerから複数のD1データベースを使い分けられます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/#d1-databases",
+      "hint": "設定ブロックを複数書き、それぞれに別の変数名を割り当てます。",
+      "tags": [
+        "d1",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "複数のD1バインディング設定",
+          "filepath": "wrangler.toml",
+          "lines": [
+            {
+              "text": "[[d1_databases]]"
+            },
+            {
+              "text": "binding = \"DB_MAIN\"",
+              "highlight": true
+            },
+            {
+              "text": "database_name = \"main-db\""
+            },
+            {
+              "text": "database_id = \"aaaaaaaa-aaaa-aaaa\""
+            },
+            {
+              "text": " "
+            },
+            {
+              "text": "[[d1_databases]]"
+            },
+            {
+              "text": "binding = \"DB_ANALYTICS\"",
+              "highlight": true
+            },
+            {
+              "text": "database_name = \"analytics-db\""
+            },
+            {
+              "text": "database_id = \"bbbbbbbb-bbbb-bbbb\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d1-017",
+      "category": "d1",
+      "difficulty": "advanced",
+      "question": "D1で特定のSELECTクエリが遅く、テーブルの全件スキャンが原因かどうかを調査し、必要なら改善したい場合の適切なアプローチはどれですか？",
+      "options": [
+        {
+          "text": "`env.DB.prepare('ANALYZE SLOW QUERY ...')`のような専用構文を実行してボトルネックを自動検出する",
+          "wrongFeedback": "そのような専用構文はD1(SQLite)には存在しません。"
+        },
+        {
+          "text": "対象のSELECT文の先頭に`EXPLAIN QUERY PLAN`を付けて実行し、インデックスを使った検索(SEARCH)か全件走査(SCAN)かを確認したうえで、必要な列に`CREATE INDEX`でインデックスを作成する"
+        },
+        {
+          "text": "D1では主キー以外のすべてのカラムに自動的にインデックスが作成されるため、インデックス設計を意識する必要はない",
+          "wrongFeedback": "D1(SQLite)は主キーや`UNIQUE`制約のある列以外に自動でインデックスを作成しません。WHERE句やJOIN条件で使う列には明示的に`CREATE INDEX`が必要です。"
+        },
+        {
+          "text": "クエリが遅い場合は`wrangler d1 optimize <name>`を実行すれば自動的に最適なインデックスが追加される",
+          "wrongFeedback": "そのような自動インデックス最適化コマンドは存在しません。インデックスはSQLの`CREATE INDEX`文で明示的に作成します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "SQLite由来の`EXPLAIN QUERY PLAN`をクエリの先頭に付けて実行すると、そのクエリがインデックスを使った検索(SEARCH)なのか、全件走査(SCAN)なのかを確認できます。SCANになっている場合は、WHERE句やJOIN条件に使われている列に対して`CREATE INDEX`でインデックスを作成することで、対象行数の多いテーブルでもクエリを高速化できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/d1/sql-api/query-d1/",
+      "hint": "SQLiteに標準で備わっている「クエリの実行計画を見る」構文がヒントです。",
+      "tags": [
+        "d1",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "EXPLAIN QUERY PLAN の実行例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "EXPLAIN QUERY PLAN SELECT * FROM orders WHERE user_id = 42;"
+            },
+            {
+              "type": "response",
+              "text": "SCAN orders"
+            },
+            {
+              "type": "command",
+              "text": "CREATE INDEX idx_orders_user_id ON orders(user_id);"
+            },
+            {
+              "type": "command",
+              "text": "EXPLAIN QUERY PLAN SELECT * FROM orders WHERE user_id = 42;"
+            },
+            {
+              "type": "response",
+              "text": "SEARCH orders USING INDEX idx_orders_user_id (user_id=?)"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "SCAN と SEARCH",
+          "columns": [
+            {
+              "heading": "SCAN(全件走査)",
+              "items": [
+                "テーブルの全行を順番に確認",
+                "対象行数が多いほど遅くなる"
+              ]
+            },
+            {
+              "heading": "SEARCH(インデックス利用)",
+              "items": [
+                "インデックスを使って対象行に直接アクセス",
+                "該当列に`CREATE INDEX`が必要"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d1-018",
+      "category": "d1",
+      "difficulty": "advanced",
+      "question": "1つのD1データベースのデータ量が増え続け、単一データベースのストレージ上限に近づいてきた場合、設計対応として適切なものはどれですか？",
+      "options": [
+        {
+          "text": "D1では各データベースが自動的にスケールし、上限という概念がないため何もする必要はない",
+          "wrongFeedback": "D1の各データベースにはストレージ容量の上限があり、それに近づいた場合は設計上の対応が必要です。"
+        },
+        {
+          "text": "上限に達すると古いデータが自動的に削除される機能が標準で有効になっている",
+          "wrongFeedback": "そのような自動削除機能は標準では有効になっていません。データの保持方針はアプリケーション側で設計する必要があります。"
+        },
+        {
+          "text": "テナント(顧客)ごとや機能ドメインごとにデータを複数のD1データベースへ分割し、1つのデータベースが肥大化しすぎないようにする"
+        },
+        {
+          "text": "R2をD1の追加ストレージ領域として直接マウントし、透過的に容量を拡張する",
+          "wrongFeedback": "R2をD1のストレージとして透過的にマウントするような機能はありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "D1の各データベースにはストレージ容量の上限があるため、1つの巨大なデータベースにすべてのデータを詰め込むのではなく、テナント(顧客)ごとや機能ドメインごとに複数のD1データベースへ分割する設計(database-per-tenantのようなパターン)が、単一データベースの肥大化を避けるための現実的な対応です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/d1/platform/limits/",
+      "hint": "「1つの巨大なDB」ではなく「複数の小さなDB」に分ける発想がポイントです。",
+      "tags": [
+        "d1",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "単一巨大DB と 分割設計",
+          "columns": [
+            {
+              "heading": "単一の巨大なD1データベース",
+              "items": [
+                "すべてのテナント/機能のデータを1つに集約",
+                "ストレージ上限に達しやすい",
+                "肥大化するとバックアップ・復元も重くなる"
+              ]
+            },
+            {
+              "heading": "複数DBへの分割(database-per-tenant等)",
+              "items": [
+                "テナントや機能ドメインごとにDBを分離",
+                "1つあたりの上限到達を回避しやすい",
+                "スケールアウトしやすい設計"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r2-013",
+      "category": "r2",
+      "difficulty": "beginner",
+      "question": "Workersのコードを書かずに、コマンドラインから直接R2バケットを作成したり、ファイルをアップロードしたりしたい場合、どのツールを使うのが最も手軽ですか？",
+      "options": [
+        {
+          "text": "curlコマンドでR2の内部管理APIに直接アクセスする（公式には非公開の手段）",
+          "wrongFeedback": "R2にcurlで直接アクセスするにはS3互換APIの署名処理を自分で実装する必要があり手軽ではありません。公式CLIツールのwranglerを使うのが最も手軽です。"
+        },
+        {
+          "text": "Cloudflareダッシュボードの画面操作のみが唯一の方法であり、CLIからの操作はサポートされていない",
+          "wrongFeedback": "ダッシュボードでの操作に加え、wrangler CLIからバケット作成やオブジェクトのアップロードが可能です。"
+        },
+        {
+          "text": "wrangler CLIの r2 サブコマンド（wrangler r2 bucket create や wrangler r2 object put など）を使う"
+        },
+        {
+          "text": "R2はDurable Objectsの内部APIを経由してのみ操作可能であり、外部からの直接操作はできない",
+          "wrongFeedback": "Durable Objectsは無関係です。R2はwrangler CLIやダッシュボード、S3互換APIから直接操作できます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflareの公式CLIツールwranglerには r2 サブコマンドが用意されており、`wrangler r2 bucket create` でバケット作成、`wrangler r2 object put <bucket>/<key> --file=<path>` でファイルアップロードなど、Workersのコードを書かずにターミナルからR2を直接操作できます。\n{{diagram:0}}\nダッシュボードやS3互換API経由のアクセスと合わせて、用途に応じたアクセス経路を選べます。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/r2/reference/wrangler-commands/",
+      "hint": "Cloudflareの公式CLIツールの名前を思い出してみましょう。",
+      "tags": [
+        "r2",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "wrangler r2 コマンド例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "wrangler r2 bucket create my-bucket"
+            },
+            {
+              "type": "response",
+              "text": "Created bucket 'my-bucket'"
+            },
+            {
+              "type": "command",
+              "text": "wrangler r2 object put my-bucket/logo.png --file=./logo.png"
+            },
+            {
+              "type": "response",
+              "text": "Upload complete"
+            }
+          ]
+        },
+        {
+          "type": "hierarchy",
+          "label": "R2へのアクセス経路",
+          "items": [
+            {
+              "text": "Workersバインディング",
+              "sub": "アプリケーションコードから"
+            },
+            {
+              "text": "wrangler CLI",
+              "sub": "ターミナルから直接操作"
+            },
+            {
+              "text": "S3互換API",
+              "sub": "既存のS3ツール・SDKから"
+            },
+            {
+              "text": "ダッシュボード",
+              "sub": "ブラウザでの手動操作"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r2-014",
+      "category": "r2",
+      "difficulty": "intermediate",
+      "question": "ブラウザ上のJavaScriptから、presigned URLを使ってR2バケットに直接ファイルをアップロードしようとしたところ、ブラウザのコンソールにクロスオリジンエラーが出てアップロードできません。何を設定する必要がありますか？",
+      "options": [
+        {
+          "text": "R2バケットにCORS（Cross-Origin Resource Sharing）ポリシーを設定し、アップロード元のオリジンやPUTメソッドを許可する"
+        },
+        {
+          "text": "presigned URLの有効期限をより長く設定し直す",
+          "wrongFeedback": "有効期限はアクセス可能な時間の長さを制御するものであり、クロスオリジンエラーとは無関係です。原因はCORS設定の不足です。"
+        },
+        {
+          "text": "アクセスキーIDをブラウザのlocalStorageに保存してリクエストヘッダーに追加する",
+          "wrongFeedback": "アクセスキーをクライアント側で保持するのはセキュリティ上望ましくなく、そもそもクロスオリジンエラーの解決にはなりません。CORSポリシーの設定が必要です。"
+        },
+        {
+          "text": "R2バケットをパブリックバケットに変更してアクセス制限自体をなくす",
+          "wrongFeedback": "パブリック化はアクセス制御の話であり、ブラウザのクロスオリジン制約（CORS）の解決にはなりません。バケットにCORSポリシーを設定する必要があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "ブラウザから異なるオリジンのリソース（この場合R2のエンドポイント）へPUT/GETなどのリクエストを送る際は、対象のバケットにCORSポリシーが設定されている必要があります。R2バケットにはオリジン（AllowedOrigins）、許可するHTTPメソッド、許可するヘッダーなどを含むCORSルールを設定できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/r2/buckets/cors/",
+      "hint": "ブラウザの「オリジン間リクエスト制御」の仕組みを思い出してみましょう。",
+      "tags": [
+        "r2",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "CORS未設定時のエラー",
+          "actors": [
+            "ブラウザ",
+            "R2バケット"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "presigned URLへPUTリクエスト"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "CORSヘッダーがなくブラウザがブロック",
+              "dashed": true
+            }
+          ]
+        },
+        {
+          "type": "config",
+          "label": "CORSポリシー設定例（概念）",
+          "filepath": "cors-policy.json",
+          "lines": [
+            {
+              "text": "\"AllowedOrigins\": [\"https://example.com\"]",
+              "highlight": true
+            },
+            {
+              "text": "\"AllowedMethods\": [\"PUT\", \"GET\"]"
+            },
+            {
+              "text": "\"AllowedHeaders\": [\"*\"]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r2-015",
+      "category": "r2",
+      "difficulty": "intermediate",
+      "question": "Workers バインディングでR2オブジェクトを取得する際、オブジェクトが前回取得時から変更されていない場合は処理をスキップしたい（不要な転送や上書きを防ぎたい）というケースで使える仕組みはどれですか？",
+      "options": [
+        {
+          "text": "list()メソッドのprefixオプションでキーを絞り込む",
+          "wrongFeedback": "prefixはキーのフィルタリング機能であり、変更有無の判定とは関係ありません。"
+        },
+        {
+          "text": "put()メソッドのhttpMetadataオプションでCache-Controlを設定する",
+          "wrongFeedback": "Cache-Controlはキャッシュ挙動のヒントであり、R2バインディング自体が変更有無を判定して処理をスキップする仕組みではありません。"
+        },
+        {
+          "text": "delete()メソッドを呼び出してから再度put()する",
+          "wrongFeedback": "削除して再作成するのは非効率かつ目的に合いません。変更有無の判定にはETagを使った条件付きリクエストを使います。"
+        },
+        {
+          "text": "get()やput()メソッドの onlyIf オプションにETag（httpEtag）を指定し、条件付きリクエストを行う"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "R2 Workers バインディングのget()やput()メソッドは onlyIf オプションで条件付きリクエストをサポートしています。ETag（httpEtag）を指定してオブジェクトが指定した値と一致する場合のみ処理を行う、といった制御が可能で、これはS3のIf-Match/If-None-Matchヘッダーに相当する機能です。変更がない場合は処理をスキップでき、不要な転送や上書きを防げます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
+      "hint": "HTTPの条件付きリクエスト（If-Match / If-None-Match）と同じ考え方です。",
+      "tags": [
+        "r2",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "formula",
+          "label": "条件付きget()の考え方",
+          "result": "条件付きレスポンス",
+          "components": [
+            {
+              "text": "get(key, options)"
+            },
+            {
+              "text": "onlyIf: { etag }",
+              "highlight": true
+            },
+            {
+              "text": "一致すればオブジェクトを返す/しなければ null 等"
+            }
+          ],
+          "operator": "→"
+        },
+        {
+          "type": "comparison",
+          "label": "通常のget() vs 条件付きget()",
+          "columns": [
+            {
+              "heading": "通常のget()",
+              "items": [
+                "常にオブジェクトを取得",
+                "変更有無を判定しない"
+              ]
+            },
+            {
+              "heading": "onlyIfを使ったget()",
+              "items": [
+                "ETag等の条件を指定",
+                "条件一致時のみ処理"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r2-016",
+      "category": "r2",
+      "difficulty": "intermediate",
+      "question": "既に他社クラウド（例: Amazon S3）に大量のデータが存在しており、それをまとめてR2に移行したい場合、Cloudflareが提供している移行支援の仕組みはどれですか？",
+      "options": [
+        {
+          "text": "R2にはデータ移行支援機能はなく、必ず自前でダウンロード＆アップロードのスクリプトを書く必要がある",
+          "wrongFeedback": "CloudflareはSuper Slurperという移行ツールを提供しており、自前スクリプトを書かなくてもバケット間の一括移行が行えます。"
+        },
+        {
+          "text": "Super Slurperを使い、移行元のクレデンシャルを指定してバケット全体をR2に一括コピーする"
+        },
+        {
+          "text": "Workers KVを経由してデータを一時保管し、その後R2に転送する",
+          "wrongFeedback": "KVは小さな値向けであり、大量データの移行経路としては使われません。専用の移行ツールSuper Slurperを使います。"
+        },
+        {
+          "text": "D1のインポート機能を使ってオブジェクトデータをテーブルとして取り込む",
+          "wrongFeedback": "D1はリレーショナルデータベースであり、オブジェクトデータの一括移行手段ではありません。R2への移行にはSuper Slurperを使います。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflareは Super Slurper という移行ツールを提供しており、移行元クラウドストレージ（S3など）のクレデンシャルを指定するだけで、バケット全体のオブジェクトをR2に一括コピーできます。\n{{diagram:0}}\n逐次的なオンデマンド移行が必要な場合は、リクエスト時に未移行のオブジェクトをR2にコピーする Sippy という別の仕組みも用意されています。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/r2/data-migration/super-slurper/",
+      "hint": "Cloudflareの移行専用ツールの名前を考えてみましょう。",
+      "tags": [
+        "r2",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Super Slurperによる一括移行の流れ",
+          "steps": [
+            {
+              "text": "移行元（例: S3）のクレデンシャルを設定"
+            },
+            {
+              "text": "移行先のR2バケットを指定"
+            },
+            {
+              "text": "Super Slurperがバケット全体をコピー"
+            },
+            {
+              "text": "移行完了後にアプリの参照先をR2に切り替え"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "Super Slurper と Sippy の違い",
+          "columns": [
+            {
+              "heading": "Super Slurper",
+              "items": [
+                "一括バッチ移行",
+                "バケット全体をまとめてコピー"
+              ]
+            },
+            {
+              "heading": "Sippy",
+              "items": [
+                "オンデマンドの逐次移行",
+                "リクエスト時に未移行分をコピー"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r2-017",
+      "category": "r2",
+      "difficulty": "advanced",
+      "question": "アップロードから一定期間が経過した古いログファイルを自動的に削除したり、より安価なストレージクラスに移行したりするために、R2で使える機能はどれですか？",
+      "options": [
+        {
+          "text": "オブジェクトライフサイクルルールを設定し、経過日数に基づく自動削除やストレージクラスの移行条件を定義する"
+        },
+        {
+          "text": "Workersのcronトリガーで毎日全オブジェクトをスキャンし、条件に合うものをアプリ側で個別に削除する処理を自作する以外に方法はない",
+          "wrongFeedback": "R2にはオブジェクトライフサイクルルールという標準機能があり、自作のスキャン処理を書かなくても期限切れの自動削除やストレージクラス移行を設定できます。"
+        },
+        {
+          "text": "Durable Objectsのアラーム機能を使ってR2オブジェクトの有効期限を管理する",
+          "wrongFeedback": "Durable Objectsのアラームは独立した仕組みであり、R2オブジェクトの自動削除を直接管理する標準機能ではありません。R2自体のライフサイクルルールを使います。"
+        },
+        {
+          "text": "R2にはオブジェクトの自動削除や自動移行の仕組みはなく、一度保存したオブジェクトは手動でしか削除できない",
+          "wrongFeedback": "R2はオブジェクトライフサイクルルールを提供しており、経過日数に基づく自動削除やストレージクラスの移行を設定できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "R2のオブジェクトライフサイクルルールを使うと、バケット単位またはプレフィックス単位で「作成からX日後に削除する」「Y日後にInfrequent Accessストレージクラスへ移行する」といったルールを定義でき、古いデータの管理を自動化できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/r2/buckets/object-lifecycles/",
+      "hint": "「ライフサイクル」という言葉がキーワードです。",
+      "tags": [
+        "r2",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ライフサイクルルールの例",
+          "steps": [
+            {
+              "text": "オブジェクト作成"
+            },
+            {
+              "text": "一定日数経過後にInfrequent Accessへ移行"
+            },
+            {
+              "text": "さらに日数が経過したら自動削除"
+            }
+          ]
+        },
+        {
+          "type": "hierarchy",
+          "label": "ライフサイクルルールで指定できる条件",
+          "items": [
+            {
+              "text": "経過日数による削除（Expiration）",
+              "sub": "作成から一定期間後に自動削除"
+            },
+            {
+              "text": "ストレージクラス移行（Transition）",
+              "sub": "Standard→Infrequent Accessへ移行"
+            },
+            {
+              "text": "プレフィックス指定",
+              "sub": "特定のフォルダ配下のみに適用可能"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r2-018",
+      "category": "r2",
+      "difficulty": "advanced",
+      "question": "R2のInfrequent Access（IA）ストレージクラスに関する説明として適切なものはどれですか？",
+      "options": [
+        {
+          "text": "Standardクラスよりストレージ単価・操作料金ともに常に安く、アクセス頻度に関わらず全面的に上位互換である",
+          "wrongFeedback": "IAはストレージ単価は安い一方、データ取り出し（retrieval）にかかる料金やClass A/B操作料金はStandardより高く設定されており、単純な上位互換ではありません。アクセス頻度が低いデータ向けのトレードオフのある選択肢です。"
+        },
+        {
+          "text": "IAクラスのオブジェクトはWorkersバインディングのget()では読み取れず、S3互換APIからしかアクセスできない",
+          "wrongFeedback": "ストレージクラスが異なっても、Workersバインディングのget/put等のAPIでアクセス方法自体が変わるわけではありません。"
+        },
+        {
+          "text": "アクセス頻度の低いデータ向けにストレージ単価を抑えたクラスで、データ取り出しには追加料金がかかり、最低保存期間などの制約がある"
+        },
+        {
+          "text": "IAクラスに保存したオブジェクトは読み取り自体が数時間〜数日遅延するコールドストレージである",
+          "wrongFeedback": "IAはS3のGlacierのようなコールドストレージではなく、即時に読み取り可能です。低頻度アクセス向けの料金体系を持つクラスという位置づけです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "R2にはStandardとInfrequent Access（IA）の2つのストレージクラスがあります。IAはアクセス頻度が低いデータ向けにストレージ単価を抑えていますが、代わりにデータ取り出し（retrieval）料金がかかり、最低保存期間などの制約が設定されています。頻繁にアクセスされるデータには不向きで、バックアップやアーカイブなど低頻度アクセスのデータに向いています。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/r2/buckets/storage-classes/",
+      "hint": "「アクセス頻度」と「取り出し料金」がキーワードです。",
+      "tags": [
+        "r2",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Standard vs Infrequent Access",
+          "columns": [
+            {
+              "heading": "Standard",
+              "items": [
+                "ストレージ単価が高め",
+                "取り出し料金なし",
+                "頻繁アクセス向け"
+              ]
+            },
+            {
+              "heading": "Infrequent Access",
+              "items": [
+                "ストレージ単価が低い",
+                "データ取り出しに追加料金",
+                "低頻度アクセス向け・最低保存期間あり"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hierarchy",
+          "label": "IAクラス選定の考え方",
+          "items": [
+            {
+              "text": "低頻度アクセスのデータ",
+              "sub": "バックアップ・アーカイブなど"
+            },
+            {
+              "text": "ストレージ単価優先",
+              "sub": "読み取り頻度が低いためコスト削減効果大"
+            },
+            {
+              "text": "取り出し料金・最低保存期間に注意",
+              "sub": "頻繁な読み取りには不向き"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dq-013",
+      "category": "do-queues",
+      "difficulty": "beginner",
+      "type": "single",
+      "question": "Cloudflare Queues の Pull-based Consumer について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "クライアントが Queues REST API に HTTP POST リクエストを送ってメッセージを取得し、lease_id を使って確認応答する方式で、Cloudflare Workers 以外のインフラからも利用できる"
+        },
+        {
+          "text": "Cloudflare Workers 上でのみ動作し、queue() ハンドラで自動的にメッセージを受け取る",
+          "wrongFeedback": "それは Push 型（Worker Consumer）の説明です。Pull 型は HTTP 経由で Cloudflare Workers 以外の環境からもメッセージを取得できます。"
+        },
+        {
+          "text": "メッセージの取得は完全に自動で行われ、消費側が取得タイミングを制御することはできない",
+          "wrongFeedback": "Pull 型はまさに消費側が能動的に HTTP リクエストを送って取得タイミングを制御できる点が特徴です。"
+        },
+        {
+          "text": "Pull 型を使う場合も、Consumer Worker の wrangler 設定で queue ハンドラを実装する必要がある",
+          "wrongFeedback": "Pull 型は Worker の queue ハンドラを使わず、HTTP 経由で外部から直接メッセージを取得・確認応答する仕組みです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Queues の Pull-based Consumer は、クライアントが Queues の REST API に HTTP POST リクエストを送信してメッセージのバッチを取得し、処理後に lease_id を使って確認応答（ack/retry）する方式です。Cloudflare Workers 以外の任意のインフラや言語からも利用できるため、GPU処理など長時間実行タスクや、上流システムの処理速度に制限がある場合に適しています。batch_size はデフォルト5件（最大100件）、visibility_timeout はデフォルト30秒（最大12時間）です。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/queues/configuration/pull-consumers/",
+      "hint": "「Worker の queue ハンドラが自動で呼ばれる」のとは逆に、こちらは誰が能動的に取りに行くか考えましょう。",
+      "tags": [
+        "do-queues",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Push型とPull型の違い",
+          "columns": [
+            {
+              "heading": "Push型（Worker Consumer）",
+              "items": [
+                "queue()ハンドラが自動起動",
+                "Cloudflare Workers上のみで実行",
+                "自動スケーリング"
+              ]
+            },
+            {
+              "heading": "Pull型（HTTP Consumer）",
+              "items": [
+                "HTTP POSTでメッセージを取得",
+                "Workers以外のインフラからも利用可",
+                "lease_idで確認応答、消費速度を自分で制御"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "Pull型の処理手順",
+          "steps": [
+            {
+              "text": "HTTP POSTでバッチをリクエスト",
+              "sub": "batch_size 既定5・最大100"
+            },
+            {
+              "text": "lease_id付きでメッセージを受信"
+            },
+            {
+              "text": "処理後にlease_idでack/retryを送信"
+            },
+            {
+              "text": "visibility_timeout(既定30秒)以内に応答なしなら再配信"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dq-014",
+      "category": "do-queues",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "Durable Objects の location hint について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "get()にlocationHintを渡すことで、既存のDurable Objectをいつでも別の場所へ強制的に移動させられる",
+          "wrongFeedback": "Durable Objectsは作成後に移動しません。location hintが効くのは、そのオブジェクトに対する最初のget()呼び出し時のみです。"
+        },
+        {
+          "text": "location hintは保証ではなくベストエフォートであり、指定した場所そのものではなく、そこからレイテンシが最小になるよう選ばれたデータセンターに配置されることがある"
+        },
+        {
+          "text": "location hintはDurable Objectへの全リクエストで毎回有効になり、リクエストごとに配置場所を切り替えられる",
+          "wrongFeedback": "location hintが適用されるのは最初のget()呼び出しのみです。Durable Objectは作成後に移動しないため、以降のリクエストでのhintは無視されます。"
+        },
+        {
+          "text": "location hintを指定しない場合、Durable Objectは常に米国東海岸(us-east)に作成される",
+          "wrongFeedback": "hintを指定しない場合、デフォルトでは最初のリクエストが発生した場所の近くのデータセンターに作成されます。特定リージョン固定ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "location hintは、OBJECT_NAMESPACE.get(id, { locationHint: \"enam\" }) のように get() の第2引数として渡すことで、Durable Objectを作成する場所に影響を与えられる仕組みです。ただしこれは保証ではなくベストエフォートで、指定した場所そのものではなく、そこからのレイテンシが最小になるよう選ばれた別のデータセンターに配置されることもあります。また有効なのは対象オブジェクトへの最初のget()呼び出しのみで、Durable Objectは作成後に移動しないため、以降の呼び出しでのhintは無視されます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/durable-objects/reference/data-location/",
+      "hint": "「hint」という言葉が示す通り、確約ではなく目安である点がポイントです。",
+      "tags": [
+        "do-queues",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "location hintの適用フロー",
+          "steps": [
+            {
+              "text": "OBJECT_NAMESPACE.get(id, { locationHint: \"enam\" }) を呼ぶ"
+            },
+            {
+              "text": "初回のget()呼び出しでのみヒントが適用される"
+            },
+            {
+              "text": "ヒントに近い（ただし保証ではない）データセンターが選ばれる"
+            },
+            {
+              "text": "以降は同じ場所のインスタンスを再利用",
+              "sub": "Durable Objectは作成後に移動しない"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "hintの有無による違い",
+          "columns": [
+            {
+              "heading": "locationHint指定あり",
+              "items": [
+                "初回のget()呼び出しのみ有効",
+                "ベストエフォート（保証ではない）"
+              ]
+            },
+            {
+              "heading": "指定なし（デフォルト）",
+              "items": [
+                "最初のリクエスト発生地点の近くに作成"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dq-015",
+      "category": "do-queues",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "Cloudflare Queues の Consumer concurrency のデフォルト動作として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "デフォルトでは同時実行数は常に1に固定されており、明示的に有効化しない限りスケールしない",
+          "wrongFeedback": "デフォルトですべてのキューでconcurrencyが有効になっており、バックログや失敗率に応じて自動的にスケールします。"
+        },
+        {
+          "text": "max_concurrencyには上限がなく、任意の大きな数値を設定できる",
+          "wrongFeedback": "max_concurrencyは1〜250の範囲で設定する必要があり、無制限に大きくすることはできません。"
+        },
+        {
+          "text": "max_concurrencyは必ず明示的に設定する必要があり、未設定の場合はエラーになる",
+          "wrongFeedback": "未設定のままでも動作します。Cloudflareはむしろ上限を固定せず、Queues側の自動スケールに任せることを推奨しています。"
+        },
+        {
+          "text": "デフォルトで自動スケールが有効になっており、キューのバックログ（未処理メッセージ数）やその増加速度、成功/失敗の比率に応じてConsumerの同時実行数が自動調整される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cloudflare Queuesでは、デフォルトですべてのキューでconcurrency（同時実行）が有効になっており、Consumerはバックログ（未処理メッセージ数）とその増加速度、および成功/失敗の比率に基づいて自動的に同時実行数をスケールさせます。ダッシュボードやwrangler設定でmax_concurrencyを1〜250の範囲で固定することもできますが、Cloudflareは上流システムに制限がない限り上限を設定せずQueuesの自動スケールに任せることを推奨しています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/queues/configuration/consumer-concurrency/",
+      "hint": "「バックログの増加」「失敗率」に応じて自動的に何が調整されるか考えましょう。",
+      "tags": [
+        "do-queues",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "自動スケールの仕組み",
+          "steps": [
+            {
+              "text": "バッチ処理後にキューの状態を評価"
+            },
+            {
+              "text": "バックログ(未処理数)とその増加速度を確認"
+            },
+            {
+              "text": "成功/失敗の比率を確認"
+            },
+            {
+              "text": "Consumerの同時実行数を自動調整",
+              "sub": "既定は上限未設定、最大250まで"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dq-016",
+      "category": "do-queues",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "Durable Object内で、接続中の全WebSocketクライアントにメッセージをブロードキャストする際の一般的な実装として適切なものはどれですか？",
+      "options": [
+        {
+          "text": "ctx.storageに保存しておいた接続一覧をfetch()で毎回問い合わせてから送信する",
+          "wrongFeedback": "接続情報をストレージに保存してfetchで問い合わせるような仕組みはありません。ctx.getWebSockets()で現在保持しているWebSocketを直接取得します。"
+        },
+        {
+          "text": "ctx.getWebSockets()で保持中の全WebSocketを取得し、readyStateがOPENであることを確認してからそれぞれにsend()する"
+        },
+        {
+          "text": "全クライアントへの一括送信はサポートされておらず、必ず1対1のメッセージ送信のみ可能である",
+          "wrongFeedback": "getWebSockets()を使えば、1つのDurable Objectに接続している全クライアントへブロードキャストできます。"
+        },
+        {
+          "text": "ブロードキャストする際は、いったんDurable Objectを再起動してすべての接続を再確立してから送信する必要がある",
+          "wrongFeedback": "再起動や再接続は不要です。ハイバネート状態から復帰したDOでも、getWebSockets()で保持中の接続を取得してそのまま送信できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Durable Object内でブロードキャストを行う一般的な実装は、ctx.getWebSockets()で現在保持している全WebSocketを取得し、各接続のreadyStateがWebSocket.OPENであることを確認してからsend()でメッセージを送る方法です。クローズ中の接続に送信しようとすると例外が発生しうるため、状態確認は必須です。この仕組みはWebSocket Hibernation APIとも組み合わせて使え、ハイバネートから復帰した接続に対しても同様に動作します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/",
+      "hint": "「今保持している接続を列挙して、状態を確認してから送る」という手順を考えましょう。",
+      "tags": [
+        "do-queues",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "ブロードキャストの流れ",
+          "actors": [
+            "Client A",
+            "Durable Object",
+            "Client B",
+            "Client C"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "メッセージ送信"
+            },
+            {
+              "from": 1,
+              "to": 1,
+              "text": "ctx.getWebSockets()で接続一覧を取得"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "readyState===OPENを確認してsend()"
+            },
+            {
+              "from": 1,
+              "to": 3,
+              "text": "readyState===OPENを確認してsend()"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dq-017",
+      "category": "do-queues",
+      "difficulty": "advanced",
+      "type": "single",
+      "question": "SQLiteバックエンドのDurable Objectsが備えるPoint-in-Time Recovery(PITR)について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "過去1年分の任意の時点までストレージを復元できる",
+          "wrongFeedback": "PITRで復元できるのは過去30日以内の任意の時点までです。1年分ではありません。"
+        },
+        {
+          "text": "ローカル開発環境(wrangler dev)でも本番と同様にPITR APIを完全に利用できる",
+          "wrongFeedback": "PITR APIはローカル開発環境ではサポートされていません。変更履歴を記録する永続的なログがローカルには保存されないためです。"
+        },
+        {
+          "text": "復元したい時点を「bookmark」と呼ばれる文字列で指定し、適用後にctx.abort()などでDurable Objectを再起動することで復元が完了する"
+        },
+        {
+          "text": "PITRはKVバックエンドのDurable Objectsでのみ利用でき、SQLiteバックエンドでは利用できない",
+          "wrongFeedback": "逆です。PITRはSQLiteバックエンドのDurable Objectsで提供される機能であり、従来のKV-backedストレージにはありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "SQLiteバックエンドのDurable Objectsでは、embeddedされたSQLiteデータベースを過去30日以内の任意の時点へ復元できるPITR APIが提供されています。復元したい時点は「bookmark」と呼ばれる、レキシカル比較可能な文字列で指定します。APIを呼び出してbookmarkを設定した後、アプリケーション側でctx.abort()などによりDurable Objectを再起動することで、次回起動時にストレージがその時点の状態へ復元されます。このAPIはSQL形式のデータとKV形式のデータ両方に適用され、ローカル開発環境(wrangler dev)では変更履歴のログが保存されないためサポートされていません。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/",
+      "hint": "「時点」を表す文字列を渡してから、DOをどうすると復元が反映されるか考えましょう。",
+      "tags": [
+        "do-queues",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "PITRによる復元手順",
+          "steps": [
+            {
+              "text": "復元したい時点のbookmark文字列を取得"
+            },
+            {
+              "text": "PITR APIにbookmarkを渡して復元を予約"
+            },
+            {
+              "text": "ctx.abort()などでDurable Objectを再起動"
+            },
+            {
+              "text": "再起動時に指定時点のストレージ状態へ復元完了"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "PITRの制約",
+          "columns": [
+            {
+              "heading": "利用可能",
+              "items": [
+                "SQLiteバックエンドのDurable Objects",
+                "過去30日以内の任意時点"
+              ]
+            },
+            {
+              "heading": "利用不可",
+              "items": [
+                "ローカル開発環境(wrangler dev)",
+                "30日より前の時点",
+                "従来のKV-backedストレージ"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dq-018",
+      "category": "do-queues",
+      "difficulty": "advanced",
+      "type": "single",
+      "question": "Durable Objectのクラスに定義したpublicな非同期メソッドを、Worker側からHTTPのfetch()を経由せず直接呼び出す仕組みについて正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Durable Objectではpublicメソッドの直接呼び出しはサポートされておらず、常にfetch()でHTTPリクエストとして送る必要がある",
+          "wrongFeedback": "Durable Object Stubはリモートメソッドを呼び出すRPCクライアントとして機能し、publicメソッドを直接呼び出せます。"
+        },
+        {
+          "text": "RPCで呼び出せるのはコンストラクタで明示的に登録したメソッドのみで、通常のクラスメソッド定義は対象外である",
+          "wrongFeedback": "明示的な登録は不要です。Durable Objectクラスに定義した非プライベートなメソッドは、自動的にRPC経由で呼び出し可能になります。"
+        },
+        {
+          "text": "RPCメソッド呼び出しは同期的に実行され、呼び出し元のWorkerの処理を完全にブロックする",
+          "wrongFeedback": "RPC呼び出しはすべて非同期（Promiseベース）で行われ、呼び出し元のWorkerをブロックしません。"
+        },
+        {
+          "text": "スタブ(stub)を通じてクラスの非プライベートメソッドを直接呼び出せ(RPC)、同一スタブに対する複数回の呼び出しは呼び出した順序どおりに配信されることが保証される(E-order semantics)"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Durable Object Stubは、リモートのDurable Objectに対してメソッドを呼び出すRPCクライアントとして機能します。Durable Objectクラスに定義した非プライベートなメソッドは自動的にRPC経由で公開され、Worker側からはstub.methodName()のように、HTTPのfetch()を経由せず直接呼び出せます。呼び出しはすべて非同期でシリアライズ可能な型を受け渡しし、例外は呼び出し元に伝播します（スタックトレースは含まれません）。また同一のスタブに対して複数回呼び出しを行った場合、それらは呼び出した順序どおりにDurable Objectへ配信されることが保証されており、これはE言語に由来する「E-order semantics」と呼ばれます。ただし異なるスタブ間ではこの順序保証は適用されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/stub/",
+      "hint": "HTTPを経由しない「メソッド呼び出し」と、その呼び出し順序の保証について考えましょう。",
+      "tags": [
+        "do-queues",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "RPC呼び出しとE-order semantics",
+          "actors": [
+            "Worker",
+            "Durable Object Stub",
+            "Durable Object"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "stub.sayHello() を呼び出す（publicメソッド）"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "RPCとして直接メソッド呼び出しを転送"
+            },
+            {
+              "from": 2,
+              "to": 1,
+              "text": "戻り値をPromiseとして返す"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "同じスタブへの複数回呼び出しは順序どおり配信（E-order）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pg-013",
+      "category": "pages-deploy",
+      "difficulty": "beginner",
+      "question": "モノレポ(1つのリポジトリに複数のアプリ/パッケージが含まれる構成)で、特定のサブディレクトリにあるアプリだけを Cloudflare Pages でビルド・デプロイしたい場合、どう設定すればよいか。",
+      "options": [
+        {
+          "text": "プロジェクトのビルド設定で「ルートディレクトリ(Root directory)」に対象アプリのサブディレクトリパスを指定する"
+        },
+        {
+          "text": "リポジトリ全体を複数のGitリポジトリに分割しない限り、モノレポ内の特定ディレクトリだけをビルド対象にすることはできない",
+          "wrongFeedback": "「ルートディレクトリ」設定を使えば、リポジトリを分割しなくても特定のサブディレクトリだけをビルド対象にできます。"
+        },
+        {
+          "text": "`_headers` ファイルにビルド対象のディレクトリを記述する",
+          "wrongFeedback": "`_headers` はHTTPレスポンスヘッダーの設定ファイルであり、ビルド対象ディレクトリの指定には使用しません。"
+        },
+        {
+          "text": "Pages Functions の `functions/` ディレクトリ名を対象アプリのディレクトリ名に変更する",
+          "wrongFeedback": "`functions/` は Pages Functions のルーティング用の固定ディレクトリ名であり、変更してもビルド対象アプリの切り替えにはなりません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "モノレポ構成のリポジトリでは、Pages のビルド設定にある「ルートディレクトリ」に対象アプリが置かれたサブディレクトリのパス(例: `apps/web`)を指定することで、そのディレクトリを基準にビルドコマンドやビルド出力ディレクトリが解決されます。\n{{diagram:0}}\n同一リポジトリ内の複数アプリを、それぞれ別のPagesプロジェクトとして異なるルートディレクトリで指定してデプロイすることも可能です。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/pages/configuration/monorepos/",
+      "hint": "サブディレクトリを基準にビルドを走らせる設定項目を探しましょう。",
+      "tags": [
+        "pages-deploy",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "tree",
+          "label": "モノレポ構成の例",
+          "root": {
+            "text": "repo/",
+            "children": [
+              {
+                "text": "apps/",
+                "children": [
+                  {
+                    "text": "web/",
+                    "sub": "ルートディレクトリに指定"
+                  },
+                  {
+                    "text": "admin/"
+                  }
+                ]
+              },
+              {
+                "text": "packages/"
+              }
+            ]
+          }
+        },
+        {
+          "type": "config",
+          "label": "Pages ビルド設定例",
+          "filepath": "Pages プロジェクト設定",
+          "lines": [
+            {
+              "text": "ルートディレクトリ: apps/web",
+              "highlight": true
+            },
+            {
+              "text": "ビルドコマンド: npm run build"
+            },
+            {
+              "text": "ビルド出力ディレクトリ: dist"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pg-014",
+      "category": "pages-deploy",
+      "difficulty": "intermediate",
+      "question": "Pages Functions で `functions/_middleware.js` を配置した場合の挙動として正しいものはどれか。",
+      "options": [
+        {
+          "text": "そのファイルと同名の `/_middleware` というURLパスでのみアクセス可能なAPIエンドポイントになる",
+          "wrongFeedback": "`_middleware.js` は特定URLのAPIエンドポイントではなく、配置されたディレクトリ以下の全リクエストに適用される処理です。"
+        },
+        {
+          "text": "静的アセットの配信には一切関与せず、`functions/` 配下のAPIリクエストにのみ影響する",
+          "wrongFeedback": "ミドルウェアは静的アセットへのリクエストを含め、そのディレクトリ以下の全リクエストに対して実行されます。"
+        },
+        {
+          "text": "同じディレクトリ以下の全リクエストに対してルートハンドラより先に実行され、`next()` を呼び出すことで後続の処理へ処理を渡せる"
+        },
+        {
+          "text": "1つのプロジェクトにつき `_middleware.js` は1ファイルしか配置できず、サブディレクトリごとに個別のミドルウェアを持つことはできない",
+          "wrongFeedback": "`_middleware.js` はディレクトリごとに配置でき、親ディレクトリから子ディレクトリへと順に実行されるチェーンを構成できます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`_middleware.js` はそのファイルが置かれたディレクトリ以下の全リクエスト(静的アセットへのリクエストも含む)に対して、対応するルートハンドラより先に実行される共通処理です。\n{{diagram:0}}\n認証チェックなど、`next()` を呼ばずに早期リターンすることでリクエストをブロックできます。複数階層に配置すると、親から子へ順に実行されるミドルウェアチェーンになります。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/pages/functions/middleware/",
+      "hint": "ミドルウェアはAPIのエンドポイントではなく、リクエストの前処理という位置づけです。",
+      "tags": [
+        "pages-deploy",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ミドルウェアの実行順序",
+          "steps": [
+            {
+              "text": "リクエスト受信"
+            },
+            {
+              "text": "_middleware.js(親ディレクトリ)"
+            },
+            {
+              "text": "_middleware.js(子ディレクトリ)"
+            },
+            {
+              "text": "ルートハンドラ実行"
+            }
+          ]
+        },
+        {
+          "type": "config",
+          "label": "_middleware.js の例",
+          "filepath": "functions/_middleware.js",
+          "lines": [
+            {
+              "text": "export async function onRequest(context) {"
+            },
+            {
+              "text": "  if (!isAuthenticated(context)) {"
+            },
+            {
+              "text": "    return new Response('Unauthorized', { status: 401 });",
+              "highlight": true
+            },
+            {
+              "text": "  }"
+            },
+            {
+              "text": "  return await context.next();",
+              "highlight": true
+            },
+            {
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pg-015",
+      "category": "pages-deploy",
+      "difficulty": "intermediate",
+      "question": "Gitリポジトリと連携せずに、ローカルのビルド成果物を直接 Cloudflare Pages にデプロイする方法として正しいものはどれか。",
+      "options": [
+        {
+          "text": "Pages はGit連携以外のデプロイ方法をサポートしていない",
+          "wrongFeedback": "`wrangler pages deploy` コマンドを使ったDirect Uploadにより、Git連携なしでもデプロイできます。"
+        },
+        {
+          "text": "`wrangler pages deploy <ビルド出力ディレクトリ>` を実行して、ビルド済みファイルを直接アップロードする(Direct Upload)"
+        },
+        {
+          "text": "GitHub Actions以外のCI/CDサービスからはPagesへデプロイできない",
+          "wrongFeedback": "`wrangler pages deploy` はどのCI/CD環境やローカル環境からでも実行でき、GitHub Actionsに限定されません。"
+        },
+        {
+          "text": "デプロイ用のZIPファイルをメールでCloudflareサポートに送付し、手動でアップロードしてもらう",
+          "wrongFeedback": "そのような手動プロセスは不要で、`wrangler` CLIから直接アップロードできます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Pages はGit連携によるデプロイに加え、`wrangler pages deploy <ビルド出力ディレクトリ>` コマンドを使ってビルド済みの静的ファイルを直接アップロードする「Direct Upload」もサポートしています。\n{{diagram:0}}\nこれにより、任意のCI/CDパイプラインやローカル環境から、Gitリポジトリ連携なしでデプロイが可能です。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/pages/get-started/direct-upload/",
+      "hint": "Gitリポジトリ連携以外に、CLIから直接アップロードする方法があります。",
+      "tags": [
+        "pages-deploy",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "wrangler pages deploy の実行例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "npm run build"
+            },
+            {
+              "type": "command",
+              "text": "wrangler pages deploy dist"
+            },
+            {
+              "type": "response",
+              "text": "Uploading 12 files"
+            },
+            {
+              "type": "response",
+              "text": "Deployment complete! https://my-project.pages.dev"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "デプロイ方法の比較",
+          "columns": [
+            {
+              "heading": "Git連携デプロイ",
+              "items": [
+                "push時に自動ビルド",
+                "Cloudflare側でビルド実行"
+              ]
+            },
+            {
+              "heading": "Direct Upload",
+              "items": [
+                "ローカル/CIでビルド済み成果物を用意",
+                "wrangler pages deploy でアップロード"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pg-016",
+      "category": "pages-deploy",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Pages のビルド時に使用するNode.jsのバージョンを指定する方法として正しいものはどれか。",
+      "options": [
+        {
+          "text": "Node.jsのバージョンは固定されており、プロジェクト側で変更することはできない",
+          "wrongFeedback": "環境変数やバージョンファイルによってビルド時のNode.jsバージョンを指定できます。"
+        },
+        {
+          "text": "`wrangler.toml` の `compatibility_date` を変更することでNode.jsのバージョンも連動して切り替わる",
+          "wrongFeedback": "`compatibility_date` はWorkersランタイムの互換性日付を指定するものであり、ビルド時のNode.jsバージョン指定とは別の仕組みです。"
+        },
+        {
+          "text": "package.json の `dependencies` に `node` パッケージを追加することで指定する",
+          "wrongFeedback": "`node` をnpmパッケージとしてdependenciesに追加してバージョンを固定する仕組みではありません。"
+        },
+        {
+          "text": "環境変数 `NODE_VERSION` を設定するか、リポジトリに `.nvmrc` や `.node-version` ファイルを配置することで指定する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Pages のビルド環境で使用するNode.jsのバージョンは、環境変数 `NODE_VERSION` を設定するか、リポジトリのルートに `.nvmrc` または `.node-version` ファイルを配置することで指定できます。\n{{diagram:0}}\n指定がない場合はビルドイメージのデフォルトバージョンが使用されます。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-configuration/",
+      "hint": "バージョンファイルや環境変数でビルド時のランタイムを指定する方法を考えましょう。",
+      "tags": [
+        "pages-deploy",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Node.jsバージョン指定方法",
+          "columns": [
+            {
+              "heading": "環境変数",
+              "items": [
+                "NODE_VERSION=20",
+                "ダッシュボードで設定"
+              ]
+            },
+            {
+              "heading": "バージョンファイル",
+              "items": [
+                ".nvmrc に '20' と記述",
+                ".node-version でも可"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "terminal",
+          "label": "バージョンファイルの例",
+          "lines": [
+            {
+              "type": "info",
+              "text": "ファイル: .nvmrc"
+            },
+            {
+              "type": "response",
+              "text": "20"
+            },
+            {
+              "type": "info",
+              "text": "→ ビルド時にNode.js 20系が使用される"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pg-017",
+      "category": "pages-deploy",
+      "difficulty": "advanced",
+      "question": "Cloudflare Pages のビルドキャッシュに関する説明として正しいものはどれか。",
+      "options": [
+        {
+          "text": "依存関係(パッケージマネージャのキャッシュなど)をビルド間で再利用することでビルド時間を短縮でき、必要に応じて「キャッシュを使わず再試行」して強制的にクリーンビルドすることもできる"
+        },
+        {
+          "text": "ビルドキャッシュは常に無効化されており、Pagesのビルドは毎回必ずゼロから依存関係をインストールする",
+          "wrongFeedback": "Pagesはビルド間で依存関係のキャッシュを再利用する仕組みを持っており、常にゼロからインストールするわけではありません。"
+        },
+        {
+          "text": "ビルドキャッシュはCDNのキャッシュ(配信済みコンテンツのキャッシュ)と同一のものであり、パージ操作も共通である",
+          "wrongFeedback": "ビルドキャッシュはビルド時の依存関係キャッシュであり、配信コンテンツのCDNキャッシュとは別の仕組みです。"
+        },
+        {
+          "text": "ビルドキャッシュを利用するには、プロジェクトごとに専用のR2バケットを事前に手動作成し明示的に紐付ける必要がある",
+          "wrongFeedback": "ビルドキャッシュはPages側で自動的に管理される仕組みであり、R2バケットを手動作成して紐付ける必要はありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Pages はビルドのたびに `node_modules` 等の依存関係キャッシュを再利用することでビルド時間を短縮しています。依存関係の不整合などでクリーンな状態からビルドし直したい場合は、デプロイの再試行時に「キャッシュを使わない」オプションを選択できます。\n{{diagram:0}}\nこれは配信コンテンツを対象とするCDNキャッシュとは異なる、ビルドプロセス専用のキャッシュです。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-caching/",
+      "hint": "ビルドのたびに依存関係を毎回ゼロからインストールしていたら非効率です。",
+      "tags": [
+        "pages-deploy",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ビルドキャッシュの効果",
+          "steps": [
+            {
+              "text": "1回目のビルド: 依存関係をフルインストール"
+            },
+            {
+              "text": "キャッシュを保存"
+            },
+            {
+              "text": "2回目以降: キャッシュから依存関係を復元"
+            },
+            {
+              "text": "インストール時間を短縮"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "ビルドキャッシュ vs CDNキャッシュ",
+          "columns": [
+            {
+              "heading": "ビルドキャッシュ",
+              "items": [
+                "依存関係(node_modules等)が対象",
+                "ビルドプロセスの高速化が目的"
+              ]
+            },
+            {
+              "heading": "CDNキャッシュ",
+              "items": [
+                "配信コンテンツが対象",
+                "エッジでの配信高速化が目的"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pg-018",
+      "category": "pages-deploy",
+      "difficulty": "advanced",
+      "question": "Pages Functions と Cloudflare Workers のバインディング(KV, D1, R2 など)の扱いに関する説明として正しいものはどれか。",
+      "options": [
+        {
+          "text": "Pages Functions はバインディングの概念自体をサポートしておらず、外部リソースへのアクセスには必ずfetch経由のHTTP APIを使う必要がある",
+          "wrongFeedback": "Pages FunctionsもWorkersと同様にKV, D1, R2などのバインディングをサポートしており、`env` 経由で直接アクセスできます。"
+        },
+        {
+          "text": "バインディングの型やアクセス方法はWorkersとPages Functionsでまったく異なるAPI体系になっており、コードの共通化はできない",
+          "wrongFeedback": "両者は同様のバインディングの種類と`env`経由のアクセス方法を採用しており、多くのコードを共通化できます。"
+        },
+        {
+          "text": "Pages Functions は Workers と同様に KV・D1・R2 などのバインディングをサポートしており、`env` オブジェクト経由でアクセスするという基本的な使い方も共通している"
+        },
+        {
+          "text": "バインディングを利用したPages Functionsのコードは、Workersプロジェクトへ移植することが技術的に不可能である",
+          "wrongFeedback": "バインディングの扱い方が近いため、Pages FunctionsのコードをWorkers向けに移植することは可能です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Pages Functions は Cloudflare Workers ランタイム上で動作しており、KV Namespace, D1 Database, R2 Bucket, Durable Objects などWorkersと同様のバインディングをサポートしています。\n{{diagram:0}}\nどちらも `env` オブジェクト経由でバインディングにアクセスするという基本的な書き方が共通しているため、ロジックの多くを共有・移植しやすい設計になっています。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/pages/functions/bindings/",
+      "hint": "Pages FunctionsはどのランタイムでWorkersと共通しているか考えてみましょう。",
+      "tags": [
+        "pages-deploy",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "バインディングの対応関係",
+          "columns": [
+            {
+              "heading": "Workers",
+              "items": [
+                "env.MY_KV",
+                "env.MY_D1",
+                "env.MY_BUCKET"
+              ]
+            },
+            {
+              "heading": "Pages Functions",
+              "items": [
+                "env.MY_KV",
+                "env.MY_D1",
+                "env.MY_BUCKET"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "layer",
+          "label": "共通する技術基盤",
+          "layers": [
+            {
+              "text": "アプリケーションコード(env経由でバインディングにアクセス)"
+            },
+            {
+              "text": "Pages Functions / Workers"
+            },
+            {
+              "text": "Cloudflare Workers ランタイム"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-013",
+      "category": "ai-vectorize",
+      "difficulty": "beginner",
+      "type": "single",
+      "question": "Workers AIのテキスト生成モデルからの応答をストリーミングで受け取りたい場合、リクエストに指定するオプションと、レスポンスに設定すべきContent-Typeの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "inputsに stream: true を指定し、Response返却時に Content-Type: text/event-stream を設定する"
+        },
+        {
+          "text": "inputsに stream: false を指定し、Content-Type: application/json を設定する",
+          "wrongFeedback": "stream: false は通常の一括レスポンス（非ストリーミング）の指定です。ストリーミングを有効にするには stream: true を指定します。"
+        },
+        {
+          "text": "cache: false を指定するだけでよく、Content-Typeの設定は不要",
+          "wrongFeedback": "cache はキャッシュ制御に関するオプションで、ストリーミングの有効化とは無関係です。ストリーミングには stream: true の指定と text/event-stream のContent-Type設定が必要です。"
+        },
+        {
+          "text": "env.AI.stream() という専用メソッドを別途呼び出す",
+          "wrongFeedback": "専用のstream()メソッドは存在しません。既存の env.AI.run() 呼び出し時のinputsオプションで stream: true を指定します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workers AIのテキスト生成モデルは、inputsに `stream: true` を指定することでレスポンスをServer-Sent Events（SSE）形式でストリーミングできる。Worker側では受け取ったReadableStreamをそのまま `new Response(stream, { headers: { \"content-type\": \"text/event-stream\" } })` のようにクライアントへ返す。これにより、生成が完了するのを待たずに逐次テキストをクライアントに届けられ、特に長い応答や推論モデルで体感速度が向上する。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-ai/configuration/bindings/",
+      "hint": "SSE（Server-Sent Events）という技術で使われるContent-Typeを思い出しましょう。",
+      "tags": [
+        "ai-vectorize",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "ストリーミング実装例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "const stream = await env.AI.run(model, { prompt, stream: true })"
+            },
+            {
+              "type": "command",
+              "text": "return new Response(stream, {"
+            },
+            {
+              "type": "command",
+              "text": "  headers: { 'content-type': 'text/event-stream' }"
+            },
+            {
+              "type": "info",
+              "text": "生成完了を待たず逐次クライアントへ送信される"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-014",
+      "category": "ai-vectorize",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "Vectorizeのnamespaceの用途として正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "インデックス全体の次元数（dimensions）を後から変更するための機能",
+          "wrongFeedback": "dimensionsはインデックス作成時に固定され、namespaceで変更することはできません。namespaceはベクトルの論理的な区分けを行う機能です。"
+        },
+        {
+          "text": "複数のVectorizeインデックスを1つに統合するための機能",
+          "wrongFeedback": "namespaceは1つのインデックス内部でのベクトルの分割に使う機能で、複数インデックスを統合する仕組みではありません。"
+        },
+        {
+          "text": "1つのインデックス内でベクトルを顧客IDや店舗IDなどの単位で論理的に分割し、query()時にnamespaceを指定することでその区分内だけを検索対象にできる機能"
+        },
+        {
+          "text": "metadataフィルタと同様に、事前にcreate-metadata-indexコマンドで登録しないと使えない機能",
+          "wrongFeedback": "namespaceはinsert/upsert時にnamespaceプロパティを指定するだけで使え、metadataインデックスのような事前登録は不要です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "namespaceは、1つのVectorizeインデックス内でベクトルを論理的に分割するためのオプションのパーティションキー。例えば顧客IDやテナントIDごとにnamespaceを分けて、マルチテナントなデータを1つのインデックスにまとめて管理できる。insert/upsert時に `namespace: \"customer-123\"` のように指定し、query時にも同じnamespaceを指定すると、その区分内のベクトルのみが検索対象になる（namespaceによる絞り込みはベクトル検索より前に適用される）。1インデックスあたり作成できるnamespace数には上限があり、プランによって異なる。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/vectorize/best-practices/insert-vectors/",
+      "hint": "『名前空間』が示す通り、1つのインデックスを論理的に区切って使う仕組みです。",
+      "tags": [
+        "ai-vectorize",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "namespaceの利用フロー",
+          "steps": [
+            {
+              "text": "insert/upsert時にnamespace: 'customer-123' を指定"
+            },
+            {
+              "text": "同じインデックス内に他のnamespaceのベクトルも共存"
+            },
+            {
+              "text": "query時に同じnamespaceを指定して呼び出す"
+            },
+            {
+              "text": "指定したnamespace内のベクトルのみが検索対象になる"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-015",
+      "category": "ai-vectorize",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "Vectorizeのquery()でmetadataフィルタを使う際、完全一致（等号）ではなく『指定した値以外』を条件にしたい場合に使う演算子はどれですか？",
+      "options": [
+        {
+          "text": "$eq",
+          "wrongFeedback": "$eq は『等しい』という完全一致条件を表す演算子です。『値以外』を指定するには別の演算子を使います。"
+        },
+        {
+          "text": "$ne"
+        },
+        {
+          "text": "$in",
+          "wrongFeedback": "$in は『指定した配列のいずれかに含まれる』という条件を表す演算子で、『値以外』の否定条件とは異なります。"
+        },
+        {
+          "text": "$gte",
+          "wrongFeedback": "$gte は『指定した値以上』という範囲比較の演算子で、値の否定条件とは異なります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Vectorizeのfilterパラメータは、`{ streaming_platform: \"netflix\" }` のような省略記法（暗黙的に$eq）に加えて、`$eq`（等しい）、`$ne`（等しくない）、`$in`/`$nin`（配列に含まれる/含まれない）、`$lt`/`$lte`/`$gt`/`$gte`（範囲比較）といった演算子を明示的に指定できる。『指定した値以外』を条件にしたい場合は `filter: { someKey: { \"$ne\": \"hbo\" } }` のように$ne演算子を使う。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/metadata-filtering/",
+      "hint": "『Not Equal』の略を考えてみましょう。",
+      "tags": [
+        "ai-vectorize",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "filterで使える主な演算子",
+          "columns": [
+            {
+              "heading": "等価系",
+              "items": [
+                "$eq: 等しい",
+                "$ne: 等しくない"
+              ]
+            },
+            {
+              "heading": "配列系",
+              "items": [
+                "$in: 含まれる",
+                "$nin: 含まれない"
+              ]
+            },
+            {
+              "heading": "範囲系",
+              "items": [
+                "$lt / $lte: 未満・以下",
+                "$gt / $gte: 超過・以上"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-016",
+      "category": "ai-vectorize",
+      "difficulty": "intermediate",
+      "type": "single",
+      "question": "AI Gatewayのログ機能で確認できる情報として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Vectorizeインデックスに保存されているベクトルの値そのもの",
+          "wrongFeedback": "AI GatewayのログはAIモデルへのリクエスト/レスポンスに関する情報であり、Vectorizeに保存されたベクトル値を記録するものではありません。"
+        },
+        {
+          "text": "Workerのソースコードの変更履歴",
+          "wrongFeedback": "ソースコードの変更履歴はGitなどのバージョン管理システムで管理するものであり、AI Gatewayのログ機能の対象ではありません。"
+        },
+        {
+          "text": "D1データベースのスロークエリログ",
+          "wrongFeedback": "D1のスロークエリなどはD1自体の監視機能で確認するものであり、AI Gatewayのログとは別です。"
+        },
+        {
+          "text": "プロンプトやレスポンス内容に加え、トークン使用量・推定コスト・レイテンシ・プロバイダー情報などのリクエスト単位の詳細な統計"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "AI Gatewayのダッシュボード（またはLogs API）では、リクエストごとにユーザープロンプトとモデルレスポンス、使用したプロバイダー、タイムスタンプ、ステータスに加え、トークン使用量・推定コスト・レイテンシといった詳細な統計を確認できる。これにより、どのモデル/プロバイダーにどれだけコストがかかっているかを可視化し、コスト最適化やボトルネックの特定に役立てられる。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/observability/logging/",
+      "hint": "AI Gatewayは『AIへのリクエストの通り道』です。そこを通る情報は何かを考えましょう。",
+      "tags": [
+        "ai-vectorize",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "AI Gatewayのログで確認できる情報",
+          "items": [
+            {
+              "text": "リクエスト内容",
+              "sub": "プロンプト・モデル・プロバイダー"
+            },
+            {
+              "text": "レスポンス内容",
+              "sub": "生成結果・ステータス"
+            },
+            {
+              "text": "使用量・コスト",
+              "sub": "トークン数・推定コスト"
+            },
+            {
+              "text": "パフォーマンス",
+              "sub": "レイテンシ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-017",
+      "category": "ai-vectorize",
+      "difficulty": "advanced",
+      "type": "single",
+      "question": "AI Gatewayでリクエストごとにキャッシュの保持時間（TTL）をカスタマイズしたい場合、指定するヘッダーとその制約として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "標準の Cache-Control ヘッダーに max-age を指定する。範囲に制限はない",
+          "wrongFeedback": "標準のCache-Controlヘッダーではなく、AI Gateway独自の cf-aig-cache-ttl ヘッダーを使います。また指定可能な範囲にも上限・下限があります。"
+        },
+        {
+          "text": "cf-aig-cache-ttl ヘッダーに秒数を指定する。指定可能な範囲は60秒〜1ヶ月"
+        },
+        {
+          "text": "wrangler.jsonc の ai_gateway.cache_ttl フィールドに設定し、リクエストヘッダーでは指定できない",
+          "wrongFeedback": "キャッシュTTLはwrangler.jsoncの設定ではなく、リクエストごとにヘッダーで指定します。"
+        },
+        {
+          "text": "cf-aig-cache-ttl ヘッダーには秒数ではなくミリ秒数を指定する必要がある",
+          "wrongFeedback": "cf-aig-cache-ttl ヘッダーの値は秒単位で指定します。ミリ秒ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "AI Gatewayでは、リクエストに `cf-aig-cache-ttl` ヘッダーを付与することで、そのリクエストのレスポンスをキャッシュする期間を秒単位でカスタマイズできる。指定可能な範囲は最小60秒〜最大1ヶ月で、範囲内であれば同一リクエストに対してキャッシュから高速にレスポンスを返せる（以前は `cf-cache-ttl` という名前だったが、現在は `cf-aig-cache-ttl` への移行が推奨されている）。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/caching/",
+      "hint": "ヘッダー名の先頭 'cf-aig-' はAI Gateway由来を示します。",
+      "tags": [
+        "ai-vectorize",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "カスタムキャッシュTTLの指定例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "curl -X POST https://api.cloudflare.com/client/v4/accounts/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d/ai/v1/chat/completions \\"
+            },
+            {
+              "type": "command",
+              "text": "  --header 'cf-aig-cache-ttl: 3600'"
+            },
+            {
+              "type": "info",
+              "text": "3600秒（1時間）キャッシュを保持"
+            },
+            {
+              "type": "info",
+              "text": "指定可能範囲: 60秒 〜 1ヶ月"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-018",
+      "category": "ai-vectorize",
+      "difficulty": "advanced",
+      "type": "single",
+      "question": "Cloudflare Vectorizeにおいて、1回のupsert呼び出し（バッチ）で送信できるベクトル数の上限に関する説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "呼び出し経路（Workersバインディング/HTTP API）にかかわらず、1回のリクエストで送信できるのは常に100件までである",
+          "wrongFeedback": "上限は呼び出し経路によって異なり、100件という一律の制限ではありません。"
+        },
+        {
+          "text": "1回のリクエストで送信できるベクトル数に上限はなく、インデックス全体の最大ベクトル数まで一括送信できる",
+          "wrongFeedback": "1回のバッチ呼び出しには明確な上限があり、インデックス全体の上限とは別の制約です。"
+        },
+        {
+          "text": "Workersバインディング経由では最大1,000件、HTTP API経由では最大5,000件という上限がある"
+        },
+        {
+          "text": "バッチ送信という概念自体が存在せず、必ず1件ずつinsert/upsertを呼び出す必要がある",
+          "wrongFeedback": "Vectorizeは複数ベクトルをまとめて1回のリクエストで送信するバッチ処理をサポートしており、むしろ大量データ投入時はバッチ化が推奨されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Vectorizeのinsert/upsertは1回のリクエストで複数ベクトルをまとめて送信するバッチ処理をサポートしており、Workersバインディング経由では最大1,000件、HTTP API経由では最大5,000件というバッチサイズの上限がある。大量のベクトル（例: 25万件）を投入する場合、1件ずつ送るより数千件単位のバッチに分けて送信する方が大幅に高速になる。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/vectorize/platform/limits/",
+      "hint": "呼び出し方法（Workersバインディング vs HTTP API）によって上限が異なる点がポイントです。",
+      "tags": [
+        "ai-vectorize",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "1回のupsertバッチサイズ上限",
+          "columns": [
+            {
+              "heading": "Workersバインディング",
+              "items": [
+                "最大1,000件/バッチ"
+              ]
+            },
+            {
+              "heading": "HTTP API",
+              "items": [
+                "最大5,000件/バッチ"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ar-013",
+      "category": "architecture",
+      "difficulty": "beginner",
+      "question": "社内向けの管理画面をインターネット経由で使えるようにしつつ、社内メンバー以外はアクセスできないようにしたい。Cloudflareでこれを実現する基本的な考え方として適切なものはどれですか？",
+      "options": [
+        {
+          "text": "WorkerのコードでBasic認証を自前実装し、IDとパスワードをコード内にハードコードする",
+          "wrongFeedback": "認証情報をコードにハードコードするのは安全な方法ではありません。Cloudflareが提供する認証基盤(Access)を使う方が安全です。"
+        },
+        {
+          "text": "Cloudflare Access(Zero Trust)のポリシーで、メールドメインやIdP(アイデンティティプロバイダ)での認証など条件を満たしたユーザーだけがアクセスできるようにする"
+        },
+        {
+          "text": "DNSのAレコードを社内ネットワークのプライベートIPに向けるだけで完結させる",
+          "wrongFeedback": "DNSをプライベートIPに向けるだけでは、誰がアクセスできるかを判定する認証・認可の仕組みにはなりません。"
+        },
+        {
+          "text": "WAFのRate Limiting Rulesだけで社内メンバー以外のアクセスを防ぐ",
+          "wrongFeedback": "Rate Limiting Rulesはリクエストの頻度を制御する仕組みであり、誰がアクセスできるかを判定するアクセス制御の仕組みではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Access(Zero Trustの一機能)は、アクション(Allow/Block/Bypass/Service Auth)・ルール型(Include/Require/Exclude)・セレクタ(メールドメイン、IdP認証、デバイス状態など)を組み合わせたポリシーで、リクエストごとに認証・認可を行います。管理画面のようなアプリケーションの手前にAccessを挟むことで、社内メンバーだけがアクセスできる状態を作れます。\n{{diagram:0}}\nなお、WorkerがリクエストをインターセプトするケースではBypassポリシーが正しく機能しないことがあるため、Service Authアクションの利用が推奨されています。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/policies/access/",
+      "hint": "「誰がアクセスできるか」を判定する仕組みと、「アクセス頻度」を制限する仕組みは別物です。",
+      "tags": [
+        "architecture",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Cloudflare Accessによる保護の流れ",
+          "steps": [
+            {
+              "text": "ユーザーが管理画面URLへアクセス"
+            },
+            {
+              "text": "Cloudflare Accessが認証を要求(IdPログイン)"
+            },
+            {
+              "text": "ポリシー(メールドメイン等)で認可を判定"
+            },
+            {
+              "text": "許可されたユーザーのみアプリケーションへ到達"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "アクセス制御とレート制限の違い",
+          "columns": [
+            {
+              "heading": "Cloudflare Access(Zero Trust)",
+              "items": [
+                "「誰が」アクセスできるかを判定",
+                "IdP認証・メールドメイン等の条件"
+              ]
+            },
+            {
+              "heading": "WAF Rate Limiting Rules",
+              "items": [
+                "「どのくらいの頻度で」を制限",
+                "誰かの判定は行わない"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ar-014",
+      "category": "architecture",
+      "difficulty": "intermediate",
+      "question": "SaaS事業者が、顧客(テナント)ごとに異なるカスタムロジックを安全に実行できるプラットフォームを構築したい。数千テナント分のコードを分離して管理しやすくするために、Cloudflareが提供する仕組みとして適したものはどれですか？",
+      "options": [
+        {
+          "text": "全テナント共通の1つのWorkerに、テナントごとのif分岐を大量に書いて対応する",
+          "wrongFeedback": "テナント数が増えるほどコードが肥大化し、1テナントの不具合が全体に影響するリスクも高まります。テナントごとに分離された実行環境を使う方が安全です。"
+        },
+        {
+          "text": "テナントごとに個別のCloudflareアカウントを契約してもらう",
+          "wrongFeedback": "運用上現実的ではありません。Cloudflareにはマルチテナント向けに設計された仕組みが用意されています。"
+        },
+        {
+          "text": "すべてのテナントのコードを1つのGitHubリポジトリにまとめ、CI/CDで1つのWorkerとしてバンドルする",
+          "wrongFeedback": "コードをバンドルしても実行時に1つのWorker内で全テナントのコードが動くことに変わりはなく、実行環境の分離にはなりません。"
+        },
+        {
+          "text": "Workers for Platformsのdispatch namespaceを使い、テナントごとのWorkerスクリプトを動的にアップロード・実行して、独立した環境に分離する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Workers for Platformsは「顧客やAIが生成したコードを安全なサンドボックスで実行する」ための仕組みです。dispatch namespaceにテナントごとのWorkerスクリプトを動的にアップロードし、プラットフォーム側のWorkerがリクエストを適切なテナント用Workerへ振り分けます。各テナント用Workerは独立した実行環境を持ち、KV/D1/R2などのバインディングやCPU時間の制限も個別に設定できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/",
+      "hint": "「テナントごとのコードを動的にデプロイし、実行環境自体を分離する」仕組みを考えてみましょう。",
+      "tags": [
+        "architecture",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Workers for Platformsの構造",
+          "items": [
+            {
+              "text": "プラットフォーム側Worker",
+              "sub": "リクエストを受け取り、dispatch namespaceへ振り分け"
+            },
+            {
+              "text": "dispatch namespace"
+            },
+            {
+              "text": "テナントA用 Worker",
+              "sub": "独立した実行環境・バインディング"
+            },
+            {
+              "text": "テナントB用 Worker",
+              "sub": "独立した実行環境・バインディング"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "テナント分離の方法の違い",
+          "columns": [
+            {
+              "heading": "Workers for Platforms",
+              "items": [
+                "テナントごとに独立した実行環境",
+                "個別のバインディング/CPU制限/ログ"
+              ]
+            },
+            {
+              "heading": "単一Workerにif分岐で対応",
+              "items": [
+                "全テナントのコードが1つに混在",
+                "1テナントの不具合が全体に波及しやすい"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ar-015",
+      "category": "architecture",
+      "difficulty": "intermediate",
+      "question": "マルチテナントSaaSで、各テナントの状態データを他テナントから確実に分離したい。Durable Objectsを使う場合の一般的な設計パターンとして適切なものはどれですか？",
+      "options": [
+        {
+          "text": "Durable Objectsのidをテナントごとに一意になるよう名前から生成し、テナントごとに専用のインスタンスを割り当てて状態を分離する"
+        },
+        {
+          "text": "全テナントで1つのDurable Objectインスタンスを共有し、リクエストヘッダーのテナントIDで都度アプリケーション側がフィルタする",
+          "wrongFeedback": "1つのインスタンスに全テナントのデータを混在させると、単一スレッド実行がボトルネックになりやすく、分離も実装依存で不完全になりがちです。"
+        },
+        {
+          "text": "テナントIDに関係なく、Durable Objectsのインスタンスをリクエストごとにランダムに割り当てる",
+          "wrongFeedback": "ランダムに割り当てると、同じテナントのリクエストが毎回別インスタンスに行き着き、状態を一貫して保持できなくなります。"
+        },
+        {
+          "text": "Durable Objectsではテナントごとの分離ができないため、必ずD1でテーブルを分けて対応する必要がある",
+          "wrongFeedback": "Durable Objectsは名前からidを生成する仕組みを持っており、その仕組みを使えばテナント単位でインスタンスを分離できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Durable Objectsは、テナントIDのような一意な名前からidを生成する仕組みを持っています。同じ名前からは常に同じidが得られるため、テナントごとに専用のDurable Objectインスタンスを一貫して割り当てることができます。各インスタンスは単一スレッドで実行されるため、そのテナント内の状態操作は強い整合性を持ちつつ、他テナントのインスタンスとは物理的に分離されます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/durable-objects/",
+      "hint": "「同じテナントのリクエストは常に同じインスタンスに届く」ようにするには、idをどう決めればよいか考えてみましょう。",
+      "tags": [
+        "architecture",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "テナントごとに専用のDurable Objectインスタンス",
+          "nodes": [
+            {
+              "id": "tenant_a",
+              "text": "Tenant A"
+            },
+            {
+              "id": "tenant_b",
+              "text": "Tenant B"
+            },
+            {
+              "id": "do_a",
+              "text": "DOインスタンス",
+              "sub": "id = テナントAの名前から生成"
+            },
+            {
+              "id": "do_b",
+              "text": "DOインスタンス",
+              "sub": "id = テナントBの名前から生成"
+            }
+          ],
+          "edges": [
+            {
+              "from": "tenant_a",
+              "to": "do_a",
+              "label": "常に同じインスタンスへ"
+            },
+            {
+              "from": "tenant_b",
+              "to": "do_b",
+              "label": "常に同じインスタンスへ"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "分離パターンの違い",
+          "columns": [
+            {
+              "heading": "テナントごとに専用インスタンス",
+              "items": [
+                "名前からidを一意に生成",
+                "状態が物理的に分離される"
+              ]
+            },
+            {
+              "heading": "1つのDOを全テナントで共有",
+              "items": [
+                "単一インスタンスがボトルネック化",
+                "分離はアプリ側の実装に依存"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ar-016",
+      "category": "architecture",
+      "difficulty": "intermediate",
+      "question": "APIのレート制限を「1ユーザーあたり1分間に100リクエストまで」のように正確にカウントして実装したい場合、Durable ObjectsとWorkers KVのどちらでカウンタを実装するのが適切ですか？",
+      "options": [
+        {
+          "text": "Workers KV。結果整合性(eventual consistency)のおかげで、複数エッジからの同時書き込みでも常に正確な合計値が得られる",
+          "wrongFeedback": "KVは結果整合性のストアで、ある拠点での変更が他の拠点に伝播するまで最大60秒程度かかることがあります。同じキーへの高頻度な更新やアトミックな読み書きには向きません。"
+        },
+        {
+          "text": "Workers KV。書き込み回数に制限がないため、リクエストのたびにカウンタを更新しても問題ない",
+          "wrongFeedback": "KVは同じキーに対して秒間数十〜数百回規模で書き込むようなワークロードには不向きとされています。頻繁な更新が必要なカウンタには適していません。"
+        },
+        {
+          "text": "Durable Objects。ユーザーごとに単一インスタンスを割り当て、単一スレッド実行の中でカウンタを正確にインクリメント・判定できる"
+        },
+        {
+          "text": "Durable ObjectsとKVのどちらを使っても差はなく、実装コストの低さだけで選べばよい",
+          "wrongFeedback": "整合性の要件が異なるため、正確なカウントが必要なレート制限にはDurable Objectsが適しています。実装コストの低さだけで選ぶべきではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers KVは結果整合性のストアで、ある拠点での書き込みが他の拠点に反映されるまで最大60秒程度かかることがあり、アトミックな読み書きや高頻度の更新が必要なワークロードには向きません。一方Durable Objectsは、ユーザーごとに単一のインスタンスを割り当てれば、単一スレッド実行の中でカウンタの読み取り・インクリメント・閾値判定を競合なく正確に行えます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/kv/concepts/how-kv-works/",
+      "hint": "「正確なカウント」と「結果整合性」は相性が良いか、それとも悪いか考えてみましょう。",
+      "tags": [
+        "architecture",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "カウンタ実装としての向き不向き",
+          "columns": [
+            {
+              "heading": "Durable Objects",
+              "items": [
+                "単一インスタンス・単一スレッド実行",
+                "アトミックなインクリメントが可能",
+                "正確なレート制限に向く"
+              ]
+            },
+            {
+              "heading": "Workers KV",
+              "items": [
+                "結果整合性(最大60秒程度で伝播)",
+                "高頻度な同一キー更新に不向き",
+                "正確なカウンタには不向き"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "flow",
+          "label": "Durable Objectsでのレート制限の流れ",
+          "steps": [
+            {
+              "text": "リクエスト受信"
+            },
+            {
+              "text": "ユーザーIDに対応するDurable Objectを取得"
+            },
+            {
+              "text": "カウンタをインクリメント"
+            },
+            {
+              "text": "閾値を超えていれば429を返す"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ar-017",
+      "category": "architecture",
+      "difficulty": "advanced",
+      "question": "本番のWorkerでエラー率が急上昇した。原因を切り分けるための考え方として適切なものはどれですか？",
+      "options": [
+        {
+          "text": "まずWorkerのコードを全て書き直し、様子を見る",
+          "wrongFeedback": "原因を特定せずに大規模な書き直しを行うのは非効率で、かえって新たな不具合を生むリスクもあります。まずは切り分けを行うべきです。"
+        },
+        {
+          "text": "Workers Logsなどでエラーの発生箇所を確認し、Worker自体の実行エラー(例外)なのか、fetch()等のサブリクエスト先(外部APIやDBなど)のエラーなのかをまず切り分ける"
+        },
+        {
+          "text": "エラーはすべてCloudflareのネットワーク障害が原因と判断し、Cloudflareサポートの対応を待つだけにする",
+          "wrongFeedback": "原因の多くはアプリケーションコードや接続先サービス側にあることも多く、まずは自分たちで切り分けを行うべきです。"
+        },
+        {
+          "text": "クライアント側のブラウザキャッシュをクリアするようユーザーに案内するだけで、サーバー側は調査しない",
+          "wrongFeedback": "サーバー側のログ調査を行わずにクライアント側だけに原因を求めるのは、切り分けとして不十分です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "障害切り分けの基本は、エラーが発生している「レイヤー」を特定することです。Workers Logsを確認し、Worker内の例外(TypeErrorなど、スタックトレースが記録される)なのか、それともfetch()で呼び出している外部APIやD1/R2などサブリクエスト先のタイムアウト・5xxエラーなのかを見分けます。原因のレイヤーが分かれば、コードの修正、リトライ処理の追加、外部サービス側への問い合わせなど、次の対応を絞り込めます。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/",
+      "hint": "「Workerの中で起きたエラー」と「Workerが呼び出した先で起きたエラー」を分けて考えてみましょう。",
+      "tags": [
+        "architecture",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "障害切り分けの流れ",
+          "steps": [
+            {
+              "text": "エラー率上昇を検知"
+            },
+            {
+              "text": "Workers Logsでエラー内容を確認"
+            },
+            {
+              "text": "Worker内の例外か、サブリクエストのエラーかを切り分け"
+            },
+            {
+              "text": "原因箇所(コード/外部API/DB)を特定して対処"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "エラーの発生レイヤーの見分け方",
+          "columns": [
+            {
+              "heading": "Worker実行エラー",
+              "items": [
+                "コード内の例外(TypeError等)",
+                "Workers Logsにスタックトレースが記録される"
+              ]
+            },
+            {
+              "heading": "サブリクエスト先のエラー",
+              "items": [
+                "外部API/DBのタイムアウトや5xx",
+                "fetch()の戻り値やcatchで検知"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ar-018",
+      "category": "architecture",
+      "difficulty": "advanced",
+      "question": "Cloudflare Workersの実行コストを最適化したい場合、優先して検討すべき設計上の判断軸として適切なものはどれですか？",
+      "options": [
+        {
+          "text": "CPU時間を消費する重い処理を減らす(不要な計算の削減、キャッシュの活用、Smart Placementによる往復遅延の削減など)ことを優先する。課金軸がリクエスト数とCPU時間であるため"
+        },
+        {
+          "text": "Workerの実行時間(壁時計時間)をできるだけ長くして、1リクエストでまとめて多くの処理を行う",
+          "wrongFeedback": "壁時計時間自体は課金対象ではありませんが、重い処理を1リクエストに詰め込めばCPU時間の消費が増える可能性があります。まとめること自体がコスト最適化にはなりません。"
+        },
+        {
+          "text": "サブリクエスト数を増やすことでキャッシュヒット率が上がり、結果的にコストが下がる",
+          "wrongFeedback": "サブリクエスト数を増やすこと自体がキャッシュヒット率の向上に直結するわけではなく、外部アクセスが増えるほど処理も複雑になりがちです。"
+        },
+        {
+          "text": "メモリ使用量を減らすことが最優先の課金対象であり、CPU時間は考慮しなくてよい",
+          "wrongFeedback": "Workersの課金軸はリクエスト数とCPU時間であり、メモリ使用量自体が直接の課金対象ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workersの課金はリクエスト数とCPU時間の組み合わせであり、I/O待ちなどの壁時計時間には課金や制限がありません。したがって、コスト最適化では「CPUを使い切る重い処理をいかに減らすか」が主な判断軸になります。具体的には、不要な計算の削減、計算結果のキャッシュ活用、Smart Placementでバックエンドとの往復回数・遅延を減らすことなどが有効です。逆に、壁時計時間を延ばすことやメモリ使用量の削減自体は、直接のコスト最適化にはつながりません。\n{{diagram:0}}\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers/platform/pricing/",
+      "hint": "Workersの課金軸は何だったか(リクエスト数と何の時間か)を思い出してみましょう。",
+      "tags": [
+        "architecture",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "コスト最適化の考え方",
+          "items": [
+            {
+              "text": "課金軸",
+              "sub": "リクエスト数 + CPU時間"
+            },
+            {
+              "text": "最適化ポイント1",
+              "sub": "重い計算処理を減らす・キャッシュを活用する"
+            },
+            {
+              "text": "最適化ポイント2",
+              "sub": "Smart Placement等で往復遅延を減らす"
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "label": "コスト最適化に有効なもの・ならないもの",
+          "columns": [
+            {
+              "heading": "有効",
+              "items": [
+                "CPUを消費する処理の削減",
+                "計算結果のキャッシュ活用",
+                "Smart Placementの活用"
+              ]
+            },
+            {
+              "heading": "有効ではない",
+              "items": [
+                "壁時計時間を延ばしてまとめて処理",
+                "メモリ使用量だけを気にする"
               ]
             }
           ]

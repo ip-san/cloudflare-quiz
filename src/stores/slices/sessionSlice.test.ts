@@ -76,7 +76,7 @@ describe('sessionSlice', () => {
       answerCurrentQuestion(false)
 
       // localStorage should have a snapshot from submitAnswer
-      const snapshotBefore = localStorage.getItem('cloudflare-codex-quiz-session')
+      const snapshotBefore = localStorage.getItem('cloudflare-quiz-session')
       expect(snapshotBefore).not.toBeNull()
 
       // Retry the question
@@ -86,12 +86,12 @@ describe('sessionSlice', () => {
       expect(s.isCorrect).toBeNull()
 
       // Snapshot should be updated after retry
-      const snapshotAfter = localStorage.getItem('cloudflare-codex-quiz-session')
+      const snapshotAfter = localStorage.getItem('cloudflare-quiz-session')
       expect(snapshotAfter).not.toBeNull()
       // retryQuestion doesn't change answeredCount, but the snapshot should be re-saved
       // Verify the setItem was called after retry (at least 2 saves: submitAnswer + retry)
       const setItemCalls = (localStorage.setItem as any).mock.calls.filter(
-        (c: string[]) => c[0] === 'cloudflare-codex-quiz-session'
+        (c: string[]) => c[0] === 'cloudflare-quiz-session'
       )
       expect(setItemCalls.length).toBeGreaterThanOrEqual(2)
     })

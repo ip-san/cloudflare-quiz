@@ -21,8 +21,8 @@ test.describe('URL sharing', () => {
     await page.addInitScript(() => {
       try {
         // hasSeenFlag in src/lib/storage.ts checks for exactly '1'
-        localStorage.setItem('claude-code-quiz-welcomed', '1')
-        localStorage.setItem('claude-code-quiz-tutorial-seen', '1')
+        localStorage.setItem('cloudflare-quiz-welcomed', '1')
+        localStorage.setItem('cloudflare-quiz-tutorial-seen', '1')
       } catch {
         /* ignore quota/security errors */
       }
@@ -30,7 +30,7 @@ test.describe('URL sharing', () => {
   })
 
   test('?q=<id> starts a 1-question share session', async ({ page }) => {
-    await page.goto('/?q=mem-001')
+    await page.goto('/?q=wk-001')
     await waitForNotLoading(page)
 
     // Header badge exposes the share label
@@ -38,15 +38,15 @@ test.describe('URL sharing', () => {
     // Progress bar total = 1 (single question)
     const bar = page.getByRole('progressbar', { name: '問題の進捗' })
     await expect(bar).toHaveAttribute('aria-valuemax', '1')
-    // URL should remain at ?q=mem-001 (current question matches intent)
-    await expect(page).toHaveURL(/\?q=mem-001/)
+    // URL should remain at ?q=wk-001 (current question matches intent)
+    await expect(page).toHaveURL(/\?q=wk-001/)
   })
 
   test('?category=<id> starts a category session and rewrites URL to current question', async ({ page }) => {
-    await page.goto('/?category=memory')
+    await page.goto('/?category=workers')
     await waitForNotLoading(page)
-    // Address bar should be rewritten to the first memory question (mem-*)
-    await expect(page).toHaveURL(/\?q=mem-[^&]+$/, { timeout: 10000 })
+    // Address bar should be rewritten to the first workers question (wk-*)
+    await expect(page).toHaveURL(/\?q=wk-[^&]+$/, { timeout: 10000 })
     await expect(page.getByRole('progressbar', { name: '問題の進捗' })).toBeVisible()
   })
 
@@ -66,7 +66,10 @@ test.describe('URL sharing', () => {
     await expect(page).toHaveURL(/\?mode=scenario$/)
   })
 
-  test('?scenario=<id> starts that scenario and keeps the scenario URL', async ({ page }) => {
+  // Cloudflare Codex Quiz ships with SCENARIOS = [] at launch (src/data/scenarios.ts),
+  // so no scenario id can resolve yet — parseUrlIntent rejects any ?scenario= value.
+  // Re-enable once scenario content exists.
+  test.skip('?scenario=<id> starts that scenario and keeps the scenario URL', async ({ page }) => {
     await page.goto('/?scenario=scenario-onboard')
     await waitForNotLoading(page)
     // The URL must NOT be rewritten to ?q=... — the scenario flow is the share unit

@@ -158,7 +158,7 @@ const cloudflareTheme: ThemeConfig = {
   certificateDescFull: 'Cloudflare の機能と使い方に関する実力テストに合格しました',
   officialDocsUrl: 'https://developers.cloudflare.com/',
   officialDocsLabel: 'Cloudflare を始める',
-  pwaUrl: 'https://ip-san.github.io/cloudflare-codex-quiz/',
+  pwaUrl: 'https://ip-san.github.io/cloudflare-quiz/',
   shareHashtags: '#Cloudflare #エッジコンピューティング #サーバーレス',
   // weight = 実務価値の3段階プロキシ（5=ニッチ / 10=標準 / 15=高頻度・高インパクト）。
   // 価値軸の唯一の情報源。出題配分(full)・出題順 tie-break(random/SRS)・レコメンドが追従する。
@@ -282,7 +282,7 @@ const cloudflareTheme: ThemeConfig = {
       desc: 'スマホでいつでも学習。毎日少しずつで、着実にスキルアップ',
     },
   ],
-  storagePrefix: 'cloudflare-codex-quiz',
+  storagePrefix: 'cloudflare-quiz',
   overviewChapters: [
     {
       id: 1,

@@ -310,11 +310,7 @@ export function MenuHeader({
                 />
                 <button
                   onClick={() => {
-                    window.open(
-                      'https://github.com/ip-san/cloudflare-codex-quiz#readme',
-                      '_blank',
-                      'noopener,noreferrer'
-                    )
+                    window.open('https://github.com/ip-san/cloudflare-quiz#readme', '_blank', 'noopener,noreferrer')
                     closeMenu()
                   }}
                   className="tap-highlight flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-claude-dark dark:text-stone-200"

@@ -127,7 +127,7 @@ test.describe('Menu screen', () => {
     await page.getByRole('button', { name: /クイズで学ぶ/ }).click()
 
     // Should navigate to quiz screen (question or chapter intro visible)
-    await expect(page.getByRole('button', { name: /次へ|回答|チャプター/ }).first()).toBeVisible({ timeout: 5000 })
+    await expect(page.getByRole('button', { name: /次へ|回答|学習を始める/ }).first()).toBeVisible({ timeout: 5000 })
   })
 
   test('すでに活用されている方へ opens hamburger menu with modes', async ({ page }) => {

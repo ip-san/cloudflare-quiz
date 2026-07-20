@@ -10,7 +10,7 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/cloudflare-codex-quiz/',
+  base: '/cloudflare-quiz/',
 
   plugins: [
     react(),
@@ -31,8 +31,8 @@ export default defineConfig({
         theme_color: '#F6821F',
         background_color: '#F6821F',
         display: 'standalone',
-        scope: '/cloudflare-codex-quiz/',
-        start_url: '/cloudflare-codex-quiz/',
+        scope: '/cloudflare-quiz/',
+        start_url: '/cloudflare-quiz/',
         icons: [
           { src: 'icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
@@ -41,7 +41,7 @@ export default defineConfig({
           { src: 'icons/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
         orientation: 'portrait' as const,
-        shortcuts: [{ name: 'クイックスタート', url: '/cloudflare-codex-quiz/', description: 'クイズをすぐ開始' }],
+        shortcuts: [{ name: 'クイックスタート', url: '/cloudflare-quiz/', description: 'クイズをすぐ開始' }],
       },
     }),
   ],

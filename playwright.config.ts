@@ -71,7 +71,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run preview:web',
+    command: 'bun run preview',
     port: 4173,
     reuseExistingServer: !process.env.CI,
   },

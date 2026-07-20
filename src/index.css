@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-claude-orange: #f6821f;
+  --color-claude-orange: #c2410c;
   --color-claude-cream: #faf9f5;
   --color-claude-dark: #1a1a1a;
   --color-claude-gray: #595959;

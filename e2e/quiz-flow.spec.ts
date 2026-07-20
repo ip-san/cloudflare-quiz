@@ -33,7 +33,7 @@ test.describe('Quiz App E2E', () => {
   })
 
   test('shows welcome screen on first visit', async ({ page }) => {
-    await expect(page.getByText('Claude Code Quiz')).toBeVisible()
+    await expect(page.getByText('Cloudflare Quiz')).toBeVisible()
     await expect(page.getByText('はじめる')).toBeVisible()
   })
 
@@ -106,7 +106,7 @@ test.describe('Quiz App E2E', () => {
     await page.getByText('検索・リファレンス').click()
 
     // Type query
-    await page.getByRole('textbox', { name: '問題を検索' }).fill('CLAUDE.md')
+    await page.getByRole('textbox', { name: '問題を検索' }).fill('Workers')
 
     // Should show results with "問に挑戦" button
     await expect(page.getByRole('button', { name: /問に挑戦/ })).toBeVisible({ timeout: 3000 })
@@ -377,7 +377,7 @@ test.describe('Quiz App E2E', () => {
 
     // Verify XP was recorded in localStorage
     const xp = await page.evaluate(() => {
-      const stored = localStorage.getItem('claude-code-quiz-progress')
+      const stored = localStorage.getItem('cloudflare-quiz-progress')
       if (!stored) return 0
       const data = JSON.parse(stored)
       return data.totalXp ?? 0
@@ -390,11 +390,11 @@ test.describe('Quiz App E2E', () => {
     await page.goto('/')
     await page.evaluate(() => {
       localStorage.setItem(
-        'claude-code-quiz-progress',
+        'cloudflare-quiz-progress',
         JSON.stringify({
           questionProgress: {
-            'mem-001': {
-              questionId: 'mem-001',
+            'wk-001': {
+              questionId: 'wk-001',
               attempts: 3,
               correctCount: 2,
               lastAttemptAt: Date.now(),
@@ -416,11 +416,11 @@ test.describe('Quiz App E2E', () => {
     await page.waitForLoadState('networkidle')
     await goToMenu(page)
 
-    // Start a session with mem-001 specifically
+    // Start a session with wk-001 specifically
     await page.evaluate(() => {
       // Use the store to start a session with this specific question
       const store = (window as any).__quizStore
-      if (store) store.getState().startSessionWithIds(['mem-001'])
+      if (store) store.getState().startSessionWithIds(['wk-001'])
     })
 
     // If store isn't exposed, use menu to start random
@@ -449,11 +449,9 @@ test.describe('Quiz App E2E', () => {
     // Inject progress where all overview questions are answered correctly
     await page.goto('/')
     await page.evaluate(() => {
-      const data = JSON.parse(localStorage.getItem('claude-code-quiz-progress') || '{}')
-      // Get overview question IDs from the app's quiz data
-      const quizData = JSON.parse(document.querySelector('[data-quiz-count]')?.getAttribute('data-quiz-count') || '0')
-      // We'll set progress for known Ch1 IDs (5 questions)
-      const ch1Ids = ['bp-001', 'bp-002', 'bp-082', 'bp-083', 'bp-084']
+      const data = JSON.parse(localStorage.getItem('cloudflare-quiz-progress') || '{}')
+      // Ch1 (workers, overview-001〜006) — 6 questions
+      const ch1Ids = ['wk-001', 'wk-002', 'wk-003', 'wk-004', 'wk-005', 'wk-007']
       const qp: Record<string, unknown> = data.questionProgress || {}
       for (const id of ch1Ids) {
         qp[id] = {
@@ -467,15 +465,15 @@ test.describe('Quiz App E2E', () => {
         }
       }
       localStorage.setItem(
-        'claude-code-quiz-progress',
+        'cloudflare-quiz-progress',
         JSON.stringify({
           ...data,
           modifiedAt: Date.now(),
           questionProgress: qp,
           categoryProgress: data.categoryProgress || {},
-          totalAttempts: 5,
-          totalCorrect: 5,
-          totalXp: 50,
+          totalAttempts: 6,
+          totalCorrect: 6,
+          totalXp: 60,
           streakDays: 1,
           lastSessionAt: Date.now(),
         })
@@ -496,47 +494,52 @@ test.describe('Quiz App E2E', () => {
   })
 
   test('overview progress: all chapters complete shows next-step banner', async ({ page }) => {
-    // Inject progress where ALL 36 overview questions are correctly answered
+    // Inject progress where ALL 35 overview questions are correctly answered
     await page.goto('/')
     await page.evaluate(() => {
-      // All 36 overview question IDs (verified from quizzes.json ch1-ch6)
+      // All 35 overview question IDs (verified from quizzes.json ch1-ch6)
       const allOverviewIds = [
-        'bp-001',
-        'bp-002',
-        'bp-082',
-        'bp-083',
-        'bp-084',
-        'mem-001',
-        'mem-003',
-        'mem-005',
-        'bp-003',
-        'mem-019',
-        'cmd-002',
-        'bp-014',
-        'bp-021',
-        'bp-026',
-        'bp-029',
-        'bp-085',
-        'cmd-003',
-        'ses-001',
-        'ses-003',
-        'ses-005',
-        'ses-006',
-        'ses-007',
-        'key-008',
-        'bp-086',
-        'skill-004',
-        'tool-010',
-        'ext-001',
-        'ext-003',
-        'ext-005',
-        'ext-095',
-        'cmd-008',
-        'key-007',
-        'bp-004',
-        'bp-007',
-        'bp-013',
-        'bp-016',
+        // Ch1: workers
+        'wk-001',
+        'wk-002',
+        'wk-003',
+        'wk-004',
+        'wk-005',
+        'wk-007',
+        // Ch2: wrangler
+        'wr-001',
+        'wr-002',
+        'wr-003',
+        'wr-004',
+        'wr-005',
+        'wr-006',
+        // Ch3: kv-cache, r2, d1
+        'kv-001',
+        'kv-002',
+        'r2-001',
+        'r2-002',
+        'd1-001',
+        'd1-002',
+        // Ch4: do-queues, ai-vectorize
+        'dq-001',
+        'dq-002',
+        'dq-004',
+        'ai-001',
+        'ai-004',
+        'ai-005',
+        // Ch5: pages-deploy
+        'pg-001',
+        'pg-002',
+        'pg-003',
+        'pg-004',
+        'pg-005',
+        'pg-006',
+        // Ch6: architecture
+        'ar-001',
+        'ar-002',
+        'ar-003',
+        'ar-004',
+        'ar-005',
       ]
       const qp: Record<string, unknown> = {}
       for (const id of allOverviewIds) {
@@ -552,14 +555,14 @@ test.describe('Quiz App E2E', () => {
       }
       const now = Date.now()
       localStorage.setItem(
-        'claude-code-quiz-progress',
+        'cloudflare-quiz-progress',
         JSON.stringify({
           modifiedAt: now,
           questionProgress: qp,
           categoryProgress: {},
-          totalAttempts: 36,
-          totalCorrect: 36,
-          totalXp: 360,
+          totalAttempts: 35,
+          totalCorrect: 35,
+          totalXp: 350,
           streakDays: 1,
           lastSessionAt: now,
           sessionHistory: [
@@ -568,8 +571,8 @@ test.describe('Quiz App E2E', () => {
               completedAt: now,
               mode: 'overview',
               categoryFilter: null,
-              score: 36,
-              totalQuestions: 36,
+              score: 35,
+              totalQuestions: 35,
               percentage: 100,
             },
           ],
@@ -589,10 +592,10 @@ test.describe('Quiz App E2E', () => {
   })
 
   test('overview "続きから" only shows unanswered questions', async ({ page }) => {
-    // Inject progress: Ch1 with 3/5 correct (2 remaining)
+    // Inject progress: Ch1 (workers, 6 questions) with 4/6 correct (2 remaining: wk-005, wk-007)
     await page.goto('/')
     await page.evaluate(() => {
-      const correctIds = ['bp-001', 'bp-002', 'bp-082']
+      const correctIds = ['wk-001', 'wk-002', 'wk-003', 'wk-004']
       const qp: Record<string, unknown> = {}
       for (const id of correctIds) {
         qp[id] = {
@@ -607,14 +610,14 @@ test.describe('Quiz App E2E', () => {
       }
       const now = Date.now()
       localStorage.setItem(
-        'claude-code-quiz-progress',
+        'cloudflare-quiz-progress',
         JSON.stringify({
           modifiedAt: now,
           questionProgress: qp,
           categoryProgress: {},
-          totalAttempts: 3,
-          totalCorrect: 3,
-          totalXp: 30,
+          totalAttempts: 4,
+          totalCorrect: 4,
+          totalXp: 40,
           streakDays: 1,
           lastSessionAt: now,
           sessionHistory: [
@@ -623,9 +626,9 @@ test.describe('Quiz App E2E', () => {
               completedAt: now,
               mode: 'overview',
               categoryFilter: null,
-              score: 3,
-              totalQuestions: 5,
-              percentage: 60,
+              score: 4,
+              totalQuestions: 6,
+              percentage: 67,
             },
           ],
           dailyAnswerCounts: {},
@@ -654,7 +657,7 @@ test.describe('Quiz App E2E', () => {
 
       // The session should have only 2 questions (the unanswered ones)
       const progress = await page.evaluate(() => {
-        const stored = localStorage.getItem('claude-code-quiz-session')
+        const stored = localStorage.getItem('cloudflare-quiz-session')
         if (!stored) return null
         const data = JSON.parse(stored)
         return { questionCount: data.questionIds?.length }
@@ -671,7 +674,7 @@ test.describe('Quiz App E2E', () => {
 /** Get the actual question count from the active session in localStorage */
 async function getSessionQuestionCount(page: Page): Promise<number | null> {
   return page.evaluate(() => {
-    const stored = localStorage.getItem('claude-code-quiz-session')
+    const stored = localStorage.getItem('cloudflare-quiz-session')
     if (!stored) return null
     const data = JSON.parse(stored)
     return data.questionIds?.length ?? null
@@ -720,12 +723,12 @@ test.describe('Spec Bug Prevention: displayed count matches session count', () =
     await page.evaluate(() => {
       const now = Date.now()
       localStorage.setItem(
-        'claude-code-quiz-progress',
+        'cloudflare-quiz-progress',
         JSON.stringify({
           modifiedAt: now,
           questionProgress: {
-            'bp-001': {
-              questionId: 'bp-001',
+            'ar-006': {
+              questionId: 'ar-006',
               attempts: 1,
               correctCount: 1,
               lastAttemptAt: now,
@@ -774,7 +777,7 @@ test.describe('Spec Bug Prevention: displayed count matches session count', () =
       const now = Date.now()
       const qp: Record<string, unknown> = {}
       // Create 5 answered questions
-      for (const id of ['bp-001', 'bp-002', 'bp-003', 'mem-001', 'mem-003']) {
+      for (const id of ['ar-006', 'ar-007', 'ar-008', 'ar-009', 'ar-010']) {
         qp[id] = {
           questionId: id,
           attempts: 1,
@@ -785,7 +788,7 @@ test.describe('Spec Bug Prevention: displayed count matches session count', () =
         }
       }
       localStorage.setItem(
-        'claude-code-quiz-progress',
+        'cloudflare-quiz-progress',
         JSON.stringify({
           modifiedAt: now,
           questionProgress: qp,
@@ -800,7 +803,7 @@ test.describe('Spec Bug Prevention: displayed count matches session count', () =
         })
       )
       // Dismiss snapshot so QuickActions shows
-      localStorage.setItem('claude-code-quiz-snapshot-dismissed', new Date().toISOString().slice(0, 10))
+      localStorage.setItem('cloudflare-quiz-snapshot-dismissed', new Date().toISOString().slice(0, 10))
     })
     await page.reload()
     await page.waitForLoadState('networkidle')

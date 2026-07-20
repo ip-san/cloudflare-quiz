@@ -59,7 +59,7 @@ export class NotificationService {
     try {
       new Notification(theme.appName, {
         body: `🧠 復習待ちの問題が${dueCount}問あります`,
-        icon: '/cloudflare-codex-quiz/icons/icon-192.png',
+        icon: '/cloudflare-quiz/icons/icon-192.png',
         tag: 'srs-review',
         requireInteraction: false,
       })
