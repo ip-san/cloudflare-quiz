@@ -1,0 +1,38 @@
+{
+  "title": "Claude Code カスタムクイズ例",
+  "description": "ユーザーがインポートできるClaude Code学習用クイズのサンプル",
+  "version": "1.0.0",
+  "quizzes": [
+    {
+      "id": "custom-001",
+      "category": "memory",
+      "difficulty": "beginner",
+      "question": "Claude CodeでプロジェクトのCLAUDE.mdファイルを初期化するコマンドはどれですか？",
+      "options": [
+        { "text": "/init" },
+        { "text": "/setup", "wrongFeedback": "/setupというコマンドは存在しません。/initを使用してください。" },
+        { "text": "/create-memory", "wrongFeedback": "/create-memoryというコマンドは存在しません。/initを使用してください。" },
+        { "text": "/new claude.md", "wrongFeedback": "この形式のコマンドはサポートされていません。" }
+      ],
+      "correctIndex": 0,
+      "explanation": "/initコマンドを実行すると、対話的にCLAUDE.mdファイルのテンプレートを生成できます。プロジェクトの構造やコーディング規約を記述するのに役立ちます。",
+      "referenceUrl": "https://docs.anthropic.com/en/docs/claude-code/memory",
+      "aiPrompt": "/initコマンドで生成されるCLAUDE.mdのテンプレート内容と、カスタマイズ方法を教えてください。"
+    },
+    {
+      "id": "custom-002",
+      "category": "tools",
+      "difficulty": "intermediate",
+      "question": "Claude Codeでファイルを編集する際に使用されるツールはどれですか？",
+      "options": [
+        { "text": "Write", "wrongFeedback": "Writeは新規ファイル作成に使用します。既存ファイルの編集にはEditを使用します。" },
+        { "text": "Edit" },
+        { "text": "Modify", "wrongFeedback": "Modifyというツールは存在しません。" },
+        { "text": "Update", "wrongFeedback": "Updateというツールは存在しません。" }
+      ],
+      "correctIndex": 1,
+      "explanation": "Editツールは既存ファイルの特定部分を置換するために使用されます。old_stringとnew_stringを指定して編集します。",
+      "referenceUrl": "https://docs.anthropic.com/en/docs/claude-code/cli-usage"
+    }
+  ]
+}

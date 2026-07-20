@@ -1,0 +1,71 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        task: [typecheck, lint, test, validate]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - name: typecheck
+        if: matrix.task == 'typecheck'
+        run: bunx tsc --noEmit
+      - name: lint
+        if: matrix.task == 'lint'
+        run: bunx biome check src/ scripts/
+      - name: test
+        if: matrix.task == 'test'
+        run: bun run test
+      - name: validate
+        if: matrix.task == 'validate'
+        run: node scripts/quiz-utils.mjs check
+
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+        env:
+          VITE_GTM_ID: ${{ secrets.VITE_GTM_ID }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      # On failure, annotate the commit so it's visible in GitHub UI
+      - name: Annotate failure
+        if: failure()
+        run: echo "::error::check or build failed. Check logs above."
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

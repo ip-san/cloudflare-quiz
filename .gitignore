@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-electron/
+dist-web/
+release/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# GTM generated files (contain account IDs and Measurement ID)
+gtm/container-config.json
+gtm/container-import.json
+
+# TypeScript
+*.tsbuildinfo
+dist-electron-types/
+
+# Test coverage
+coverage/
+
+# MCP local config
+.mcp.json
+
+# Claude Code local settings (settings.json is team-shared, settings.local.json is personal)
+.claude/settings.local.json
+.claude/tmp/
+test-results/
+playwright-report/
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.claire/
+build/icon.ico
+.lighthouseci/

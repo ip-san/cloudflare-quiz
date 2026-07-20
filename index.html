@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; img-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; style-src 'self' 'unsafe-inline';" />
+    <meta name="theme-color" content="#FAF9F5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CF Quiz" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-touch-icon-167.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+    <meta name="description" content="Cloudflare の使い方をクイズで学ぼう。Workers・KV・R2・D1・Pages などの問題と解説で、エッジで動くプロダクト開発の基本から応用まで身につきます。本アプリは Cloudflare, Inc. とは無関係の非公式学習アプリです。" />
+    <!-- OGP -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Cloudflare Quiz — クイズで学ぶエッジ開発" />
+    <meta property="og:description" content="Cloudflare の機能と使い方をクイズで習得。間隔反復・実践シナリオ・ゲーミフィケーションで効率的に学べる無料 PWA（非公式学習アプリ）。" />
+    <meta property="og:url" content="https://ip-san.github.io/cloudflare-codex-quiz/" />
+    <meta property="og:image" content="https://ip-san.github.io/cloudflare-codex-quiz/icons/icon-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:site_name" content="Cloudflare Quiz" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Cloudflare Quiz — クイズで学ぶエッジ開発" />
+    <meta name="twitter:description" content="Cloudflare の機能と使い方をクイズで習得。間隔反復・実践シナリオ・ゲーミフィケーションで効率的に学べる無料 PWA（非公式学習アプリ）。" />
+    <meta name="twitter:image" content="https://ip-san.github.io/cloudflare-codex-quiz/icons/icon-512.png" />
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Cloudflare Quiz",
+      "description": "Cloudflare の機能と使い方をクイズで習得できる無料の学習アプリ（非公式）。間隔反復、実践シナリオ、ゲーミフィケーション対応。",
+      "url": "https://ip-san.github.io/cloudflare-codex-quiz/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+      "inLanguage": "ja",
+      "browserRequirements": "Requires a modern browser with JavaScript enabled"
+    }
+    </script>
+    <title>Cloudflare Quiz</title>
+  </head>
+  <body class="bg-claude-cream">
+    <div id="root">
+      <!-- Pre-render splash: shown until React mounts (prevents blank flash) -->
+      <div id="splash" style="display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh">
+        <div style="text-align:center">
+          <!-- SPLASH-ICON-START -->
+          <svg width="96" height="96" style="margin:0 auto 16px;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FBA857"/><stop offset="100%" style="stop-color:#F6821F"/></linearGradient></defs><rect x="51" y="51" width="410" height="410" rx="90" fill="url(#bg)"/><path d="M280 96 L152 296 L232 296 L216 416 L360 216 L272 216 Z" fill="white"/></svg>
+          <!-- SPLASH-ICON-END -->
+          <div style="font-size:14px;color:#6B6B6B">読み込み中...</div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
