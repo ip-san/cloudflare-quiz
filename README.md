@@ -91,6 +91,7 @@ bun run quiz:fact-check             # 環境変数・CLIコマンド・設定キ
 - `quiz:lint:url` / `quiz:fact-check` は `docs:fetch` で取得したキャッシュ（`.claude/tmp/docs/`, gitignore 済み）が必要。ドキュメントの見出し構造（MDXコンポーネント使用ページ等）によっては誤検知することがあるため、レビューの参考情報として扱ってください。
 - コミット時は Husky の pre-commit フックが lint-staged（biome）と変更ファイルの vitest、および `quizzes.json` 変更時は `quiz:check` / `quiz:lint` を自動実行します。
 - CI（`.github/workflows/deploy.yml`）は PR 作成時に typecheck/lint/test/`quiz:check` をブロッキングで実行し、`quiz-lint`/`quiz-cross-check` の結果を非ブロッキングで可視化します。
+- Claude Code から `/quiz-refine` を実行すると、上記スクリプトの出力とドキュメントキャッシュを踏まえて question/explanation/選択肢を1問ずつ検証・修正します（`.claude/skills/quiz-refine/`）。`/quality-loop` はコードレビューとクイズ検証、最終ゲート（`bun run check`）を一括実行します（`.claude/skills/quality-loop/`）。
 
 ### 技術スタック
 
