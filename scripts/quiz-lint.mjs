@@ -33,6 +33,7 @@ import {
   filenameToDocPage,
   NEGATION_MARKERS,
   TERMINOLOGY_DICT,
+  WRANGLER_COMMAND_TAG_SOURCE,
 } from './topic-config.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -237,6 +238,18 @@ function extractDocAnchors() {
     while ((match = headingRegex.exec(content)) !== null) {
       const heading = match[1].trim()
       headingAnchors.add(slugify(heading))
+    }
+
+    // Cloudflare's CLI reference pages often render a command's heading via
+    // a `<WranglerCommand command="X" />` MDX component instead of literal
+    // `#` markdown — the heading text/anchor exists on the live page but
+    // never appears as a `#`-prefixed line in source. Treat the component's
+    // `command` attribute as an implicit heading so it isn't misreported as
+    // a broken anchor.
+    const wranglerCmdRegex = new RegExp(WRANGLER_COMMAND_TAG_SOURCE, 'g')
+    // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex exec loop
+    while ((match = wranglerCmdRegex.exec(content)) !== null) {
+      headingAnchors.add(slugify(match[1]))
     }
 
     anchors[page] = headingAnchors

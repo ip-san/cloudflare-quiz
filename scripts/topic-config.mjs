@@ -131,9 +131,32 @@ export const DOC_PAGES = [
   { name: 'workers/versions-and-deployments/gradual-deployments' },
   { name: 'workers/versions-and-deployments/rollbacks' },
   { name: 'workers/wrangler/commands' },
+  { name: 'workers/wrangler/commands/general' },
+  { name: 'workers/wrangler/commands/workers' },
   { name: 'workers/wrangler/configuration' },
   { name: 'workers/wrangler/environments' },
 ].map((p) => ({ ...p, url: `https://developers.cloudflare.com/${p.name}/` }))
+
+/**
+ * Some doc pages are thin navigation stubs (`<DirectoryListing />`) or
+ * `<Render file="..." />` includes — the real command reference text lives
+ * in src/content/partials/, a separate root fetch-docs.mjs doesn't reach by
+ * default. Found via quiz-fact-check.mjs false-positives on real commands
+ * (`wrangler tail`, `wrangler r2 bucket create`) during the 2026-07-21
+ * quality-loop run: workers/wrangler/commands/index.mdx and
+ * r2/reference/wrangler-commands.mdx only reference the actual content,
+ * they don't contain it. Maps DOC_PAGES `name` → explicit path under
+ * src/content/ (not src/content/docs/) for fetch-docs.mjs to fetch instead
+ * of guessing the usual docs/ candidates.
+ */
+export const DOC_PAGE_OVERRIDES = {
+  'r2/reference/wrangler-commands': 'partials/workers/wrangler-commands/r2.mdx',
+  // d1/wrangler-commands renders <WranglerNamespace namespace="d1" />, which
+  // has no static source text at all (subcommands are generated from
+  // Wrangler's own CLI schema at build time) — no override target exists.
+  // quiz-fact-check.mjs will report d1 subcommand terms as "not found"
+  // regardless; verify those manually against `wrangler d1 --help`.
+}
 
 /**
  * Per-category doc groupings and extra reference links.
@@ -160,6 +183,16 @@ export function docPageToFilename(name) {
 export function filenameToDocPage(filename) {
   return filename.replace(/\.md$/, '').replace(/__/g, '/')
 }
+
+/**
+ * Matches Cloudflare's `<WranglerCommand command="X" ... />` MDX component.
+ * Shared by fetch-docs.mjs (to inline a plain-text "wrangler X" line next to
+ * the tag) and quiz-lint.mjs (to treat `X` as an implicit heading/anchor) —
+ * a single source avoids the two drifting if the component ever changes.
+ * Always construct a fresh RegExp from this source per use (module-level
+ * regexes with the `g` flag carry mutable `lastIndex` state across callers).
+ */
+export const WRANGLER_COMMAND_TAG_SOURCE = '<WranglerCommand\\s+command="([^"]+)"'
 
 // ============================================================
 // Backtick Lint Terms

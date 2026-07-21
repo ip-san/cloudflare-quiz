@@ -20,29 +20,48 @@
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'fs'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { DOC_PAGES, docPageToFilename } from './topic-config.mjs'
+import { DOC_PAGE_OVERRIDES, DOC_PAGES, docPageToFilename, WRANGLER_COMMAND_TAG_SOURCE } from './topic-config.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 const DOCS_DIR = resolve(ROOT, '.claude/tmp/docs')
-const RAW_BASE = 'https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs'
+const CONTENT_BASE = 'https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content'
 const MAX_AGE_HOURS = 24 * 14 // 2 weeks
 
 /**
  * The docs repo is inconsistent about whether a page is a directory index
- * (`<path>/index.mdx`) or a leaf file (`<path>.mdx`) — try both.
+ * (`<path>/index.mdx`) or a leaf file (`<path>.mdx`) — try both. A page
+ * listed in DOC_PAGE_OVERRIDES fetches its explicit content-relative path
+ * instead (see topic-config.mjs for why: some docs/ pages are navigation
+ * stubs whose real text lives under src/content/partials/).
  */
 async function fetchMarkdown(name) {
-  const candidates = [`${RAW_BASE}/${name}/index.mdx`, `${RAW_BASE}/${name}.mdx`]
+  const override = DOC_PAGE_OVERRIDES[name]
+  const candidates = override
+    ? [`${CONTENT_BASE}/${override}`]
+    : [`${CONTENT_BASE}/docs/${name}/index.mdx`, `${CONTENT_BASE}/docs/${name}.mdx`]
   for (const url of candidates) {
     try {
       const res = await fetch(url)
-      if (res.ok) return await res.text()
+      if (res.ok) return normalizeWranglerComponents(await res.text())
     } catch {
       // try next candidate
     }
   }
   return null
+}
+
+/**
+ * Cloudflare's docs render CLI command references via custom MDX components
+ * (`<WranglerCommand command="r2 bucket create" />`) rather than literal
+ * text, so a plain substring search for "wrangler r2 bucket create" never
+ * matches even though the command is fully documented. Insert a plain-text
+ * line after each component tag so quiz-lint's anchor extraction and
+ * quiz-fact-check's term search can find it like any other doc content.
+ */
+function normalizeWranglerComponents(markdown) {
+  const pattern = new RegExp(`${WRANGLER_COMMAND_TAG_SOURCE}[^>]*\\/?>`, 'g')
+  return markdown.replace(pattern, (tag, command) => `${tag}\n\nwrangler ${command}\n`)
 }
 
 async function fetchAll(filterNames) {

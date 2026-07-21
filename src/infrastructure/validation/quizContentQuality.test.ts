@@ -152,6 +152,8 @@ const VALID_DOC_PAGES = [
   'workers/versions-and-deployments/gradual-deployments/',
   'workers/versions-and-deployments/rollbacks/',
   'workers/wrangler/commands/',
+  'workers/wrangler/commands/general/',
+  'workers/wrangler/commands/workers/',
   'workers/wrangler/configuration/',
   'workers/wrangler/environments/',
 ]

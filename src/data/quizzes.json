@@ -1000,7 +1000,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`wrangler init` はローカルに新しいWorkerプロジェクトのひな形を作成するコマンドです。\n{{diagram:0}}\n生成されるのは設定ファイル（`wrangler.toml`または`wrangler.jsonc`）と、`src/index.js`（または`.ts`）といった最小限のWorkerコードです。デプロイは行われず、開発者が `wrangler dev` でローカル確認し、`wrangler deploy` で本番公開する、という流れになります。\n{{diagram:1}}\nなお近年は、フレームワークテンプレートを使いたい場合に `npm create cloudflare@latest`（C3）を使うことも推奨されています。",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#init",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#init",
       "hint": "『初期化』が何をするコマンドか、デプロイとの違いを考えてみましょう。",
       "tags": [
         "wrangler",
@@ -1080,7 +1080,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`wrangler dev` はローカルに開発用サーバーを立ち上げ、コードを変更するとホットリロードされる開発体験を提供します。\n{{diagram:0}}\nデフォルトでは `http://localhost:8787` でアクセスでき、実際にデプロイする前にリクエスト/レスポンスの挙動を確認できます。",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#dev",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#dev",
       "hint": "コマンド名の『dev』が示す用途を考えてみましょう。",
       "tags": [
         "wrangler",
@@ -1142,7 +1142,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`wrangler deploy`（旧`wrangler publish`）は、`wrangler.toml`/`wrangler.jsonc` の設定に基づいてコードをビルドし、Cloudflareのグローバルネットワークにアップロードして公開します。\n{{diagram:0}}\n実行後はコンソールに公開されたURL（`*.workers.dev` またはカスタムドメイン）が表示されます。",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#deploy",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#deploy",
       "hint": "『deploy』という単語の意味そのものです。",
       "tags": [
         "wrangler",
@@ -1340,7 +1340,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`wrangler dev` はデフォルトでローカルにWorkersランタイム（workerd）をエミュレートして実行するため、高速でオフラインでも動作します。\n{{diagram:0}}\n一方 `--remote` を付けると、実際にCloudflareのネットワーク上にコードをアップロードして実行するため、ローカルでは再現しづらい実際のエッジ環境固有の挙動を確認できます。ただしネットワーク往復が発生する分、応答は遅くなります。\n{{diagram:1}}",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#dev",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#dev",
       "hint": "デフォルトのモードは『ローカル』か『リモート』か、それぞれのメリットを考えてみましょう。",
       "tags": [
         "wrangler",
@@ -1642,7 +1642,7 @@
       ],
       "correctIndex": 2,
       "explanation": "`wrangler tail` を実行すると、指定したWorkerに対する実際のリクエストのログ（`console.log` の出力や例外情報など）をリアルタイムでストリーミング表示できます。\n{{diagram:0}}\nフィルタ（ステータスコードやHTTPメソッドなど）を付けて絞り込むこともでき、本番障害の原因調査に役立ちます。",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#tail",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#tail",
       "hint": "『しっぽ』のように後ろについて流れてくるログをイメージしましょう。",
       "tags": [
         "wrangler",
@@ -1701,7 +1701,7 @@
       ],
       "correctIndex": 3,
       "explanation": "`wrangler types` を実行すると、`wrangler.toml`（または`wrangler.jsonc`）の設定内容を解析し、`Env` インターフェースを含む型定義ファイル（デフォルトでは `worker-configuration.d.ts`）を生成します。\n{{diagram:0}}\n設定ファイルにバインディングを追加・変更するたびに再実行することで、コード側の型定義を常に最新の状態に保てます。tsconfig側でこの生成ファイルを参照するよう設定しておくのが一般的です。\n{{diagram:1}}",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#types",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#types",
       "hint": "設定ファイルの内容をTypeScriptの型として書き出す専用コマンドです。",
       "tags": [
         "wrangler",
@@ -8421,7 +8421,7 @@
       ],
       "correctIndex": 0,
       "explanation": "`wrangler login` を実行するとブラウザが開き、Cloudflareアカウントへのアクセスを許可するOAuth認証フローが始まります。\n{{diagram:0}}\n認証が完了すると、ローカルにOAuthトークンが保存され、以降の `wrangler dev --remote` や `wrangler deploy` などのコマンドでそのアカウントの権限が使われます。現在ログイン中のアカウントを確認したい場合は `wrangler whoami` を使います。\n{{diagram:1}}",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/#login",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/general/#login",
       "hint": "ブラウザでの認可フローを開始するコマンドです。",
       "tags": [
         "wrangler",
@@ -9233,7 +9233,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`wrangler d1 export <name> --output=backup.sql` を実行すると、テーブル定義とデータを含むSQLダンプファイルを書き出せます。これを別のデータベースに取り込む場合は `wrangler d1 execute <name> --file=backup.sql` でSQLファイルを実行します。これはCloudflareが自動的に記録するTime Travel(過去の時点への復元)とは別の、ポータブルなSQLファイルとしてのバックアップ・移行手段です。\n{{diagram:0}}\n{{diagram:1}}",
-      "referenceUrl": "https://developers.cloudflare.com/d1/wrangler-commands/#export",
+      "referenceUrl": "https://developers.cloudflare.com/d1/wrangler-commands/#d1-export",
       "hint": "「書き出し」と「取り込み」でコマンドが分かれています。",
       "tags": [
         "d1",
