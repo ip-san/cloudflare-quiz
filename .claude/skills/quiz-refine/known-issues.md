@@ -68,3 +68,34 @@
   学習者が実在する構文だと誤解するリスクの方が「正解を当てやすくなる」リスクより大きいと判断した）。よって2026-07-22時点では
   意図的に手を加えていない。もし将来的に手直しするなら、不正解の技術的な具体性を（架空の構文を発明せずに）文章で補強する方向で
   検討すること
+
+## 2026-07-22 全カテゴリ能動的検証（A-1）— 発見した doc drift / 内部矛盾
+
+`/quiz-refine` の A-1（正解妥当性の能動的検証）に基づき、lint フラグに関わらず全162問をカテゴリ別に
+`.claude/tmp/docs/` のキャッシュと突き合わせて検証した（9カテゴリ、並列エージェント）。以下7件を確認の上で修正した。
+残り155問は現行ドキュメントと矛盾なし。
+
+- **wr-001 / wr-005（major）**: `wrangler init` の説明が「ローカルにひな形を作るだけでデプロイしない」
+  「フレームワーク統合を提供しない」という前提だったが、`workers__wrangler__commands__workers.md` の `## init`
+  セクションで `wrangler init` は現在 create-cloudflare-cli（C3）を呼び出すラッパーになっており
+  「A variety of web frameworks are available... with the option to deploy your project immediately」と明記されている
+  ことを確認。explanation / wrongFeedback を「フレームワーク選択・即時デプロイのオプションもある」という現行仕様に修正
+- **kv-007（minor）**: explanation内の `cacheEveriching` は `cacheEverything` のtypo（同じ問題の diagram では正しく
+  綴られていた）。修正済み
+- **r2-011（minor）**: 不正解の wrongFeedback が「R2は強整合性が求められる用途に向かない」としていたが、
+  `r2__api__workers__workers-api-reference.md` は "R2 writes are strongly consistent" / "R2 deletes are strongly
+  consistent" と明記しており矛盾。理由を「強整合性はあるが高頻度小サイズの読み書きにはKV/DOの方が適する」に修正
+- **d1-012（major）**: Time Travel の保持期間「過去30日以内」が Workers Paid プラン限定の数値で、
+  `d1__reference__time-travel.md` L136 に "up to 30 days in the past (Workers Paid plan) or 7 days (Workers Free
+  plan)" と明記されている。正解選択肢と explanation にFree/Paidの違いを明記するよう修正
+- **ar-013（minor）**: 「WorkerがリクエストをインターセプトするとBypassポリシーが機能しないことがある」という説明が、
+  `cloudflare-one__access-controls__policies.md` の実際の条件（デバイスポスチャチェックを含むBypassポリシーに限定される
+  制約）を一般化しすぎていた。条件を明記するよう修正
+- **pg-017（major）**: ビルドキャッシュが「自動で有効・デプロイ再試行時にキャッシュなしを選べる」という説明だったが、
+  `pages__configuration__build-caching.md` は Settings > Build > Build cache で明示的に Enable する必要があり、
+  クリアも同じ設定画面の Clear Cache から行うと明記（デプロイ時の再試行オプションではない）。正解選択肢・wrongFeedback・
+  explanation を実際のUI操作に合わせて修正
+
+検証で cache が navigation stub / partial 未フェッチのため確証を得られなかった項目（pg-010/pg-011 の `_headers`/
+`_redirects` partial、pg-016 の Node.js バージョン指定ページ）は、矛盾は見つからなかったが完全な裏付けも取れなかった
+ため、既知の未検証項目として記録するに留め、内容は変更していない。

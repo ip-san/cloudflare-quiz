@@ -991,7 +991,7 @@
         },
         {
           "text": "指定した名前でCloudflareダッシュボード上に本番Workerが即座に作成され、コードなしでデプロイされる",
-          "wrongFeedback": "`wrangler init` はローカルにプロジェクトのひな形を作成するだけで、Cloudflareへのデプロイは行いません。デプロイには別途 `wrangler deploy` が必要です。"
+          "wrongFeedback": "`wrangler init` はプロジェクトのコードをローカルに生成した上で、デプロイするかどうかを対話的に尋ねるツールです。「コードを生成せず、いきなり本番Workerが作られる」という動作はしません。"
         },
         {
           "text": "既存の `wrangler.toml` を強制的に上書きし、すべての設定がリセットされる",
@@ -999,7 +999,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`wrangler init` はローカルに新しいWorkerプロジェクトのひな形を作成するコマンドです。\n{{diagram:0}}\n生成されるのは設定ファイル（`wrangler.toml`または`wrangler.jsonc`）と、`src/index.js`（または`.ts`）といった最小限のWorkerコードです。デプロイは行われず、開発者が `wrangler dev` でローカル確認し、`wrangler deploy` で本番公開する、という流れになります。\n{{diagram:1}}\nなお近年は、フレームワークテンプレートを使いたい場合に `npm create cloudflare@latest`（C3）を使うことも推奨されています。",
+      "explanation": "`wrangler init` はローカルに新しいWorkerプロジェクトのひな形を作成するコマンドです。\n{{diagram:0}}\n生成されるのは設定ファイル（`wrangler.toml`または`wrangler.jsonc`）と、`src/index.js`（または`.ts`）といった最小限のWorkerコードです。内部的にはcreate-cloudflare-cli（C3）を呼び出しており、フレームワークテンプレートの選択や、生成直後にデプロイするかどうかを対話的に選べます（自動的にデプロイされるわけではありません）。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#init",
       "hint": "『初期化』が何をするコマンドか、デプロイとの違いを考えてみましょう。",
       "tags": [
@@ -1253,7 +1253,7 @@
         },
         {
           "text": "`wrangler init --framework=nextjs`",
-          "wrongFeedback": "`wrangler init` はフレームワーク統合テンプレートを持つオプションを提供していません。フレームワーク向けスキャフォールディングはC3（create-cloudflare）の役割です。"
+          "wrongFeedback": "`wrangler init` は内部的にC3（create-cloudflare）を呼び出すため、フレームワークテンプレートの選択自体はできますが、`--framework`というフラグはサポートされていません。"
         },
         {
           "text": "`wrangler deploy --template=nextjs`",
@@ -2343,7 +2343,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "fetch()のRequestInitに渡す`cf`オブジェクトのcacheTtlは、そのサブリクエストのレスポンスをCloudflareのエッジに何秒間キャッシュするかを、オリジンが返すCache-Controlヘッダーの指示より優先して制御するオプションです。似た機能に、通常キャッシュされないファイル種別も含めて全てキャッシュするcacheEverichingオプションもあります。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "fetch()のRequestInitに渡す`cf`オブジェクトのcacheTtlは、そのサブリクエストのレスポンスをCloudflareのエッジに何秒間キャッシュするかを、オリジンが返すCache-Controlヘッダーの指示より優先して制御するオプションです。似た機能に、通常キャッシュされないファイル種別も含めて全てキャッシュするcacheEverythingオプションもあります。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
       "hint": "オリジンのCache-Controlヘッダーとの関係を考えてみましょう。",
       "tags": [
@@ -3558,7 +3558,7 @@
           "wrongFeedback": "Time Travelは自動的に記録される変更履歴を使ったポイントインタイムリストア機能で、手動でのR2エクスポート設定は不要です。"
         },
         {
-          "text": "追加のバックアップ設定をすることなく、デフォルトで過去30日以内の任意の時点(分単位)にデータベースを復元できる"
+          "text": "追加のバックアップ設定をすることなく、デフォルトで過去(Workers Paidプランは30日、Freeプランは7日)以内の任意の時点(分単位)にデータベースを復元できる"
         },
         {
           "text": "Time Travelで復元できるのはテーブルのスキーマのみで、データの内容(行)は復元対象に含まれない",
@@ -3570,7 +3570,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Time TravelはD1に組み込まれたポイントインタイムリストア機能で、追加設定なしにデフォルトで有効です。`wrangler d1 time-travel restore`にタイムスタンプまたはbookmarkを指定することで、過去30日以内の任意の時点(分単位)のデータベース状態(スキーマとデータの両方)に復元できます。\n{{diagram:0}}",
+      "explanation": "Time TravelはD1に組み込まれたポイントインタイムリストア機能で、追加設定なしにデフォルトで有効です。`wrangler d1 time-travel restore`にタイムスタンプまたはbookmarkを指定することで、過去の任意の時点(分単位)のデータベース状態(スキーマとデータの両方)に復元できます。復元可能な期間はWorkers Paidプランで30日以内、Freeプランでは7日以内です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/reference/time-travel/",
       "hint": "「デフォルトで有効」かどうか、そして「何日前まで」戻れるかがポイントです。",
       "tags": [
@@ -4393,7 +4393,7 @@
         },
         {
           "text": "頻繁に更新されるセッション状態は、強整合性が必須なのでR2に保存すべきである",
-          "wrongFeedback": "R2はオブジェクトストレージであり、頻繁な更新や強整合性が求められるセッション状態の管理向けには設計されていません。"
+          "wrongFeedback": "R2の書き込み・削除自体は強整合性がありますが、R2はオブジェクトストレージであり、セッション状態のような小さい値への高頻度な読み書きには、Workers KVやDurable Objectsの方がレイテンシ・コストの面で適しています。"
         },
         {
           "text": "画像や動画などの大容量バイナリファイルは、読み取り超低レイテンシが必要なのでWorkers KVに保存すべきである",
@@ -10733,11 +10733,11 @@
       "question": "Cloudflare Pages のビルドキャッシュに関する説明として正しいものはどれか。",
       "options": [
         {
-          "text": "依存関係(パッケージマネージャのキャッシュなど)をビルド間で再利用することでビルド時間を短縮でき、必要に応じて「キャッシュを使わず再試行」して強制的にクリーンビルドすることもできる"
+          "text": "依存関係(パッケージマネージャのキャッシュなど)をビルド間で再利用する機能で、プロジェクト設定(Settings > Build > Build cache)で有効化(Enable)する必要がある。ビルドに問題が起きた場合は、同じ設定画面からキャッシュをクリア(Clear Cache)して強制的にクリーンビルドできる"
         },
         {
           "text": "ビルドキャッシュは常に無効化されており、Pagesのビルドは毎回必ずゼロから依存関係をインストールする",
-          "wrongFeedback": "Pagesはビルド間で依存関係のキャッシュを再利用する仕組みを持っており、常にゼロからインストールするわけではありません。"
+          "wrongFeedback": "Pagesはビルドキャッシュを有効化(Enable)すればビルド間で依存関係キャッシュを再利用できる仕組みを持っており、機能自体が常に無効というわけではありません。"
         },
         {
           "text": "ビルドキャッシュはCDNのキャッシュ(配信済みコンテンツのキャッシュ)と同一のものであり、パージ操作も共通である",
@@ -10749,7 +10749,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Pages はビルドのたびに `node_modules` 等の依存関係キャッシュを再利用することでビルド時間を短縮しています。依存関係の不整合などでクリーンな状態からビルドし直したい場合は、デプロイの再試行時に「キャッシュを使わない」オプションを選択できます。\n{{diagram:0}}\nこれは配信コンテンツを対象とするCDNキャッシュとは異なる、ビルドプロセス専用のキャッシュです。\n{{diagram:1}}",
+      "explanation": "Pages のビルドキャッシュは、プロジェクト設定(Settings > Build > Build cache)で有効化(Enable)することで、`node_modules` 等の依存関係キャッシュをビルド間で再利用できる機能です。デフォルトで有効になっているわけではありません。依存関係の不整合などでクリーンな状態からビルドし直したい場合は、同じ設定画面からキャッシュをクリア(Clear Cache)します。\n{{diagram:0}}\nこれは配信コンテンツを対象とするCDNキャッシュとは異なる、ビルドプロセス専用のキャッシュです。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-caching/",
       "hint": "ビルドのたびに依存関係を毎回ゼロからインストールしていたら非効率です。",
       "tags": [
@@ -11223,7 +11223,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Access(Zero Trustの一機能)は、アクション(Allow/Block/Bypass/Service Auth)・ルール型(Include/Require/Exclude)・セレクタ(メールドメイン、IdP認証、デバイス状態など)を組み合わせたポリシーで、リクエストごとに認証・認可を行います。管理画面のようなアプリケーションの手前にAccessを挟むことで、社内メンバーだけがアクセスできる状態を作れます。\n{{diagram:0}}\nなお、WorkerがリクエストをインターセプトするケースではBypassポリシーが正しく機能しないことがあるため、Service Authアクションの利用が推奨されています。\n{{diagram:1}}",
+      "explanation": "Cloudflare Access(Zero Trustの一機能)は、アクション(Allow/Block/Bypass/Service Auth)・ルール型(Include/Require/Exclude)・セレクタ(メールドメイン、IdP認証、デバイス状態など)を組み合わせたポリシーで、リクエストごとに認証・認可を行います。管理画面のようなアプリケーションの手前にAccessを挟むことで、社内メンバーだけがアクセスできる状態を作れます。\n{{diagram:0}}\nなお、デバイス状態(デバイスポスチャ)の条件を含むBypassポリシーは、WorkerがリクエストをインターセプトするケースやZarazが有効な場合には正しく機能しないため、その場合はService Authアクションの利用が推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
       "hint": "「誰がアクセスできるか」を判定する仕組みと、「アクセス頻度」を制限する仕組みは別物です。",
       "tags": [
