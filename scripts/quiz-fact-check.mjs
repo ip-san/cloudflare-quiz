@@ -21,7 +21,7 @@
 import { existsSync, readdirSync, readFileSync } from 'fs'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { KNOWN_NONEXISTENT_TERMS, NEGATION_MARKERS } from './topic-config.mjs'
+import { HISTORICAL_MARKERS, KNOWN_NONEXISTENT_TERMS, NEGATION_MARKERS } from './topic-config.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
@@ -148,17 +148,44 @@ function isNegatedOccurrence(text, term) {
   return NEGATION_MARKERS.test(window)
 }
 
-function allOccurrencesNegated(term, quizIds, allQuizzesById) {
+// 「旧`wrangler publish`」のような歴史的言及は旧名称を引用せざるを得ないため、
+// 現行ドキュメントに無くても事実誤りではない(quiz-lint の skipIfHistorical と同じ規約)。
+function isHistoricalOccurrence(text, term) {
+  const idx = text.indexOf(term)
+  if (idx < 0) return false
+  const window = text.slice(Math.max(0, idx - 40), idx + term.length + 40)
+  return HISTORICAL_MARKERS.test(window)
+}
+
+function allOccurrencesSuppressed(term, quizIds, allQuizzesById) {
   for (const quizId of quizIds) {
     const quiz = allQuizzesById.get(quizId)
     if (!quiz) continue
     const fields = getAllTextFields(quiz)
     for (const field of fields) {
       if (!field.value || !field.value.includes(term)) continue
-      if (!isNegatedOccurrence(field.value, term)) return false
+      if (!isNegatedOccurrence(field.value, term) && !isHistoricalOccurrence(field.value, term)) return false
     }
   }
   return true
+}
+
+// 抽出したコマンド用語は `wrangler secret put API_KEY` のように例示引数まで
+// 含むことがある。ドキュメントは同じコマンドを別の例示値(FOO 等)で載せるため、
+// 末尾の引数らしきトークン(ALL_CAPS・<placeholder>・数値・my-xxx)を1つずつ
+// 削りながら再検索し、コマンド本体がドキュメントに実在すれば found 扱いにする。
+const EXAMPLE_ARG_RE = /^([A-Z][A-Z0-9_]*|<[^>]+>|my-[\w-]+|\d+)$/
+function searchWithArgStripping(docs, term) {
+  let current = term
+  while (true) {
+    const pages = searchInDocs(docs, current)
+    if (pages.length > 0) return pages
+    const tokens = current.split(' ')
+    if (tokens.length <= 2 || !EXAMPLE_ARG_RE.test(tokens[tokens.length - 1])) {
+      return []
+    }
+    current = tokens.slice(0, -1).join(' ')
+  }
 }
 
 // ============================================================
@@ -171,10 +198,10 @@ function checkTerms(termMap, docs, label, quiet = false, allQuizzesById = null) 
   let negationSuppressed = 0
 
   for (const [term, quizIds] of termMap.entries()) {
-    const pages = searchInDocs(docs, term)
+    const pages = searchWithArgStripping(docs, term)
     if (pages.length > 0) {
       found.push({ term, quizIds: [...quizIds], pages })
-    } else if (allQuizzesById && allOccurrencesNegated(term, quizIds, allQuizzesById)) {
+    } else if (allQuizzesById && allOccurrencesSuppressed(term, quizIds, allQuizzesById)) {
       negationSuppressed++
     } else {
       notFound.push({ term, quizIds: [...quizIds] })
@@ -188,7 +215,7 @@ function checkTerms(termMap, docs, label, quiet = false, allQuizzesById = null) 
     console.log(`  NOT found in docs: ${notFound.length}`)
 
     if (negationSuppressed > 0) {
-      console.log(`  Suppressed (negation context): ${negationSuppressed}`)
+      console.log(`  Suppressed (negation/historical context): ${negationSuppressed}`)
     }
 
     if (notFound.length > 0) {

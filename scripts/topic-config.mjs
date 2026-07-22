@@ -322,6 +322,14 @@ export const TERMINOLOGY_DICT = []
 export const NEGATION_MARKERS =
   /存在しません|存在しない|サポートされていません|サポートしていません|廃止|非推奨|できません|ではありません|does not exist|is not supported|does not support|was removed|deprecated/i
 
+/**
+ * Matches phrases indicating the surrounding text refers to a FORMER name
+ * or behavior (e.g. 「旧`wrangler publish`」). Historical references have to
+ * quote the old term, so term-not-in-docs checks should not flag them.
+ * Shared by quiz-lint.mjs (skipIfHistorical) and quiz-fact-check.mjs.
+ */
+export const HISTORICAL_MARKERS = /旧称|旧`|（旧|\(旧|以前は|formerly|previously|was called|renamed from/i
+
 // ============================================================
 // Known-Nonexistent Terms
 // ============================================================

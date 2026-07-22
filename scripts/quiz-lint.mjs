@@ -31,6 +31,7 @@ import {
   BACKTICK_TERMS,
   DOC_URL_PREFIX,
   filenameToDocPage,
+  HISTORICAL_MARKERS,
   NEGATION_MARKERS,
   TERMINOLOGY_DICT,
   VERIFIED_LIVE_ANCHORS,
@@ -412,7 +413,7 @@ function lintTerminology(quizzes) {
         }
 
         if (found && entry.skipIfHistorical) {
-          if (/旧称|以前は|formerly|previously|was called|renamed from/i.test(field.value)) {
+          if (HISTORICAL_MARKERS.test(field.value)) {
             found = false
           }
         }

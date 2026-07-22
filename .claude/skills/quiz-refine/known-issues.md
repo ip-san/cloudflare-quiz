@@ -31,6 +31,13 @@
   未検証のアンカーを登録するとリンク切れを覆い隠すため、必ず live HTML で確認してから追加すること）
 - `<WranglerCommand command="X" />` コンポーネントはページ内に見出し（`id="X"`）を生成するが、Markdown ソースには `#` 見出しとして現れない。
   `quiz-lint.mjs` の `extractDocAnchors()` は component の `command=` 属性も見出し候補として拾うよう対応済み（2026-07-21）
+- **fact-check の2つの偽陽性パターンを機構化済み（2026-07-22）**: ①クイズが例示引数付きでコマンドを引用する
+  （`wrangler secret put API_KEY`）とドキュメント側の例示値（`FOO`）と一致せず未検出になる → 末尾の引数らしき
+  トークン（ALL_CAPS・`<placeholder>`・数値・`my-xxx`）を1つずつ削って再検索する `searchWithArgStripping` で解消。
+  ②「旧`wrangler publish`」のような歴史的言及は旧名称を引用せざるを得ない → `HISTORICAL_MARKERS`
+  （topic-config.mjs、quiz-lint の skipIfHistorical と共通化）による抑制で解消。
+  これ以降 fact-check の未検出用語が正解選択肢・explanation に登場する場合は真正の要調査項目
+  （誤答選択肢のみに登場する未検出用語は「実在しないコマンドを誤答に使う」意図的パターンで正常）
 
 ## distractor-too-short lint の誤検知（H. 不正解選択肢の妥当性）
 
