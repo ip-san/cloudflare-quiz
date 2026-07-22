@@ -23,7 +23,7 @@ export function OptionButton({
 }: OptionButtonProps) {
   const getStyles = () => {
     if (!isAnswered) {
-      return isSelected ? 'border-claude-orange bg-claude-orange/5 shadow-xs' : 'border-stone-200 dark:border-stone-700'
+      return isSelected ? 'border-cf-accent bg-cf-accent/5 shadow-xs' : 'border-stone-200 dark:border-stone-700'
     }
 
     if (isCorrect) {
@@ -109,7 +109,7 @@ export function OptionButton({
         return (
           <CheckSquare
             className={`h-6 w-6 shrink-0 ${
-              isAnswered ? (isCorrect ? 'text-green-500' : 'text-red-500') : 'text-claude-orange'
+              isAnswered ? (isCorrect ? 'text-green-500' : 'text-red-500') : 'text-cf-accent'
             }`}
             aria-hidden="true"
           />
@@ -124,7 +124,7 @@ export function OptionButton({
       <span
         className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-medium ${
           isSelected && !isAnswered
-            ? 'bg-claude-orange text-white'
+            ? 'bg-cf-accent text-white'
             : 'bg-stone-200 text-stone-700 dark:bg-stone-600 dark:text-stone-200'
         }`}
       >
@@ -148,7 +148,7 @@ export function OptionButton({
     >
       <div className="flex items-start gap-3">
         {renderBadge()}
-        <span className="flex-1 text-sm leading-snug text-claude-dark sm:text-base sm:leading-relaxed">
+        <span className="flex-1 text-sm leading-snug text-cf-ink sm:text-base sm:leading-relaxed">
           <QuizText text={text} />
         </span>
         {getIcon()}

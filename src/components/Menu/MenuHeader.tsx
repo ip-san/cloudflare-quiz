@@ -100,11 +100,11 @@ export function MenuHeader({
         </div>
         <div className="text-center">
           <h1 className="mb-1 text-2xl font-bold">
-            <span className="bg-linear-to-r from-claude-orange to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-cf-accent to-orange-400 bg-clip-text text-transparent">
               {theme.appName}
             </span>
           </h1>
-          <p className="text-sm text-claude-gray">
+          <p className="text-sm text-cf-muted">
             {hasProgress ? (
               <>
                 <AnimatedCounter target={totalQuestions} suffix={locale.common.questionSuffix} /> | {answeredCount}
@@ -137,9 +137,9 @@ export function MenuHeader({
             }}
             role="presentation"
           />
-          <div className="relative z-10 flex h-full w-72 flex-col bg-claude-cream shadow-2xl animate-slide-in-left dark:bg-stone-900">
+          <div className="relative z-10 flex h-full w-72 flex-col bg-cf-surface shadow-2xl animate-slide-in-left dark:bg-stone-900">
             <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700">
-              <span className="text-sm font-bold text-claude-dark dark:text-stone-200">{theme.appName}</span>
+              <span className="text-sm font-bold text-cf-ink dark:text-stone-200">{theme.appName}</span>
               <button
                 onClick={closeMenu}
                 className="tap-highlight rounded-full p-1.5 text-stone-400"
@@ -164,7 +164,7 @@ export function MenuHeader({
               <MenuSection title={locale.menuHeader.learningSection}>
                 <button
                   onClick={toggleModesExpanded}
-                  className="tap-highlight flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-claude-dark dark:text-stone-200"
+                  className="tap-highlight flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-cf-ink dark:text-stone-200"
                 >
                   <span className="text-stone-400">🎮</span>
                   <span className="flex-1 font-medium">{locale.menuHeader.quizModes}</span>
@@ -199,7 +199,7 @@ export function MenuHeader({
                       >
                         <span className="text-sm">{mode.icon}</span>
                         <div className="flex-1">
-                          <span className="text-sm text-claude-dark dark:text-stone-200">{mode.name}</span>
+                          <span className="text-sm text-cf-ink dark:text-stone-200">{mode.name}</span>
                           <p className="text-[10px] text-stone-500">{mode.description}</p>
                         </div>
                       </button>
@@ -313,7 +313,7 @@ export function MenuHeader({
                     window.open('https://github.com/ip-san/cloudflare-quiz#readme', '_blank', 'noopener,noreferrer')
                     closeMenu()
                   }}
-                  className="tap-highlight flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-claude-dark dark:text-stone-200"
+                  className="tap-highlight flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-cf-ink dark:text-stone-200"
                 >
                   <span className="text-stone-400">
                     <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -399,7 +399,7 @@ function DailyGoalRing({
           strokeWidth="2.5"
           strokeDasharray={`${progress * 0.817} 100`}
           strokeLinecap="round"
-          className={achieved ? 'text-green-500' : 'text-claude-orange'}
+          className={achieved ? 'text-green-500' : 'text-cf-accent'}
           stroke="currentColor"
         />
       </svg>

@@ -46,15 +46,15 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-claude-cream px-6">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-cf-surface px-6">
       <div className="w-full max-w-sm animate-view-enter text-center">
         {/* Logo */}
         <div className="mb-6 flex justify-center">
           <AppLogo size={96} />
         </div>
 
-        <h1 className="mb-2 text-3xl font-bold text-claude-dark sm:text-2xl">{theme.appName}</h1>
-        <p className="mb-2 text-sm text-claude-gray">{theme.tagline}</p>
+        <h1 className="mb-2 text-3xl font-bold text-cf-ink sm:text-2xl">{theme.appName}</h1>
+        <p className="mb-2 text-sm text-cf-muted">{theme.tagline}</p>
         <p className="mb-6 text-xs text-stone-500">{getSubtitle(questionCount)}</p>
 
         {/* Features */}
@@ -71,7 +71,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
                   <Icon className={`h-6 w-6 ${feature.iconColor}`} />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-claude-dark">{feature.title}</p>
+                  <p className="text-sm font-semibold text-cf-ink">{feature.title}</p>
                   <p className="text-xs text-stone-600 dark:text-stone-400">{feature.desc}</p>
                 </div>
               </div>
@@ -82,14 +82,14 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         {/* CTA — two equal-weight buttons */}
         <button
           onClick={handleTryOne}
-          className="tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-claude-orange px-8 py-3.5 text-lg font-bold text-white shadow-lg"
+          className="btn-brand tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-lg font-bold shadow-lg"
         >
-          <Play className="h-5 w-5 fill-white" />
+          <Play className="h-5 w-5 fill-cf-ink" />
           {locale.welcome.tryOneQuestion}
         </button>
         <button
           onClick={handleStart}
-          className="tap-highlight mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-claude-orange px-6 py-3 text-base font-semibold text-claude-orange"
+          className="tap-highlight mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-cf-accent px-6 py-3 text-base font-semibold text-cf-accent"
         >
           <span>{locale.welcome.startButton}</span>
           <ArrowRight className="h-4 w-4" />

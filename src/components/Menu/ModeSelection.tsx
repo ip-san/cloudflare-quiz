@@ -47,7 +47,7 @@ export function ModeSelection() {
   }, [])
 
   return (
-    <div className="flex min-h-dvh flex-col bg-claude-cream dark:bg-stone-900">
+    <div className="flex min-h-dvh flex-col bg-cf-surface dark:bg-stone-900">
       <div className="flex-1 overflow-y-auto px-4 pb-8 pt-6 sm:px-6 sm:pt-8">
         <div className="mx-auto w-full sm:max-w-2xl lg:max-w-4xl">
           {/* Resume session banner */}
@@ -95,7 +95,7 @@ export function ModeSelection() {
             >
               <span className="text-xl">🎮</span>
               <div className="flex-1">
-                <span className="text-sm font-medium text-claude-dark dark:text-stone-200">
+                <span className="text-sm font-medium text-cf-ink dark:text-stone-200">
                   {locale.menuHeader.quizModesButton}
                 </span>
                 <p className="text-xs text-stone-500">{locale.menuHeader.quizModesDesc}</p>

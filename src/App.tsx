@@ -35,8 +35,8 @@ const StudyFirstView = lazy(() =>
 /** Compact loading indicator for lazy-loaded screens */
 function LoadingSpinner() {
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-claude-cream dark:bg-stone-900">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-stone-200 border-t-claude-orange dark:border-stone-700" />
+    <div className="flex min-h-dvh items-center justify-center bg-cf-surface dark:bg-stone-900">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-stone-200 border-t-cf-accent dark:border-stone-700" />
     </div>
   )
 }
@@ -227,13 +227,13 @@ export default function App() {
   // Show branded loading screen
   if (isLoading) {
     return (
-      <div className="flex min-h-dvh flex-col items-center justify-center bg-claude-cream">
+      <div className="flex min-h-dvh flex-col items-center justify-center bg-cf-surface">
         <div className="animate-bounce-in text-center">
           <div className="mb-4 flex justify-center">
             <AppLogo size={96} />
           </div>
-          <h1 className="mb-1 text-xl font-bold text-claude-dark">{theme.appName}</h1>
-          <p className="text-sm text-claude-gray">読み込み中...</p>
+          <h1 className="mb-1 text-xl font-bold text-cf-ink">{theme.appName}</h1>
+          <p className="text-sm text-cf-muted">読み込み中...</p>
         </div>
       </div>
     )
@@ -295,7 +295,7 @@ export default function App() {
     setThemeColor(themeColors[viewState] ?? '#FAF9F5')
 
     return (
-      <div className="min-h-dvh bg-claude-cream" key={viewState}>
+      <div className="min-h-dvh bg-cf-surface" key={viewState}>
         <div className="animate-view-enter">{viewContent}</div>
         {pwaOverlays}
       </div>
@@ -336,14 +336,14 @@ function ScenarioSelectView() {
     useShallow((state) => ({ endSession: state.endSession, startScenarioSession: state.startScenarioSession }))
   )
   return (
-    <div className="min-h-dvh bg-claude-cream dark:bg-stone-900">
+    <div className="min-h-dvh bg-cf-surface dark:bg-stone-900">
       <div className="sticky top-0 z-10 border-b border-stone-200 bg-white/80 backdrop-blur-xs dark:border-stone-700 dark:bg-stone-800/80">
         <div className="mx-auto max-w-3xl px-4 pb-2 pt-3">
           <div className="flex items-center gap-3">
             <button onClick={endSession} className="tap-highlight rounded-full p-1" aria-label="戻る">
               <ArrowLeft className="h-5 w-5 text-stone-600 dark:text-stone-300" />
             </button>
-            <h1 className="text-lg font-bold text-claude-dark">実践シナリオ</h1>
+            <h1 className="text-lg font-bold text-cf-ink">実践シナリオ</h1>
           </div>
         </div>
       </div>
@@ -447,7 +447,7 @@ function QuizView({
                 <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">復習</span>
               )}
               {isOverviewMode && currentChapter && (
-                <span className="rounded-full bg-claude-orange/10 px-2.5 py-0.5 text-xs font-medium text-claude-orange">
+                <span className="rounded-full bg-cf-accent/10 px-2.5 py-0.5 text-xs font-medium text-cf-accent">
                   {currentChapter.icon} Ch.{currentChapter.id}
                 </span>
               )}
@@ -457,7 +457,7 @@ function QuizView({
                 </span>
               )}
               <span className="text-sm text-stone-500">
-                <span className="font-bold text-claude-dark">{progress.current}</span>
+                <span className="font-bold text-cf-ink">{progress.current}</span>
                 <span className="mx-0.5 text-stone-400">/</span>
                 <span>{progress.total}</span>
               </span>
@@ -538,7 +538,7 @@ function QuizView({
               }
             }}
           >
-            <h3 id="quit-dialog-title" className="mb-2 text-center text-lg font-semibold text-claude-dark">
+            <h3 id="quit-dialog-title" className="mb-2 text-center text-lg font-semibold text-cf-ink">
               {isReviewMode ? '復習を中止しますか？' : 'クイズを中止しますか？'}
             </h3>
             <p className="mb-6 text-center text-sm text-stone-500">
@@ -547,7 +547,7 @@ function QuizView({
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleCancelQuit}
-                className="tap-highlight w-full rounded-2xl bg-claude-orange py-3.5 text-base font-semibold text-white"
+                className="tap-highlight w-full rounded-2xl bg-cf-accent py-3.5 text-base font-semibold text-white"
               >
                 続ける
               </button>

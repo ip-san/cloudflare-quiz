@@ -160,7 +160,7 @@ export function NetworkDiagram({ label, nodes, edges }: NetworkDiagramProps) {
                     x={pos.x + nodeW / 2}
                     y={pos.y + (node.sub ? 18 : nodeH / 2 + 4)}
                     textAnchor="middle"
-                    className="fill-claude-dark dark:fill-stone-200"
+                    className="fill-cf-ink dark:fill-stone-200"
                     fontSize="11"
                     fontWeight="600"
                   >

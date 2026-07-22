@@ -24,7 +24,7 @@ export function FormulaDiagram({ label, result, components, operator = '+' }: Fo
 
   // Colors for components
   const componentColors = [
-    { bg: 'bg-claude-orange/10', border: 'border-claude-orange/30', text: 'text-claude-orange' },
+    { bg: 'bg-cf-accent/10', border: 'border-cf-accent/30', text: 'text-cf-accent' },
     {
       bg: 'bg-blue-50 dark:bg-blue-500/10',
       border: 'border-blue-200 dark:border-blue-500/30',
@@ -93,12 +93,12 @@ export function FormulaDiagram({ label, result, components, operator = '+' }: Fo
             ＝
           </span>
           <div
-            className={`rounded-lg border border-claude-orange/50 bg-claude-orange/15 px-3 py-1.5 text-center transition-none ${
+            className={`rounded-lg border border-cf-accent/50 bg-cf-accent/15 px-3 py-1.5 text-center transition-none ${
               isVisible ? 'animate-diagram-scale-in' : 'opacity-0'
             }`}
             style={{ animationDelay: getItemDelay(components.length) }}
           >
-            <div className="text-[11px] font-bold text-claude-orange">{result}</div>
+            <div className="text-[11px] font-bold text-cf-accent">{result}</div>
           </div>
         </div>
       )}

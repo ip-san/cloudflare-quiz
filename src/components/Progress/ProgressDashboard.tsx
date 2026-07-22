@@ -44,7 +44,7 @@ export function ProgressDashboard() {
       {/* Sticky header */}
       <div className={`${headerStyles.sticky} px-4 py-3 sm:px-6`}>
         <div className="mx-auto flex items-center justify-between sm:max-w-2xl lg:max-w-4xl">
-          <h1 className="text-lg font-bold text-claude-dark">{locale.progress.title}</h1>
+          <h1 className="text-lg font-bold text-cf-ink">{locale.progress.title}</h1>
           <button
             onClick={() => setViewState('menu')}
             className="tap-highlight rounded-full bg-stone-100 px-4 py-1.5 text-sm font-medium text-stone-600 dark:bg-stone-700 dark:text-stone-300"
@@ -62,11 +62,11 @@ export function ProgressDashboard() {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-700">
                 <span className="text-3xl">📊</span>
               </div>
-              <h3 className="mb-2 text-lg font-medium text-claude-dark">{locale.progress.emptyTitle}</h3>
+              <h3 className="mb-2 text-lg font-medium text-cf-ink">{locale.progress.emptyTitle}</h3>
               <p className="mb-4 text-sm text-stone-500">{locale.progress.emptyMessage}</p>
               <button
                 onClick={() => setViewState('menu')}
-                className="tap-highlight rounded-2xl bg-claude-orange px-6 py-3 text-sm font-semibold text-white"
+                className="tap-highlight rounded-2xl bg-cf-accent px-6 py-3 text-sm font-semibold text-white"
               >
                 {locale.progress.startFirst}
               </button>
@@ -127,7 +127,7 @@ export function ProgressDashboard() {
           {!hasNoProgress && (
             <button
               onClick={() => startSession({ mode: 'weak' })}
-              className="tap-highlight mb-4 w-full rounded-2xl bg-claude-orange px-6 py-3 font-semibold text-white"
+              className="tap-highlight mb-4 w-full rounded-2xl bg-cf-accent px-6 py-3 font-semibold text-white"
             >
               {`🎯 ${locale.progress.weakChallenge}`}
             </button>
@@ -149,7 +149,7 @@ export function ProgressDashboard() {
                   {trendInfo.best !== null && (
                     <div className={`flex-1 ${cardStyles.base} p-4`}>
                       <div className="mb-1 text-xs text-stone-500">{locale.progress.bestAccuracy}</div>
-                      <div className="text-2xl font-bold text-claude-orange">{trendInfo.best}%</div>
+                      <div className="text-2xl font-bold text-cf-accent">{trendInfo.best}%</div>
                     </div>
                   )}
                   {trendInfo.trend !== null && (
@@ -206,7 +206,7 @@ export function ProgressDashboard() {
                       <div className="mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span>{category.icon}</span>
-                          <span className="font-medium text-claude-dark">{category.name}</span>
+                          <span className="font-medium text-cf-ink">{category.name}</span>
                           {progress >= SCORE_COLORS.excellent + 10 && <span className="text-xs">🏆</span>}
                           {progress >= PASSING_SCORE && progress < SCORE_COLORS.excellent + 10 && (
                             <span className="text-xs">⭐</span>
@@ -312,7 +312,7 @@ function StatCard({ label, value, icon }: { label: string; value: string | numbe
   return (
     <div className={`animate-card-enter ${cardStyles.elevated} p-3`}>
       <div className="mb-0.5 text-lg">{icon}</div>
-      <div className="text-xl font-bold text-claude-dark">{value}</div>
+      <div className="text-xl font-bold text-cf-ink">{value}</div>
       <div className="text-xs text-stone-500">{label}</div>
     </div>
   )

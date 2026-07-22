@@ -100,7 +100,7 @@ export function VennDiagram({ label, sets, intersectionLabel }: VennDiagramProps
                     x={lpos.x}
                     y={lpos.y}
                     textAnchor="middle"
-                    className="fill-claude-dark dark:fill-stone-200"
+                    className="fill-cf-ink dark:fill-stone-200"
                     fontSize="11"
                     fontWeight="600"
                   >
@@ -129,7 +129,7 @@ export function VennDiagram({ label, sets, intersectionLabel }: VennDiagramProps
                 x={cx}
                 y={is3 ? cy : cy + 4}
                 textAnchor="middle"
-                className="fill-claude-dark dark:fill-stone-200"
+                className="fill-cf-ink dark:fill-stone-200"
                 fontSize="9"
                 fontWeight="600"
                 style={{

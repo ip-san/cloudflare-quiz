@@ -67,9 +67,7 @@ export function CategoryTrendChart({ sessions }: CategoryTrendChartProps) {
   if (!hasBreakdownData) {
     return (
       <div className={`${cardStyles.base} p-6 text-center`}>
-        <h3 className="mb-2 text-sm font-semibold text-claude-dark dark:text-stone-200">
-          {locale.categoryTrend.heading}
-        </h3>
+        <h3 className="mb-2 text-sm font-semibold text-cf-ink dark:text-stone-200">{locale.categoryTrend.heading}</h3>
         <p className="text-sm text-stone-400">{locale.categoryTrend.emptyMessage}</p>
       </div>
     )
@@ -104,9 +102,7 @@ export function CategoryTrendChart({ sessions }: CategoryTrendChartProps) {
 
   return (
     <div className={`${cardStyles.base} p-4`}>
-      <h3 className="mb-2 text-sm font-semibold text-claude-dark dark:text-stone-200">
-        {locale.categoryTrend.heading}
-      </h3>
+      <h3 className="mb-2 text-sm font-semibold text-cf-ink dark:text-stone-200">{locale.categoryTrend.heading}</h3>
 
       {/* Category toggles */}
       <div className="mb-3 flex flex-wrap gap-1.5">

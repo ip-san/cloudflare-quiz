@@ -26,15 +26,15 @@ export function ChapterComplete({ chapter, score, total, onContinue, onQuit, isL
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-6 animate-view-enter">
       <div className="w-full max-w-sm text-center">
         <div className="mb-3 text-4xl">{percentage >= PASSING_SCORE ? '🎉' : '📚'}</div>
-        <p className="mb-1 text-xs font-semibold text-claude-orange">
+        <p className="mb-1 text-xs font-semibold text-cf-accent">
           Ch.{chapter.id} {locale.chapterComplete.complete}
         </p>
-        <h2 className="mb-2 text-lg font-bold text-claude-dark dark:text-stone-100">{chapter.name}</h2>
+        <h2 className="mb-2 text-lg font-bold text-cf-ink dark:text-stone-100">{chapter.name}</h2>
 
         <div className="mb-4 flex items-center justify-center gap-3">
           <div className="flex items-center gap-1.5">
-            <Trophy className="h-4 w-4 text-claude-orange" />
-            <span className="text-2xl font-bold text-claude-dark dark:text-white">{percentage}%</span>
+            <Trophy className="h-4 w-4 text-cf-accent" />
+            <span className="text-2xl font-bold text-cf-ink dark:text-white">{percentage}%</span>
           </div>
           <span className="text-sm text-stone-500">{locale.chapterComplete.correctSuffix(score, total)}</span>
         </div>
@@ -50,7 +50,7 @@ export function ChapterComplete({ chapter, score, total, onContinue, onQuit, isL
                 haptics.light()
                 onContinue()
               }}
-              className="tap-highlight flex w-full items-center justify-center gap-2 rounded-2xl bg-claude-orange px-6 py-3.5 text-base font-semibold text-white shadow-md"
+              className="tap-highlight flex w-full items-center justify-center gap-2 rounded-2xl bg-cf-accent px-6 py-3.5 text-base font-semibold text-white shadow-md"
             >
               {locale.chapterComplete.nextChapter}
               <ArrowRight className="h-5 w-5" />

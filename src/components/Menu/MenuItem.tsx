@@ -17,7 +17,7 @@ export function MenuItem({ icon, label, sublabel, onClick, disabled }: MenuItemP
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       className={`tap-highlight flex w-full items-center gap-3 px-4 py-3 text-left text-sm ${
-        disabled ? 'cursor-not-allowed text-stone-300 dark:text-stone-600' : 'text-claude-dark dark:text-stone-200'
+        disabled ? 'cursor-not-allowed text-stone-300 dark:text-stone-600' : 'text-cf-ink dark:text-stone-200'
       }`}
     >
       <span className={disabled ? 'opacity-40' : 'text-stone-400'}>{icon}</span>

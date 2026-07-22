@@ -127,7 +127,7 @@ export function ExplanationReader() {
   }, [displayQuestions, searchQuery, selectedCategory])
 
   return (
-    <div className="flex min-h-dvh flex-col bg-claude-cream dark:bg-stone-900">
+    <div className="flex min-h-dvh flex-col bg-cf-surface dark:bg-stone-900">
       {/* Sticky header */}
       <div className={headerStyles.sticky}>
         <div className="mx-auto max-w-3xl px-4 pb-2 pt-3">
@@ -140,7 +140,7 @@ export function ExplanationReader() {
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>
-              <h1 className="text-base font-bold text-claude-dark dark:text-stone-200">{locale.reader.title}</h1>
+              <h1 className="text-base font-bold text-cf-ink dark:text-stone-200">{locale.reader.title}</h1>
             </div>
             <span className="text-xs text-stone-500">
               {locale.reader.countLabel(filteredQuestions.length, allQuestions.length)}
@@ -163,7 +163,7 @@ export function ExplanationReader() {
                 setDisplayCount(INITIAL_DISPLAY_COUNT)
               }}
               placeholder={locale.search.placeholder}
-              className="flex-1 bg-transparent text-sm text-claude-dark outline-hidden placeholder:text-stone-400 dark:text-stone-200"
+              className="flex-1 bg-transparent text-sm text-cf-ink outline-hidden placeholder:text-stone-400 dark:text-stone-200"
               aria-label={locale.search.label}
             />
             {searchQuery && (
@@ -284,7 +284,7 @@ function LoadMoreSentinel({ onVisible }: { onVisible: () => void }) {
 
   return (
     <div ref={ref} className="flex justify-center py-4">
-      <div className="h-5 w-5 animate-spin rounded-full border-2 border-stone-200 border-t-claude-orange dark:border-stone-700" />
+      <div className="h-5 w-5 animate-spin rounded-full border-2 border-stone-200 border-t-cf-accent dark:border-stone-700" />
     </div>
   )
 }

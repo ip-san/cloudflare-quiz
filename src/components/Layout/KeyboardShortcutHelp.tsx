@@ -59,8 +59,8 @@ export function KeyboardShortcutHelp({ isOpen, onClose }: KeyboardShortcutHelpPr
       >
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Keyboard className="h-5 w-5 text-claude-orange" />
-            <h2 className="text-lg font-bold text-claude-dark">{locale.shortcuts.title}</h2>
+            <Keyboard className="h-5 w-5 text-cf-accent" />
+            <h2 className="text-lg font-bold text-cf-ink">{locale.shortcuts.title}</h2>
           </div>
           <button
             onClick={onClose}
@@ -87,7 +87,7 @@ export function KeyboardShortcutHelp({ isOpen, onClose }: KeyboardShortcutHelpPr
             if ('keys' in item && 'desc' in item) {
               return (
                 <div key={i} className="flex items-center justify-between py-1.5">
-                  <span className="text-sm text-claude-dark">{item.desc}</span>
+                  <span className="text-sm text-cf-ink">{item.desc}</span>
                   <div className="flex items-center gap-1">
                     {item.keys.map((key, j) => (
                       <kbd

@@ -23,7 +23,7 @@ export function HierarchyDiagram({ label, items }: HierarchyDiagramProps) {
 
   // Color gradient: top (most important) is orange, bottom fades to gray
   const getColor = (index: number, total: number) => {
-    if (index === 0) return { bg: 'bg-claude-orange/15', border: 'border-claude-orange/40', text: 'text-claude-orange' }
+    if (index === 0) return { bg: 'bg-cf-accent/15', border: 'border-cf-accent/40', text: 'text-cf-accent' }
     const ratio = index / (total - 1)
     if (ratio < 0.5)
       return {
@@ -70,7 +70,7 @@ export function HierarchyDiagram({ label, items }: HierarchyDiagramProps) {
                       <>
                         <div
                           className={`text-xs font-semibold leading-relaxed break-words ${
-                            i === 0 ? 'text-claude-orange' : color.text
+                            i === 0 ? 'text-cf-accent' : color.text
                           }`}
                         >
                           {item.text}
@@ -84,7 +84,7 @@ export function HierarchyDiagram({ label, items }: HierarchyDiagramProps) {
                     ) : (
                       <>
                         <span
-                          className={`text-xs font-semibold break-words ${i === 0 ? 'text-claude-orange' : color.text}`}
+                          className={`text-xs font-semibold break-words ${i === 0 ? 'text-cf-accent' : color.text}`}
                         >
                           {item.text}
                         </span>

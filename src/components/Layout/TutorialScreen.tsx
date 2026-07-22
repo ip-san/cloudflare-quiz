@@ -40,7 +40,7 @@ const SLIDE_DATA: SlideData[] = locale.tutorial.slides.map((slide, i) => ({
 function SlideIcon({ type }: { type: SlideData['iconType'] }) {
   switch (type) {
     case 'terminal':
-      return <Terminal className="h-8 w-8 text-claude-orange" />
+      return <Terminal className="h-8 w-8 text-cf-accent" />
     case 'message':
       return <MessageSquare className="h-8 w-8 text-blue-500" />
     case 'zap':
@@ -62,16 +62,14 @@ function SlideVisual({ type }: { type: SlideData['visualType'] }) {
             <span className="ml-2 text-xs text-stone-500">Terminal</span>
           </div>
           <p className="text-stone-400">
-            <span className="text-green-400">$</span> claude
+            {/* 派生元(Claude Code版)ではチャット形式だったが、wrangler は
+                コマンド→出力の形が自然なので、テーマのprompt/replyをそのまま
+                ターミナル出力として描画する */}
+            <span className="text-green-400">$</span> {locale.tutorial.terminalPrompt}
           </p>
-          <p className="mt-2 text-stone-300">
-            <span className="text-blue-400">{locale.tutorial.terminalYou}</span> {locale.tutorial.terminalPrompt}
-          </p>
-          <p className="mt-2 text-stone-300">
-            <span className="text-claude-orange">{locale.tutorial.terminalClaude}</span> {locale.tutorial.terminalReply}
-          </p>
+          <p className="mt-2 text-stone-300">{locale.tutorial.terminalReply}</p>
           <p className="text-stone-300">{locale.tutorial.terminalReplyCont}</p>
-          <span className="animate-pulse text-claude-orange">|</span>
+          <span className="animate-pulse text-cf-orange">|</span>
         </div>
       )
     case 'bubbles':
@@ -101,7 +99,7 @@ function SlideVisual({ type }: { type: SlideData['visualType'] }) {
               key={locale.tutorial.capabilities[i].label}
               className="flex flex-col items-center gap-2 rounded-xl bg-white p-3 shadow-xs dark:bg-stone-800"
             >
-              <div className="text-claude-orange">
+              <div className="text-cf-accent">
                 <Icon className="h-5 w-5" />
               </div>
               <span className="text-xs font-medium text-stone-600 dark:text-stone-300">
@@ -116,11 +114,11 @@ function SlideVisual({ type }: { type: SlideData['visualType'] }) {
         <div className="space-y-2">
           {locale.tutorial.pathSteps.map((item, i) => (
             <div key={i + 1} className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-xs dark:bg-stone-800">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-claude-orange/10 text-sm font-bold text-claude-orange">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cf-accent/10 text-sm font-bold text-cf-accent">
                 {i + 1}
               </div>
               <div>
-                <p className="text-sm font-semibold text-claude-dark dark:text-stone-200">{item.label}</p>
+                <p className="text-sm font-semibold text-cf-ink dark:text-stone-200">{item.label}</p>
                 <p className="text-xs text-stone-500">{item.desc}</p>
               </div>
             </div>
@@ -159,7 +157,7 @@ export function TutorialScreen({ onComplete }: TutorialScreenProps) {
   }
 
   return (
-    <div className="grid min-h-dvh grid-rows-[auto_1fr_auto] bg-claude-cream dark:bg-stone-900">
+    <div className="grid min-h-dvh grid-rows-[auto_1fr_auto] bg-cf-surface dark:bg-stone-900">
       {/* Skip button — made more prominent to reduce frustration */}
       <div className="flex justify-end px-4 pt-3">
         <button
@@ -181,7 +179,7 @@ export function TutorialScreen({ onComplete }: TutorialScreenProps) {
           <div className="mb-2 flex justify-center">
             <SlideIcon type={slide.iconType} />
           </div>
-          <h2 className="mb-1 text-center text-lg font-bold text-claude-dark dark:text-stone-100">{slide.title}</h2>
+          <h2 className="mb-1 text-center text-lg font-bold text-cf-ink dark:text-stone-100">{slide.title}</h2>
           <p className="mb-3 text-center text-sm leading-relaxed text-stone-500 dark:text-stone-400">
             {slide.description}
           </p>
@@ -205,7 +203,7 @@ export function TutorialScreen({ onComplete }: TutorialScreenProps) {
                   setCurrentSlide(i)
                 }}
                 className={`h-2 rounded-full transition-all ${
-                  i === currentSlide ? 'w-6 bg-claude-orange' : 'w-2 bg-stone-300 dark:bg-stone-600'
+                  i === currentSlide ? 'w-6 bg-cf-accent' : 'w-2 bg-stone-300 dark:bg-stone-600'
                 }`}
                 aria-label={locale.tutorial.slideLabel(i + 1)}
               />
@@ -228,7 +226,7 @@ export function TutorialScreen({ onComplete }: TutorialScreenProps) {
             </button>
             <button
               onClick={goNext}
-              className="tap-highlight flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-claude-orange text-base font-semibold text-white shadow-md"
+              className="tap-highlight flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-cf-accent text-base font-semibold text-white shadow-md"
             >
               {isLast ? locale.common.start : locale.common.next}
               <ArrowRight className="h-5 w-5" />

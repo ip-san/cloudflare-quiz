@@ -45,9 +45,7 @@ export function MatrixDiagram({ label, rowHeader, colHeader, rows, cols, cells }
                   <th
                     key={j}
                     className={`border border-stone-200 px-2 py-1.5 text-center font-semibold dark:border-stone-700 ${
-                      j === 0
-                        ? 'bg-claude-orange/10 text-claude-dark'
-                        : 'bg-stone-50 text-claude-dark dark:bg-stone-800'
+                      j === 0 ? 'bg-cf-accent/10 text-cf-ink' : 'bg-stone-50 text-cf-ink dark:bg-stone-800'
                     }`}
                   >
                     {col}
@@ -62,7 +60,7 @@ export function MatrixDiagram({ label, rowHeader, colHeader, rows, cols, cells }
                   className={isVisible ? 'animate-diagram-fade-up' : 'opacity-0'}
                   style={{ animationDelay: getItemDelay(i + 1) }}
                 >
-                  <th className="border border-stone-200 bg-stone-50 px-2 py-1.5 text-left font-semibold text-claude-dark dark:border-stone-700 dark:bg-stone-800">
+                  <th className="border border-stone-200 bg-stone-50 px-2 py-1.5 text-left font-semibold text-cf-ink dark:border-stone-700 dark:bg-stone-800">
                     {row}
                   </th>
                   {cols.map((_, j) => {

@@ -3,10 +3,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-claude-orange: #c2410c;
-  --color-claude-cream: #faf9f5;
-  --color-claude-dark: #1a1a1a;
-  --color-claude-gray: #595959;
+  /* Cloudflare-inspired palette (非公式 — 配色のみブランドに寄せる)
+   * cf-orange/cf-gold: 本物のCloudflareブランドオレンジ。コントラスト比が
+   *   低い(白文字で2.3:1)ため、装飾面・グラデーション・ダーク文字との
+   *   組み合わせ専用。
+   * cf-accent: テキスト/アイコン/ボーダー用のAA準拠アクセント
+   *   (白背景で5.0:1)。CFオレンジと同系の暖色相。 */
+  --color-cf-orange: #f6821f;
+  --color-cf-gold: #faad3f;
+  --color-cf-accent: #b45309;
+  --color-cf-surface: #faf9f5;
+  --color-cf-ink: #1a1a1a;
+  --color-cf-muted: #595959;
 
   --animate-shake: shake 0.5s ease-in-out;
   --animate-pulse-success: pulse-success 0.5s ease-in-out;
@@ -299,6 +307,14 @@
   @apply active:scale-[0.97] active:opacity-80 transition-transform duration-100;
 }
 
+/* Cloudflareブランドのオレンジ→ゴールドグラデーションCTA。
+ * 明るいブランドオレンジは白文字だと2.3:1でWCAG AAを満たさないため、
+ * ダーク文字(cf-ink: 6.2:1以上)を組みにする。 */
+@utility btn-brand {
+  background-image: linear-gradient(135deg, var(--color-cf-orange), var(--color-cf-gold));
+  color: var(--color-cf-ink);
+}
+
 @layer utilities {
   /* Dark mode fallback overrides
  * NOTE: All components now use explicit Tailwind dark: prefixes.
@@ -312,7 +328,7 @@
   .dark body {
     background-color: #1a1a1a;
   }
-  .dark .bg-claude-cream {
+  .dark .bg-cf-surface {
     background-color: #1a1a1a;
   }
   .dark .bg-white {
@@ -321,7 +337,7 @@
   .dark .bg-stone-100 {
     background-color: #222222;
   }
-  .dark .text-claude-dark {
+  .dark .text-cf-ink {
     color: #e5e5e5;
   }
   .dark .text-stone-500 {
@@ -349,7 +365,7 @@
   .dark .divide-stone-100 > :not([hidden]) ~ :not([hidden]) {
     border-color: #333;
   }
-  .dark .text-claude-gray {
+  .dark .text-cf-muted {
     color: #aaa;
   }
   .dark .bg-green-50 {
@@ -525,7 +541,7 @@
 
 /* Gradient progress bar */
 .progress-gradient {
-  background: linear-gradient(90deg, #F6821F, #FBA857);
+  background: linear-gradient(90deg, var(--color-cf-orange), var(--color-cf-gold));
 }
 .progress-gradient-green {
   background: linear-gradient(90deg, #22c55e, #4ade80);

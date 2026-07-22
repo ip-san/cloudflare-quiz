@@ -54,7 +54,7 @@ export function QuizBottomBar({
                 key={i}
                 onClick={() => goToQuestion(i)}
                 className={`h-2.5 w-2.5 rounded-full transition-all ${
-                  isCurrent ? 'scale-125 bg-claude-orange' : answered ? 'bg-green-400' : 'bg-stone-300'
+                  isCurrent ? 'scale-125 bg-cf-accent' : answered ? 'bg-green-400' : 'bg-stone-300'
                 }`}
                 aria-label={locale.quizCard.questionLabel(i + 1, !!answered)}
               />
@@ -129,7 +129,7 @@ export function QuizBottomBar({
               haptics.light()
               nextQuestion()
             }}
-            className="tap-highlight flex-1 rounded-2xl bg-claude-orange py-3.5 text-base font-semibold text-white sm:py-3"
+            className="tap-highlight flex-1 rounded-2xl bg-cf-accent py-3.5 text-base font-semibold text-white sm:py-3"
           >
             {locale.quizCard.nextQuestion}
           </button>
@@ -179,7 +179,7 @@ function SubmitButton({
       }}
       disabled={!hasSelection}
       className={`flex-1 rounded-2xl py-3 text-base font-semibold ${
-        hasSelection ? 'tap-highlight bg-claude-orange text-white' : 'bg-stone-200 text-stone-400'
+        hasSelection ? 'tap-highlight bg-cf-accent text-white' : 'bg-stone-200 text-stone-400'
       }`}
     >
       {hasSelection ? locale.quizCard.submitAnswer : locale.quizCard.selectOption}

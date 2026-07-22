@@ -43,7 +43,7 @@ export function ReaderFilters({
           onClick={() => onCategoryChange(null)}
           className={`tap-highlight shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
             selectedCategory === null
-              ? 'bg-claude-orange text-white'
+              ? 'bg-cf-accent text-white'
               : 'bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300'
           }`}
         >
@@ -55,7 +55,7 @@ export function ReaderFilters({
             onClick={() => onCategoryChange(selectedCategory === cat.id ? null : cat.id)}
             className={`tap-highlight shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               selectedCategory === cat.id
-                ? 'bg-claude-orange text-white'
+                ? 'bg-cf-accent text-white'
                 : 'bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300'
             }`}
           >

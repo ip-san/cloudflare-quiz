@@ -52,7 +52,7 @@ export function NotificationOptIn() {
       <div className="flex items-start gap-3">
         <Bell className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-claude-dark dark:text-stone-200">{locale.notification.title}</p>
+          <p className="text-sm font-medium text-cf-ink dark:text-stone-200">{locale.notification.title}</p>
           <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-400">{locale.notification.desc}</p>
           <div className="mt-2 flex gap-2">
             <button

@@ -88,14 +88,14 @@ export function NextRecommendation({ mode, percentage }: NextRecommendationProps
         startSession({ mode: nextMode, ...(categoryFilter !== undefined && { categoryFilter }) })
       }}
       aria-label={`${title} — ${description}`}
-      className="tap-highlight mb-3 flex w-full items-center gap-3 rounded-2xl border border-claude-orange/30 bg-claude-orange/5 p-4 text-left dark:bg-claude-orange/10"
+      className="tap-highlight mb-3 flex w-full items-center gap-3 rounded-2xl border border-cf-accent/30 bg-cf-accent/5 p-4 text-left dark:bg-cf-accent/10"
     >
       <span className="text-2xl">{icon}</span>
       <div className="flex-1">
-        <p className="text-sm font-bold text-claude-dark">{title}</p>
+        <p className="text-sm font-bold text-cf-ink">{title}</p>
         <p className="text-xs text-stone-500">{description}</p>
       </div>
-      <ArrowRight className="h-4 w-4 shrink-0 text-claude-orange" />
+      <ArrowRight className="h-4 w-4 shrink-0 text-cf-accent" />
     </button>
   )
 }

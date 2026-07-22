@@ -23,7 +23,7 @@ export const cardStyles = {
 /** ボタン */
 export const buttonStyles = {
   /** プライマリ（オレンジ） */
-  primary: 'tap-highlight rounded-2xl bg-claude-orange px-6 py-3.5 text-base font-semibold text-white',
+  primary: 'tap-highlight rounded-2xl bg-cf-accent px-6 py-3.5 text-base font-semibold text-white',
   /** セカンダリ（ボーダー） */
   secondary:
     'tap-highlight rounded-2xl border border-stone-300 px-6 py-3.5 text-base font-semibold text-stone-600 dark:border-stone-600 dark:text-stone-300',
@@ -34,13 +34,13 @@ export const buttonStyles = {
 /** ページ背景 */
 export const pageStyles = {
   /** メニュー画面背景 */
-  cream: 'bg-claude-cream dark:bg-stone-900',
+  cream: 'bg-cf-surface dark:bg-stone-900',
   /** クイズ画面背景 */
-  quiz: 'bg-stone-100 dark:bg-stone-900 sm:bg-claude-cream',
+  quiz: 'bg-stone-100 dark:bg-stone-900 sm:bg-cf-surface',
 } as const
 
 /** ヘッダー */
 export const headerStyles = {
   sticky:
-    'sticky top-0 z-10 border-b border-stone-200 bg-claude-cream/95 backdrop-blur-xs dark:border-stone-700 dark:bg-stone-900/95',
+    'sticky top-0 z-10 border-b border-stone-200 bg-cf-surface/95 backdrop-blur-xs dark:border-stone-700 dark:bg-stone-900/95',
 } as const

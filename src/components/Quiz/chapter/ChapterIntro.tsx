@@ -30,13 +30,13 @@ export function ChapterIntro({ chapter, onStart }: ChapterIntroProps) {
     <div className="animate-view-enter space-y-4">
       {/* Chapter number badge */}
       <div className="text-center">
-        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-claude-orange/10">
+        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-cf-accent/10">
           <span className="text-3xl">{chapter.icon}</span>
         </div>
-        <p className="text-xs font-semibold text-claude-orange">
+        <p className="text-xs font-semibold text-cf-accent">
           Chapter {chapter.id} / {totalChapters}
         </p>
-        <h2 className="mt-1 text-xl font-bold text-claude-dark dark:text-stone-100">{chapter.name}</h2>
+        <h2 className="mt-1 text-xl font-bold text-cf-ink dark:text-stone-100">{chapter.name}</h2>
         <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">{chapter.subtitle}</p>
       </div>
 
@@ -59,15 +59,15 @@ export function ChapterIntro({ chapter, onStart }: ChapterIntroProps) {
       {details && (
         <div className="rounded-2xl bg-white p-4 shadow-xs dark:bg-stone-800">
           <div className="mb-3 flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-claude-orange" />
-            <p className="text-sm font-semibold text-claude-dark dark:text-stone-200">
+            <BookOpen className="h-4 w-4 text-cf-accent" />
+            <p className="text-sm font-semibold text-cf-ink dark:text-stone-200">
               {locale.chapterIntro.learningPointsHeading}
             </p>
           </div>
           <ul className="space-y-2">
             {details.learningPoints.map((point, i) => (
               <li key={i} className="flex items-start gap-2.5">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-claude-orange/60" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-cf-accent/60" />
                 <span className="text-sm text-stone-600 dark:text-stone-300">{point}</span>
               </li>
             ))}
@@ -93,7 +93,7 @@ export function ChapterIntro({ chapter, onStart }: ChapterIntroProps) {
             trackChapterProgress(chapter.id, 'start')
             onStart()
           }}
-          className="tap-highlight inline-flex items-center gap-2 rounded-2xl bg-claude-orange px-8 py-3.5 text-base font-semibold text-white shadow-md"
+          className="tap-highlight inline-flex items-center gap-2 rounded-2xl bg-cf-accent px-8 py-3.5 text-base font-semibold text-white shadow-md"
         >
           {isFirstChapter ? locale.chapterIntro.startLearning : locale.chapterIntro.startChapter}
           <ArrowRight className="h-5 w-5" />

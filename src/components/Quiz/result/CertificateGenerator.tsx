@@ -87,7 +87,7 @@ export function CertificateGenerator({ score, total, percentage, mode }: Certifi
         onChange={(e) => setName(e.target.value)}
         placeholder={locale.certificate.namePlaceholder}
         aria-label={locale.certificate.nameLabel}
-        className="mb-3 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-center text-sm text-claude-dark dark:bg-stone-800 dark:text-white dark:border-stone-600"
+        className="mb-3 w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-center text-sm text-cf-ink dark:bg-stone-800 dark:text-white dark:border-stone-600"
       />
       <button
         onClick={handleGenerate}

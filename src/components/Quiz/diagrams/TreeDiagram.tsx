@@ -45,7 +45,7 @@ export function TreeDiagram({ label, root }: TreeDiagramProps) {
           // Colors by depth
           const textColor =
             depth === 0
-              ? 'text-claude-orange'
+              ? 'text-cf-accent'
               : isDir
                 ? 'text-blue-600 dark:text-blue-400'
                 : 'text-stone-700 dark:text-stone-300'

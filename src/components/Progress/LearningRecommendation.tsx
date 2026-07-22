@@ -121,7 +121,7 @@ export function LearningRecommendation({ categoryStats, totalAttempts, onStartSe
         </div>
         <div className="flex-1">
           <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">{locale.recommendation.heading}</p>
-          <p className="mt-0.5 text-sm font-semibold text-claude-dark">{recommendation.title}</p>
+          <p className="mt-0.5 text-sm font-semibold text-cf-ink">{recommendation.title}</p>
           <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">{recommendation.message}</p>
           <button
             onClick={recommendation.onAction}

@@ -52,7 +52,7 @@ export function SessionHistoryChart({ sessions }: SessionHistoryChartProps) {
 
   return (
     <div className={`${cardStyles.base} p-4`}>
-      <h3 className="mb-3 text-sm font-semibold text-claude-dark">{locale.progress.chartTitle}</h3>
+      <h3 className="mb-3 text-sm font-semibold text-cf-ink">{locale.progress.chartTitle}</h3>
       <svg
         viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
         className="w-full"
@@ -77,10 +77,7 @@ export function SessionHistoryChart({ sessions }: SessionHistoryChartProps) {
       <div className="mt-1 flex items-center justify-between text-xs text-stone-500">
         <span>{locale.progress.past}</span>
         <span className="flex items-center gap-1">
-          <span
-            className="inline-block h-px w-4 bg-claude-orange opacity-50"
-            style={{ borderTop: '1px dashed #F6821F' }}
-          />
+          <span className="inline-block h-px w-4 bg-cf-accent opacity-50" style={{ borderTop: '1px dashed #F6821F' }} />
           合格ライン({PASSING_SCORE}%)
         </span>
         <span>{locale.progress.latest}</span>

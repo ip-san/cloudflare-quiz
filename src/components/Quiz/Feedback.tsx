@@ -187,7 +187,7 @@ export function Feedback({ quiz, isCorrect }: FeedbackProps) {
           <div className="flex items-start gap-2">
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
             <div>
-              <p className="mb-1 font-medium text-claude-dark">{locale.feedback.whyWrong}</p>
+              <p className="mb-1 font-medium text-cf-ink">{locale.feedback.whyWrong}</p>
               {wrongSelected.map((opt, i) => (
                 <p key={i} className="text-sm leading-relaxed text-stone-600 dark:text-stone-300">
                   <QuizText text={opt.wrongFeedback ?? ''} />
@@ -211,7 +211,7 @@ export function Feedback({ quiz, isCorrect }: FeedbackProps) {
         <div className="flex items-start gap-2">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
           <div>
-            <p className="mb-1 font-medium text-claude-dark">{locale.feedback.whyWrong}</p>
+            <p className="mb-1 font-medium text-cf-ink">{locale.feedback.whyWrong}</p>
             <p className="text-sm leading-relaxed text-stone-600 dark:text-stone-300">
               <QuizText text={selectedOption.wrongFeedback ?? ''} />
             </p>
@@ -247,7 +247,7 @@ export function Feedback({ quiz, isCorrect }: FeedbackProps) {
   const explanationOrder = sections.length
   sections.push(
     <AnimatedSection key="explanation" order={explanationOrder} animate={animate} noMotion={noMotion} className="mb-4">
-      <p className="mb-1 text-sm font-medium text-claude-dark">{locale.feedback.explanation}</p>
+      <p className="mb-1 text-sm font-medium text-cf-ink">{locale.feedback.explanation}</p>
       <ExplanationWithDiagrams
         explanation={quiz.explanation}
         diagrams={quiz.diagrams}
@@ -336,7 +336,7 @@ export function Feedback({ quiz, isCorrect }: FeedbackProps) {
             >
               <Icon className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" aria-hidden="true" />
               <div>
-                <p className="text-sm font-medium text-claude-dark">{label}</p>
+                <p className="text-sm font-medium text-cf-ink">{label}</p>
                 <p className="text-[11px] text-stone-500 dark:text-stone-500">{description}</p>
               </div>
             </button>

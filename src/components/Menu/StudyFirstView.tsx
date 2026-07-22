@@ -82,7 +82,7 @@ export function StudyFirstView({ allQuestions, userProgress, onBack, onStartQuiz
   }
 
   return (
-    <div className="min-h-dvh bg-claude-cream dark:bg-stone-900">
+    <div className="min-h-dvh bg-cf-surface dark:bg-stone-900">
       {/* Header */}
       <div className={headerStyles.sticky}>
         <div className="mx-auto max-w-3xl px-4 pb-2 pt-3">
@@ -91,7 +91,7 @@ export function StudyFirstView({ allQuestions, userProgress, onBack, onStartQuiz
               <ArrowLeft className="h-5 w-5 text-stone-600 dark:text-stone-300" />
             </button>
             <div>
-              <h1 className="text-lg font-bold text-claude-dark dark:text-stone-100">{locale.studyFirst.title}</h1>
+              <h1 className="text-lg font-bold text-cf-ink dark:text-stone-100">{locale.studyFirst.title}</h1>
               <p className="text-xs text-stone-500">{locale.studyFirst.subtitle}</p>
             </div>
           </div>
@@ -123,17 +123,17 @@ export function StudyFirstView({ allQuestions, userProgress, onBack, onStartQuiz
                 setSelectedChapterId(ch.id)
                 setReadingComplete(false)
               }}
-              className="tap-highlight flex w-full items-center gap-4 rounded-2xl border border-stone-200 bg-white p-4 text-left transition-all hover:border-claude-orange/30 dark:border-stone-700 dark:bg-stone-800"
+              className="tap-highlight flex w-full items-center gap-4 rounded-2xl border border-stone-200 bg-white p-4 text-left transition-all hover:border-cf-accent/30 dark:border-stone-700 dark:bg-stone-800"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-claude-orange/10">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cf-accent/10">
                 <span className="text-2xl">{ch.icon}</span>
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-claude-orange">Ch.{ch.id}</span>
+                  <span className="text-xs font-medium text-cf-accent">Ch.{ch.id}</span>
                   {ch.answered === ch.total && ch.total > 0 && <span className="text-xs">✅</span>}
                 </div>
-                <p className="text-sm font-semibold text-claude-dark dark:text-stone-200">{ch.name}</p>
+                <p className="text-sm font-semibold text-cf-ink dark:text-stone-200">{ch.name}</p>
                 <p className="text-xs text-stone-500">{ch.subtitle}</p>
                 <p className="mt-1 text-xs text-stone-500">
                   {ch.total}
@@ -166,7 +166,7 @@ function StudyReader({
   const introContent = chapter.introContent ?? []
 
   return (
-    <div className="flex min-h-dvh flex-col bg-claude-cream dark:bg-stone-900">
+    <div className="flex min-h-dvh flex-col bg-cf-surface dark:bg-stone-900">
       {/* Header */}
       <div className={headerStyles.sticky}>
         <div className="mx-auto max-w-3xl px-4 pb-2 pt-3">
@@ -175,10 +175,10 @@ function StudyReader({
               <ArrowLeft className="h-5 w-5 text-stone-600 dark:text-stone-300" />
             </button>
             <div>
-              <span className="text-xs font-medium text-claude-orange">
+              <span className="text-xs font-medium text-cf-accent">
                 {chapter.icon} Ch.{chapter.id}
               </span>
-              <p className="text-sm font-semibold text-claude-dark dark:text-stone-200">{chapter.name}</p>
+              <p className="text-sm font-semibold text-cf-ink dark:text-stone-200">{chapter.name}</p>
             </div>
           </div>
         </div>
@@ -191,7 +191,7 @@ function StudyReader({
             {/* Chapter icon + title */}
             <div className="mb-5 text-center">
               <span className="text-4xl">{chapter.icon}</span>
-              <h2 className="mt-2 text-xl font-bold text-claude-dark dark:text-stone-100">{chapter.name}</h2>
+              <h2 className="mt-2 text-xl font-bold text-cf-ink dark:text-stone-100">{chapter.name}</h2>
               <p className="mt-1 text-sm text-stone-400">{chapter.subtitle}</p>
             </div>
 
@@ -209,8 +209,8 @@ function StudyReader({
             </div>
 
             {/* Action item */}
-            <div className="mt-6 rounded-xl border border-claude-orange/20 bg-claude-orange/5 p-4">
-              <p className="text-xs font-semibold text-claude-orange">{locale.studyFirst.afterLearning}</p>
+            <div className="mt-6 rounded-xl border border-cf-accent/20 bg-cf-accent/5 p-4">
+              <p className="text-xs font-semibold text-cf-accent">{locale.studyFirst.afterLearning}</p>
               <p className="mt-1 text-sm text-stone-600 dark:text-stone-300">{chapter.actionItem}</p>
             </div>
           </div>
@@ -225,7 +225,7 @@ function StudyReader({
               haptics.light()
               onComplete()
             }}
-            className="tap-highlight flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-claude-orange text-base font-semibold text-white"
+            className="tap-highlight flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-cf-accent text-base font-semibold text-white"
           >
             {locale.studyFirst.doneReading}
             <CheckCircle2 className="h-4 w-4" />
@@ -253,15 +253,13 @@ function ReadyToQuiz({
   onBack: () => void
 }) {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-claude-cream px-6 dark:bg-stone-900">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-cf-surface px-6 dark:bg-stone-900">
       <div className="w-full max-w-sm animate-view-enter text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-green-100 dark:bg-green-900/30">
           <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
         </div>
 
-        <h2 className="mb-2 text-xl font-bold text-claude-dark dark:text-stone-100">
-          {locale.studyFirst.readingDoneTitle}
-        </h2>
+        <h2 className="mb-2 text-xl font-bold text-cf-ink dark:text-stone-100">{locale.studyFirst.readingDoneTitle}</h2>
         <p className="mb-1 text-sm text-stone-500">
           {chapter.icon} Ch.{chapter.id}: {chapter.name}
         </p>
@@ -273,7 +271,7 @@ function ReadyToQuiz({
               haptics.light()
               onStartQuiz()
             }}
-            className="tap-highlight flex w-full items-center justify-center gap-2 rounded-2xl bg-claude-orange py-3.5 text-base font-semibold text-white shadow-md"
+            className="tap-highlight flex w-full items-center justify-center gap-2 rounded-2xl bg-cf-accent py-3.5 text-base font-semibold text-white shadow-md"
           >
             <Play className="h-5 w-5 fill-white" />
             {locale.studyFirst.startQuiz}

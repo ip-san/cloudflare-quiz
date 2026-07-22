@@ -39,11 +39,11 @@ export function QuizSearch() {
   // Full-screen view for all results
   if (showAll) {
     return (
-      <div className="fixed inset-0 z-50 flex flex-col bg-claude-cream dark:bg-stone-900">
+      <div className="fixed inset-0 z-50 flex flex-col bg-cf-surface dark:bg-stone-900">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700">
           <div>
-            <h2 className="text-sm font-bold text-claude-dark dark:text-stone-200">
+            <h2 className="text-sm font-bold text-cf-ink dark:text-stone-200">
               {locale.search.searchResultsTitle(query)}
             </h2>
             <p className="text-xs text-stone-500">
@@ -59,7 +59,7 @@ export function QuizSearch() {
                   query
                 )
               }
-              className="tap-highlight inline-flex items-center gap-1.5 rounded-xl bg-claude-orange px-3 py-1.5 text-xs font-medium text-white"
+              className="tap-highlight inline-flex items-center gap-1.5 rounded-xl bg-cf-accent px-3 py-1.5 text-xs font-medium text-white"
             >
               <Play className="h-3 w-3 fill-white" />
               {locale.search.challengeQuestions(allResults.length)}
@@ -88,7 +88,7 @@ export function QuizSearch() {
                   className="tap-highlight flex w-full items-start gap-2 px-4 py-3 text-left"
                 >
                   <span className="mt-0.5 shrink-0 text-sm">{cat?.icon}</span>
-                  <span className="flex-1 text-sm leading-snug text-claude-dark dark:text-stone-200">{r.question}</span>
+                  <span className="flex-1 text-sm leading-snug text-cf-ink dark:text-stone-200">{r.question}</span>
                   {isExpanded ? (
                     <ChevronUp className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
                   ) : (
@@ -109,7 +109,7 @@ export function QuizSearch() {
                           href={r.referenceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-claude-orange"
+                          className="inline-flex items-center gap-1 text-xs text-cf-accent"
                         >
                           <ExternalLink className="h-3 w-3" />
                           {locale.feedback.officialDocs}
@@ -149,8 +149,8 @@ export function QuizSearch() {
 
   return (
     <div className="mb-5">
-      <div className="flex items-center gap-2 rounded-2xl border border-claude-orange bg-white px-4 py-2.5 dark:bg-stone-800">
-        <Search className="h-4 w-4 text-claude-orange" />
+      <div className="flex items-center gap-2 rounded-2xl border border-cf-accent bg-white px-4 py-2.5 dark:bg-stone-800">
+        <Search className="h-4 w-4 text-cf-accent" />
         <input
           type="text"
           value={query}
@@ -159,13 +159,13 @@ export function QuizSearch() {
             setExpandedId(null)
           }}
           placeholder={locale.search.inputPlaceholder}
-          className="flex-1 bg-transparent text-sm text-claude-dark outline-hidden placeholder:text-stone-400 dark:text-stone-200"
+          className="flex-1 bg-transparent text-sm text-cf-ink outline-hidden placeholder:text-stone-400 dark:text-stone-200"
           autoFocus
           aria-label={locale.search.label}
         />
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`tap-highlight rounded-full p-2 ${categoryFilter ? 'text-claude-orange' : 'text-stone-400'}`}
+          className={`tap-highlight rounded-full p-2 ${categoryFilter ? 'text-cf-accent' : 'text-stone-400'}`}
           aria-label={locale.search.categoryFilterLabel}
         >
           <Filter className="h-4 w-4" />
@@ -186,7 +186,7 @@ export function QuizSearch() {
             onClick={() => setCategoryFilter(null)}
             className={`tap-highlight rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               categoryFilter === null
-                ? 'bg-claude-orange text-white'
+                ? 'bg-cf-accent text-white'
                 : 'bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300'
             }`}
           >
@@ -198,7 +198,7 @@ export function QuizSearch() {
               onClick={() => setCategoryFilter(categoryFilter === cat.id ? null : cat.id)}
               className={`tap-highlight rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                 categoryFilter === cat.id
-                  ? 'bg-claude-orange text-white'
+                  ? 'bg-cf-accent text-white'
                   : 'bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300'
               }`}
             >
@@ -227,7 +227,7 @@ export function QuizSearch() {
                       query
                     )
                   }
-                  className="tap-highlight inline-flex items-center gap-1.5 rounded-lg bg-claude-orange px-3 py-1.5 text-xs font-medium text-white"
+                  className="tap-highlight inline-flex items-center gap-1.5 rounded-lg bg-cf-accent px-3 py-1.5 text-xs font-medium text-white"
                 >
                   <Play className="h-3 w-3 fill-white" />
                   {locale.search.challengeQuestions(allResults.length)}
@@ -246,7 +246,7 @@ export function QuizSearch() {
                         className="tap-highlight flex w-full items-start gap-2 px-4 py-2.5 text-left"
                       >
                         <span className="mt-0.5 shrink-0 text-sm">{cat?.icon}</span>
-                        <span className="flex-1 text-sm leading-snug text-claude-dark dark:text-stone-200">
+                        <span className="flex-1 text-sm leading-snug text-cf-ink dark:text-stone-200">
                           {r.question.length > 80 ? r.question.slice(0, 80) + '...' : r.question}
                         </span>
                         {isExpanded ? (
@@ -270,7 +270,7 @@ export function QuizSearch() {
                                 href={r.referenceUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-xs text-claude-orange"
+                                className="inline-flex items-center gap-1 text-xs text-cf-accent"
                               >
                                 <ExternalLink className="h-3 w-3" />
                                 {locale.feedback.officialDocs}
@@ -294,7 +294,7 @@ export function QuizSearch() {
                 {allResults.length > 10 && (
                   <button
                     onClick={() => setShowAll(true)}
-                    className="tap-highlight w-full border-t border-stone-100 px-4 py-2.5 text-center text-xs font-medium text-claude-orange dark:border-stone-700"
+                    className="tap-highlight w-full border-t border-stone-100 px-4 py-2.5 text-center text-xs font-medium text-cf-accent dark:border-stone-700"
                   >
                     {locale.search.showAllRemaining(allResults.length - 10)}
                   </button>

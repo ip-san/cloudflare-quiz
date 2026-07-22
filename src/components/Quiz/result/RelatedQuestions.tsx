@@ -57,7 +57,7 @@ export function RelatedQuestions({ currentQuestion, allQuestions }: RelatedQuest
             className="tap-highlight flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left hover:bg-stone-100 dark:hover:bg-stone-700"
           >
             <span className="mt-0.5 shrink-0 text-xs text-stone-500">{getDifficultyLabel(q.difficulty)}</span>
-            <span className="flex-1 text-xs leading-snug text-claude-dark dark:text-stone-200">
+            <span className="flex-1 text-xs leading-snug text-cf-ink dark:text-stone-200">
               {q.question.length > 60 ? q.question.slice(0, 60) + '...' : q.question}
             </span>
             <ArrowRight className="mt-0.5 h-3 w-3 shrink-0 text-stone-400" />

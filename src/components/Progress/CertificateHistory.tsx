@@ -106,7 +106,7 @@ export function CertificateHistory({ sessionHistory, masteryIndex, overallAccura
     <div className="mb-4">
       <div className="mb-2 flex items-center gap-2">
         <Award className="h-4 w-4 text-amber-500" />
-        <h3 className="text-sm font-bold text-claude-dark">{locale.certificate.earnedCount(entries.length)}</h3>
+        <h3 className="text-sm font-bold text-cf-ink">{locale.certificate.earnedCount(entries.length)}</h3>
       </div>
       <input
         type="text"
@@ -127,7 +127,7 @@ export function CertificateHistory({ sessionHistory, masteryIndex, overallAccura
             {cert.date && <p className="mr-1 text-xs text-stone-500 shrink-0">{cert.date}</p>}
             <button
               onClick={() => handleDownload(cert)}
-              className="tap-highlight shrink-0 rounded-full p-2 text-stone-400 hover:text-claude-orange"
+              className="tap-highlight shrink-0 rounded-full p-2 text-stone-400 hover:text-cf-accent"
               aria-label={`${cert.title} ${locale.mastery.downloadCert}`}
             >
               <Download className="h-4 w-4" />

@@ -109,9 +109,9 @@ function TerminalBody({ lines, isVisible }: { lines: TerminalLine[]; isVisible: 
                 </p>
               )}
               {line.type === 'prompt' && (
-                <div className="-mx-3 border-y border-claude-orange/40 bg-claude-orange/5 px-3 py-1">
+                <div className="-mx-3 border-y border-cf-accent/40 bg-cf-accent/5 px-3 py-1">
                   <p>
-                    <span className="text-claude-orange">&gt;</span>{' '}
+                    <span className="text-cf-accent">&gt;</span>{' '}
                     <span className="text-white">
                       {state.typingChars !== null ? line.text.slice(0, state.typingChars) : line.text}
                     </span>
@@ -123,7 +123,7 @@ function TerminalBody({ lines, isVisible }: { lines: TerminalLine[]; isVisible: 
               )}
               {line.type === 'response' && (
                 <p>
-                  <span className="text-claude-orange">✦</span> <span className="text-stone-300">{line.text}</span>
+                  <span className="text-cf-accent">✦</span> <span className="text-stone-300">{line.text}</span>
                 </p>
               )}
               {line.type === 'info' && <p className="text-stone-500">{line.text}</p>}

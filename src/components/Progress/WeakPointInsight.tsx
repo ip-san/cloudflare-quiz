@@ -104,7 +104,7 @@ export function WeakPointInsight({ allQuestions, userProgress, categoryStats, on
                 >
                   <span>{wp.icon}</span>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-claude-dark dark:text-stone-200">{wp.name}</p>
+                    <p className="text-sm font-medium text-cf-ink dark:text-stone-200">{wp.name}</p>
                     <p className="text-xs text-stone-500">
                       {locale.weakPointDetail.wrongCountLabel(wp.wrongCount, wp.accuracy)}
                     </p>
@@ -140,7 +140,7 @@ export function WeakPointInsight({ allQuestions, userProgress, categoryStats, on
                                   st.accuracy < 30 ? '#ef4444' : st.accuracy < 50 ? '#f59e0b' : '#eab308',
                               }}
                             />
-                            <span className="text-xs text-claude-dark dark:text-stone-300">{st.label}</span>
+                            <span className="text-xs text-cf-ink dark:text-stone-300">{st.label}</span>
                           </div>
                           {/* ミニプログレスバー */}
                           <div className="ml-3 mt-0.5 h-1 w-24 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">

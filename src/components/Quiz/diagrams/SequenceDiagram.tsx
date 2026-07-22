@@ -93,7 +93,7 @@ export function SequenceDiagram({ label, actors, messages }: SequenceDiagramProp
                       x={x}
                       y={padY + headerH / 2 + 3}
                       textAnchor="middle"
-                      className="fill-claude-dark dark:fill-stone-200"
+                      className="fill-cf-ink dark:fill-stone-200"
                       fontSize="10"
                       fontWeight="600"
                     >

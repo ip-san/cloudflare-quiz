@@ -79,13 +79,13 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-dvh items-center justify-center bg-claude-cream px-4">
+        <div className="flex min-h-dvh items-center justify-center bg-cf-surface px-4">
           <div className="text-center">
-            <p className="mb-4 text-lg font-semibold text-claude-dark">{locale.errorBoundary.title}</p>
+            <p className="mb-4 text-lg font-semibold text-cf-ink">{locale.errorBoundary.title}</p>
             <p className="mb-6 text-sm text-stone-500">{locale.errorBoundary.message}</p>
             <button
               onClick={() => window.location.reload()}
-              className="tap-highlight rounded-2xl bg-claude-orange px-6 py-3 text-base font-semibold text-white"
+              className="tap-highlight rounded-2xl bg-cf-accent px-6 py-3 text-base font-semibold text-white"
             >
               {locale.errorBoundary.reload}
             </button>

@@ -247,7 +247,7 @@ const cloudflareTheme: ThemeConfig = {
     },
   ],
   masteryLevels: [
-    { name: 'エッジ入門者', icon: '🌱', color: 'text-claude-orange', bg: 'bg-claude-orange/10', req: null },
+    { name: 'エッジ入門者', icon: '🌱', color: 'text-cf-accent', bg: 'bg-cf-accent/10', req: null },
     { name: 'エッジ学習者', icon: '📚', color: 'text-blue-600', bg: 'bg-blue-500/10', req: '正答率50%以上' },
     { name: 'エッジ実践者', icon: '🚀', color: 'text-green-600', bg: 'bg-green-500/10', req: '正答率70%以上' },
     {
@@ -267,7 +267,7 @@ const cloudflareTheme: ThemeConfig = {
   ],
   welcomeFeatures: [
     {
-      iconColor: 'text-claude-orange',
+      iconColor: 'text-cf-accent',
       title: '知識ゼロから始められる',
       desc: 'Cloudflare を使ったことがなくても大丈夫。基礎から順番にガイドします',
     },

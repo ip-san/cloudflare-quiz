@@ -77,7 +77,7 @@ export function LayerDiagram({ label, layers }: LayerDiagramProps) {
                     <text
                       x={x + 10}
                       y={y + 16}
-                      className="fill-claude-dark dark:fill-stone-200"
+                      className="fill-cf-ink dark:fill-stone-200"
                       fontSize="10"
                       fontWeight="600"
                     >

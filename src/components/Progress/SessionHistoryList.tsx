@@ -50,7 +50,7 @@ export function SessionHistoryList({ sessions, limit = 10 }: SessionHistoryListP
 
   return (
     <div className={cardStyles.base}>
-      <h3 className="border-b border-stone-100 px-4 py-3 text-sm font-semibold text-claude-dark">
+      <h3 className="border-b border-stone-100 px-4 py-3 text-sm font-semibold text-cf-ink">
         {locale.sessionHistory.historyTitle(Math.min(limit, recent.length))}
       </h3>
       <div className="divide-y divide-stone-100">

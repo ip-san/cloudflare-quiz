@@ -82,8 +82,8 @@ export function InstallPrompt() {
         <div className="rounded-2xl bg-white p-4 shadow-2xl ring-1 ring-stone-200 dark:bg-stone-800 dark:ring-stone-700">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Share className="h-5 w-5 text-claude-orange" />
-              <p className="text-sm font-semibold text-claude-dark">{locale.install.useAsApp}</p>
+              <Share className="h-5 w-5 text-cf-accent" />
+              <p className="text-sm font-semibold text-cf-ink">{locale.install.useAsApp}</p>
             </div>
             <button onClick={handleDismiss} className="p-1 text-stone-400" aria-label={locale.common.close}>
               <X className="h-4 w-4" />
@@ -91,13 +91,13 @@ export function InstallPrompt() {
           </div>
           <div className="space-y-2 text-xs text-stone-600 dark:text-stone-400">
             <div className="flex items-center gap-2">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-claude-orange text-xs font-bold text-white">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cf-accent text-xs font-bold text-white">
                 1
               </span>
               <span>{locale.install.iosStep1}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-claude-orange text-xs font-bold text-white">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cf-accent text-xs font-bold text-white">
                 2
               </span>
               <span>{locale.install.iosStep2}</span>
@@ -114,16 +114,16 @@ export function InstallPrompt() {
   return (
     <div className="fixed bottom-4 left-3 right-3 z-40 mx-auto max-w-sm animate-slide-down">
       <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-2xl ring-1 ring-stone-200 dark:bg-stone-800 dark:ring-stone-700">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-claude-orange/10">
-          <Download className="h-5 w-5 text-claude-orange" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cf-accent/10">
+          <Download className="h-5 w-5 text-cf-accent" />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-semibold text-claude-dark">{locale.install.installApp}</p>
+          <p className="text-sm font-semibold text-cf-ink">{locale.install.installApp}</p>
           <p className="text-xs text-stone-500 dark:text-stone-400">{locale.install.installDesc}</p>
         </div>
         <button
           onClick={handleInstall}
-          className="tap-highlight shrink-0 rounded-full bg-claude-orange px-4 py-2 text-sm font-semibold text-white"
+          className="tap-highlight shrink-0 rounded-full bg-cf-accent px-4 py-2 text-sm font-semibold text-white"
         >
           {locale.install.addButton}
         </button>

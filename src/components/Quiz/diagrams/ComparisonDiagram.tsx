@@ -26,7 +26,7 @@ export function ComparisonDiagram({ label, columns }: ComparisonDiagramProps) {
                 {/* Column header */}
                 <div
                   className={`rounded-t-lg px-2 py-1.5 text-center text-xs font-medium ${
-                    i === 0 ? 'bg-claude-orange/10 text-claude-dark' : 'bg-stone-100 text-claude-dark dark:bg-stone-700'
+                    i === 0 ? 'bg-cf-accent/10 text-cf-ink' : 'bg-stone-100 text-cf-ink dark:bg-stone-700'
                   }`}
                 >
                   {col.heading}

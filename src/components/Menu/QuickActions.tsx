@@ -115,7 +115,7 @@ export function QuickActions({ allQuestions, userProgress, onStart }: QuickActio
             className="tap-highlight flex flex-col items-center gap-1 rounded-xl border border-stone-200 bg-white px-3 py-3 text-center dark:border-stone-700 dark:bg-stone-800"
           >
             <span className="text-xl">{action.icon}</span>
-            <span className="text-xs font-semibold text-claude-dark dark:text-stone-200">{action.label}</span>
+            <span className="text-xs font-semibold text-cf-ink dark:text-stone-200">{action.label}</span>
             <span className="text-[10px] text-stone-500">{action.sublabel}</span>
           </button>
         ))}

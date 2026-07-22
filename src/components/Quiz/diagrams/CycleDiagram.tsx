@@ -16,7 +16,7 @@ export function CycleDiagram({ label, trigger, states }: CycleDiagramProps) {
 
   // Colors for each state
   const colors = [
-    'border-claude-orange/40 bg-claude-orange/10',
+    'border-cf-accent/40 bg-cf-accent/10',
     'border-blue-300 bg-blue-50 dark:border-blue-500/30 dark:bg-blue-500/10',
     'border-green-300 bg-green-50 dark:border-green-500/30 dark:bg-green-500/10',
     'border-purple-300 bg-purple-50 dark:border-purple-500/30 dark:bg-purple-500/10',
@@ -36,7 +36,7 @@ export function CycleDiagram({ label, trigger, states }: CycleDiagramProps) {
                     width="16"
                     height="12"
                     viewBox="0 0 16 12"
-                    className="shrink-0 text-claude-orange/50"
+                    className="shrink-0 text-cf-accent/50"
                     aria-hidden="true"
                     style={{ opacity: isVisible ? 1 : 0, animationDelay: getItemDelay(i) }}
                   >
@@ -57,7 +57,7 @@ export function CycleDiagram({ label, trigger, states }: CycleDiagramProps) {
                   }`}
                   style={{ animationDelay: getItemDelay(i) }}
                 >
-                  <div className="text-[11px] font-semibold text-claude-dark">{state.text}</div>
+                  <div className="text-[11px] font-semibold text-cf-ink">{state.text}</div>
                   {state.sub && (
                     <div className="max-w-[96px] break-words text-[9px] text-stone-500 dark:text-stone-500">
                       {state.sub}
@@ -71,7 +71,7 @@ export function CycleDiagram({ label, trigger, states }: CycleDiagramProps) {
               width="20"
               height="14"
               viewBox="0 0 20 14"
-              className="shrink-0 text-claude-orange/40"
+              className="shrink-0 text-cf-accent/40"
               aria-hidden="true"
               style={{ opacity: isVisible ? 1 : 0, animationDelay: getItemDelay(states.length) }}
             >

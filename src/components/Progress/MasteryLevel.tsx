@@ -50,7 +50,7 @@ export function MasteryLevel({ overallAccuracy, totalAttempts, totalXp, category
               {levels.map((level, i) => (
                 <div
                   key={level.name}
-                  className={`h-1.5 w-4 rounded-full ${i <= currentIndex ? 'bg-claude-orange' : 'bg-stone-200 dark:bg-stone-600'}`}
+                  className={`h-1.5 w-4 rounded-full ${i <= currentIndex ? 'bg-cf-accent' : 'bg-stone-200 dark:bg-stone-600'}`}
                 />
               ))}
             </div>
@@ -68,7 +68,7 @@ export function MasteryLevel({ overallAccuracy, totalAttempts, totalXp, category
         {canDownload && (
           <button
             onClick={() => setShowDownload((v) => !v)}
-            className="tap-highlight rounded-full p-2 text-stone-400 hover:text-claude-orange"
+            className="tap-highlight rounded-full p-2 text-stone-400 hover:text-cf-accent"
             aria-label={locale.mastery.downloadCert}
           >
             <Download className="h-4 w-4" />
@@ -87,7 +87,7 @@ export function MasteryLevel({ overallAccuracy, totalAttempts, totalXp, category
           />
           <button
             onClick={handleDownload}
-            className="tap-highlight w-full rounded-xl bg-claude-orange py-2 text-sm font-semibold text-white"
+            className="tap-highlight w-full rounded-xl bg-cf-accent py-2 text-sm font-semibold text-white"
           >
             {locale.mastery.downloadLevel(LEVEL_DESIGNS[currentIndex].title)}
           </button>

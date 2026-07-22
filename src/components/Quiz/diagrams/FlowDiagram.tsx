@@ -13,9 +13,9 @@ interface FlowDiagramProps {
 export function FlowDiagram({ label, steps }: FlowDiagramProps) {
   // Color progression: orange → blue → green
   const getStepColor = (index: number, total: number) => {
-    if (total <= 1) return { bg: 'bg-claude-orange/10', border: 'border-claude-orange/30' }
+    if (total <= 1) return { bg: 'bg-cf-accent/10', border: 'border-cf-accent/30' }
     const ratio = index / (total - 1)
-    if (ratio === 0) return { bg: 'bg-claude-orange/10', border: 'border-claude-orange/30' }
+    if (ratio === 0) return { bg: 'bg-cf-accent/10', border: 'border-cf-accent/30' }
     if (ratio < 0.5) return { bg: 'bg-blue-50 dark:bg-blue-500/10', border: 'border-blue-200 dark:border-blue-500/30' }
     if (ratio < 1)
       return { bg: 'bg-indigo-50 dark:bg-indigo-500/10', border: 'border-indigo-200 dark:border-indigo-500/30' }
@@ -37,7 +37,7 @@ export function FlowDiagram({ label, steps }: FlowDiagramProps) {
                     style={{ opacity: isVisible ? 1 : 0, animationDelay: getItemDelay(i) }}
                     aria-hidden="true"
                   >
-                    <svg width="20" height="14" viewBox="0 0 20 14" className="text-claude-orange/50">
+                    <svg width="20" height="14" viewBox="0 0 20 14" className="text-cf-accent/50">
                       <path
                         d="M10 0 L10 8 M6 6 L10 10 L14 6"
                         stroke="currentColor"
@@ -57,11 +57,11 @@ export function FlowDiagram({ label, steps }: FlowDiagramProps) {
                   style={{ animationDelay: getItemDelay(i) }}
                 >
                   {/* Step number badge */}
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-claude-orange/20 text-[10px] font-bold text-claude-orange">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cf-accent/20 text-[10px] font-bold text-cf-accent">
                     {i + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs font-medium leading-relaxed text-claude-dark break-words dark:text-stone-200">
+                    <div className="text-xs font-medium leading-relaxed text-cf-ink break-words dark:text-stone-200">
                       {step.text}
                     </div>
                     {step.sub && (

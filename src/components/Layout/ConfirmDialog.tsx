@@ -41,7 +41,7 @@ export function ConfirmDialog({
     btn?.focus()
   }, [])
 
-  const confirmColors = variant === 'danger' ? 'text-red-500' : 'bg-claude-orange text-white'
+  const confirmColors = variant === 'danger' ? 'text-red-500' : 'bg-cf-accent text-white'
 
   return (
     <div
@@ -62,7 +62,7 @@ export function ConfirmDialog({
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        <h3 className="mb-2 text-center text-lg font-semibold text-claude-dark dark:text-stone-100">{title}</h3>
+        <h3 className="mb-2 text-center text-lg font-semibold text-cf-ink dark:text-stone-100">{title}</h3>
         <p className="mb-6 text-center text-sm text-stone-500 dark:text-stone-400">{message}</p>
         <div className="flex flex-col gap-2">
           <button

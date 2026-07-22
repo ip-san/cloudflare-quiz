@@ -77,7 +77,7 @@ export function SwimlaneDiagram({ label, lanes, totalSteps }: SwimlaneDiagramPro
                     x={labelW - 4}
                     y={y + laneH / 2 + 4}
                     textAnchor="end"
-                    className="fill-claude-dark dark:fill-stone-200"
+                    className="fill-cf-ink dark:fill-stone-200"
                     fontSize="10"
                     fontWeight="600"
                   >
@@ -118,7 +118,7 @@ export function SwimlaneDiagram({ label, lanes, totalSteps }: SwimlaneDiagramPro
                             x={sx + segW / 2}
                             y={y + laneH / 2 + 3}
                             textAnchor="middle"
-                            className="fill-claude-dark dark:fill-stone-200"
+                            className="fill-cf-ink dark:fill-stone-200"
                             fontSize="8"
                             fontWeight="500"
                           >

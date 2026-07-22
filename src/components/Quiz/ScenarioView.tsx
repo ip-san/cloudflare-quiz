@@ -164,7 +164,7 @@ export function ScenarioList({ onSelect }: { onSelect: (scenarioId: string) => v
             <span className="mt-0.5 text-2xl">{sc.icon}</span>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-claude-dark">{sc.title}</h3>
+                <h3 className="font-bold text-cf-ink">{sc.title}</h3>
                 {isCompleted && <span className="text-emerald-500">✓</span>}
               </div>
               <p className="mt-0.5 text-sm text-stone-500">{sc.description}</p>

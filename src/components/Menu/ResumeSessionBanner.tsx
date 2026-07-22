@@ -29,11 +29,11 @@ export function ResumeSessionBanner() {
       : ''
 
   return (
-    <div className="mb-5 animate-slide-down rounded-2xl border border-claude-orange/30 bg-linear-to-r from-claude-orange/10 to-claude-orange/5 p-4 dark:from-claude-orange/15 dark:to-claude-orange/5">
+    <div className="mb-5 animate-slide-down rounded-2xl border border-cf-accent/30 bg-linear-to-r from-cf-accent/10 to-cf-accent/5 p-4 dark:from-cf-accent/15 dark:to-cf-accent/5">
       <div className="mb-2 flex items-center gap-2">
         <span className="text-xl">{modeIcon}</span>
         <div className="flex-1">
-          <span className="text-sm font-semibold text-claude-dark">{locale.resumeSession.hasResume}</span>
+          <span className="text-sm font-semibold text-cf-ink">{locale.resumeSession.hasResume}</span>
           <p className="text-xs text-stone-500 dark:text-stone-400">
             {locale.resumeSession.progressText(modeName, progress)}
             {scoreText && ` (${scoreText})`}
@@ -43,7 +43,7 @@ export function ResumeSessionBanner() {
       <div className="flex gap-2">
         <button
           onClick={resumeSession}
-          className="tap-highlight inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-claude-orange px-4 py-3 text-base font-semibold text-white"
+          className="tap-highlight inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-cf-accent px-4 py-3 text-base font-semibold text-white"
         >
           <PlayCircle className="h-5 w-5" />
           {locale.resumeSession.resumeButton}

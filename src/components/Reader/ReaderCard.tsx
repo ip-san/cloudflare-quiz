@@ -24,7 +24,7 @@ export function ReaderCard({ question, isExpanded, onToggle, userProgress, onTog
     <div className="border-b border-stone-100 dark:border-stone-800">
       <button onClick={onToggle} className="tap-highlight flex w-full items-start gap-2 px-4 py-3 text-left">
         <span className="mt-0.5 shrink-0 text-sm">{cat?.icon}</span>
-        <span className="flex-1 line-clamp-2 text-sm leading-snug text-claude-dark dark:text-stone-200">
+        <span className="flex-1 line-clamp-2 text-sm leading-snug text-cf-ink dark:text-stone-200">
           {question.question}
         </span>
         <div className="flex shrink-0 items-center gap-1.5">
@@ -51,7 +51,7 @@ export function ReaderCard({ question, isExpanded, onToggle, userProgress, onTog
                 href={question.referenceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-xs text-claude-orange"
+                className="inline-flex items-center gap-1 text-xs text-cf-accent"
               >
                 <ExternalLink className="h-3 w-3" />
                 {locale.feedback.officialDocs}

@@ -72,7 +72,7 @@ function keycapClass(highlight?: boolean): string {
   const base =
     'inline-flex whitespace-nowrap min-w-[2rem] items-center justify-center rounded-md border px-2 py-1 font-mono text-xs font-semibold shadow-[0_2px_0_0_rgba(0,0,0,0.12)] dark:shadow-[0_2px_0_0_rgba(0,0,0,0.4)] transition-none'
   if (highlight) {
-    return `${base} border-claude-orange/50 bg-claude-orange/15 text-claude-orange`
+    return `${base} border-cf-accent/50 bg-cf-accent/15 text-cf-accent`
   }
   return `${base} border-stone-300 bg-stone-100 text-stone-700 dark:border-stone-600 dark:bg-stone-700/60 dark:text-stone-200`
 }

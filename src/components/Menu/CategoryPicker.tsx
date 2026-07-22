@@ -64,9 +64,7 @@ export function CategoryPicker({ onClose, mode = 'category', title }: CategoryPi
         role="presentation"
       />
       <div className="relative mx-2 mb-2 w-full max-w-sm animate-slide-down rounded-2xl bg-white p-5 shadow-2xl dark:bg-stone-800 sm:mx-4 sm:mb-0 sm:animate-none">
-        <h3 className="mb-2 text-center text-lg font-semibold text-claude-dark">
-          {title ?? locale.categoryPicker.title}
-        </h3>
+        <h3 className="mb-2 text-center text-lg font-semibold text-cf-ink">{title ?? locale.categoryPicker.title}</h3>
         {isUnanswered && <UnansweredProgress allQuestions={allQuestions} userProgress={userProgress} />}
         <div className="flex max-h-80 flex-col gap-1.5 overflow-y-auto">
           {PREDEFINED_CATEGORIES.map((cat) => {
@@ -95,7 +93,7 @@ export function CategoryPicker({ onClose, mode = 'category', title }: CategoryPi
               >
                 <span className="text-xl">{cat.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium text-claude-dark">{cat.name}</span>
+                  <span className="text-sm font-medium text-cf-ink">{cat.name}</span>
                   {isUnanswered &&
                     (() => {
                       const catTotal = allQuestions.filter((q) => q.category === cat.id).length
@@ -119,7 +117,7 @@ export function CategoryPicker({ onClose, mode = 'category', title }: CategoryPi
                             aria-label={locale.menuHeader.categoryLabel(cat.name, catAnswered, catTotal)}
                           >
                             <div
-                              className={`h-full rounded-full transition-all ${catPct >= 100 ? 'bg-emerald-500' : 'bg-claude-orange'}`}
+                              className={`h-full rounded-full transition-all ${catPct >= 100 ? 'bg-emerald-500' : 'bg-cf-accent'}`}
                               style={{ width: `${catPct}%` }}
                             />
                           </div>
@@ -176,7 +174,7 @@ function UnansweredProgress({
         aria-valuemax={100}
         aria-label={locale.menuHeader.answeredLabel(correct, total)}
       >
-        <div className="h-full rounded-full bg-claude-orange transition-all" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-cf-accent transition-all" style={{ width: `${pct}%` }} />
       </div>
     </div>
   )

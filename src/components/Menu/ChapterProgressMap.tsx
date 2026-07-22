@@ -112,7 +112,7 @@ export function ChapterProgressMap({
               haptics.light()
               onNextStep()
             }}
-            className="tap-highlight rounded-xl bg-claude-orange px-3 py-2.5 text-center text-xs font-semibold text-white"
+            className="tap-highlight rounded-xl bg-cf-accent px-3 py-2.5 text-center text-xs font-semibold text-white"
           >
             {`🎯 ${locale.chapterProgress.fullTestButton}`}
           </button>
@@ -134,7 +134,7 @@ export function ChapterProgressMap({
               onClick={() => setSelectedChapter(isSelected ? null : ch.id)}
               className={`tap-highlight rounded-xl border p-3 text-left transition-all ${
                 isSelected
-                  ? 'border-claude-orange bg-claude-orange/5 shadow-xs dark:bg-claude-orange/10'
+                  ? 'border-cf-accent bg-cf-accent/5 shadow-xs dark:bg-cf-accent/10'
                   : 'border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800'
               }`}
             >
@@ -144,7 +144,7 @@ export function ChapterProgressMap({
                 </span>
                 {ch.correctPct === 100 && <span className="text-xs">✅</span>}
               </div>
-              <p className="mb-1.5 line-clamp-1 text-xs font-medium text-claude-dark dark:text-stone-200">{ch.name}</p>
+              <p className="mb-1.5 line-clamp-1 text-xs font-medium text-cf-ink dark:text-stone-200">{ch.name}</p>
               <div className="mb-1 h-1 overflow-hidden rounded-full bg-stone-100 dark:bg-stone-700">
                 <div
                   className={`h-full rounded-full transition-all ${ch.correctPct === 100 ? 'bg-green-500' : 'progress-gradient'}`}
@@ -166,10 +166,10 @@ export function ChapterProgressMap({
 
       {/* Selected chapter detail + start button */}
       {selected && (
-        <div className="mt-2 animate-card-enter rounded-xl border border-claude-orange/30 bg-claude-orange/5 p-4 dark:bg-claude-orange/10">
+        <div className="mt-2 animate-card-enter rounded-xl border border-cf-accent/30 bg-cf-accent/5 p-4 dark:bg-cf-accent/10">
           <div className="mb-2 flex items-center gap-2">
             <span>{selected.icon}</span>
-            <span className="text-sm font-semibold text-claude-dark dark:text-stone-200">
+            <span className="text-sm font-semibold text-cf-ink dark:text-stone-200">
               Ch.{selected.id}: {selected.name}
             </span>
           </div>
@@ -185,7 +185,7 @@ export function ChapterProgressMap({
                 onResumeChapter(selected.allIds, `Ch.${selected.id} ${selected.name}`)
               }
             }}
-            className="tap-highlight inline-flex items-center gap-2 rounded-xl bg-claude-orange px-4 py-2.5 text-sm font-semibold text-white"
+            className="tap-highlight inline-flex items-center gap-2 rounded-xl bg-cf-accent px-4 py-2.5 text-sm font-semibold text-white"
           >
             <Play className="h-3.5 w-3.5 fill-white" />
             {selected.correctPct === 100

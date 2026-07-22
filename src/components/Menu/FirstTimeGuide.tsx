@@ -26,16 +26,16 @@ export function FirstTimeGuide({ onOpenModes }: FirstTimeGuideProps) {
   return (
     <div className="mb-5 space-y-3">
       {/* 初心者向け */}
-      <div className="rounded-2xl border-2 border-claude-orange/30 bg-linear-to-r from-claude-orange/5 to-transparent p-4 dark:border-claude-orange/40 dark:from-claude-orange/10">
-        <p className="mb-1 text-xs font-semibold text-claude-orange">{locale.firstTimeGuide.beginnerLabel}</p>
-        <p className="mb-4 text-sm text-claude-dark dark:text-stone-200">{locale.firstTimeGuide.beginnerDesc}</p>
+      <div className="rounded-2xl border-2 border-cf-accent/30 bg-linear-to-r from-cf-accent/5 to-transparent p-4 dark:border-cf-accent/40 dark:from-cf-accent/10">
+        <p className="mb-1 text-xs font-semibold text-cf-accent">{locale.firstTimeGuide.beginnerLabel}</p>
+        <p className="mb-4 text-sm text-cf-ink dark:text-stone-200">{locale.firstTimeGuide.beginnerDesc}</p>
         <div className="space-y-2">
           <button
             onClick={() => {
               haptics.light()
               startSession({ mode: 'overview' })
             }}
-            className="tap-highlight flex w-full items-center gap-3 rounded-2xl bg-claude-orange px-4 py-3 text-left shadow-xs"
+            className="tap-highlight flex w-full items-center gap-3 rounded-2xl bg-cf-accent px-4 py-3 text-left shadow-xs"
           >
             <MapIcon className="h-5 w-5 shrink-0 text-white/80" />
             <div>
@@ -53,11 +53,11 @@ export function FirstTimeGuide({ onOpenModes }: FirstTimeGuideProps) {
               haptics.light()
               setViewState('studyFirst')
             }}
-            className="tap-highlight flex w-full items-center gap-3 rounded-2xl border border-claude-orange/30 bg-white px-4 py-3 text-left dark:bg-stone-800"
+            className="tap-highlight flex w-full items-center gap-3 rounded-2xl border border-cf-accent/30 bg-white px-4 py-3 text-left dark:bg-stone-800"
           >
-            <BookOpen className="h-5 w-5 shrink-0 text-claude-orange" />
+            <BookOpen className="h-5 w-5 shrink-0 text-cf-accent" />
             <div>
-              <p className="text-sm font-semibold text-claude-dark dark:text-stone-200">
+              <p className="text-sm font-semibold text-cf-ink dark:text-stone-200">
                 {locale.firstTimeGuide.readFirstLabel}
               </p>
               <p className="text-xs text-stone-500">{locale.firstTimeGuide.readFirstDesc}</p>
@@ -76,7 +76,7 @@ export function FirstTimeGuide({ onOpenModes }: FirstTimeGuideProps) {
       >
         <span className="text-sm text-stone-400">🎯</span>
         <div className="flex-1">
-          <p className="text-sm font-medium text-claude-dark dark:text-stone-200">
+          <p className="text-sm font-medium text-cf-ink dark:text-stone-200">
             {locale.firstTimeGuide.experiencedLabel}
           </p>
           <p className="text-xs text-stone-500">{locale.firstTimeGuide.experiencedDesc}</p>

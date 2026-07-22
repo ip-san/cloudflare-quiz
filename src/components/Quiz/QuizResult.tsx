@@ -156,7 +156,7 @@ export function QuizResult() {
             )}
             <button
               onClick={handleRetry}
-              className="tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-claude-orange px-6 py-3.5 text-base font-semibold text-white"
+              className="tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-cf-accent px-6 py-3.5 text-base font-semibold text-white"
             >
               <RotateCcw className="h-5 w-5" />
               {locale.result.retryAgain}

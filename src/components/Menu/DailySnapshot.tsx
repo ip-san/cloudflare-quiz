@@ -107,7 +107,7 @@ export function DailySnapshot({ onDismiss }: DailySnapshotProps) {
       </div>
 
       {/* Key stats — SRS focused (goal is in MenuHeader's DailyGoalRing) */}
-      <div className="mb-3 space-y-1.5 text-sm text-claude-dark">
+      <div className="mb-3 space-y-1.5 text-sm text-cf-ink">
         {snapshot.dueCount > 0 ? (
           <p>
             <strong>{locale.snapshot.reviewDueStrong(snapshot.dueCount)}</strong>

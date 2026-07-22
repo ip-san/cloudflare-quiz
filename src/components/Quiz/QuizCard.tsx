@@ -105,14 +105,14 @@ export function QuizCard({
   if (!quiz) {
     return (
       <div className="rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 p-8 text-center dark:from-stone-800 dark:to-stone-900">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-claude-orange/10">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-cf-accent/10">
           <span className="text-3xl">🔍</span>
         </div>
-        <h3 className="mb-2 text-lg font-semibold text-claude-dark">{locale.quizCard.noQuestions}</h3>
+        <h3 className="mb-2 text-lg font-semibold text-cf-ink">{locale.quizCard.noQuestions}</h3>
         <p className="mb-6 text-sm text-stone-500 dark:text-stone-400">{locale.quizCard.noQuestionsHint}</p>
         <button
           onClick={endSession}
-          className="tap-highlight rounded-2xl bg-claude-orange px-6 py-3 text-sm font-semibold text-white"
+          className="tap-highlight rounded-2xl bg-cf-accent px-6 py-3 text-sm font-semibold text-white"
         >
           {locale.quizCard.backToMenu}
         </button>
@@ -224,7 +224,7 @@ export function QuizCard({
         </div>
 
         {/* Question */}
-        <h2 className="mb-3 max-w-prose text-lg font-semibold leading-snug text-claude-dark sm:mb-6 sm:text-xl sm:leading-relaxed">
+        <h2 className="mb-3 max-w-prose text-lg font-semibold leading-snug text-cf-ink sm:mb-6 sm:text-xl sm:leading-relaxed">
           <QuizText text={quiz.question} />
         </h2>
 
@@ -271,7 +271,7 @@ export function QuizCard({
               href={quiz.referenceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-claude-orange"
+              className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-cf-accent"
             >
               <ExternalLink className="h-3 w-3" />
               {locale.quizCard.docsLink}
@@ -330,7 +330,7 @@ export function QuizCard({
                     retryQuestion()
                   }}
                   aria-label={locale.quizCard.retryLabel}
-                  className="tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-claude-orange py-3.5 text-base font-semibold text-claude-orange sm:py-3"
+                  className="tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-cf-accent py-3.5 text-base font-semibold text-cf-accent sm:py-3"
                 >
                   <RotateCcw className="h-4 w-4" />
                   {locale.quizCard.retryButton} <span className="text-xs opacity-60">(R)</span>
