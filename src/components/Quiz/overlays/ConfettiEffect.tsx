@@ -14,7 +14,7 @@ interface Particle {
 }
 
 const COLORS = [
-  '#F6821F', // cf-accent
+  '#F6821F', // cf-orange
   '#22c55e', // green
   '#3b82f6', // blue
   '#eab308', // yellow

@@ -10,7 +10,9 @@
    * cf-accent: テキスト/アイコン/ボーダー用のAA準拠アクセント
    *   (白背景で5.0:1)。CFオレンジと同系の暖色相。 */
   --color-cf-orange: #f6821f;
-  --color-cf-gold: #faad3f;
+  /* cf-gold はロゴ資産(build/icon.svg・index.html のスプラッシュ・AppLogo.tsx)の
+   * グラデーション停止色と同一値。変更時は資産側も揃えて generate-icons を再実行する */
+  --color-cf-gold: #fba857;
   --color-cf-accent: #b45309;
   --color-cf-surface: #faf9f5;
   --color-cf-ink: #1a1a1a;
@@ -307,13 +309,6 @@
   @apply active:scale-[0.97] active:opacity-80 transition-transform duration-100;
 }
 
-/* Cloudflareブランドのオレンジ→ゴールドグラデーションCTA。
- * 明るいブランドオレンジは白文字だと2.3:1でWCAG AAを満たさないため、
- * ダーク文字(cf-ink: 6.2:1以上)を組みにする。 */
-@utility btn-brand {
-  background-image: linear-gradient(135deg, var(--color-cf-orange), var(--color-cf-gold));
-  color: var(--color-cf-ink);
-}
 
 @layer utilities {
   /* Dark mode fallback overrides
@@ -524,7 +519,7 @@
   button:focus-visible,
   [role="option"]:focus-visible,
   [role="checkbox"]:focus-visible {
-    outline: 2px solid #F6821F;
+    outline: 2px solid var(--color-cf-orange);
     outline-offset: 2px;
   }
 }

@@ -4,6 +4,7 @@ import { locale } from '@/config/locale'
 import { getSubtitle, theme } from '@/config/theme'
 import { haptics } from '@/lib/haptics'
 import { hasSeenFlag, setSeenFlag } from '@/lib/storage'
+import { buttonStyles } from '@/lib/styles'
 import { useQuizStore } from '@/stores/quizStore'
 
 const WELCOME_KEY = `${theme.storagePrefix}-welcomed`
@@ -82,7 +83,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         {/* CTA — two equal-weight buttons */}
         <button
           onClick={handleTryOne}
-          className="btn-brand tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-lg font-bold shadow-lg"
+          className={`${buttonStyles.brand} tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-lg font-bold shadow-lg`}
         >
           <Play className="h-5 w-5 fill-cf-ink" />
           {locale.welcome.tryOneQuestion}

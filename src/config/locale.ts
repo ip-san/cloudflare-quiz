@@ -420,8 +420,6 @@ export interface LocaleConfig {
       readonly description: string
       readonly tip?: string
     }>
-    readonly terminalYou: string
-    readonly terminalClaude: string
     readonly terminalPrompt: string
     readonly terminalReply: string
     readonly terminalReplyCont: string

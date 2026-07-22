@@ -50,8 +50,6 @@ export interface ThemeTutorialSlide {
 }
 
 export interface ThemeTutorialTerminal {
-  readonly youLabel: string
-  readonly aiLabel: string
   readonly prompt: string
   readonly reply: string
   readonly replyCont: string
@@ -484,8 +482,6 @@ const cloudflareTheme: ThemeConfig = {
     },
   ],
   tutorialTerminal: {
-    youLabel: 'あなた:',
-    aiLabel: 'wrangler:',
     prompt: 'wrangler dev',
     reply: '⎔ Starting local server...',
     replyCont: 'Ready on http://localhost:8787',

@@ -401,8 +401,6 @@ export const ja: LocaleConfig = {
     slideLabel: (i) => `スライド ${i}`,
     prevLabel: '前へ',
     slides: theme.tutorialSlides,
-    terminalYou: theme.tutorialTerminal.youLabel,
-    terminalClaude: theme.tutorialTerminal.aiLabel,
     terminalPrompt: theme.tutorialTerminal.prompt,
     terminalReply: theme.tutorialTerminal.reply,
     terminalReplyCont: theme.tutorialTerminal.replyCont,
