@@ -145,15 +145,16 @@ async function coverage() {
   const data = loadQuizzes()
   const quizzes = data.quizzes
 
-  // Count questions per doc page from referenceUrl
-  // URL 由来スラッグと DOC_PAGES の name が異なるページは alias で同一視する
-  // （例: platform.claude.com の agent-sdk/overview ↔ DOC_PAGES の agent-sdk-overview）
-  const PAGE_ALIASES = { 'agent-sdk/overview': 'agent-sdk-overview' }
+  // Count questions per doc page from referenceUrl.
+  // referenceUrl は https://developers.cloudflare.com/<page>/[#anchor] 形式なので、
+  // プレフィックス・末尾スラッシュ・アンカーを剥がすと DOC_PAGES の name と一致する。
   const pages = {}
   quizzes.forEach((q) => {
     if (q.referenceUrl) {
-      const slug = q.referenceUrl.replace(/.*docs\/(?:en|ja)\//, '').replace(/#.*/, '')
-      const page = PAGE_ALIASES[slug] ?? slug
+      const page = q.referenceUrl
+        .replace(/^https:\/\/developers\.cloudflare\.com\//, '')
+        .replace(/#.*$/, '')
+        .replace(/\/$/, '')
       pages[page] = (pages[page] || 0) + 1
     }
   })
