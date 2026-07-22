@@ -27,7 +27,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflare Workersは、Cloudflareのグローバルネットワーク上にある多数のエッジロケーションでコードを実行するサーバーレスプラットフォームです。\n{{diagram:0}}\nリクエストは地理的に最も近いエッジロケーションにルーティングされ、そこでV8アイソレート上にWorkerのコードが実行されます。VMやコンテナのようにOSやランタイム全体を起動する必要がないため、リクエストごとの起動コストが極めて小さいのが特徴です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/",
-      "hint": "「エッジ」「V8アイソレート」というキーワードと、VM起動が必要かどうかに注目しましょう。",
+      "hint": "起動のたびにOSやVMをまるごと用意する必要があるかどうかを軸に考えましょう。",
       "tags": [
         "workers",
         "practical",
@@ -130,7 +130,7 @@
       "correctIndex": 2,
       "explanation": "V8アイソレートは、V8エンジンが提供する軽量な実行コンテキストで、変数やコードを安全に隔離しつつ実行できる「サンドボックス」です。\n{{diagram:0}}\n単一のランタイムプロセスが数百〜数千のアイソレートを切り替えながら実行できるため、コンテナやVMのようにリクエストごとにOS/ランタイムを起動する必要がありません。各アイソレートのメモリは互いに完全に分離されており、安全性も確保されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/how-workers-works/",
-      "hint": "アイソレートは「新しいプロセスを起動する」のではなく、「既存のプロセス内に軽量な実行コンテキストを作る」という発想です。",
+      "hint": "新しく部屋を建てるのと、今ある建物の一室を間借りするのとでは、どちらが早く使い始められるか考えましょう。",
       "tags": [
         "workers",
         "overview",
@@ -459,7 +459,7 @@
       "correctIndex": 3,
       "explanation": "通常、Workerはレスポンスを返すとその実行コンテキストが終了してしまいます。`ctx.waitUntil(promise)`にPromiseを渡すことで、レスポンスをクライアントに返した後も、そのPromiseが完了するまでWorkerの実行を延長できます。\n{{diagram:0}}\nログの送信やアナリティクスの記録、キャッシュへの書き込みなど、クライアントへの応答を遅延させたくないが完了は保証したい処理に使われます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/context/",
-      "hint": "「レスポンスを返した後」に何を継続させたいか、という視点で考えましょう。",
+      "hint": "お客さんへの返事は先に済ませつつ、裏側の後片付けだけ続けたい場面を考えましょう。",
       "tags": [
         "workers",
         "practical"
@@ -537,7 +537,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflareの公式ドキュメントによれば、アイソレートはコンテナ/VM上でNodeプロセスを起動するのに比べて約100倍高速に起動できるとされています。\n{{diagram:0}}\nこれは、OSやコンテナランタイムのブートといった重い処理を伴わず、既に起動しているランタイムプロセスの中に軽量な実行コンテキスト(アイソレート)を生成するだけで済むためです。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/how-workers-works/",
-      "hint": "「新しいプロセスを起動する」のと「既存プロセス内に軽量なコンテキストを作る」のでは、どちらが速いかを考えましょう。",
+      "hint": "一から建物を建てるのと、すでにある建物に入居するのと、どちらが早いか考えましょう。",
       "tags": [
         "workers",
         "overview",
@@ -612,7 +612,7 @@
       "correctIndex": 0,
       "explanation": "Service Bindingsを使うと、Worker Aから`env`経由でWorker Bを直接呼び出せます。\n{{diagram:0}}\n公開インターネットを経由しないため、通常のHTTPリクエストよりも低レイテンシで通信でき、さらにWorker Bを公開URLなしでデプロイして、Service Bindingを持つWorkerからのみアクセス可能にする(インターネットから隔離する)構成も可能です。呼び出し方式にはRPC(メソッド呼び出し)とHTTP(Requestの転送)の2種類があります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/",
-      "hint": "「公開URLを経由するかどうか」がポイントです。",
+      "hint": "Worker同士が話すときに、わざわざインターネットに出て戻ってくる必要があるかどうか考えましょう。",
       "tags": [
         "workers",
         "practical"
@@ -1267,7 +1267,7 @@
       "correctIndex": 1,
       "explanation": "`npm create cloudflare@latest`（C3 = create-cloudflare CLI）は、Next.js・Astro・Remix・Honoなど各種フレームワークのテンプレートから対話形式でプロジェクトを作成できるスキャフォールディングツールです。\n{{diagram:0}}\n依存関係のインストールから初回デプロイまでを一連のフローでサポートしてくれるため、フレームワークを使ったアプリケーションを始める際の入口として推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/get-started/guide/",
-      "hint": "『create-cloudflare』という名前のCLIツールを思い出してみましょう。",
+      "hint": "フレームワークの雛形生成から初回デプロイまでを一括で行う、npm経由のコマンドを考えましょう。",
       "tags": [
         "wrangler",
         "practical",
@@ -1647,7 +1647,7 @@
       "correctIndex": 3,
       "explanation": "`wrangler tail` を実行すると、指定したWorkerに対する実際のリクエストのログ（`console.log` の出力や例外情報など）をリアルタイムでストリーミング表示できます。\n{{diagram:0}}\nフィルタ（ステータスコードやHTTPメソッドなど）を付けて絞り込むこともでき、本番障害の原因調査に役立ちます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#tail",
-      "hint": "『しっぽ』のように後ろについて流れてくるログをイメージしましょう。",
+      "hint": "デプロイ済みWorkerの今のログをリアルタイムで流し見したいときのコマンドを考えましょう。",
       "tags": [
         "wrangler",
         "practical"
@@ -2358,7 +2358,7 @@
       "correctIndex": 3,
       "explanation": "fetch()のRequestInitに渡す`cf`オブジェクトのcacheTtlは、そのサブリクエストのレスポンスをCloudflareのエッジに何秒間キャッシュするかを、オリジンが返すCache-Controlヘッダーの指示より優先して制御するオプションです。似た機能に、通常キャッシュされないファイル種別も含めて全てキャッシュするcacheEverythingオプションもあります。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
-      "hint": "オリジンのCache-Controlヘッダーとの関係を考えてみましょう。",
+      "hint": "オリジン側の指示より優先して、エッジ側で保持時間を決めたい場面を考えましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -2520,7 +2520,7 @@
       "correctIndex": 3,
       "explanation": "put()の`metadata`オプションには任意のJSONを付加情報として保存できます(シリアライズ後のサイズ上限は1024バイト)。list()の結果には値本体を含めずmetadataだけが含まれるため、大量のキーを一覧しながら値を取得せずにフィルタリングするような用途に便利です。値そのものも必要な場合はgetWithMetadata()を使います。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/api/write-key-value-pairs/",
-      "hint": "「値本体を読み込まずに付加情報だけを見たい」場面を想像してみましょう。",
+      "hint": "本文を開かずに、本の背表紙の情報だけ知りたい場面を考えましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -2742,7 +2742,7 @@
       "correctIndex": 3,
       "explanation": "公式ドキュメントによると、Set-Cookieヘッダーを含むレスポンスは「一意なデータを含む可能性がある」ため常にキャッシュされません。また、Cache-Controlが`private`、`no-store`、`no-cache`、`max-age=0`等でキャッシュを禁止している場合、`put()`は413エラーを返します。Set-Cookieを含めたい場合は事前にヘッダーを削除するか、`Cache-Control: private=Set-Cookie`を設定する必要があります。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
-      "hint": "Cookieを含むレスポンスをそのままキャッシュしてしまうと何が起きるか考えてみましょう。",
+      "hint": "特定のユーザー専用の応答を、他の人にも配ってしまったらどうなるか考えましょう。",
       "tags": [
         "kv-cache",
         "trivia"
@@ -3515,7 +3515,7 @@
       "correctIndex": 0,
       "explanation": "D1のSessions APIでは、`env.DB.withSession()`でセッションを開始し、そのセッション内のクエリ結果から`bookmark`(処理位置を示すマーカー)を取得できます。次回以降のリクエストでこのbookmarkを渡すことで、グローバルに分散した読み取りレプリカを使いながらも「自分が書いた内容を確実に読める」(read-your-writes)一貫性を維持できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/best-practices/read-replication/",
-      "hint": "セッションと「しおり(bookmark)」を使って一貫性を管理する仕組みです。",
+      "hint": "前回どこまで読んだかの目印を、次回に持ち越す発想の仕組みを考えましょう。",
       "tags": [
         "d1",
         "trivia"
@@ -3640,7 +3640,7 @@
       "correctIndex": 3,
       "explanation": "R2はAmazon S3と互換性のあるAPIを持つオブジェクトストレージです。バケットに画像、動画、ログ、バックアップなどの非構造化データを保存できます。\n{{diagram:0}}\nR2はWorkers KV（小さな値・超低レイテンシ読み取り向け）やD1（SQLデータベース）とは役割が異なります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/",
-      "hint": "「S3」という単語がヒントです。",
+      "hint": "他社の有名なオブジェクトストレージサービスと互換性を持たせている点を考えましょう。",
       "tags": [
         "r2",
         "practical",
@@ -3728,7 +3728,7 @@
       "correctIndex": 3,
       "explanation": "多くのクラウドストレージではデータを外部に転送する際の「エグレス（データ送信）料金」が高額になりがちですが、R2はこのエグレス料金を一切課金しません。\n{{diagram:0}}\nこれによりCDN配信や他クラウドとのマルチクラウド構成でのコストを大幅に削減できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/pricing/",
-      "hint": "「データ転送」に関する料金を考えてみましょう。",
+      "hint": "R2から外部にデータを送り出すときの料金体系が、他社と何が違うか考えましょう。",
       "tags": [
         "r2",
         "practical",
@@ -3940,7 +3940,7 @@
       "correctIndex": 3,
       "explanation": "R2はS3と同様、オブジェクトストレージのデータモデルを採用しています。バケットはオブジェクトの入れ物で、各オブジェクトは一意のキー（文字列）、バイナリデータ本体、そしてメタデータを持ちます。\n{{diagram:0}}\nキーに「/」を含めることでディレクトリのように見せることはできますが、実体はフラットな名前空間です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/",
-      "hint": "「フラットな名前空間」がキーワードです。",
+      "hint": "ディレクトリのように見えても、実体としては階層構造を持っているのかどうか考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4019,7 +4019,7 @@
       "correctIndex": 1,
       "explanation": "R2はS3互換APIを提供しており、R2ダッシュボードの「R2 API トークンの管理」からアクセスキーID/シークレットアクセスキーを発行できます。既存のAWS SDKやCLIのエンドポイントを https://<ACCOUNT_ID>.r2.cloudflarestorage.com に向けることでそのまま利用可能です。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/tokens/",
-      "hint": "「アクセスキーID」と「シークレットアクセスキー」という言葉を思い出してみましょう。",
+      "hint": "AWSの認証情報をそのまま使い回せるのか、Cloudflare専用の認証情報を別途発行する必要があるのか考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4088,7 +4088,7 @@
       "correctIndex": 2,
       "explanation": "R2はS3互換APIのpresigned URL（署名付きURL）機能をサポートしています。アクセスキーで署名し、有効期限を指定したURLを生成することで、バケットをプライベートに保ったまま特定オブジェクトへの一時的なアクセスを許可できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/s3/presigned-urls/",
-      "hint": "S3のpresigned URLと同じ仕組みがR2にも存在します。",
+      "hint": "期限付きの一時アクセス権を、URLに埋め込んで発行する仕組みがあるかどうか考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4173,7 +4173,7 @@
       "correctIndex": 2,
       "explanation": "R2はS3互換のマルチパートアップロードAPIをサポートしています。createMultipartUpload でアップロードを開始し、複数のパートを uploadPart で並列アップロードした後、completeMultipartUpload で結合を要求します。\n{{diagram:0}}\nこれにより大容量ファイルの転送を高速化・耐障害化でき、途中失敗時も失敗したパートのみ再送できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/objects/upload-objects/#multipart-upload",
-      "hint": "「マルチパート」という言葉がキーワードです。",
+      "hint": "大きなファイルを1回で送り切るのと、いくつかに分けて並行して送るのと、どちらが信頼性が高いか考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4246,7 +4246,7 @@
       "correctIndex": 2,
       "explanation": "R2 Workers バインディングAPIには get/put/delete/head/list などのメソッドがあります。list()はプレフィックスによるフィルタやページネーション（cursor）をサポートし、バケット内のオブジェクト一覧を取得できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
-      "hint": "「一覧」に対応する英単語を考えてみましょう。",
+      "hint": "バケットの中身を洗い出すために使う、R2バインディングのメソッドを考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4336,7 +4336,7 @@
       "correctIndex": 2,
       "explanation": "R2 Event Notificationsを使うと、オブジェクトの作成・削除などのイベントをCloudflare Queuesに送信できます。Queue Consumer として動作するWorkerがそのメッセージを受け取り、画像リサイズやサムネイル生成などの後続処理を非同期に実行できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/event-notifications/",
-      "hint": "R2のイベントは「Queues」と連携します。",
+      "hint": "アップロード完了を検知して、非同期の後続処理へ橋渡しする仕組みが必要な場面を考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4513,7 +4513,7 @@
       "correctIndex": 0,
       "explanation": "R2の料金体系はストレージ容量、Class A操作（PUT/LIST/バケット作成など書き込み系）、Class B操作（GET/HEADなど読み取り系）の3要素からなり、それぞれに毎月無料枠が設定されています。加えてR2最大の特徴として、エグレス（データ送信）は無料枠の有無にかかわらず常に無料です。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/pricing/",
-      "hint": "「ストレージ」「Class A操作」「Class B操作」という3つの課金要素を思い出してみましょう。",
+      "hint": "保存量・書き込み系操作・読み取り系操作、それぞれに無料の範囲があるかどうか考えましょう。",
       "tags": [
         "r2",
         "trivia"
@@ -4672,7 +4672,7 @@
       "correctIndex": 1,
       "explanation": "Durable Objects は単一インスタンスで強整合な状態管理ができるため、複数クライアントが同時に同じ状態を読み書きするリアルタイム協調（チャットルーム、マルチプレイヤーゲーム、カウンタ、排他制御など）に向いています。一方 Workers KV は結果整合性を前提とした分散ストアで、読み取りが多く書き込みが少ないデータの配信に最適化されています。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/",
-      "hint": "「複数クライアントが同じ状態を同時に読み書きする」ケースを考えましょう。",
+      "hint": "大勢が同時に同じ盤面を見ながら書き込むゲームのような場面を考えましょう。",
       "tags": [
         "do-queues",
         "practical",
@@ -4749,7 +4749,7 @@
       "correctIndex": 3,
       "explanation": "idFromName(name) は指定した文字列から決定論的に ID を生成するメソッドで、同じ名前を渡せば常に同じ ID が得られます。生成した ID に対して namespace.get(id) を呼び出すことで、その DO へのスタブを取得しリクエストを送れます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/namespace/",
-      "hint": "「名前」から「決定論的」にIDを作るメソッド名を考えましょう。",
+      "hint": "同じ文字列を渡すたびに、必ず同じインスタンスに辿り着かせたい場合を考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -4921,7 +4921,7 @@
       "correctIndex": 0,
       "explanation": "waitUntil() はレスポンスを返した後も同じ Worker 実行の中で処理を継続する仕組みで、途中で失敗しても自動的な永続化やリトライは行われません。一方 Queues はメッセージを永続的なキューに書き込み、Consumer 側で失敗時のリトライ（デフォルト最大3回）や Dead Letter Queue への退避を行えるため、確実性が求められるバックグラウンド処理を分離するのに適しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/reference/how-queues-works/",
-      "hint": "「確実に処理したい」「失敗時にリトライさせたい」場合にどちらが向いているか考えましょう。",
+      "hint": "後処理が失敗したとき、誰にも気づかれず消えてしまってよいかどうか考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -4977,7 +4977,7 @@
       "correctIndex": 0,
       "explanation": "新規のDurable Object NamespaceにはSQLiteストレージバックエンドの使用が推奨されています。SQLiteバックエンドではSQL API・Point-In-Time Recovery(PITR)・同期的なKV API（get/put/delete/list）が利用できます。各メソッド呼び出しは暗黙的にトランザクション内にラップされ、その結果はアトミックで他のすべてのストレージ操作から隔離されます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/",
-      "hint": "「トランザクション」「アトミック」という言葉に注目しましょう。",
+      "hint": "1回のstorage呼び出しの途中で失敗したら、中途半端な状態が残ってしまわないか考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -5106,7 +5106,7 @@
       "correctIndex": 1,
       "explanation": "WebSocket Hibernation API（acceptWebSocket()）は標準のWebSocket APIを拡張したもので、メッセージが来ない非アクティブな期間はDOインスタンスをスリープ（ハイバネート）させられます。この間もクライアントとの接続自体は維持されますが、Billable Duration（GB-s）の課金は発生しません。状態はコンストラクタではなくserializeAttachment()で保存し、webSocketMessage()などのハンドラメソッドで再開時に処理します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/best-practices/websockets/",
-      "hint": "「非アクティブな間は課金されない」仕組みを考えましょう。",
+      "hint": "接続だけ保ったまま、実際に何もしていない時間はお金がかからないようにする仕組みを考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -5162,7 +5162,7 @@
       "correctIndex": 1,
       "explanation": "max_batch_size（デフォルト10件、最大100件）とmax_batch_timeout（デフォルト5秒、最大60秒）は、どちらか先に到達した方の条件でバッチ配信をトリガーします。例えばmax_batch_size=30、max_batch_timeout=10秒と設定した場合、30件到着すれば即座に配信され、届かなければ10秒経過時点までに届いた分が配信されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/configuration/batching-retries/",
-      "hint": "「件数」と「時間」、どちらか早い方が基準になります。",
+      "hint": "件数と時間、それぞれに上限を設けたとき、両方を待つのか、片方で十分なのか考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -5267,7 +5267,7 @@
       "correctIndex": 3,
       "explanation": "idFromName(name)は文字列から決定論的にIDを導出するため、ユーザーIDやルーム名のように「既知の名前」から常に同じインスタンスに到達したい設計に向きます。一方newUniqueId()はランダムなIDを生成し、初回アクセス時のレイテンシが低いという利点がありますが、後で同じオブジェクトを参照するにはIDを文字列化してKVやCookieなど外部に保存し、idFromString()で復元する必要があります。名前が事前に分かっているか、生成後に外部保存する運用にするかを基準に使い分けます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/namespace/",
-      "hint": "「名前が先に決まっているか」「IDを後から外部に保存する前提か」を軸に考えましょう。",
+      "hint": "ルーム名のように先に分かっている手がかりがあるか、それとも後で控えを取っておく前提か考えましょう。",
       "tags": [
         "do-queues",
         "trivia"
@@ -5323,7 +5323,7 @@
       "correctIndex": 3,
       "explanation": "デフォルトではqueue()ハンドラが例外なく正常終了すればバッチ内の全メッセージが暗黙的にackされ、例外がスローされるとバッチ全体がリトライ対象になります。しかしmsg.ack()を使って個別のメッセージを明示的に確認応答しておくと、そのメッセージは処理済みとして扱われ、バッチ内の他のメッセージが失敗してリトライされても再配信されません。逆にmsg.retry()を使えば、特定のメッセージだけを明示的に再配信対象にできます。これにより「バッチ内の一部だけが失敗した」ケースを適切にハンドリングできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/configuration/batching-retries/",
-      "hint": "バッチ内の一部だけ失敗した場合、成功したメッセージまで再送されると困りますね。",
+      "hint": "バッチの一部だけやり直したいとき、すでに終わった分をどう区別するか考えましょう。",
       "tags": [
         "do-queues",
         "trivia"
@@ -5389,7 +5389,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Pages は静的サイト(HTML/CSS/JS等のビルド成果物)をグローバルCDNに配信し、加えて `functions/` ディレクトリに配置したコードを Pages Functions として動作させることで、API エンドポイントなどのサーバーサイド処理も同じプロジェクト内で扱えるプラットフォームです。\n{{diagram:0}}\nGitリポジトリと連携して自動ビルド・デプロイを行うのが基本的な使い方です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/",
-      "hint": "静的サイトだけでなく、functions/ ディレクトリでできることも考えてみましょう。",
+      "hint": "HTMLを配るだけでなく、裏側で動くコードも同じプロジェクトに置けるかどうか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -5461,7 +5461,7 @@
       "correctIndex": 3,
       "explanation": "Pages はリポジトリの「本番ブランチ」(デフォルトは main/master)を設定でき、そのブランチへのプッシュは本番環境へデプロイされます。\n{{diagram:0}}\nそれ以外のブランチやプルリクエストへのプッシュは自動的にプレビューデプロイとして扱われ、本番環境に影響を与えずに動作確認ができます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/git-integration/",
-      "hint": "本番ブランチとそれ以外のブランチで、デプロイ先がどう分かれるか考えましょう。",
+      "hint": "メインの窓口に出す変更と、下書きとして見せるだけの変更を、Cloudflareはどう区別するか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -5784,7 +5784,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflareは Workers に静的アセット配信機能を統合し、1つの Workers プロジェクトで静的ファイルとサーバーサイドロジックの両方を扱えるようにしました。\n{{diagram:0}}\nこれに伴い、新規プロジェクトでは Workers(静的アセット機能付き)の利用が推奨される方向にあり、Pages は既存プロジェクトの継続的なサポートが中心の位置づけとなっています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/static-assets/",
-      "hint": "Workersが静的アセット配信をサポートするようになったことで、新規プロジェクトの推奨先はどう変わったでしょうか。",
+      "hint": "機能が重なってきた2つのサービスがある場合、Cloudflareは新規と既存でどう案内を分けるか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -5858,7 +5858,7 @@
       "correctIndex": 0,
       "explanation": "Next.js のような SSR フレームワークを Cloudflare の Workers/Pages 環境で動かすには専用のビルドアダプタが必要です。OpenNext for Cloudflare(`@opennextjs/cloudflare`)などのアダプタを使うことで、SSR や Route Handlers を含む Next.js アプリケーションを Cloudflare のエッジ環境向けにビルド・デプロイできます。\n{{diagram:0}}\nこれはフレームワーク対応の進化の一例であり、以前使われていたアダプタから移行が進められています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/",
-      "hint": "SSRを含むNext.jsアプリをそのまま動かすには、変換用のアダプタが必要です。",
+      "hint": "Node.js前提で書かれたSSRアプリを、そのままの形でCloudflare上で動かせるのか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -6212,7 +6212,7 @@
       "correctIndex": 2,
       "explanation": "Pages のデプロイ履歴には過去のすべてのデプロイが保持されており、問題が発生した際は任意の過去デプロイを選んで即座に本番環境へロールバックできます。ビルドを再実行する必要がないため、迅速な復旧が可能です。\n{{diagram:0}}\nこれは緊急時の障害対応として重要な機能です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/rollbacks/",
-      "hint": "ビルドをやり直さずに本番を戻せるかどうかがポイントです。",
+      "hint": "問題が起きたとき、コミットからやり直すのと、過去の成果物をそのまま復活させるのと、どちらが速いか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -6284,7 +6284,7 @@
       "correctIndex": 2,
       "explanation": "Workers AIはサーバーレスのGPU推論プラットフォームで、`env.AI.run(modelName, inputs)` の形式でモデルを呼び出す。\n{{diagram:0}}\nグローバルネットワーク上で推論を実行でき、独自のGPUインフラを構築・管理する必要がない。対応タスクはテキスト生成、embedding生成、画像分類、音声認識など多岐にわたる。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-ai/",
-      "hint": "`env.XXX.run()` という呼び出し方に注目しましょう。XXXにはどのバインディング名が入るでしょうか。",
+      "hint": "モデルを呼び出すためのバインディング名は何と設定されているか考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical",
@@ -6369,7 +6369,7 @@
       "correctIndex": 0,
       "explanation": "`wrangler.jsonc` では `\"ai\": { \"binding\": \"AI\" }`、`wrangler.toml` では `[ai]\\nbinding = \"AI\"` と記述する。設定後、Worker内で `env.AI` としてWorkers AIにアクセスできるようになる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-ai/configuration/bindings/",
-      "hint": "KVやD1など他のバインディングと似た構造ですが、キー名は \"ai\" です。",
+      "hint": "他のバインディング宣言と同じ構造かどうか、そしてトップレベルのキー名に何を使うか考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -6615,7 +6615,7 @@
       "correctIndex": 0,
       "explanation": "embeddingは、テキストなどのデータを固定長の数値ベクトルに変換したもので、意味的に似た内容ほどベクトル空間上で近い位置に配置される。Vectorizeのようなベクトルデータベースは、クエリベクトルとの距離（コサイン類似度・ユークリッド距離・内積など）を計算し、最も近いベクトルを検索結果として返す。\n{{diagram:0}}\nこれにより、キーワードが完全一致しなくても意味的に関連する文書を検索できる。",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/what-is-a-vector-database/",
-      "hint": "『距離が近い』とはどういう状態かを考えてみましょう。完全一致とは違います。",
+      "hint": "文字列としては違っても、意味が近ければヒットする検索の仕組みを考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -6864,7 +6864,7 @@
       "correctIndex": 0,
       "explanation": "Vectorizeでmetadataによるフィルタ検索（例: `filter: { category: \"news\" }`）を行うには、事前に `wrangler vectorize create-metadata-index` でフィルタ対象のプロパティ名と型（string / number / boolean）を指定してメタデータインデックスを作成しておく必要がある。1つのVectorizeインデックスにつき作成できるメタデータインデックスは最大10個までという制限がある。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/metadata-filtering/",
-      "hint": "フィルタしたい項目は、ベクトルを入れる前にあらかじめ『インデックス化』しておく必要があります。",
+      "hint": "metadataでの絞り込みは、何も準備せずにいきなり使えるのかどうか考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -6916,7 +6916,7 @@
       "correctIndex": 1,
       "explanation": "query()のtopKは検索結果として返す件数を指定するパラメータで、通常は最大100件まで指定できる。ただし、returnValues: trueでベクトル値そのものを返したり、returnMetadata: 'all'で全metadataを返す場合は、レスポンスサイズが大きくなるためtopKの上限が最大50件に制限される点に注意が必要。大量の結果が必要な場合はreturnMetadata: 'indexed'やreturnMetadata: 'none'を使うといった工夫が求められる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/client-api/",
-      "hint": "返す情報量（ベクトル値や全metadata）が多いほど、一度に取得できる件数の上限は小さくなる傾向があります。",
+      "hint": "返してもらう情報の中身と、一度に取れる件数の上限は、何か関係がありそうか考えましょう。",
       "tags": [
         "ai-vectorize",
         "trivia"
@@ -7330,7 +7330,7 @@
       "correctIndex": 3,
       "explanation": "nodejs_compatフラグは、workerdランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをネイティブに使えるようにし、未対応のAPIについてはWranglerがポリフィルを自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\n有効化には`compatibility_date`を2024-09-23以降にする必要があります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/nodejs/",
-      "hint": "「Node.jsに切り替える」のではなく、「Node.jsのAPIを使えるようにする」という違いを意識しましょう。",
+      "hint": "ランタイムそのものを丸ごと変えるのか、一部の機能だけ後から追加するのか考えましょう。",
       "tags": [
         "architecture",
         "practical",
@@ -7553,7 +7553,7 @@
       "correctIndex": 3,
       "explanation": "Workers Logsは、Workerから出力されるログをCloudflareダッシュボード上で自動的に取り込み、フィルタリング・分析できる機能です。さらにTail Workers(ベータ)を使うと、テレメトリデータに対してカスタムのフィルタリング・サンプリング・変換ロジックを組み込むことができます。\n{{diagram:0}}\nアプリケーションのconsole.log出力からダッシュボードでの分析、カスタム処理までの流れを押さえておきましょう。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/",
-      "hint": "「自動的にダッシュボードで見られる仕組み」と「カスタム処理を組み込める仕組み」の2つが登場します。",
+      "hint": "そのまま見るだけの仕組みと、ログを加工・転送する仕組みは別物として用意されているか考えましょう。",
       "tags": [
         "architecture",
         "practical"
@@ -7624,7 +7624,7 @@
       "correctIndex": 1,
       "explanation": "Durable Objectsは、セッションやドキュメントなどの単位ごとに単一のインスタンスを持ち、単一スレッド実行によって強い整合性を保証します。複数のクライアントが同じDurable Objectインスタンス(例えばWebSocket経由)に接続することで、状態の食い違いなくリアルタイムに同期できます。通常のWorkersはステートレスな実行モデルが前提であり、KVは結果整合性のため、こうした用途には向きません。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/",
-      "hint": "「強い整合性」と「単一インスタンス」というキーワードを持つCloudflareの製品を考えてみましょう。",
+      "hint": "複数人が同時に書き込んでも矛盾が起きない、1つの場所に処理を集約する仕組みを考えましょう。",
       "tags": [
         "architecture",
         "practical"
@@ -7789,7 +7789,7 @@
       "correctIndex": 2,
       "explanation": "CloudflareではWAFのRate Limiting Rulesを使い、リクエストがオリジンサーバーに到達する前にエッジで基本的な防御(ブルートフォース対策など)を行えます。さらに、レスポンスコードの監視や動的なユーザー判定など、より細かいビジネスロジックが必要な場合はWorker内で追加の制御を行いますが、その分すべてのリクエストがWorkerを経由するため処理コストは増えます。両者を組み合わせ、エッジでまず絞り込んでからWorkerで細かく制御する層状防御が推奨される考え方です。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/",
-      "hint": "「オリジンに到達する前」に防ぐ層と、「アプリケーションのロジックで」細かく判断する層の2段階を考えてみましょう。",
+      "hint": "Workerのコードに頼る前に、そもそも手前で止められる仕組みがCloudflareにあるか考えましょう。",
       "tags": [
         "architecture",
         "practical"
@@ -7860,7 +7860,7 @@
       "correctIndex": 1,
       "explanation": "1リクエストの処理中に発生させられるサブリクエスト数の上限は、Freeプランで50、Paid(Standard)プランで10,000です。Paidプランでは`wrangler.jsonc`等の設定でこの上限を最大10,000,000まで引き上げることも可能です。リダイレクトチェーンの各ホップも個別のサブリクエストとしてカウントされるため、実際のfetch()呼び出し回数より総数が多くなる場合がある点にも注意が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/limits/",
-      "hint": "Freeプランは2桁、Paidプランは5桁の数値です。",
+      "hint": "無料プランと有料プランで、上限の規模感がどれくらい違うか考えましょう。",
       "tags": [
         "architecture",
         "trivia"
@@ -7912,7 +7912,7 @@
       "correctIndex": 2,
       "explanation": "Workers KVでは、1つの値(value)のサイズ上限は25 MiB、キー(key)のサイズ上限は512 bytesです。これに加えて、キーに付随するメタデータは1024 bytesまでという制限があります。これらの上限はFree/Paidいずれのプランでも共通です。大きなファイルを保存したい場合はKVではなくR2を検討するのが適切です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/platform/limits/",
-      "hint": "値の上限は「MiB」単位、キーとメタデータの上限は「bytes」単位で、キーよりメタデータの方が大きく設定されています。",
+      "hint": "値・キー・メタデータ、それぞれ別々に上限が決まっているか考えましょう。",
       "tags": [
         "architecture",
         "trivia"
@@ -7969,7 +7969,7 @@
       "correctIndex": 2,
       "explanation": "HTMLRewriterは、Worker内でHTMLドキュメントをjQueryのような感覚でパース・書き換えできるAPIです。\n{{diagram:0}}\n`.on(selector, handler)`や`.onDocument(handler)`で要素/ドキュメント全体に対するハンドラを登録し、`transform(response)`でレスポンスに適用します。ドキュメント全体をメモリにバッファせずストリーミング処理するため、大きなHTMLでも効率的に扱えます。オリジンのHTMLにリンク書き換えやパーソナライズ、A/Bテスト用のコンテンツ差し替えなどを、エッジで動的に行う用途によく使われます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/html-rewriter/",
-      "hint": "「ストリーミング」と「HTML書き換え」という2つのキーワードに注目しましょう。",
+      "hint": "HTMLを最後まで読み込んでから直すのか、流れてくる途中から直せるのか考えましょう。",
       "tags": [
         "workers",
         "practical"
@@ -8116,7 +8116,7 @@
       "correctIndex": 2,
       "explanation": "`compatibility_date`は、Workerが利用するランタイムの機能やバグ修正の挙動を、指定した日付時点の仕様に固定するための設定です。\n{{diagram:0}}\nCloudflareはランタイムを継続的に更新しますが、古い`compatibility_date`のWorkerは古い挙動のまま動き続けるため、意図しない破壊的変更を受けません。新機能を使いたい場合は、開発者が明示的に日付を更新することでオプトインします。個別の挙動だけを制御したい場合は`compatibility_flags`を併用します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/configuration/compatibility-dates/",
-      "hint": "「ランタイムが更新されても、既存のWorkerの動作は変わってほしくない」という要求を考えましょう。",
+      "hint": "本の発行日を固定しておけば、後で図書館の本棚が模様替えされても中身は変わりませんよね。",
       "tags": [
         "workers",
         "practical"
@@ -8264,7 +8264,7 @@
       "correctIndex": 1,
       "explanation": "Smart Placementは、Workerを有効化すると、様々なCloudflareロケーションでのリクエスト処理時間を継続的に観測します。\n{{diagram:0}}\nリクエストを受け付けた場所(ユーザーに近い場所)で実行するよりも、候補となる別の場所(バックエンドに近い場所など)で実行した方が明らかに高速だと判断された場合、その場所へリクエストを転送して実行します。バックエンドへの往復が多い「チャッティ」なAPI Workerを、データベースやオリジンに近い場所で動かすことで、フロントエンドはユーザーの近くに保ちつつ全体のレイテンシを改善できます。有効化されたリクエストには`cf-placement`ヘッダーが付与されます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/configuration/placement/",
-      "hint": "「ユーザーに近い場所」と「バックエンドに近い場所」のどちらが速いかを、Cloudflareが自動的に比較して決める仕組みです。",
+      "hint": "呼び出す相手が遠い場合、自分がその相手の近くまで動いた方が速いこともありますよね。",
       "tags": [
         "workers",
         "practical"
@@ -8500,7 +8500,7 @@
       "correctIndex": 1,
       "explanation": "Wranglerはプロジェクトルートに置かれた `wrangler.toml` に加え、`wrangler.json` または `wrangler.jsonc`（コメント付きJSON）形式の設定ファイルもサポートしています。\n{{diagram:0}}\n記述できる項目はTOML版と同じで、好みや既存のツールチェインとの親和性に応じて選べます。ただし1つのプロジェクトに複数の設定ファイルを混在させるのは避け、どちらか一方の形式に統一するのが安全です。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
-      "hint": "『JSON with Comments』の略になっている拡張子を考えましょう。",
+      "hint": "TOMLではなくJSON形式で書きたいが、コメントも残したい場合の拡張子を考えましょう。",
       "tags": [
         "wrangler",
         "practical"
@@ -8676,7 +8676,7 @@
       "correctIndex": 2,
       "explanation": "Gradual Deployments（段階的デプロイ）は、新しいバージョンをまず `wrangler versions upload` でアップロードするところから始まります。このコマンドはコードを新バージョンとして登録するだけで、即座にはトラフィックへ反映されません。\n{{diagram:0}}\nその後 `wrangler versions deploy` を使って、新旧バージョン間のトラフィック配分（例: 新バージョンに10%、旧バージョンに90%）を指定しながら段階的に切り替えていくことで、問題があった場合の影響範囲を最小限に抑えられます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/versions-and-deployments/gradual-deployments/",
-      "hint": "『バージョンをアップロードする』ことと『デプロイしてトラフィックを配分する』ことが分かれている点がポイントです。",
+      "hint": "新しい荷物を倉庫に届けるのと、実際に店頭に並べる量を決めるのを、別の作業として考えましょう。",
       "tags": [
         "wrangler",
         "trivia"
@@ -9030,7 +9030,7 @@
       "correctIndex": 2,
       "explanation": "「A request's cache key is what determines if two requests are the same for caching purposes」と公式ドキュメントにある通り、cacheKeyは2つのリクエストをキャッシュ上で同一とみなすかどうかの判定基準です。cf.cacheKeyで独自の文字列を指定すると、通常はURLなどから自動生成されるキーを上書きし、異なるURLでも同じキーなら同一のキャッシュエントリとして扱われます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
-      "hint": "「キャッシュが同じかどうかを判定する基準」という言葉から考えてみましょう。",
+      "hint": "2つのリクエストを「同じキャッシュ」として扱うかどうかは、何で見分けるか考えましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -9093,7 +9093,7 @@
       "correctIndex": 3,
       "explanation": "Tiered Cacheは、Cloudflareのグローバルネットワークを下位層と上位層に分け、下位層(ユーザーに最も近いデータセンター)でキャッシュミスが発生した場合、直接オリジンに問い合わせるのではなく上位層のデータセンターに問い合わせる仕組みです。上位層もミスした場合のみオリジンと通信するため、オリジンへの接続が少数のデータセンターに集約され、リクエスト数の削減とキャッシュヒット率の向上が実現されます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/",
-      "hint": "「下位」と「上位」という2階層の言葉から仕組みを想像してみましょう。",
+      "hint": "近所の店で売り切れなら、街の大きな倉庫に聞きに行く方が、本社に問い合わせるより早いこともありますよね。",
       "tags": [
         "kv-cache",
         "trivia"
@@ -9177,7 +9177,7 @@
       "correctIndex": 0,
       "explanation": "Cache Reserveは、R2の上に実装された大規模で永続的なキャッシュ層です。ウェブサイトのキャッシュ可能なコンテンツをR2に保存することでキャッシュの削除(エビクション)を防ぎ、オリジンへの不要なトラフィックを削減します。訪問者とオリジンの間に複数のキャッシュ層があり、コンテンツはオリジンから返ってきた際にCache Reserveへ書き込まれます。初期の保持期間は30日間ですが、その期間内に再度リクエストされると保持期間がリセットされ、アクセスの多いコンテンツはずっと保持されます。新鮮さの判定はEdge Cache TTLやオリジンのCache-Controlヘッダーに基づいて行われ、通常のCDNキャッシュと同様の挙動をします。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/cache-reserve/",
-      "hint": "「R2」「永続的」「30日間」というキーワードから考えてみましょう。",
+      "hint": "普通のキャッシュより長く、しかも消えにくい場所に置いておく仕組みを考えましょう。",
       "tags": [
         "kv-cache",
         "trivia"
@@ -9324,7 +9324,7 @@
       "correctIndex": 3,
       "explanation": "通常のSQLiteでは`PRAGMA foreign_keys`はデフォルトでOFFであり、有効化するには接続ごとに明示的な設定が必要です。しかしD1はこれとは異なり、デフォルトで外部キー制約が有効になっています。そのため、親テーブルに存在しない値を子テーブルに挿入しようとすると、明示的な設定をしなくてもエラーになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/sql-api/foreign-keys/",
-      "hint": "「標準のSQLiteと違う」という点がこの問題のポイントです。",
+      "hint": "D1はSQLiteの挙動をそのまま引き継いでいるのか、一部変えているのか、外部キー制約について考えましょう。",
       "tags": [
         "d1",
         "practical"
@@ -9377,7 +9377,7 @@
       "correctIndex": 1,
       "explanation": "Drizzle ORMは`drizzle-orm/d1`という専用アダプタを提供しており、`drizzle(env.DB)`のようにD1のバインディングをそのまま渡すことでDrizzleのクライアントを初期化できます。これによりスキーマ定義・マイグレーション生成・型安全なクエリビルダをD1上で利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/reference/community-projects/#drizzle-orm",
-      "hint": "D1バインディングをそのままORMの初期化関数に渡す、というシンプルな連携方法です。",
+      "hint": "D1専用のORM機能を新たに覚える必要があるのか、それとも使い慣れたORMに接続情報を渡すだけなのか考えましょう。",
       "tags": [
         "d1",
         "practical"
@@ -9430,7 +9430,7 @@
       "correctIndex": 3,
       "explanation": "`wrangler.toml`には`[[d1_databases]]`ブロックを複数書くことができ、それぞれに`binding`(Workerコードから参照する変数名)、`database_name`、`database_id`を個別に設定します。これにより、例えば`env.DB_MAIN`と`env.DB_ANALYTICS`のように、1つのWorkerから複数のD1データベースを使い分けられます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/#d1-databases",
-      "hint": "設定ブロックを複数書き、それぞれに別の変数名を割り当てます。",
+      "hint": "1つのWorkerで複数のデータベースを使い分けたいとき、設定ファイルの書き方はどうなるか考えましょう。",
       "tags": [
         "d1",
         "practical"
@@ -9499,7 +9499,7 @@
       "correctIndex": 3,
       "explanation": "SQLite由来の`EXPLAIN QUERY PLAN`をクエリの先頭に付けて実行すると、そのクエリがインデックスを使った検索(SEARCH)なのか、全件走査(SCAN)なのかを確認できます。SCANになっている場合は、WHERE句やJOIN条件に使われている列に対して`CREATE INDEX`でインデックスを作成することで、対象行数の多いテーブルでもクエリを高速化できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/best-practices/use-indexes/",
-      "hint": "SQLiteに標準で備わっている「クエリの実行計画を見る」構文がヒントです。",
+      "hint": "インデックスが実際に使われているか、実行前に覗き見る標準SQLite構文を考えましょう。",
       "tags": [
         "d1",
         "practical"
@@ -9578,7 +9578,7 @@
       "correctIndex": 0,
       "explanation": "D1の各データベースにはストレージ容量の上限があるため、1つの巨大なデータベースにすべてのデータを詰め込むのではなく、テナント(顧客)ごとや機能ドメインごとに複数のD1データベースへ分割する設計(database-per-tenantのようなパターン)が、単一データベースの肥大化を避けるための現実的な対応です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/platform/limits/",
-      "hint": "「1つの巨大なDB」ではなく「複数の小さなDB」に分ける発想がポイントです。",
+      "hint": "荷物を1つの巨大な倉庫に詰め込み続けるのと、用途別に倉庫を分けるのと、どちらが管理しやすいか考えましょう。",
       "tags": [
         "d1",
         "practical"
@@ -9781,7 +9781,7 @@
       "correctIndex": 1,
       "explanation": "R2 Workers バインディングのget()やput()メソッドは onlyIf オプションで条件付きリクエストをサポートしています。ETag（httpEtag）を指定してオブジェクトが指定した値と一致する場合のみ処理を行う、といった制御が可能で、これはS3のIf-Match/If-None-Matchヘッダーに相当する機能です。変更がない場合は処理をスキップでき、不要な転送や上書きを防げます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
-      "hint": "HTTPの条件付きリクエスト（If-Match / If-None-Match）と同じ考え方です。",
+      "hint": "前回取得時の目印と比較して、変わっていなければ処理をスキップする仕組みを考えましょう。",
       "tags": [
         "r2",
         "trivia"
@@ -9921,7 +9921,7 @@
       "correctIndex": 3,
       "explanation": "R2のオブジェクトライフサイクルルールを使うと、バケット単位またはプレフィックス単位で「作成からX日後に削除する」「Y日後にInfrequent Accessストレージクラスへ移行する」といったルールを定義でき、古いデータの管理を自動化できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/object-lifecycles/",
-      "hint": "「ライフサイクル」という言葉がキーワードです。",
+      "hint": "古くなったオブジェクトの扱い(削除や移行)を自動化するルールがあるかどうか考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -9987,7 +9987,7 @@
       "correctIndex": 2,
       "explanation": "R2にはStandardとInfrequent Access（IA）の2つのストレージクラスがあります。IAはアクセス頻度が低いデータ向けにストレージ単価を抑えていますが、代わりにデータ取り出し（retrieval）料金がかかり、最低保存期間などの制約が設定されています。頻繁にアクセスされるデータには不向きで、バックアップやアーカイブなど低頻度アクセスのデータに向いています。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/storage-classes/",
-      "hint": "「アクセス頻度」と「取り出し料金」がキーワードです。",
+      "hint": "保存は安いが、たまにしか使わないデータの取り出し時にコストが発生する仕組みがあるか考えましょう。",
       "tags": [
         "r2",
         "trivia"
@@ -10136,7 +10136,7 @@
       "correctIndex": 0,
       "explanation": "location hintは、OBJECT_NAMESPACE.get(id, { locationHint: \"enam\" }) のように get() の第2引数として渡すことで、Durable Objectを作成する場所に影響を与えられる仕組みです。ただしこれは保証ではなくベストエフォートで、指定した場所そのものではなく、そこからのレイテンシが最小になるよう選ばれた別のデータセンターに配置されることもあります。また有効なのは対象オブジェクトへの最初のget()呼び出しのみで、Durable Objectは作成後に移動しないため、以降の呼び出しでのhintは無視されます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/reference/data-location/",
-      "hint": "「hint」という言葉が示す通り、確約ではなく目安である点がポイントです。",
+      "hint": "指定した場所に必ず配置されるのか、それとも参考程度なのか考えましょう。",
       "tags": [
         "do-queues",
         "trivia"
@@ -10208,7 +10208,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflare Queuesでは、デフォルトですべてのキューでconcurrency（同時実行）が有効になっており、Consumerはバックログ（未処理メッセージ数）とその増加速度、および成功/失敗の比率に基づいて自動的に同時実行数をスケールさせます。ダッシュボードやwrangler設定でmax_concurrencyを1〜250の範囲で固定することもできますが、Cloudflareは上流システムに制限がない限り上限を設定せずQueuesの自動スケールに任せることを推奨しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/configuration/consumer-concurrency/",
-      "hint": "「バックログの増加」「失敗率」に応じて自動的に何が調整されるか考えましょう。",
+      "hint": "メッセージが溜まってきたり失敗が増えたりしたとき、処理の並列度は勝手に変わるのか考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -10261,7 +10261,7 @@
       "correctIndex": 1,
       "explanation": "Durable Object内でブロードキャストを行う一般的な実装は、ctx.getWebSockets()で現在保持している全WebSocketを取得し、各接続のreadyStateがWebSocket.OPENであることを確認してからsend()でメッセージを送る方法です。クローズ中の接続に送信しようとすると例外が発生しうるため、状態確認は必須です。この仕組みはWebSocket Hibernation APIとも組み合わせて使え、ハイバネートから復帰した接続に対しても同様に動作します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/",
-      "hint": "「今保持している接続を列挙して、状態を確認してから送る」という手順を考えましょう。",
+      "hint": "今つながっている相手を毎回律儀に確認してから送るのと、記録だけを頼りに送るのと、どちらが安全か考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -10327,7 +10327,7 @@
       "correctIndex": 3,
       "explanation": "SQLiteバックエンドのDurable Objectsでは、embeddedされたSQLiteデータベースを過去30日以内の任意の時点へ復元できるPITR APIが提供されています。復元したい時点は「bookmark」と呼ばれる、レキシカル比較可能な文字列で指定します。APIを呼び出してbookmarkを設定した後、アプリケーション側でctx.abort()などによりDurable Objectを再起動することで、次回起動時にストレージがその時点の状態へ復元されます。このAPIはSQL形式のデータとKV形式のデータ両方に適用され、ローカル開発環境(`wrangler dev`)では変更履歴のログが保存されないためサポートされていません。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/",
-      "hint": "「時点」を表す文字列を渡してから、DOをどうすると復元が反映されるか考えましょう。",
+      "hint": "巻き戻したい場所の目印を渡した後、その変更を反映させるには何をする必要があるか考えましょう。",
       "tags": [
         "do-queues",
         "trivia"
@@ -10400,7 +10400,7 @@
       "correctIndex": 1,
       "explanation": "Durable Object Stubは、リモートのDurable Objectに対してメソッドを呼び出すRPCクライアントとして機能します。Durable Objectクラスに定義した非プライベートなメソッドは自動的にRPC経由で公開され、Worker側からはstub.methodName()のように、HTTPのfetch()を経由せず直接呼び出せます。呼び出しはすべて非同期でシリアライズ可能な型を受け渡しし、例外は呼び出し元に伝播します（スタックトレースは含まれません）。また同一のスタブに対して複数回呼び出しを行った場合、それらは呼び出した順序どおりにDurable Objectへ配信されることが保証されており、これはE言語に由来する「E-order semantics」と呼ばれます。ただし異なるスタブ間ではこの順序保証は適用されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/stub/",
-      "hint": "HTTPを経由しない「メソッド呼び出し」と、その呼び出し順序の保証について考えましょう。",
+      "hint": "同じ相手に続けて何度も話しかけたとき、話した順番通りに届くと約束されているか考えましょう。",
       "tags": [
         "do-queues",
         "trivia"
@@ -10538,7 +10538,7 @@
       "correctIndex": 2,
       "explanation": "`_middleware.js` はそのファイルが置かれたディレクトリ以下の全リクエスト(静的アセットへのリクエストも含む)に対して、対応するルートハンドラより先に実行される共通処理です。\n{{diagram:0}}\n認証チェックなど、`next()` を呼ばずに早期リターンすることでリクエストをブロックできます。複数階層に配置すると、親から子へ順に実行されるミドルウェアチェーンになります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/functions/middleware/",
-      "hint": "ミドルウェアはAPIのエンドポイントではなく、リクエストの前処理という位置づけです。",
+      "hint": "_middleware.jsは、URLとして呼ばれる窓口なのか、それとも他の処理の前に挟まる仕組みなのか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -10616,7 +10616,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Pages はGit連携によるデプロイに加え、`wrangler pages deploy <ビルド出力ディレクトリ>` コマンドを使ってビルド済みの静的ファイルを直接アップロードする「Direct Upload」もサポートしています。\n{{diagram:0}}\nこれにより、任意のCI/CDパイプラインやローカル環境から、Gitリポジトリ連携なしでデプロイが可能です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/get-started/direct-upload/",
-      "hint": "Gitリポジトリ連携以外に、CLIから直接アップロードする方法があります。",
+      "hint": "GitHubを経由しない場合、手元のビルド成果物をCloudflareに届ける別の手段があるか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -10691,7 +10691,7 @@
       "correctIndex": 2,
       "explanation": "Pages のビルド環境で使用するNode.jsのバージョンは、環境変数 `NODE_VERSION` を設定するか、リポジトリのルートに `.nvmrc` または `.node-version` ファイルを配置することで指定できます。\n{{diagram:0}}\n指定がない場合はビルドイメージのデフォルトバージョンが使用されます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-image/#override-default-versions",
-      "hint": "バージョンファイルや環境変数でビルド時のランタイムを指定する方法を考えましょう。",
+      "hint": "他のNode.jsプロジェクトでもよく使われる、バージョン指定の慣習がCloudflare Pagesでも通用するか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -10960,7 +10960,7 @@
       "correctIndex": 0,
       "explanation": "namespaceは、1つのVectorizeインデックス内でベクトルを論理的に分割するためのオプションのパーティションキー。例えば顧客IDやテナントIDごとにnamespaceを分けて、マルチテナントなデータを1つのインデックスにまとめて管理できる。insert/upsert時に `namespace: \"customer-123\"` のように指定し、query時にも同じnamespaceを指定すると、その区分内のベクトルのみが検索対象になる（namespaceによる絞り込みはベクトル検索より前に適用される）。1インデックスあたり作成できるnamespace数には上限があり、プランによって異なる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/best-practices/insert-vectors/",
-      "hint": "『名前空間』が示す通り、1つのインデックスを論理的に区切って使う仕組みです。",
+      "hint": "複数の顧客のデータを1つのインデックスにまとめつつ、検索時には区別したい場合を考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -11012,7 +11012,7 @@
       "correctIndex": 3,
       "explanation": "Vectorizeのfilterパラメータは、`{ streaming_platform: \"netflix\" }` のような省略記法（暗黙的に$eq）に加えて、`$eq`（等しい）、`$ne`（等しくない）、`$in`/`$nin`（配列に含まれる/含まれない）、`$lt`/`$lte`/`$gt`/`$gte`（範囲比較）といった演算子を明示的に指定できる。『指定した値以外』を条件にしたい場合は `filter: { someKey: { \"$ne\": \"hbo\" } }` のように$ne演算子を使う。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/metadata-filtering/",
-      "hint": "『Not Equal』の略を考えてみましょう。",
+      "hint": "指定した値と一致しないものだけを条件にしたい場合の演算子を考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -11185,7 +11185,7 @@
       "correctIndex": 0,
       "explanation": "Vectorizeのinsert/upsertは1回のリクエストで複数ベクトルをまとめて送信するバッチ処理をサポートしており、Workersバインディング経由では最大1,000件、HTTP API経由では最大5,000件というバッチサイズの上限がある。大量のベクトル（例: 25万件）を投入する場合、1件ずつ送るより数千件単位のバッチに分けて送信する方が大幅に高速になる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/platform/limits/",
-      "hint": "呼び出し方法（Workersバインディング vs HTTP API）によって上限が異なる点がポイントです。",
+      "hint": "Workersのコードから呼ぶ場合と、外部からHTTP経由で呼ぶ場合とで、送れる量に差がありそうか考えましょう。",
       "tags": [
         "ai-vectorize",
         "trivia"
@@ -11307,7 +11307,7 @@
       "correctIndex": 1,
       "explanation": "Workers for Platformsは「顧客やAIが生成したコードを安全なサンドボックスで実行する」ための仕組みです。dispatch namespaceにテナントごとのWorkerスクリプトを動的にアップロードし、プラットフォーム側のWorkerがリクエストを適切なテナント用Workerへ振り分けます。各テナント用Workerは独立した実行環境を持ち、KV/D1/R2などのバインディングやCPU時間の制限も個別に設定できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/",
-      "hint": "「テナントごとのコードを動的にデプロイし、実行環境自体を分離する」仕組みを考えてみましょう。",
+      "hint": "顧客ごとに専用のクラウドアカウントを用意せずに、実行環境だけを分けたい場合を考えましょう。",
       "tags": [
         "architecture",
         "practical"
@@ -11543,7 +11543,7 @@
       "correctIndex": 3,
       "explanation": "障害切り分けの基本は、エラーが発生している「レイヤー」を特定することです。Workers Logsを確認し、Worker内の例外(TypeErrorなど、スタックトレースが記録される)なのか、それともfetch()で呼び出している外部APIやD1/R2などサブリクエスト先のタイムアウト・5xxエラーなのかを見分けます。原因のレイヤーが分かれば、コードの修正、リトライ処理の追加、外部サービス側への問い合わせなど、次の対応を絞り込めます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/",
-      "hint": "「Workerの中で起きたエラー」と「Workerが呼び出した先で起きたエラー」を分けて考えてみましょう。",
+      "hint": "障害が起きたとき、まず自分のコードの問題か、頼った外部サービスの問題か、どちらから疑うべきか考えましょう。",
       "tags": [
         "architecture",
         "practical"
