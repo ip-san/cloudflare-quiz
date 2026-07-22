@@ -1,6 +1,6 @@
 # Cloudflare Quiz
 
-Cloudflare をプロダクト開発に活かせるようになるための学習クイズ PWA です。「Cloudflare は聞いたことがあるが、実際にプロダクトへ組み込んだことはない」というエンジニアが、Workers・KV・R2・D1・Durable Objects・Queues・Workers AI・Vectorize・Pages などの主要サービスを、実務に近い問題と図解を通じて基礎から身につけられるように作られています。
+Cloudflare をプロダクト開発に活かせるようになるための学習クイズ PWA です。「Cloudflare は聞いたことがあるが、実際にプロダクトへ組み込んだことはない」というエンジニアが、Workers・KV・R2・D1・Durable Objects・Queues・Workers AI・Vectorize・Pages・Hyperdrive・Workflows・Turnstile・Images・Stream・Email Service・Browser Run などの主要サービスを、実務に近い問題と図解を通じて基礎から身につけられるように作られています。
 
 **公開URL**: https://ip-san.github.io/cloudflare-quiz/
 
@@ -12,13 +12,13 @@ Cloudflare をプロダクト開発に活かせるようになるための学習
 - Workers / KV / R2 / D1 などのサービスの使い分けを整理したい人
 - スキマ時間でスマホから手軽にインプットしたい人
 
-プログラミング経験は必要ですが、Cloudflare の利用経験は前提としていません。9カテゴリ・162問を、初級（beginner）から中級（intermediate）、上級（advanced）まで段階的に学べる構成になっています。
+プログラミング経験は必要ですが、Cloudflare の利用経験は前提としていません。11カテゴリ・198問を、初級（beginner）から中級（intermediate）、上級（advanced）まで段階的に学べる構成になっています。
 
 ## 主な機能
 
 ### 学習コンテンツ
 
-- **9カテゴリ・162問**: Workers 基礎 / Wrangler・開発フロー / KV・Cache / D1 / R2 / Durable Objects・Queues / Pages・フレームワーク・デプロイ / Workers AI・Vectorize / 設計・料金・制限
+- **11カテゴリ・198問**: Workers 基礎 / Wrangler・開発フロー / KV・Cache / D1 / R2 / Durable Objects・Queues / Pages・フレームワーク・デプロイ / Workers AI・Vectorize / Hyperdrive・Workflows / アプリ拡張サービス（Turnstile・Images・Stream・Email Service・Browser Run） / 設計・料金・制限
 - 各問題に不正解選択肢ごとの解説（wrongFeedback）と、図解（ネットワーク図・比較表・ターミナル実演・設定ファイル例など）付き
 
 ### 出題モード
