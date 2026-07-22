@@ -538,13 +538,20 @@ function lintDistractors(quizzes) {
       })
     }
 
+    // Flag a short distractor only when the correct answer is notably
+    // longer — that length contrast is the actual "giveaway" risk. Product
+    // names, numeric limits, and operator symbols ("D1", "1,000件", "$ne")
+    // are legitimately short whenever the correct answer is too, so
+    // penalizing brevity on its own produced 10 false positives across
+    // kv-001/kv-010/d1-002/pg-004/ar-001/ai-015 (2026-07-22 quality-loop
+    // review — see known-issues.md).
     quiz.options.forEach((opt, i) => {
       if (i === ci) return
-      if (opt.text.length < 8) {
+      if (opt.text.length < 8 && correctLen >= 15) {
         issues.push({
           id: quiz.id,
           type: 'distractor-too-short',
-          message: `options[${i}] が短すぎる(${opt.text.length}文字): "${opt.text}"`,
+          message: `options[${i}] が短すぎる(${opt.text.length}文字, 正解は${correctLen}文字): "${opt.text}"`,
         })
       }
     })

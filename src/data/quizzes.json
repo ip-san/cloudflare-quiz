@@ -7833,7 +7833,7 @@
         },
         {
           "text": "Free: 10 / Paid: 1,000",
-          "wrongFeedback": "実際の上限とは異なります。"
+          "wrongFeedback": "実際の上限とは異なります。正しくはFree: 50、Paid: 10,000です。"
         },
         {
           "text": "Free: 無制限 / Paid: 無制限",
@@ -7841,7 +7841,7 @@
         },
         {
           "text": "Free: 100 / Paid: 5,000",
-          "wrongFeedback": "実際の上限とは異なります。"
+          "wrongFeedback": "実際の上限とは異なります。正しくはFree: 50、Paid: 10,000です。"
         }
       ],
       "correctIndex": 0,
@@ -7893,7 +7893,7 @@
         },
         {
           "text": "値: 1 MiB、キー: 256 bytes",
-          "wrongFeedback": "実際の上限より小さい数値です。"
+          "wrongFeedback": "実際の上限より小さい数値です。正しくは値: 25 MiB、キー: 512 bytesです。"
         }
       ],
       "correctIndex": 0,
