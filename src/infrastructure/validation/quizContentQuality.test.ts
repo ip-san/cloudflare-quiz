@@ -40,6 +40,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   ai: 'ai-vectorize',
   ar: 'architecture',
   hw: 'hyperdrive-workflows',
+  px: 'platform-services',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -83,6 +84,15 @@ const VALID_DOC_PAGES = [
   'hyperdrive/platform/limits/',
   'hyperdrive/platform/pricing/',
   'hyperdrive/reference/supported-databases-and-features/',
+  'browser-run/',
+  'browser-run/how-to/deploy-worker/',
+  'email-service/',
+  'email-service/get-started/route-emails/',
+  'email-service/get-started/send-emails/',
+  'images/',
+  'images/get-started/key-concepts/',
+  'images/optimization/binding/',
+  'images/optimization/transformations/overview/',
   'kv/api/list-keys/',
   'kv/api/read-key-value-pairs/',
   'kv/api/write-key-value-pairs/',
@@ -167,6 +177,13 @@ const VALID_DOC_PAGES = [
   'workers/wrangler/commands/workers/',
   'workers/wrangler/configuration/',
   'workers/wrangler/environments/',
+  'stream/',
+  'stream/uploading-videos/',
+  'stream/viewing-videos/using-the-stream-player/',
+  'turnstile/',
+  'turnstile/concepts/widget/',
+  'turnstile/get-started/',
+  'turnstile/get-started/server-side-validation/',
   'workflows/',
   'workflows/build/events-and-parameters/',
   'workflows/build/local-development/',
@@ -468,7 +485,7 @@ describe('Quiz Content Quality', () => {
 
     it('全カテゴリが含まれていること（中上級向けの architecture / hyperdrive-workflows は除外）', () => {
       const categories = new Set(overviewQuizzes.map((q) => q.category))
-      const OVERVIEW_EXCLUDED = new Set(['architecture', 'hyperdrive-workflows'])
+      const OVERVIEW_EXCLUDED = new Set(['architecture', 'hyperdrive-workflows', 'platform-services'])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])
     })

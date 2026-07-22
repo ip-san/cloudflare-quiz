@@ -244,6 +244,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '既存 DB 連携と多段バッチ処理を設計できる',
     },
     {
+      id: 'platform-services',
+      name: 'アプリ拡張サービス',
+      icon: '🧰',
+      color: 'rose',
+      weight: 10,
+      description:
+        'Turnstile のBot対策、Images・Stream のメディア配信、Email Service、Browser Run など、アプリに組み込む主要サービス',
+      skillDescription: 'Bot対策・画像/動画・メール・ブラウザ自動化を組み込める',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

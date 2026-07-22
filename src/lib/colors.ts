@@ -10,6 +10,7 @@ export const COLOR_MAP: Record<string, string> = {
   emerald: '#10b981',
   indigo: '#6366f1',
   teal: '#14b8a6',
+  rose: '#f43f5e',
   gray: '#6b7280',
 }
 

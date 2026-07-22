@@ -122,6 +122,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('pages-deploy')
     expect(ids).toContain('ai-vectorize')
     expect(ids).toContain('hyperdrive-workflows')
+    expect(ids).toContain('platform-services')
     expect(ids).toContain('architecture')
   })
 
