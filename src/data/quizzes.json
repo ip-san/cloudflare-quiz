@@ -11770,7 +11770,7 @@
       "correctIndex": 3,
       "explanation": "Hyperdriveは既存のコードとツールをそのまま活かせる設計です。`pg` などのドライバやORMのインスタンス生成時に、接続文字列としてバインディングの `env.HYPERDRIVE.connectionString` を渡すだけで、以降のクエリはHyperdrive経由になります。\n{{diagram:0}}\nリクエストごとに新しいクライアントを作っても、実際のデータベース接続プールはHyperdrive側が維持しているため、クライアント生成は高速です。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/get-started/",
-      "hint": "Hyperdriveの売りは「コードを書き換えずに済む」ことです。変わるのは接続先だけです。",
+      "hint": "既存のドライバやORMをそのまま使えるのがHyperdriveの利点です。では、コードのどこを変えることになるでしょうか？",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -11814,10 +11814,10 @@
       "question": "Hyperdriveがデータベースアクセスを高速化する仕組みの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "①接続セットアップをWorker近くのエッジで実行 ②データベース近傍リージョンでの接続プーリング ③非変更(読み取り)クエリのキャッシュ"
+          "text": "接続セットアップをWorkerの近くで行い、データベース近傍で接続をプールし、変更を伴わない読み取りクエリの結果をキャッシュする"
         },
         {
-          "text": "データベースの全データをエッジに複製(レプリケーション)して読み書きする",
+          "text": "データベースの全データをCloudflareの各エッジロケーションに複製(レプリケーション)し、ユーザーに最も近い拠点で読み書きを完結させることで高速化する",
           "wrongFeedback": "Hyperdriveはデータの複製を行いません。データはオリジンのデータベースにあり、接続とクエリ結果の扱いを最適化します。"
         },
         {
@@ -11978,7 +11978,7 @@
           "wrongFeedback": "データのアップロードは不要です。Hyperdriveに登録するのはデータベースへの接続情報だけです。"
         },
         {
-          "text": "データベース側にCloudflare製のエージェントソフトをインストールする",
+          "text": "データベースをホストしているサーバーにCloudflare製のプロキシエージェントを常駐させ、そのエージェントを経由してのみWorkersからのクエリを受け付けるようにネットワークを構成する必要がある",
           "wrongFeedback": "データベース側へのエージェント導入は不要です。通常の接続情報(ホスト・ユーザー・パスワード)だけで利用を開始できます。"
         },
         {
@@ -11989,7 +11989,7 @@
       "correctIndex": 0,
       "explanation": "まず `npx wrangler hyperdrive create <設定名> --connection-string=\"postgres://user:password@host:5432/dbname\"` を実行すると、接続情報がCloudflareに登録され、設定IDが発行されます。\n{{diagram:0}}\n次に設定ファイルの `hyperdrive` バインディングに `binding`(コードから参照する名前)とこのIDを記述すれば、Workerから `env.HYPERDRIVE.connectionString` で接続できるようになります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/get-started/",
-      "hint": "機密である接続文字列はCloudflare側に預け、設定ファイルにはIDだけを書く流れです。",
+      "hint": "接続文字列にはパスワードが含まれます。これを設定ファイルに平文で書かずに済ませるにはどうすればよいでしょうか？",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12105,7 +12105,7 @@
           "wrongFeedback": "逆です。Workersからのクライアント接続数に制限はなく、制限されるのはHyperdriveからオリジンDBへの接続数です。"
         },
         {
-          "text": "WorkersからHyperdriveへの接続数は制限されない一方、Hyperdriveからオリジンデータベースへの接続数は設定ごとに管理される(Freeで約20、Paidで約100)"
+          "text": "WorkersからHyperdriveへのクライアント接続数は制限されない一方、Hyperdriveからオリジンデータベースへの接続数は設定ごとにプランに応じて管理される"
         },
         {
           "text": "オリジンデータベースへの接続はリクエストごとに毎回作り直され、接続数の上限は存在しない",
@@ -12172,10 +12172,10 @@
         },
         {
           "text": "PostgreSQLのみ対応で、MySQLは利用できない",
-          "wrongFeedback": "PostgreSQLとMySQLの両方に対応しています。"
+          "wrongFeedback": "PostgreSQLとMySQLの両方に対応しています。MySQLもAWSやGCPなどのマネージドDBを含めて利用できます。"
         },
         {
-          "text": "MongoDBやRedisなどのNoSQLデータベースが主な対象",
+          "text": "MongoDBやRedis、DynamoDBといったNoSQLデータベースが主な対象で、PostgreSQLやMySQLのようなリレーショナルデータベースには対応していない",
           "wrongFeedback": "対象はPostgres/MySQL系のリレーショナルデータベースです。NoSQLは対象外です。"
         },
         {
@@ -12197,7 +12197,7 @@
           "items": [
             {
               "text": "PostgreSQL",
-              "sub": "AWS / GCP / Azure / Neonなど"
+              "sub": "AWS / GCP / Azure など"
             },
             {
               "text": "MySQL",
@@ -12290,7 +12290,7 @@
       "correctIndex": 1,
       "explanation": "Workflowの本体は `WorkflowEntrypoint` を継承したクラスです。`run(event, step)` メソッドが実行の入口で、`event` には起動時のパラメータ(payload)が、`step` にはステップを定義するAPIが渡されます。有効なWorkflowと見なされるには、最低1つのstep呼び出しが必要です。\n{{diagram:0}}\nrunの中ではif文・ループ・try/catchなど通常のJavaScript制御構文をそのまま使ってステップを組み立てられます。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/workers-api/",
-      "hint": "Durable Objectsと同様に「クラスを継承して定義する」スタイルです。",
+      "hint": "YAMLやGUIのような宣言的定義ではなく、通常のコードとして書きます。Durable Objects の定義方法を思い出しましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12508,7 +12508,7 @@
           "wrongFeedback": "Workflowクラス自体がURLを持つわけではありません。バインディング経由のcreate()か、cronスケジュール、wrangler CLIなどで起動します。"
         },
         {
-          "text": "`new MyWorkflow().run()` のようにクラスを直接インスタンス化して呼び出す",
+          "text": "`new MyWorkflow().run(event, step)` のようにWorkflowクラスを直接インスタンス化してrunメソッドを呼び出せば、永続化やリトライも含めて実行できる",
           "wrongFeedback": "クラスを直接newして実行することはできません。永続化やリトライの管理はWorkflowsランタイムが担うため、必ずバインディング経由で起動します。"
         },
         {
@@ -12572,10 +12572,10 @@
           "wrongFeedback": "cronに限らず、create()のparams引数・CLIの`--params`フラグ・実行中のstep.waitForEventという複数の手段があります。"
         },
         {
-          "text": "`create()` の `params` などで渡したデータは `event.payload` として届き、eventは実質イミュータブルなので、変化する状態は `step.do` の返り値として永続化する"
+          "text": "`create()` の `params` などで渡したデータは `event.payload` として届き、実行中に変化する状態は `step.do` の返り値として永続化する"
         },
         {
-          "text": "`payload` への変更は自動的に全ステップへ引き継がれるため、状態管理はpayloadの書き換えで行うのが推奨されている",
+          "text": "`event.payload` への変更はWorkflowsのエンジンによってすべてのステップへ自動的に引き継がれるため、実行中に変化する状態はpayloadを直接書き換えて管理するのが推奨されている",
           "wrongFeedback": "逆です。eventとpayloadへの変更はステップをまたいで保持されません。状態はstep.doの返り値として永続化するのが公式の推奨です。"
         }
       ],
@@ -12684,7 +12684,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Queuesは「メッセージを送って、コンシューマがバッチで処理する」単発の非同期処理に向いた仕組みで、リトライの単位はメッセージです。一方Workflowsは「複数ステップの進行状況を永続化しながら、失敗したステップだけをリトライし、必要なら数日単位でスリープする」耐久実行に向いています。\n{{diagram:0}}\n両者は排他ではなく、Queueのコンシューマから `create()` でWorkflowを起動する、といった組み合わせも自然な設計です。",
+      "explanation": "Queuesは「メッセージを送って、コンシューマがバッチで処理する」単発の非同期処理に向いた仕組みで、デフォルトではバッチ単位でリトライされます(明示的なackで個別メッセージ単位にもできます)。一方Workflowsは「複数ステップの進行状況を永続化しながら、失敗したステップだけをリトライし、必要なら数日単位でスリープする」耐久実行に向いています。\n{{diagram:0}}\n両者は排他ではなく、Queueのコンシューマから `create()` でWorkflowを起動する、といった組み合わせも自然な設計です。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/",
       "hint": "「1回の処理をさばく」のか「一連の流れを最後まで面倒みる」のか、で分けて考えましょう。",
       "tags": [
@@ -12701,7 +12701,7 @@
               "items": [
                 "単発メッセージの非同期処理",
                 "バッチ配信と流量の平準化",
-                "リトライの単位はメッセージ"
+                "デフォルトはバッチ単位でリトライ(ackで個別化可)"
               ]
             },
             {
