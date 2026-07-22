@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { SCENARIOS } from '@/data/scenarios'
+import { PREDEFINED_CATEGORIES } from '@/domain/valueObjects/Category'
 import type { UrlIntent, UrlIntentDispatchers } from './urlSync'
 import { applyUrlIntent, buildUrlSearch, parseUrlIntent, viewTargetToViewState } from './urlSync'
 
@@ -78,17 +79,8 @@ describe('parseUrlIntent', () => {
     })
 
     it('parses every predefined category', () => {
-      for (const id of [
-        'workers',
-        'wrangler',
-        'kv-cache',
-        'd1',
-        'r2',
-        'do-queues',
-        'pages-deploy',
-        'ai-vectorize',
-        'architecture',
-      ]) {
+      // "every" を名乗る以上、実際の定義から導出する(ハードコードだとカテゴリ追加時に黙って検証漏れになる)
+      for (const id of PREDEFINED_CATEGORIES.map((c) => c.id)) {
         expect(parseUrlIntent(`?category=${id}`)).toEqual({ kind: 'category', categoryId: id })
       }
     })

@@ -1,23 +1,16 @@
 import { describe, expect, it } from 'vitest'
+import { PREDEFINED_CATEGORIES } from '@/domain/valueObjects/Category'
 import { getMasteryLevel } from './MasteryLevelService'
 
 const emptyCategoryStats = {}
 
+// 実装(MasteryLevelService)と同じ PREDEFINED_CATEGORIES から導出する。
+// カテゴリ一覧をハードコードすると、テーマへのカテゴリ追加のたびに
+// 「全カテゴリ着手」系のテストが黙って壊れる(2026-07-22 に10カテゴリ化で顕在化)。
 function makeCategoryStats(attempted: number, total: number) {
   const stats: Record<string, { attemptedQuestions: number; totalQuestions: number }> = {}
-  const categories = [
-    'workers',
-    'wrangler',
-    'kv-cache',
-    'd1',
-    'r2',
-    'do-queues',
-    'pages-deploy',
-    'ai-vectorize',
-    'architecture',
-  ]
-  for (const cat of categories) {
-    stats[cat] = { attemptedQuestions: attempted, totalQuestions: total }
+  for (const cat of PREDEFINED_CATEGORIES) {
+    stats[cat.id] = { attemptedQuestions: attempted, totalQuestions: total }
   }
   return stats
 }

@@ -11660,6 +11660,1061 @@
           ]
         }
       ]
+    },
+    {
+      "id": "hw-001",
+      "category": "hyperdrive-workflows",
+      "difficulty": "beginner",
+      "question": "Cloudflare Hyperdriveの役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Cloudflareが提供する新しい分散SQLデータベースで、D1の上位版としてデータを保存する",
+          "wrongFeedback": "Hyperdrive自体はデータベースではありません。既存のPostgres/MySQLデータベースへの接続を高速化するサービスです。"
+        },
+        {
+          "text": "R2バケットの前段に置くオブジェクトキャッシュ層",
+          "wrongFeedback": "R2とは無関係です。Hyperdriveが対象とするのはPostgres/MySQLなどのリレーショナルデータベースへの接続です。"
+        },
+        {
+          "text": "AWSやNeonなどでホストされた既存のPostgres/MySQLデータベースへのWorkersからのアクセスを、接続プーリングとクエリキャッシュで高速化するサービス"
+        },
+        {
+          "text": "データベースを自動的にCloudflareのエッジへ移行(マイグレーション)するツール",
+          "wrongFeedback": "データベース自体は元の場所に残ります。Hyperdriveは移行ツールではなく、既存データベースへのアクセスを速くする仕組みです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Hyperdriveは、既存のリージョナルなデータベースを「グローバルに分散しているかのように」使えるようにするサービスです。データベース自体はAWS・Google Cloud・Azure・Neon・PlanetScaleなどにそのまま置いたまま、世界中のWorkersからのアクセスを高速化します。\n{{diagram:0}}\n接続のセットアップをWorkerの近くで行い、データベース近傍で接続をプールし、読み取りクエリをキャッシュすることで、地理的な距離による遅延を最小化します。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/",
+      "hint": "「既存の」データベースをどうするか、がポイントです。新しいDBを作るサービスではありません。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "Hyperdriveの位置づけ",
+          "nodes": [
+            {
+              "id": "worker",
+              "text": "Worker",
+              "sub": "世界中のエッジ"
+            },
+            {
+              "id": "hd",
+              "text": "Hyperdrive",
+              "sub": "プール+キャッシュ"
+            },
+            {
+              "id": "db",
+              "text": "既存のDB",
+              "sub": "Postgres / MySQL"
+            }
+          ],
+          "edges": [
+            {
+              "from": "worker",
+              "to": "hd",
+              "label": "近くで接続"
+            },
+            {
+              "from": "hd",
+              "to": "db",
+              "label": "プールされた接続"
+            }
+          ]
+        },
+        {
+          "type": "hierarchy",
+          "label": "高速化の3つの仕組み",
+          "items": [
+            {
+              "text": "接続セットアップをエッジで完結",
+              "sub": "Workerの近くで実行"
+            },
+            {
+              "text": "DB近傍での接続プーリング",
+              "sub": "接続を再利用"
+            },
+            {
+              "text": "読み取りクエリのキャッシュ",
+              "sub": "DBへの往復を削減"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-002",
+      "category": "hyperdrive-workflows",
+      "difficulty": "beginner",
+      "question": "既存のNode.js向けPostgresドライバ(pgパッケージ)を使っているコードをHyperdrive経由に切り替える場合、必要な変更として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`pg` パッケージをCloudflare専用SDKに置き換え、SQLをHyperdrive独自のクエリ言語に書き直す",
+          "wrongFeedback": "専用SDKも独自クエリ言語も不要です。Hyperdriveは既存のドライバ・ORM・SQLをそのまま使えることが特長です。"
+        },
+        {
+          "text": "SQLの実行をすべてREST API呼び出しに書き換える",
+          "wrongFeedback": "REST化は不要です。ドライバは通常のデータベースプロトコルのままHyperdriveに接続できます。"
+        },
+        {
+          "text": "データベースのスキーマをHyperdrive形式に変換する",
+          "wrongFeedback": "スキーマ変換は発生しません。データベース自体には手を加えず、接続経路だけが変わります。"
+        },
+        {
+          "text": "接続文字列を `env.HYPERDRIVE.connectionString` に差し替えるだけで、ドライバやORMのコードはそのまま使える"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Hyperdriveは既存のコードとツールをそのまま活かせる設計です。`pg` などのドライバやORMのインスタンス生成時に、接続文字列としてバインディングの `env.HYPERDRIVE.connectionString` を渡すだけで、以降のクエリはHyperdrive経由になります。\n{{diagram:0}}\nリクエストごとに新しいクライアントを作っても、実際のデータベース接続プールはHyperdrive側が維持しているため、クライアント生成は高速です。",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/get-started/",
+      "hint": "Hyperdriveの売りは「コードを書き換えずに済む」ことです。変わるのは接続先だけです。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "接続文字列の差し替え",
+          "filepath": "src/index.ts",
+          "lines": [
+            {
+              "text": "import { Client } from \"pg\";"
+            },
+            {
+              "text": ""
+            },
+            {
+              "text": "const client = new Client({"
+            },
+            {
+              "text": "  connectionString: env.HYPERDRIVE.connectionString,",
+              "highlight": true
+            },
+            {
+              "text": "});"
+            },
+            {
+              "text": "await client.connect();"
+            },
+            {
+              "text": "const result = await client.query(\"SELECT * FROM users\");"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-003",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Hyperdriveがデータベースアクセスを高速化する仕組みの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "①接続セットアップをWorker近くのエッジで実行 ②データベース近傍リージョンでの接続プーリング ③非変更(読み取り)クエリのキャッシュ"
+        },
+        {
+          "text": "データベースの全データをエッジに複製(レプリケーション)して読み書きする",
+          "wrongFeedback": "Hyperdriveはデータの複製を行いません。データはオリジンのデータベースにあり、接続とクエリ結果の扱いを最適化します。"
+        },
+        {
+          "text": "SQLを自動的に最適化(書き換え)して実行計画を改善する",
+          "wrongFeedback": "SQLの書き換えや実行計画の最適化は行いません。クエリはそのままデータベースに届きます。"
+        },
+        {
+          "text": "書き込みクエリをバッファリングして夜間にまとめて実行する",
+          "wrongFeedback": "書き込みの遅延実行は行いません。書き込みクエリは即座にオリジンのデータベースへ送られます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "ステートレスなWorkersから毎回データベースに直接接続すると、接続確立だけで複数回の往復が発生し、距離によっては大きな遅延になります。Hyperdriveは①接続セットアップをWorkerと同じロケーション内で完結させ、②オリジンDBに近い場所で接続プールを維持して再利用し、③読み取りクエリの結果をキャッシュする、という3段構えでこの問題を解決します。\n{{diagram:0}}\nキャッシュにヒットしない読み取りや書き込みでも、①②の効果で高速化されます。",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/concepts/how-hyperdrive-works/",
+      "hint": "「接続」を速くする工夫が2つ、「クエリ結果」を速くする工夫が1つあります。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "クエリが速くなる流れ",
+          "steps": [
+            {
+              "text": "Workerがエッジ内でHyperdriveに接続",
+              "sub": "往復遅延が最小"
+            },
+            {
+              "text": "DB近傍のプールが既存接続を再利用",
+              "sub": "接続確立を省略"
+            },
+            {
+              "text": "読み取りはキャッシュから即応答",
+              "sub": "ヒット時はDB不要"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-004",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Hyperdriveのクエリキャッシュの挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "すべてのクエリがキャッシュされるため、INSERTの結果も次回は高速になる",
+          "wrongFeedback": "書き込み(mutating)クエリはキャッシュされません。キャッシュ対象は読み取り専用クエリだけです。"
+        },
+        {
+          "text": "データベースのワイヤプロトコルを解析して読み取りクエリと書き込みクエリを判別し、読み取りのみをデフォルトでキャッシュする"
+        },
+        {
+          "text": "キャッシュはデフォルト無効で、クエリごとにSQLコメントでキャッシュ指示を書く必要がある",
+          "wrongFeedback": "クエリキャッシュはデフォルトで有効です。SQLコメントによる指示という仕組みもありません。"
+        },
+        {
+          "text": "SELECT文であればLASTVAL()のような揮発性(volatile)関数を含んでいてもキャッシュされる",
+          "wrongFeedback": "volatileやstableに分類される関数を含むクエリは、SELECTであってもキャッシュ対象外です。実行のたびに結果が変わりうるためです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Hyperdriveは単に `SELECT` か `INSERT` かを見るだけでなく、データベースのワイヤプロトコルを解析して、変更を伴うクエリか読み取り専用かを判別します。読み取り専用クエリだけが設定された `max_age` の間キャッシュされ、書き込みや揮発性関数を含むクエリはキャッシュされません。\n{{diagram:0}}\nこの仕組みはデフォルトで有効なので、人気のあるクエリはデータベースへの往復なしで応答できます。",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/concepts/query-caching/",
+      "hint": "キャッシュして安全なのは「実行しても状態が変わらない」クエリだけです。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "キャッシュされる / されない",
+          "columns": [
+            {
+              "heading": "キャッシュ対象",
+              "items": [
+                "パラメータ化された読み取りクエリ",
+                "同じ内容の繰り返しSELECT"
+              ]
+            },
+            {
+              "heading": "対象外",
+              "items": [
+                "INSERT / UPDATE などの書き込み",
+                "volatile関数を含むクエリ"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-005",
+      "category": "hyperdrive-workflows",
+      "difficulty": "advanced",
+      "question": "Hyperdriveのクエリキャッシュを使っているアプリで、書き込み直後の読み取りに必ず最新データが必要な画面があります。適切な対処はどれですか？",
+      "options": [
+        {
+          "text": "書き込みを行うと該当するキャッシュは自動的に無効化されるので、特別な対処は不要",
+          "wrongFeedback": "Hyperdriveは書き込みが発生してもキャッシュ済みの読み取り結果を無効化しません。max_ageが切れるまで古い結果が返る可能性があります。"
+        },
+        {
+          "text": "読み取りクエリの先頭にNO_CACHEコメントを付ける",
+          "wrongFeedback": "SQLコメントでキャッシュを制御する仕組みはありません。キャッシュの有効/無効はHyperdrive設定単位で決まります。"
+        },
+        {
+          "text": "書き込みの後に1秒スリープしてから読み取る",
+          "wrongFeedback": "スリープでは解決しません。キャッシュはmax_ageの間保持されるため、待機時間に関係なく古い結果が返りえます。"
+        },
+        {
+          "text": "キャッシュを無効にした別のHyperdrive設定を作り、最新データが必須な読み取りはそちらの接続を使う"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Hyperdriveは、アプリがデータベースに書き込んでもキャッシュ済みの読み取り結果を無効化しません(write-through invalidationなし)。そのためread-after-write(書いた直後に読む)の一貫性が必要な処理では、キャッシュを無効化した別のHyperdrive設定を用意し、その接続文字列を使い分けるのが公式に案内されている方法です。\n{{diagram:0}}\n鮮度が多少古くても良い一覧表示などはキャッシュ有効の設定、書き込み直後の確認画面などはキャッシュ無効の設定、と役割で分けます。",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/concepts/query-caching/#read-after-write-behavior",
+      "hint": "キャッシュの無効化を細かく制御するのではなく、「設定ごと」分けるのがHyperdrive流です。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "2つのHyperdrive設定の使い分け",
+          "columns": [
+            {
+              "heading": "キャッシュ有効の設定",
+              "items": [
+                "一覧表示や集計など鮮度に寛容な読み取り",
+                "DB負荷の削減と高速応答を優先"
+              ]
+            },
+            {
+              "heading": "キャッシュ無効の設定",
+              "items": [
+                "書き込み直後の読み取り",
+                "常に最新データが必要な処理"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-006",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Hyperdriveを使い始める際の設定手順として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`wrangler hyperdrive create` で接続文字列を登録して設定を作成し、発行されたIDを設定ファイルの `hyperdrive` バインディングに記述する"
+        },
+        {
+          "text": "Cloudflareダッシュボードからデータベースのダンプファイルをアップロードする",
+          "wrongFeedback": "データのアップロードは不要です。Hyperdriveに登録するのはデータベースへの接続情報だけです。"
+        },
+        {
+          "text": "データベース側にCloudflare製のエージェントソフトをインストールする",
+          "wrongFeedback": "データベース側へのエージェント導入は不要です。通常の接続情報(ホスト・ユーザー・パスワード)だけで利用を開始できます。"
+        },
+        {
+          "text": "`wrangler.toml` に接続文字列を平文でそのまま記述する",
+          "wrongFeedback": "接続文字列(パスワードを含む)は `wrangler hyperdrive create` でCloudflare側に登録し、設定ファイルには発行されたIDだけを書きます。平文の接続情報をコミットする必要はありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "まず `npx wrangler hyperdrive create <設定名> --connection-string=\"postgres://user:password@host:5432/dbname\"` を実行すると、接続情報がCloudflareに登録され、設定IDが発行されます。\n{{diagram:0}}\n次に設定ファイルの `hyperdrive` バインディングに `binding`(コードから参照する名前)とこのIDを記述すれば、Workerから `env.HYPERDRIVE.connectionString` で接続できるようになります。\n{{diagram:1}}",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/get-started/",
+      "hint": "機密である接続文字列はCloudflare側に預け、設定ファイルにはIDだけを書く流れです。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "Hyperdrive設定の作成",
+          "lines": [
+            {
+              "type": "command",
+              "text": "npx wrangler hyperdrive create my-db --connection-string=\"postgres://user:pass@db.example.com:5432/appdb\""
+            },
+            {
+              "type": "response",
+              "text": "Created new Hyperdrive config: my-db"
+            },
+            {
+              "type": "info",
+              "text": "id: 57b7076f58be42419276f058a8968187"
+            }
+          ]
+        },
+        {
+          "type": "config",
+          "label": "バインディングの設定",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            {
+              "text": "\"hyperdrive\": ["
+            },
+            {
+              "text": "  {"
+            },
+            {
+              "text": "    \"binding\": \"HYPERDRIVE\",",
+              "highlight": true
+            },
+            {
+              "text": "    \"id\": \"57b7076f58be42419276f058a8968187\""
+            },
+            {
+              "text": "  }"
+            },
+            {
+              "text": "]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-007",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Hyperdriveバインディングを使うWorkerを `wrangler dev` でローカル開発するときの挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`wrangler dev` ではHyperdriveは一切使えず、必ず本番デプロイして動作確認する必要がある",
+          "wrongFeedback": "ローカル開発は可能です。localConnectionStringを設定すれば、ローカル実行中のWorkerからデータベースに接続して開発できます。"
+        },
+        {
+          "text": "ローカルでも本番と同じHyperdriveのクエリキャッシュが自動的に効く",
+          "wrongFeedback": "ローカル実行(localConnectionString使用時)ではHyperdriveのキャッシュは効きません。キャッシュ挙動の確認は本番相当の環境が必要です。"
+        },
+        {
+          "text": "`localConnectionString` に設定した開発用DBへWorkerが直接接続する。ただしクエリキャッシュはローカルでは効かない"
+        },
+        {
+          "text": "ローカル開発時は自動的にSQLiteのインメモリDBに差し替えられる",
+          "wrongFeedback": "SQLiteへの自動差し替えは行われません(それはD1のローカル開発の挙動です)。Hyperdriveでは自分で指定したPostgres/MySQLに接続します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`wrangler dev` はデフォルトでWorkerをローカルマシン上で実行します。このときHyperdriveバインディングは、設定した `localConnectionString`(ローカルまたはリモートのDB接続文字列)を使ってデータベースへ直接接続します。\n{{diagram:0}}\n注意点として、このモードではHyperdriveのクエリキャッシュは効きません。キャッシュを含めた挙動の検証は、デプロイ後の環境で行う必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/configuration/local-development/",
+      "hint": "ローカルでは「DBへの直接接続」になります。すると本番との差分は何でしょうか。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ローカル開発と本番の違い",
+          "columns": [
+            {
+              "heading": "wrangler dev(ローカル)",
+              "items": [
+                "localConnectionStringでDBに直接接続",
+                "クエリキャッシュは効かない"
+              ]
+            },
+            {
+              "heading": "デプロイ後(本番)",
+              "items": [
+                "Hyperdrive経由で接続",
+                "プーリングとキャッシュが有効"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-008",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Hyperdriveの接続数に関する制限の説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "WorkersからHyperdriveへのクライアント接続数がプランごとに制限される",
+          "wrongFeedback": "逆です。Workersからのクライアント接続数に制限はなく、制限されるのはHyperdriveからオリジンDBへの接続数です。"
+        },
+        {
+          "text": "WorkersからHyperdriveへの接続数は制限されない一方、Hyperdriveからオリジンデータベースへの接続数は設定ごとに管理される(Freeで約20、Paidで約100)"
+        },
+        {
+          "text": "オリジンデータベースへの接続はリクエストごとに毎回作り直され、接続数の上限は存在しない",
+          "wrongFeedback": "接続はプールで再利用され、オリジンへの接続数はプランに応じて管理されます。多くのホスティングDBに接続数上限があるためです。"
+        },
+        {
+          "text": "アイドル状態の接続は1秒で切断されるため、実質的にプーリングの効果はない",
+          "wrongFeedback": "アイドル接続のタイムアウトは10分です。この間は接続が維持・再利用されるため、プーリングの効果があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "多くのホスティングデータベースには同時接続数の上限があるため、Hyperdriveはオリジンへの接続数を設定ごとに管理します(Freeプランで約20、Paidプランで約100)。一方、WorkersからHyperdriveへのクライアント接続数は制限されないので、世界中からの大量のリクエストを少数のDB接続に集約できます。\n{{diagram:0}}\nこれこそが「ステートレスな大量のWorkerと、接続数に上限のある伝統的DB」のミスマッチを解消するHyperdriveの本質的な価値です。",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/platform/limits/",
+      "hint": "「入口(Workers側)」と「出口(DB側)」のどちらを絞る必要があるかを考えましょう。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "多対少の接続集約",
+          "nodes": [
+            {
+              "id": "w1",
+              "text": "Worker群",
+              "sub": "接続数は無制限"
+            },
+            {
+              "id": "hd",
+              "text": "Hyperdrive",
+              "sub": "接続プール"
+            },
+            {
+              "id": "db",
+              "text": "オリジンDB",
+              "sub": "Free約20 / Paid約100"
+            }
+          ],
+          "edges": [
+            {
+              "from": "w1",
+              "to": "hd",
+              "label": "大量の接続"
+            },
+            {
+              "from": "hd",
+              "to": "db",
+              "label": "少数に集約"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-009",
+      "category": "hyperdrive-workflows",
+      "difficulty": "beginner",
+      "question": "Hyperdriveが接続をサポートするデータベースの説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Cloudflare D1専用で、外部のデータベースには接続できない",
+          "wrongFeedback": "むしろ逆で、Hyperdriveは外部の既存データベースに接続するためのサービスです。D1はWorkersから直接バインディングで使います。"
+        },
+        {
+          "text": "PostgreSQLのみ対応で、MySQLは利用できない",
+          "wrongFeedback": "PostgreSQLとMySQLの両方に対応しています。"
+        },
+        {
+          "text": "MongoDBやRedisなどのNoSQLデータベースが主な対象",
+          "wrongFeedback": "対象はPostgres/MySQL系のリレーショナルデータベースです。NoSQLは対象外です。"
+        },
+        {
+          "text": "PostgreSQLとMySQLに対応し、AWSやNeonなどでホストされた既存DBやPostgres互換DB(CockroachDBなど)にも接続できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "HyperdriveはPostgreSQLとMySQLの両方をサポートし、AWS・Google Cloud・AzureのマネージドDBや、Neon・PlanetScaleのようなDBaaSにも接続できます。さらにCockroachDBやTimescaleといったPostgres互換データベースにも対応しています。\n{{diagram:0}}\n「今使っているデータベースをそのまま」Workersから高速に使えるようにするのが狙いなので、対応範囲は広く取られています。",
+      "referenceUrl": "https://developers.cloudflare.com/hyperdrive/reference/supported-databases-and-features/",
+      "hint": "Hyperdriveは「既存のDBをそのまま使う」ためのサービスです。対応範囲は狭いでしょうか、広いでしょうか。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "接続できるデータベース",
+          "items": [
+            {
+              "text": "PostgreSQL",
+              "sub": "AWS / GCP / Azure / Neonなど"
+            },
+            {
+              "text": "MySQL",
+              "sub": "PlanetScaleなどにも対応"
+            },
+            {
+              "text": "Postgres互換DB",
+              "sub": "CockroachDB / Timescale"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-010",
+      "category": "hyperdrive-workflows",
+      "difficulty": "beginner",
+      "question": "Cloudflare Workflowsはどのようなサービスですか？",
+      "options": [
+        {
+          "text": "GitHub Actionsと連携してCI/CDパイプラインを実行するサービス",
+          "wrongFeedback": "CI/CDのためのサービスではありません。アプリケーションの複数ステップ処理を確実に実行するためのランタイムです。"
+        },
+        {
+          "text": "Pagesのビルドプロセスをカスタマイズする仕組み",
+          "wrongFeedback": "Pagesのビルドとは無関係です。Workersアプリケーションの一部として動く、複数ステップ処理の実行エンジンです。"
+        },
+        {
+          "text": "複数ステップの処理を、失敗時の自動リトライと状態の永続化によって確実に完了まで実行する「耐久実行(durable execution)」エンジン"
+        },
+        {
+          "text": "複数のWorkerスクリプトを1つにバンドルするビルドツール",
+          "wrongFeedback": "バンドルツールではありません。実行時に長時間・複数ステップの処理を管理するランタイム機能です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workflowsは、注文処理やデータパイプラインのような「複数のステップから成る処理」を、途中で失敗やインフラの再起動があっても最後まで確実に実行するための仕組みです。各ステップの結果は永続化されるため、失敗したステップだけをリトライして続きから再開できます。\n{{diagram:0}}\n数分から数日にわたる長時間の処理でも、状態を失わずに進行できるのが特長です。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/",
+      "hint": "「途中で失敗しても最初からやり直しにならない」処理の仕組み、と考えてみましょう。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "耐久実行のイメージ(注文処理の例)",
+          "steps": [
+            {
+              "text": "注文を受け付ける",
+              "sub": "結果を永続化"
+            },
+            {
+              "text": "決済APIを呼び出す",
+              "sub": "失敗時は自動リトライ"
+            },
+            {
+              "text": "在庫を更新する",
+              "sub": "結果を永続化"
+            },
+            {
+              "text": "完了メールを送信する"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-011",
+      "category": "hyperdrive-workflows",
+      "difficulty": "beginner",
+      "question": "Workflowをコードで定義する方法として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "YAMLファイルにステップの一覧を宣言的に記述する",
+          "wrongFeedback": "YAMLではなくTypeScript/JavaScriptのクラスとして定義します。ステップは通常のコードとして書きます。"
+        },
+        {
+          "text": "`WorkflowEntrypoint` クラスを継承し、`run(event, step)` メソッドの中で最低1つの `step` 呼び出しを行うクラスを定義する"
+        },
+        {
+          "text": "Cloudflareダッシュボード上のGUIエディタでフローチャートを描く",
+          "wrongFeedback": "GUIでの定義ではありません。コード(クラス)として定義し、通常のWorkerと一緒にデプロイします。"
+        },
+        {
+          "text": "`export default { workflow() {} }` 形式のハンドラを定義する",
+          "wrongFeedback": "`fetch`ハンドラのようなdefault exportの形式ではなく、`WorkflowEntrypoint` を継承したクラスをexportします。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Workflowの本体は `WorkflowEntrypoint` を継承したクラスです。`run(event, step)` メソッドが実行の入口で、`event` には起動時のパラメータ(payload)が、`step` にはステップを定義するAPIが渡されます。有効なWorkflowと見なされるには、最低1つのstep呼び出しが必要です。\n{{diagram:0}}\nrunの中ではif文・ループ・try/catchなど通常のJavaScript制御構文をそのまま使ってステップを組み立てられます。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/build/workers-api/",
+      "hint": "Durable Objectsと同様に「クラスを継承して定義する」スタイルです。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "Workflowの定義",
+          "filepath": "src/index.ts",
+          "lines": [
+            {
+              "text": "export class MyWorkflow extends WorkflowEntrypoint<Env, Params> {",
+              "highlight": true
+            },
+            {
+              "text": "  async run(event: WorkflowEvent<Params>, step: WorkflowStep) {"
+            },
+            {
+              "text": "    const data = await step.do(\"データ取得\", async () => {"
+            },
+            {
+              "text": "      return await fetchData(event.payload);"
+            },
+            {
+              "text": "    });"
+            },
+            {
+              "text": "  }"
+            },
+            {
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-012",
+      "category": "hyperdrive-workflows",
+      "difficulty": "beginner",
+      "question": "Workflowの `step.do()` で定義するステップの性質として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "各ステップは個別にリトライ可能な自己完結した単位で、返り値は永続化され、後続の失敗時には失敗したステップから再開できる"
+        },
+        {
+          "text": "ステップはログの区切りを見やすくするためだけのラベルで、実行の単位としての意味はない",
+          "wrongFeedback": "単なるラベルではありません。リトライ・状態の永続化・再開はすべてステップ単位で行われる、Workflowsの中核概念です。"
+        },
+        {
+          "text": "どれか1つのステップが失敗すると、Workflow全体が必ず最初のステップからやり直しになる",
+          "wrongFeedback": "最初からやり直しにはなりません。成功済みステップの結果は永続化されており、失敗したステップだけがリトライされます。"
+        },
+        {
+          "text": "ステップは並列実行専用の仕組みで、逐次実行の処理には使えない",
+          "wrongFeedback": "逐次実行が基本形です。runメソッド内でawaitしながら順番にステップを実行していきます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "ステップはWorkflowにおける「リトライと永続化の最小単位」です。`step.do()` のコールバックが返した値は永続化され、後のステップが失敗してリトライされても、成功済みステップが再実行されることはありません。\n{{diagram:0}}\nこの性質があるからこそ、決済APIの呼び出しのような「二度実行したくない処理」を安全に組み込めます。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/build/rules-of-workflows/",
+      "hint": "「どこまで終わったか」を覚えているのは誰か、を考えましょう。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "失敗時はそのステップだけ再試行",
+          "steps": [
+            {
+              "text": "step 1: 成功",
+              "sub": "結果を永続化"
+            },
+            {
+              "text": "step 2: 失敗",
+              "sub": "自動リトライ"
+            },
+            {
+              "text": "step 2だけを再実行",
+              "sub": "step 1はスキップ"
+            },
+            {
+              "text": "step 3へ進む"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-013",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Workflowのステップ(`step.do`)にリトライ設定を渡さなかった場合のデフォルトのリトライ挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "リトライは行われず、1回の失敗でWorkflow全体がエラー終了する",
+          "wrongFeedback": "デフォルトでもリトライは行われます。リトライさせたくない場合に明示的な設定が必要です。"
+        },
+        {
+          "text": "無制限に、1秒間隔でリトライし続ける",
+          "wrongFeedback": "無制限ではありません。デフォルトでは回数上限と遅延、バックオフ方式が定められています。"
+        },
+        {
+          "text": "最大5回まで、初回10秒の遅延から指数バックオフ(exponential backoff)でリトライする"
+        },
+        {
+          "text": "最大100回まで、常に固定の1分間隔でリトライする",
+          "wrongFeedback": "デフォルトの上限は5回で、間隔は固定ではなく指数バックオフで延びていきます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "リトライ設定を省略したステップには、`limit: 5`(最大5回)、`delay: 10000`(10秒)、`backoff: \"exponential\"`(指数バックオフ)というデフォルト設定が適用されます。\n{{diagram:0}}\n外部APIの一時的な障害はこのデフォルトでも十分吸収できますが、レート制限が厳しいAPIを呼ぶステップなどでは、`step.do` の第2引数に `StepConfig` を渡して回数や遅延を調整します。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/build/sleeping-and-retrying/",
+      "hint": "「回数の上限」「初回の間隔」「間隔の増え方」の3点セットで覚えましょう。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "デフォルトのリトライ設定",
+          "filepath": "src/workflow.ts",
+          "lines": [
+            {
+              "text": "const defaultConfig: WorkflowStepConfig = {"
+            },
+            {
+              "text": "  retries: {"
+            },
+            {
+              "text": "    limit: 5,",
+              "highlight": true
+            },
+            {
+              "text": "    delay: 10000,",
+              "highlight": true
+            },
+            {
+              "text": "    backoff: \"exponential\",",
+              "highlight": true
+            },
+            {
+              "text": "  },"
+            },
+            {
+              "text": "};"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-014",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Workflowの中で「3日後にリマインドメールを送る」という処理を実装したい場合、適切な方法はどれですか？",
+      "options": [
+        {
+          "text": "`setTimeout` で3日分のミリ秒を指定して待機する",
+          "wrongFeedback": "通常のsetTimeoutでの長時間待機は実行環境の再起動などで失われます。Workflowsには待機専用のstep APIがあります。"
+        },
+        {
+          "text": "3日間whileループでポーリングし続ける",
+          "wrongFeedback": "ループでの待機はコンピュート時間を浪費するだけでなく、ステップのCPU時間制限にも収まりません。"
+        },
+        {
+          "text": "Workflowでは待機ができないため、外部のcronサービスから3日後に別のWorkerを呼び出す",
+          "wrongFeedback": "Workflows自体が長期間の待機をサポートしています。step.sleepなら最長365日まで待機できます。"
+        },
+        {
+          "text": "`step.sleep(\"リマインド待ち\", \"3 days\")` のようにスリープをステップとして宣言する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`step.sleep` はスリープを1つのステップとして宣言するAPIで、`\"3 days\"` のような人間が読める表記かミリ秒数で期間を指定できます(最長365日)。特定日時まで待つ場合は `step.sleepUntil` にDateやUNIXタイムスタンプを渡します。\n{{diagram:0}}\nスリープ中の状態はWorkflowsが管理するので、実行環境を占有し続けることなく、数日単位の待機を含むフローを安全に書けます。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/build/sleeping-and-retrying/",
+      "hint": "待機も「ステップの一種」として宣言するのがWorkflows流です。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "スリープを挟んだフロー",
+          "steps": [
+            {
+              "text": "step.do: 注文を受け付ける"
+            },
+            {
+              "text": "step.sleep: 3日間待機",
+              "sub": "最長365日まで"
+            },
+            {
+              "text": "step.do: リマインドを送信"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-015",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "定義したWorkflowを他のWorkerコードから起動する方法として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "設定ファイルの `workflows` に `binding` と `class_name` を宣言し、コードから `env.MY_WORKFLOW.create()` でインスタンスを作成する"
+        },
+        {
+          "text": "WorkflowクラスのURLに対して直接HTTPリクエストを送る",
+          "wrongFeedback": "Workflowクラス自体がURLを持つわけではありません。バインディング経由のcreate()か、cronスケジュール、wrangler CLIなどで起動します。"
+        },
+        {
+          "text": "`new MyWorkflow().run()` のようにクラスを直接インスタンス化して呼び出す",
+          "wrongFeedback": "クラスを直接newして実行することはできません。永続化やリトライの管理はWorkflowsランタイムが担うため、必ずバインディング経由で起動します。"
+        },
+        {
+          "text": "Queuesにメッセージを送ると自動的に同名のWorkflowが起動する",
+          "wrongFeedback": "Queuesへの送信で自動起動する仕組みはありません。Queueコンシューマの中からcreate()を呼ぶことは可能ですが、明示的な呼び出しが必要です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "設定ファイルの `workflows` 配列に、Workflow名・コードから参照する `binding` 名・対応するクラス名(`class_name`)を宣言します。するとWorkerのハンドラから `await env.MY_WORKFLOW.create({ id, params })` でインスタンスを起動でき、`instance.status()` で状態を確認できます。\n{{diagram:0}}\n`schedules` にcron式を書けば定期起動も可能で、wrangler CLIからのトリガーにも対応しています。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/build/trigger-workflows/",
+      "hint": "KVやD1と同じく「バインディング経由でenvから使う」のがWorkersの流儀です。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "Workflowバインディングの宣言",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            {
+              "text": "\"workflows\": ["
+            },
+            {
+              "text": "  {"
+            },
+            {
+              "text": "    \"name\": \"order-workflow\","
+            },
+            {
+              "text": "    \"binding\": \"MY_WORKFLOW\",",
+              "highlight": true
+            },
+            {
+              "text": "    \"class_name\": \"MyWorkflow\"",
+              "highlight": true
+            },
+            {
+              "text": "  }"
+            },
+            {
+              "text": "]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-016",
+      "category": "hyperdrive-workflows",
+      "difficulty": "intermediate",
+      "question": "Workflowにデータ(パラメータ)を渡す方法と、その扱いに関する説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "パラメータはグローバル変数経由で渡し、Workflow内で自由に書き換えながら使う",
+          "wrongFeedback": "グローバル変数経由では渡せません。また実行をまたいで保持したい状態はstep.doの返り値として永続化します。"
+        },
+        {
+          "text": "パラメータを渡す手段はcron式の中に埋め込む方法だけである",
+          "wrongFeedback": "cronに限らず、create()のparams引数・CLIの`--params`フラグ・実行中のstep.waitForEventという複数の手段があります。"
+        },
+        {
+          "text": "`create()` の `params` などで渡したデータは `event.payload` として届き、eventは実質イミュータブルなので、変化する状態は `step.do` の返り値として永続化する"
+        },
+        {
+          "text": "`payload` への変更は自動的に全ステップへ引き継がれるため、状態管理はpayloadの書き換えで行うのが推奨されている",
+          "wrongFeedback": "逆です。eventとpayloadへの変更はステップをまたいで保持されません。状態はstep.doの返り値として永続化するのが公式の推奨です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "パラメータは、①Workerから `create({ params })`、②wrangler CLIの `--params` フラグ、③実行中に外部イベントを待つ `step.waitForEvent` の3つの方法で渡せ、JSONシリアライズ可能な任意のオブジェクトが使えます。\n{{diagram:0}}\n受け取った `WorkflowEvent` とその `payload` は実質イミュータブルで、書き換えてもステップをまたいで保持されません。実行中に変化する状態は `step.do` のコールバックから返して永続化します。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/build/events-and-parameters/",
+      "hint": "「最初に受け取る不変の入力」と「実行中に変化する状態」の置き場所は別です。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "パラメータを渡す3つの方法",
+          "items": [
+            {
+              "text": "create()のparams引数",
+              "sub": "Workerから起動時に"
+            },
+            {
+              "text": "wrangler CLIの--paramsフラグ",
+              "sub": "手動トリガー時に"
+            },
+            {
+              "text": "step.waitForEventで受信",
+              "sub": "実行中に外部から"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-017",
+      "category": "hyperdrive-workflows",
+      "difficulty": "advanced",
+      "question": "Workflowのステップから決済APIのような「二重実行したくない外部API」を呼ぶ場合の設計として、公式のベストプラクティスに沿ったものはどれですか？",
+      "options": [
+        {
+          "text": "リトライを完全に無効化すれば二重実行は起きないので、それで十分",
+          "wrongFeedback": "リトライを切ると一時障害からの回復力を失います。またステップ外の要因(エンジンの再起動など)による再実行は防げないため、冪等性の確保が本質的な対策です。"
+        },
+        {
+          "text": "ステップはリトライで複数回実行されうるという前提に立ち、課金済みかどうかを確認してから課金APIを呼ぶ「冪等(idempotent)」な実装にする"
+        },
+        {
+          "text": "step.doの外側(runメソッド直下)でAPIを呼べばリトライの影響を受けない",
+          "wrongFeedback": "step.doの外での副作用はむしろアンチパターンです。エンジンの再実行時に何度も走る可能性があり、永続化もされません。副作用は必ずステップの中に入れます。"
+        },
+        {
+          "text": "呼び出し結果をグローバル変数に保存しておき、2回目以降はスキップする",
+          "wrongFeedback": "ステップ外の状態(グローバル変数など)に依存してはいけません。実行環境をまたいで保持される保証がないためです。判定は外部システム側の状態を確認して行います。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "ステップはリトライやエンジンの再起動によって複数回実行される可能性があります。そのため「支払い済みかを外部システムに確認し、済みなら早期リターンしてから課金APIを呼ぶ」というように、何度実行しても結果が変わらない冪等な実装にするのが公式のルールです。\n{{diagram:0}}\nあわせて、副作用は必ず `step.do` の中で行うこと、ステップ外の状態(グローバル変数など)に依存しないことも同じガイドで定められています。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/build/rules-of-workflows/",
+      "hint": "「リトライされても安全」をコード側でどう保証するか、という問題です。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "冪等なステップ設計",
+          "columns": [
+            {
+              "heading": "良い実装",
+              "items": [
+                "課金済みかを確認してから課金APIを呼ぶ",
+                "副作用はstep.doの中で実行する"
+              ]
+            },
+            {
+              "heading": "悪い実装",
+              "items": [
+                "確認なしでいきなり課金APIを呼ぶ",
+                "step.doの外やグローバル変数に依存する"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hw-018",
+      "category": "hyperdrive-workflows",
+      "difficulty": "advanced",
+      "question": "非同期処理の実装でCloudflare QueuesとWorkflowsを使い分ける判断として適切なものはどれですか？",
+      "options": [
+        {
+          "text": "QueuesはWorkflowsの旧名称であり、現在は完全に同じ機能を指す",
+          "wrongFeedback": "別のサービスです。Queuesはメッセージキュー、Workflowsは複数ステップの耐久実行エンジンで、併用もできます。"
+        },
+        {
+          "text": "常にWorkflowsを使うべきで、Queuesを選ぶ理由は存在しない",
+          "wrongFeedback": "単発の軽量なジョブを大量にさばくならQueuesのバッチ処理が適しています。要件によって使い分けます。"
+        },
+        {
+          "text": "Workflowsは読み取り専用の処理しか実行できないため、書き込みを伴う処理はQueues一択である",
+          "wrongFeedback": "Workflowsに読み取り専用という制約はありません。むしろ決済や在庫更新のような書き込みを伴う多段処理こそWorkflowsの得意分野です。"
+        },
+        {
+          "text": "単発メッセージの非同期処理やバッチ配信はQueues、複数ステップにまたがり状態保持・ステップ単位のリトライ・長時間の待機が必要な処理はWorkflowsが適する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Queuesは「メッセージを送って、コンシューマがバッチで処理する」単発の非同期処理に向いた仕組みで、リトライの単位はメッセージです。一方Workflowsは「複数ステップの進行状況を永続化しながら、失敗したステップだけをリトライし、必要なら数日単位でスリープする」耐久実行に向いています。\n{{diagram:0}}\n両者は排他ではなく、Queueのコンシューマから `create()` でWorkflowを起動する、といった組み合わせも自然な設計です。",
+      "referenceUrl": "https://developers.cloudflare.com/workflows/",
+      "hint": "「1回の処理をさばく」のか「一連の流れを最後まで面倒みる」のか、で分けて考えましょう。",
+      "tags": [
+        "hyperdrive-workflows",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Queues と Workflows の使い分け",
+          "columns": [
+            {
+              "heading": "Queues",
+              "items": [
+                "単発メッセージの非同期処理",
+                "バッチ配信と流量の平準化",
+                "リトライの単位はメッセージ"
+              ]
+            },
+            {
+              "heading": "Workflows",
+              "items": [
+                "複数ステップの耐久実行",
+                "ステップ単位の状態保持とリトライ",
+                "日単位のスリープや長時間処理"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

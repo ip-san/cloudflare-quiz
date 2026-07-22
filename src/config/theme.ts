@@ -235,6 +235,15 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'エッジで AI 推論・検索機能を組み込める',
     },
     {
+      id: 'hyperdrive-workflows',
+      name: 'Hyperdrive・Workflows',
+      icon: '🔄',
+      color: 'teal',
+      weight: 10,
+      description: 'Hyperdrive による既存 DB への高速接続、Workflows による耐久実行(durable execution)',
+      skillDescription: '既存 DB 連携と多段バッチ処理を設計できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

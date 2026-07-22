@@ -39,6 +39,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   pg: 'pages-deploy',
   ai: 'ai-vectorize',
   ar: 'architecture',
+  hw: 'hyperdrive-workflows',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -73,6 +74,15 @@ const VALID_DOC_PAGES = [
   'durable-objects/best-practices/websockets/',
   'durable-objects/concepts/what-are-durable-objects/',
   'durable-objects/reference/data-location/',
+  'hyperdrive/',
+  'hyperdrive/concepts/connection-pooling/',
+  'hyperdrive/concepts/how-hyperdrive-works/',
+  'hyperdrive/concepts/query-caching/',
+  'hyperdrive/configuration/local-development/',
+  'hyperdrive/get-started/',
+  'hyperdrive/platform/limits/',
+  'hyperdrive/platform/pricing/',
+  'hyperdrive/reference/supported-databases-and-features/',
   'kv/api/list-keys/',
   'kv/api/read-key-value-pairs/',
   'kv/api/write-key-value-pairs/',
@@ -157,6 +167,16 @@ const VALID_DOC_PAGES = [
   'workers/wrangler/commands/workers/',
   'workers/wrangler/configuration/',
   'workers/wrangler/environments/',
+  'workflows/',
+  'workflows/build/events-and-parameters/',
+  'workflows/build/local-development/',
+  'workflows/build/rules-of-workflows/',
+  'workflows/build/sleeping-and-retrying/',
+  'workflows/build/trigger-workflows/',
+  'workflows/build/workers-api/',
+  'workflows/get-started/guide/',
+  'workflows/reference/limits/',
+  'workflows/reference/pricing/',
 ]
 
 /**
@@ -446,9 +466,10 @@ describe('Quiz Content Quality', () => {
       expect(duplicates, `重複タグ: ${duplicates.join(', ')}`).toEqual([])
     })
 
-    it('全カテゴリが含まれていること（architecture は中上級向けのため除外）', () => {
+    it('全カテゴリが含まれていること（中上級向けの architecture / hyperdrive-workflows は除外）', () => {
       const categories = new Set(overviewQuizzes.map((q) => q.category))
-      const missing = validCategoryIds.filter((c) => c !== 'architecture' && !categories.has(c))
+      const OVERVIEW_EXCLUDED = new Set(['architecture', 'hyperdrive-workflows'])
+      const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])
     })
   })
