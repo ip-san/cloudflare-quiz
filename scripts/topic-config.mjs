@@ -61,6 +61,7 @@ export const DOC_PAGES = [
   { name: 'pages' },
   { name: 'pages/configuration/build-caching' },
   { name: 'pages/configuration/build-configuration' },
+  { name: 'pages/configuration/build-image' },
   { name: 'pages/configuration/custom-domains' },
   { name: 'pages/configuration/git-integration' },
   { name: 'pages/configuration/headers' },

@@ -10690,7 +10690,7 @@
       ],
       "correctIndex": 3,
       "explanation": "Pages のビルド環境で使用するNode.jsのバージョンは、環境変数 `NODE_VERSION` を設定するか、リポジトリのルートに `.nvmrc` または `.node-version` ファイルを配置することで指定できます。\n{{diagram:0}}\n指定がない場合はビルドイメージのデフォルトバージョンが使用されます。\n{{diagram:1}}",
-      "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-configuration/",
+      "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-image/#override-default-versions",
       "hint": "バージョンファイルや環境変数でビルド時のランタイムを指定する方法を考えましょう。",
       "tags": [
         "pages-deploy",

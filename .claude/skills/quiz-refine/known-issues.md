@@ -97,8 +97,20 @@
   explanation を実際のUI操作に合わせて修正
 
 検証で cache が navigation stub / partial 未フェッチのため確証を得られなかった項目（pg-010/pg-011 の `_headers`/
-`_redirects` partial、pg-016 の Node.js バージョン指定ページ）は、矛盾は見つからなかったが完全な裏付けも取れなかった
-ため、既知の未検証項目として記録するに留め、内容は変更していない。
+`_redirects` partial、pg-016 の Node.js バージョン指定ページ）は、当初は矛盾は見つからなかったが完全な裏付けも
+取れなかったため未検証として記録していた。**→ 2026-07-22に partial / データソースを直接フェッチして全て確証済み:**
+
+- pg-010（`_headers`）: `partials/workers/custom_headers.mdx` で「カスタムHTTPレスポンスヘッダーの付与」を確認。正解・図とも正しい
+- pg-011（`_redirects` の splat / デフォルト302）: `partials/workers/redirects.mdx` に `code <Type text="number" /> (default: 302)`、
+  `*` → `:splat`、「You may only include a single splat」を確認。正解・explanation（省略時302）とも正しい
+- pg-016（Node.js バージョン指定）: ビルド環境データ `src/content/pages-build-environment/v2.yaml` に
+  `name: Node.js / environment_variable: "NODE_VERSION" / file: [".nvmrc", ".node-version"]` と明記。正解は完全に正確。
+  ただし referenceUrl が実際の記述ページ（`pages/configuration/build-image/#override-default-versions`）ではなく
+  `build-configuration` を指していたため、より直接的な参照先に修正した（VALID_DOC_PAGES / DOC_PAGES にも `build-image` を追加）
+
+**教訓:** `<Render file="..." />` / `<Component />` でコンテンツを注入している doc ページは、`.claude/tmp/docs/` の
+フラットキャッシュだけでは中身を検証できない。stub ページに当たったら `src/content/partials/` や
+`src/content/<data-dir>/*.yaml` を直接フェッチして裏を取ること（fetch-docs.mjs の DOC_PAGE_OVERRIDES と同じ発想）。
 
 ## 2026-07-22 全カテゴリ G/I レビュー — 発見した diagram バグ・型不一致
 

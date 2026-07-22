@@ -82,6 +82,7 @@ const VALID_DOC_PAGES = [
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
+  'pages/configuration/build-image/',
   'pages/configuration/custom-domains/',
   'pages/configuration/git-integration/',
   'pages/configuration/headers/',
