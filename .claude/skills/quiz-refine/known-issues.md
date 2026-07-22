@@ -25,7 +25,10 @@
   → `wrangler d1 <subcommand>` 系の fact-check 未検出は個別に手動確認すること（2026-07-21、実際の developers.cloudflare.com HTML を fetch して確認）
 - D1 のコマンドリファレンスの見出し `id` は **`d1-` プレフィックス付き**（例: `wrangler d1 export` の live アンカーは `#d1-export` であり `#export` ではない）。
   R2/Workers 系の他コマンドリファレンスにはこのプレフィックスがない（`#dev`, `#deploy` 等）— ページごとに規約が異なるので、修正時は必ず対象ページの
-  実際のアンカー（live HTML の `id="..."` 属性）を確認してから referenceUrl を書き換えること
+  実際のアンカー（live HTML の `id="..."` 属性）を確認してから referenceUrl を書き換えること。
+  live 検証済みのビルド時生成アンカーは `topic-config.mjs` の `VERIFIED_LIVE_ANCHORS` に登録すれば
+  `quiz:lint:url` の誤検知から除外できる（d1/wrangler-commands の12アンカーを2026-07-22に登録済み。
+  未検証のアンカーを登録するとリンク切れを覆い隠すため、必ず live HTML で確認してから追加すること）
 - `<WranglerCommand command="X" />` コンポーネントはページ内に見出し（`id="X"`）を生成するが、Markdown ソースには `#` 見出しとして現れない。
   `quiz-lint.mjs` の `extractDocAnchors()` は component の `command=` 属性も見出し候補として拾うよう対応済み（2026-07-21）
 

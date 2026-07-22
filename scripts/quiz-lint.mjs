@@ -33,6 +33,7 @@ import {
   filenameToDocPage,
   NEGATION_MARKERS,
   TERMINOLOGY_DICT,
+  VERIFIED_LIVE_ANCHORS,
   WRANGLER_COMMAND_TAG_SOURCE,
 } from './topic-config.mjs'
 
@@ -250,6 +251,14 @@ function extractDocAnchors() {
     // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex exec loop
     while ((match = wranglerCmdRegex.exec(content)) !== null) {
       headingAnchors.add(slugify(match[1]))
+    }
+
+    // Some pages generate all headings at build time (no markdown or
+    // component source to extract from) — merge in anchors that were
+    // manually verified against the live page HTML. See
+    // VERIFIED_LIVE_ANCHORS in topic-config.mjs.
+    for (const anchor of VERIFIED_LIVE_ANCHORS[page] ?? []) {
+      headingAnchors.add(anchor)
     }
 
     anchors[page] = headingAnchors

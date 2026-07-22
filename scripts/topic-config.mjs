@@ -160,6 +160,38 @@ export const DOC_PAGE_OVERRIDES = {
 }
 
 /**
+ * Anchors confirmed to exist on the LIVE developers.cloudflare.com page but
+ * absent from the fetched markdown source, because the page's headings are
+ * generated at build time (e.g. <WranglerNamespace> renders subcommand
+ * sections from Wrangler's own CLI schema). quiz-lint.mjs merges these into
+ * the extracted anchor set so verified-good referenceUrls stop appearing as
+ * false positives in every lint run.
+ *
+ * Only add anchors after checking `id="..."` in the live page HTML — this
+ * list bypasses the automated check, so an unverified entry would silently
+ * mask a genuinely broken link. Each entry notes its verification date.
+ */
+export const VERIFIED_LIVE_ANCHORS = {
+  // Verified 2026-07-21 by fetching https://developers.cloudflare.com/d1/wrangler-commands/
+  // (all id="d1-*" attributes present in rendered HTML; page source is
+  // <WranglerNamespace namespace="d1" /> with no static headings).
+  'd1/wrangler-commands': [
+    'd1-create',
+    'd1-delete',
+    'd1-execute',
+    'd1-export',
+    'd1-info',
+    'd1-insights',
+    'd1-list',
+    'd1-migrations-apply',
+    'd1-migrations-create',
+    'd1-migrations-list',
+    'd1-time-travel-info',
+    'd1-time-travel-restore',
+  ],
+}
+
+/**
  * Per-category doc groupings and extra reference links.
  * Not yet consumed by any script (reserved for future doc-coverage
  * tooling) — kept empty rather than guessed to avoid silently-wrong data.
