@@ -530,7 +530,17 @@ function lintDistractors(quizzes) {
     const wrongLens = wrongOpts.map((o) => o.text.length)
     const avgWrongLen = wrongLens.reduce((s, v) => s + v, 0) / wrongLens.length
 
-    if (correctLen > avgWrongLen * 2 && correctLen > 30) {
+    // Ratio/length thresholds calibrated against this corpus (2026-07-22):
+    // a 2x/30-char rule flagged 41 questions, but reviewing all of them
+    // found the same shape every time — a precise, technically nuanced
+    // correct answer next to shorter-but-specific (not lazy-filler) wrong
+    // claims. That asymmetry is inherent to explaining real, nuanced
+    // Cloudflare behavior accurately and isn't a fixable "giveaway"; padding
+    // distractors or trimming correct answers to chase a length ratio would
+    // degrade content quality rather than improve it. Raised to 2.5x/60 to
+    // keep this an occasional spot-check signal instead of routine noise —
+    // see known-issues.md for the full review.
+    if (correctLen > avgWrongLen * 2.5 && correctLen > 60) {
       issues.push({
         id: quiz.id,
         type: 'correct-too-long',

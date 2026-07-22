@@ -907,7 +907,7 @@
     {
       "id": "wk-012",
       "category": "workers",
-      "difficulty": "advanced",
+      "difficulty": "intermediate",
       "question": "Cloudflare Workersの実行時間に対する課金モデルの特徴として正しいものはどれですか?",
       "options": [
         {
@@ -3550,7 +3550,7 @@
     {
       "id": "d1-012",
       "category": "d1",
-      "difficulty": "advanced",
+      "difficulty": "intermediate",
       "question": "D1の Time Travel 機能に関する説明として正しいものはどれですか？",
       "options": [
         {
@@ -4478,7 +4478,7 @@
     {
       "id": "r2-012",
       "category": "r2",
-      "difficulty": "advanced",
+      "difficulty": "intermediate",
       "question": "R2の無料利用枠（Free tier）に関する説明として正しいものはどれですか？",
       "options": [
         {
@@ -6989,7 +6989,7 @@
     {
       "id": "ar-001",
       "category": "architecture",
-      "difficulty": "beginner",
+      "difficulty": "intermediate",
       "question": "セッションデータのように、大量の読み取りアクセスが発生し、同じキーに対して繰り返しアクセスされるデータを保存したい。強い整合性よりも低レイテンシでのグローバル読み取りを優先する場合、どのCloudflareストレージ製品が最も適していますか？",
       "options": [
         {
@@ -10729,7 +10729,7 @@
     {
       "id": "pg-017",
       "category": "pages-deploy",
-      "difficulty": "advanced",
+      "difficulty": "intermediate",
       "question": "Cloudflare Pages のビルドキャッシュに関する説明として正しいものはどれか。",
       "options": [
         {
@@ -10870,7 +10870,7 @@
     {
       "id": "ai-013",
       "category": "ai-vectorize",
-      "difficulty": "beginner",
+      "difficulty": "intermediate",
       "type": "single",
       "question": "Workers AIのテキスト生成モデルからの応答をストリーミングで受け取りたい場合、リクエストに指定するオプションと、レスポンスに設定すべきContent-Typeの組み合わせとして正しいものはどれですか？",
       "options": [
