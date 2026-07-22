@@ -25,11 +25,13 @@ export const buttonStyles = {
   /** プライマリ（オレンジ） */
   primary: 'tap-highlight rounded-2xl bg-cf-accent px-6 py-3.5 text-base font-semibold text-white',
   /**
-   * ブランドグラデーション（ヒーローCTA専用の配色）
+   * ブランドグラデーション（ヒーローCTA）
    * 明るいブランドオレンジは白文字だと2.3:1でWCAG AAを満たさないため、
-   * 必ずダーク文字(cf-ink)と組みにする。レイアウト系クラスは呼び出し側で付与する。
+   * 必ずダーク文字(cf-ink)と組みにする。primary/secondary と同様に
+   * ボタンとして自己完結する形（角丸・パディング・タイポグラフィ込み）。
    */
-  brand: 'bg-linear-to-br from-cf-orange to-cf-gold text-cf-ink',
+  brand:
+    'tap-highlight rounded-2xl bg-linear-to-br from-cf-orange to-cf-gold px-8 py-3.5 text-lg font-bold text-cf-ink shadow-lg',
   /** セカンダリ（ボーダー） */
   secondary:
     'tap-highlight rounded-2xl border border-stone-300 px-6 py-3.5 text-base font-semibold text-stone-600 dark:border-stone-600 dark:text-stone-300',

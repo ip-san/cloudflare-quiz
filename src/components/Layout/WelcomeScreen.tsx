@@ -83,7 +83,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         {/* CTA — two equal-weight buttons */}
         <button
           onClick={handleTryOne}
-          className={`${buttonStyles.brand} tap-highlight inline-flex w-full items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-lg font-bold shadow-lg`}
+          className={`${buttonStyles.brand} inline-flex w-full items-center justify-center gap-2`}
         >
           <Play className="h-5 w-5 fill-cf-ink" />
           {locale.welcome.tryOneQuestion}

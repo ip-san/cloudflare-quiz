@@ -77,10 +77,8 @@ export function SessionHistoryChart({ sessions }: SessionHistoryChartProps) {
       <div className="mt-1 flex items-center justify-between text-xs text-stone-500">
         <span>{locale.progress.past}</span>
         <span className="flex items-center gap-1">
-          <span
-            className="inline-block h-px w-4 bg-cf-accent opacity-50"
-            style={{ borderTop: '1px dashed var(--color-cf-accent)' }}
-          />
+          {/* ChartGrid の合格ライン(破線 cf-orange, opacity 0.5)と同じ見た目の凡例スウォッチ */}
+          <span className="inline-block w-4 border-t border-dashed border-cf-orange opacity-50" />
           合格ライン({PASSING_SCORE}%)
         </span>
         <span>{locale.progress.latest}</span>

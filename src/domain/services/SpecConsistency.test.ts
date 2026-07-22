@@ -476,3 +476,34 @@ describe('Spec Consistency: URL sharing coverage', () => {
     expect(slice).not.toMatch(/sessionLabels\.shared/)
   })
 })
+
+// ── ブランドカラーとロゴ資産の同期 ─────────────────────────────
+// cf-orange / cf-gold のトークン値は、ロゴ資産(build/icon.svg・index.html の
+// スプラッシュ・AppLogo.tsx)にグラデーション停止色としてハードコードされている。
+// CSS側だけ変更するとアイコンとCTAの色がサイレントに乖離するため、
+// 4ファイルのリテラル一致を機械的に保証する。
+describe('Spec Consistency: brand color tokens vs logo assets', () => {
+  const css = readFileSync('src/index.css', 'utf8')
+  const tokenOf = (name: string): string => {
+    const m = css.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`))
+    if (!m) throw new Error(`--color-${name} not found in src/index.css`)
+    return m[1].toLowerCase()
+  }
+
+  const gradientStopsOf = (path: string): string[] =>
+    Array.from(readFileSync(path, 'utf8').matchAll(/stop-?[cC]olor:?\s*'?(#[0-9a-fA-F]{6})/g), (m) =>
+      m[1].toLowerCase()
+    )
+
+  it.each(['build/icon.svg', 'index.html', 'src/components/Layout/AppLogo.tsx'])(
+    '%s のグラデーション停止色が cf-gold / cf-orange と一致すること',
+    (path) => {
+      const stops = gradientStopsOf(path)
+      expect(stops.length, `${path}: gradient stops not found`).toBeGreaterThanOrEqual(2)
+      expect(stops, `${path} の停止色に cf-gold(${tokenOf('cf-gold')}) が含まれること`).toContain(tokenOf('cf-gold'))
+      expect(stops, `${path} の停止色に cf-orange(${tokenOf('cf-orange')}) が含まれること`).toContain(
+        tokenOf('cf-orange')
+      )
+    }
+  )
+})

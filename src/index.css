@@ -309,7 +309,6 @@
   @apply active:scale-[0.97] active:opacity-80 transition-transform duration-100;
 }
 
-
 @layer utilities {
   /* Dark mode fallback overrides
  * NOTE: All components now use explicit Tailwind dark: prefixes.
