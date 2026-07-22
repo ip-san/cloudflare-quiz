@@ -69,6 +69,13 @@
 - 学習者が「次回同様の問題を見たとき判断できる知識」を得られる内容か
 - **severity:** critical=10文字以下, major=正解のリフレーズのみ（理由なし）, info=理由あるが他選択肢に触れず
 
+**このプロジェクトでの運用上の注意（2026-07-22、全162問レビューで確認）:** 「不正解選択肢が間違いである理由に触れているか」は、
+このアプリでは各 `options[].wrongFeedback` が個別に担当する設計になっている（`quizContentQuality.test.ts` が全不正解に
+wrongFeedback必須を強制）。そのため大半の質問で explanation 自体は正解の仕組みだけを説明し、個々の不正解への反論は
+wrongFeedback に委ねている——これは欠陥ではなく意図した役割分担であり、`info` フラグが立っても explanation に
+wrongFeedback の内容を重複して書き足す必要はない。修正すべきなのは、wrongFeedback 側にも反論が存在しない場合、または
+explanation と wrongFeedback が矛盾している場合のみ。
+
 ## H. 不正解選択肢の妥当性（Distractor Quality）
 
 - 各不正解選択肢が「ありそうだが間違い」の水準を満たしているか

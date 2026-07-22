@@ -939,7 +939,7 @@
           "type": "formula",
           "label": "課金対象となるCPU時間",
           "result": "課金対象のCPU時間",
-          "operator": "=",
+          "operator": "−",
           "components": [
             {
               "text": "リクエスト処理の総経過時間",
@@ -1019,8 +1019,12 @@
               "text": "wrangler init my-worker"
             },
             {
-              "type": "response",
-              "text": "✔ 新しいWorkerプロジェクトを作成しますか? はい"
+              "type": "prompt",
+              "text": "Would you like to use a framework template? No (Hello World)"
+            },
+            {
+              "type": "prompt",
+              "text": "Do you want to deploy your application? no"
             },
             {
               "type": "response",
@@ -1301,14 +1305,14 @@
             {
               "heading": "wrangler init",
               "items": [
-                "最小限のWorkerひな形",
-                "フレームワーク統合なし"
+                "すでにWranglerがある環境でプロジェクトを追加する際によく使う",
+                "内部的にC3を呼び出すため、フレームワークテンプレートも選択できる"
               ]
             },
             {
-              "heading": "C3 (create-cloudflare)",
+              "heading": "npm create cloudflare@latest (C3)",
               "items": [
-                "多数のフレームワークテンプレート",
+                "Wranglerのインストールも含め、新規にゼロから始める際の一次的な入口",
                 "依存関係インストール〜デプロイまで一貫サポート"
               ]
             }
@@ -1982,9 +1986,9 @@
           ]
         },
         {
-          "type": "flow",
+          "type": "hierarchy",
           "label": "KVの主要メソッド",
-          "steps": [
+          "items": [
             {
               "text": "put(key, value, options?)",
               "sub": "書き込み"
@@ -2300,20 +2304,29 @@
           ]
         },
         {
-          "type": "flow",
+          "type": "comparison",
           "label": "高頻度書込みへの対処パターン",
-          "steps": [
+          "columns": [
             {
-              "text": "アンチパターン: 単一キーに毎秒何百回も書込み",
-              "sub": "最終書込みが勝つため更新が失われる恐れ"
+              "heading": "アンチパターン",
+              "items": [
+                "単一キーに毎秒何百回も書込み",
+                "最終書込みが勝つため更新が失われる恐れ"
+              ]
             },
             {
-              "text": "対処1: 書込みを複数キーに分散",
-              "sub": "後でまとめて集計"
+              "heading": "対処1: 書込みを分散",
+              "items": [
+                "複数キーに分散して書き込む",
+                "後でまとめて集計"
+              ]
             },
             {
-              "text": "対処2: Durable Objectsに処理を移す",
-              "sub": "強整合性かつ高頻度更新に対応"
+              "heading": "対処2: Durable Objects",
+              "items": [
+                "処理をDurable Objectsに移す",
+                "強整合性かつ高頻度更新に対応"
+              ]
             }
           ]
         }
@@ -4971,9 +4984,9 @@
       ],
       "diagrams": [
         {
-          "type": "layer",
+          "type": "hierarchy",
           "label": "SQLite-backed Storage API",
-          "layers": [
+          "items": [
             {
               "text": "SQL API",
               "sub": "任意のSQL文を実行"
@@ -7774,7 +7787,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "CloudflareではWAFのRate Limiting Rulesを使い、リクエストがオリジンサーバーに到達する前にエッジで基本的な防御(ブルートフォース対策など)を行えます。さらに、レスポンスコードの監視や動的なユーザー判定など、より細かいビジネスロジックが必要な場合はWorker内で追加の制御を行います。両者を組み合わせた層状防御が推奨される考え方です。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "CloudflareではWAFのRate Limiting Rulesを使い、リクエストがオリジンサーバーに到達する前にエッジで基本的な防御(ブルートフォース対策など)を行えます。さらに、レスポンスコードの監視や動的なユーザー判定など、より細かいビジネスロジックが必要な場合はWorker内で追加の制御を行いますが、その分すべてのリクエストがWorkerを経由するため処理コストは増えます。両者を組み合わせ、エッジでまず絞り込んでからWorkerで細かく制御する層状防御が推奨される考え方です。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/",
       "hint": "「オリジンに到達する前」に防ぐ層と、「アプリケーションのロジックで」細かく判断する層の2段階を考えてみましょう。",
       "tags": [
@@ -8364,7 +8377,7 @@
               "sub": "外部サイトや他Workerへのリクエスト"
             },
             {
-              "text": "KV / D1 / R2 / Durable Objectsのバインディング呼び出し",
+              "text": "バインディング呼び出し(KV/D1/R2/DO)",
               "sub": "いずれもサブリクエストとしてカウントされる"
             },
             {
@@ -9775,22 +9788,20 @@
       ],
       "diagrams": [
         {
-          "type": "formula",
+          "type": "flow",
           "label": "条件付きget()の考え方",
-          "result": "条件付きレスポンス",
-          "components": [
+          "steps": [
             {
-              "text": "get(key, options)"
+              "text": "get(key, options)を呼び出す"
             },
             {
-              "text": "onlyIf: { etag }",
-              "highlight": true
+              "text": "options.onlyIf: { etag } でETagを指定",
+              "sub": "条件付きリクエスト"
             },
             {
-              "text": "一致すればオブジェクトを返す/しなければ null 等"
+              "text": "ETag一致 → オブジェクトを返す / 不一致 → null"
             }
-          ],
-          "operator": "→"
+          ]
         },
         {
           "type": "comparison",
@@ -10762,10 +10773,10 @@
           "label": "ビルドキャッシュの効果",
           "steps": [
             {
-              "text": "1回目のビルド: 依存関係をフルインストール"
+              "text": "Settings > Build > Build cache で Enable にする"
             },
             {
-              "text": "キャッシュを保存"
+              "text": "1回目のビルド: 依存関係をフルインストールしキャッシュを保存"
             },
             {
               "text": "2回目以降: キャッシュから依存関係を復元"
