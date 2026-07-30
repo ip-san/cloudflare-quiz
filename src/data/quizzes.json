@@ -18191,6 +18191,701 @@
           ]
         }
       ]
+    },
+    {
+      "id": "cs-001",
+      "category": "cloudflare-for-saas",
+      "difficulty": "beginner",
+      "question": "Cloudflare for SaaSの目的として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "SaaS事業者自身のドメインを、顧客ごとに異なるCloudflareアカウントへ自動的に分割して割り当てる仕組み",
+          "wrongFeedback": "アカウントを分割する仕組みではありません。顧客が自分の独自ドメインをSaaS事業者のサービスに向けられるようにする仕組みです。"
+        },
+        {
+          "text": "SaaS事業者が`wrangler deploy`で公開するWorkerのソースコードを、顧客ごとに個別にコンパイルし直す仕組み",
+          "wrongFeedback": "コードのコンパイルに関する仕組みではありません。カスタムドメインのルーティング・証明書発行を扱う仕組みです。"
+        },
+        {
+          "text": "SaaS事業者の顧客が、自分の独自ドメイン(例: `app.customer.com`)をSaaS事業者のCloudflareゾーン上のサービスに向けられるようにし、その独自ドメインにもCloudflareのセキュリティ・パフォーマンス機能を拡張する"
+        },
+        {
+          "text": "SaaS事業者のインフラをすべてCloudflareのゾーンに移行し、オンプレミス環境を完全に廃止するための移行支援サービス",
+          "wrongFeedback": "インフラ移行支援サービスではありません。顧客の独自ドメインにCloudflareの機能を拡張する仕組みです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare for SaaSは、SaaS事業者の顧客が自分の独自ドメイン(例: `app.customer.com`)を、SaaS事業者のCloudflareゾーン(例: `service.saas.com`)上のサービスに向けられるようにする仕組みです。これにより、顧客の独自ドメインにもCloudflareの暗号化・パフォーマンス・可用性・トラフィック分析といった機能を拡張できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/",
+      "hint": "SaaSサービスを使う「顧客側」が、自分のブランドのドメインをそのまま使い続けたい場面を想像しましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Cloudflare for SaaSの構造",
+          "actors": ["顧客の独自ドメイン", "Cloudflare(SaaS事業者ゾーン)", "SaaS事業者のオリジン"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "app.customer.comへのリクエスト" },
+            { "from": 1, "to": 2, "text": "カスタムホスト名として転送" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-002",
+      "category": "cloudflare-for-saas",
+      "difficulty": "beginner",
+      "question": "Cloudflare for SaaSの標準構成における「fallback origin(フォールバックオリジン)」の役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "個別のカスタムホスト名ごとに別の設定がない場合に、そのトラフィックのルーティング先となるデフォルトのオリジンサーバー"
+        },
+        {
+          "text": "証明書の検証に失敗したリクエストを一時的に保留しておくためのキャッシュ層",
+          "wrongFeedback": "証明書検証失敗時の保留キャッシュではありません。トラフィックをルーティングするデフォルトのオリジンです。"
+        },
+        {
+          "text": "顧客がDNSレコードの設定を誤った場合にのみ限定的に使われる、あくまで緊急時専用のバックアップサーバーとしての役割を担う",
+          "wrongFeedback": "緊急時専用ではなく、標準構成において通常のトラフィックルーティング先として使われるオリジンです。"
+        },
+        {
+          "text": "SaaS事業者ではなく顧客自身が管理しなければならない、顧客所有のオリジンサーバー",
+          "wrongFeedback": "fallback originはSaaS事業者(あなた)が用意し管理するオリジンです。顧客が管理するものではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "標準的なCloudflare for SaaS構成では、カスタムホスト名は「fallback origin」と呼ばれるデフォルトのオリジンサーバーにルーティングされます。fallback originのホスト名を変更しても、既存のカスタムホスト名のトラフィックは中断されず、変更は数秒でCloudflareのエッジ全体に伝播します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/",
+      "hint": "個別の設定がない場合の「行き先」として、あらかじめ用意しておくべきものは何か考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "fallback originへのルーティング",
+          "steps": [
+            { "text": "カスタムホスト名を作成" },
+            { "text": "個別設定がなければ" },
+            { "text": "fallback originへルーティング" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-003",
+      "category": "cloudflare-for-saas",
+      "difficulty": "beginner",
+      "question": "作成したカスタムホスト名が本番トラフィックを受け付ける準備ができたかどうかを判断する方法として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`result.status`だけを確認すればよく、`result.ssl.status`は本番トラフィックの判断には関係しない",
+          "wrongFeedback": "本番トラフィックの判断には`result.status`と`result.ssl.status`の両方が`active`であることを確認する必要があります。"
+        },
+        {
+          "text": "`result.status`(ホスト名の検証・プロキシ可否)と`result.ssl.status`(証明書の発行・配備)の両方が`active`であり、かつ顧客のDNSがSaaS事業者のターゲットを指していることを確認する"
+        },
+        {
+          "text": "顧客のDNSレコードがCNAMEで正しく設定されてさえいれば、APIのステータスフィールドを確認する必要はない",
+          "wrongFeedback": "DNSの設定だけでなく、APIの`status`・`ssl.status`フィールドで検証・証明書発行が完了しているかも確認する必要があります。"
+        },
+        {
+          "text": "`result.ssl.status`だけを確認すればよく、`result.status`は本番トラフィックの判断には関係しない",
+          "wrongFeedback": "`result.ssl.status`だけでなく`result.status`(ホスト名自体の検証状態)も確認する必要があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "カスタムホスト名は、ホスト名のアクティベーション(`result.status`)と証明書の発行(`result.ssl.status`)という2つの独立した検証フローを持ちます。本番トラフィックを受け付ける準備ができたと判断するには、両方のフィールドが`active`であり、かつ顧客のDNSレコードがSaaS事業者のターゲットを指していることを確認する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/#check-when-a-custom-hostname-is-ready",
+      "hint": "「ホスト名として認識されたか」と「証明書が発行されたか」は、別々に進む2つの手続きだと考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "2つの独立したステータス",
+          "columns": [
+            { "heading": "result.status", "items": ["ホスト名の検証・プロキシ可否"] },
+            { "heading": "result.ssl.status", "items": ["証明書の発行・配備"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-004",
+      "category": "cloudflare-for-saas",
+      "difficulty": "beginner",
+      "question": "カスタムホスト名の「ホスト名の所有権検証」と「証明書の検証」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "どちらも同じAPIフィールド(`ssl.validation_records`)を使って検証され、区別はない",
+          "wrongFeedback": "区別があります。所有権検証には`ownership_verification`/`ownership_verification_http`、証明書検証には`ssl.validation_records`という別々のフィールドが使われます。"
+        },
+        {
+          "text": "所有権検証は`ssl.validation_records`を使い、証明書検証は`ownership_verification`を使う",
+          "wrongFeedback": "説明が逆です。所有権検証には`ownership_verification`系、証明書検証には`ssl.validation_records`が使われます。"
+        },
+        {
+          "text": "証明書検証さえ完了していれば、所有権検証は省略してもトラフィックをプロキシできる",
+          "wrongFeedback": "所有権検証が完了していない場合、Cloudflareはそのホスト名のトラフィックをプロキシできません。"
+        },
+        {
+          "text": "所有権検証には`ownership_verification`系が使われて`status`に影響し、証明書検証には`ssl.validation_records`が使われて`ssl.status`に影響する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "ホスト名の所有権検証と証明書の検証は、異なるトークンとAPIフィールドを使います。所有権検証には`ownership_verification`や`ownership_verification_http`が使われ、カスタムホスト名の`status`に影響します。証明書検証には`ssl.validation_records`が使われ、`ssl.status`に影響します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/",
+      "hint": "「このドメインは本当にあなたのものか」の確認と、「証明書を発行していいか」の確認は、別々の手続きだと考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "所有権検証 と 証明書検証",
+          "columns": [
+            { "heading": "所有権検証", "items": ["ownership_verification系", "statusに影響"] },
+            { "heading": "証明書検証", "items": ["ssl.validation_records", "ssl.statusに影響"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-005",
+      "category": "cloudflare-for-saas",
+      "difficulty": "beginner",
+      "question": "カスタムホスト名の検証方法における「リアルタイム検証」と「事前検証(pre-validation)」の使い分けとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "リアルタイム検証は顧客に追加の作業を求めない分、顧客がDNSレコードを追加した際に数秒のダウンタイムが生じうる。ダウンタイムを完全に避けたい場合は事前検証を使う"
+        },
+        {
+          "text": "事前検証は必ず顧客に追加のDNS作業を求めるため、リアルタイム検証よりも常に顧客の負担が大きい",
+          "wrongFeedback": "事前検証の利点はダウンタイムを避けられる点であり、リアルタイム検証より顧客の負担が常に大きいわけではありません。"
+        },
+        {
+          "text": "リアルタイム検証はダウンタイムを完全に避けられるが、事前検証には数秒のダウンタイムが生じる",
+          "wrongFeedback": "説明が逆です。ダウンタイムが生じうるのはリアルタイム検証で、事前検証はダウンタイムを避けるための方法です。"
+        },
+        {
+          "text": "どちらの検証方法を使っても、顧客への負担やダウンタイムの発生に一切違いはない",
+          "wrongFeedback": "違いがあります。リアルタイム検証は顧客の追加作業が不要な分ダウンタイムが生じうり、事前検証はダウンタイムを避けられます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "リアルタイム検証は、顧客がDNSルーティングレコードを追加した時点でCloudflareが自動的に検証するため、顧客に追加の作業を求めません。ただしCloudflareがDNSレコードを確認するまでに数秒かかり、検証バックオフスケジュールにより遅延が増えることもあるため、その間ダウンタイムが生じる可能性があります。ダウンタイムを完全に避けたい場合は、事前検証(pre-validation)を使います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/",
+      "hint": "「顧客の手間を減らす」ことと「ダウンタイムをゼロにする」ことは、必ずしも両立しないという点を考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "リアルタイム検証 と 事前検証",
+          "columns": [
+            { "heading": "リアルタイム検証", "items": ["顧客の追加作業は不要", "数秒のダウンタイムが生じうる"] },
+            { "heading": "事前検証", "items": ["ダウンタイムを回避", "追加のステップが必要"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-006",
+      "category": "cloudflare-for-saas",
+      "difficulty": "beginner",
+      "question": "顧客がすでにCloudflareを使っているドメインを、カスタムホスト名としてCloudflare for SaaSに追加した場合の制約として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "制約は一切なく、顧客は追加前と全く同じようにすべてのCloudflare機能を自分のダッシュボードから制御できる",
+          "wrongFeedback": "制約があります。カスタムホスト名として管理されるホスト名では、顧客が制御できなくなる機能があります。"
+        },
+        {
+          "text": "顧客はカスタムホスト名として追加した時点で、そのドメインのDNSレコードを完全に削除しなければならない",
+          "wrongFeedback": "DNSレコードの削除が必須というわけではありません。DNSのCNAMEターゲットをSaaS事業者側に向ける設定が必要です。"
+        },
+        {
+          "text": "Argo、Early Hints、Client-side security、Spectrum、ワイルドカードDNSなど、一部の機能について顧客が自分のダッシュボードから制御できなくなる"
+        },
+        {
+          "text": "顧客はSaaS事業者のアカウントに完全に統合され、以後は独自のCloudflareアカウントを持てなくなる",
+          "wrongFeedback": "顧客が独自のCloudflareアカウントを持てなくなるわけではありません。あくまで一部機能の制御権に関する制約です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "顧客がすでにCloudflareを使っているドメインをカスタムホスト名としてSaaS事業者のCloudflare for SaaS設定に追加すると、Argo・Early Hints・Client-side security(旧Page Shield)・Spectrum・ワイルドカードDNSといった一部の機能について、顧客は自分のダッシュボードから制御できなくなります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/",
+      "hint": "「2つのCloudflareゾーンにまたがって管理される」ホスト名では、どちらが最終的な設定の主導権を持つか考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "顧客が制御できなくなる機能",
+          "items": [
+            { "text": "Argo", "sub": "顧客側では制御不可" },
+            { "text": "Early Hints", "sub": "顧客側では制御不可" },
+            { "text": "Client-side security", "sub": "旧Page Shield" },
+            { "text": "Spectrum・ワイルドカードDNS" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-007",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "顧客のドメインのApex(頂点、例: `example.com`自体)をCloudflare for SaaSのターゲットに向ける場合の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Apexドメインは常にCNAMEレコードで問題なく設定でき、追加の対応は一切不要である",
+          "wrongFeedback": "多くのDNSプロバイダーはApexにCNAMEを設定できないため、標準的にはApexドメインの直接サポートには追加の対応(Apex Proxying)が必要です。"
+        },
+        {
+          "text": "標準構成ではAレコードでSaaS事業者のターゲットを指す設定はサポートされておらず、Apexドメインを直接サポートするには「Apex Proxying」というEnterprise向けアドオンが必要"
+        },
+        {
+          "text": "Apex ProxyingはすべてのCloudflareプランで無料の標準機能として提供されている",
+          "wrongFeedback": "Apex ProxyingはEnterpriseプラン向けのアドオンとして提供されている機能です。"
+        },
+        {
+          "text": "AレコードでSaaS事業者のターゲットを指す設定は、Apex Proxyingを使わなくても標準構成でサポートされている",
+          "wrongFeedback": "標準構成ではAレコードを使った設定はサポートされていません。Apex Proxingという追加対応が必要です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "多くのDNSプロバイダーはApex(頂点)ドメインにCNAMEレコードを設定できないため、標準構成ではAレコードでSaaS事業者のターゲットを指す設定はサポートされていません。Apexドメインを直接サポートしたい場合は、「Apex Proxying」というEnterprise向けのアドオン機能を使う必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/#3-have-customer-create-cname-record",
+      "hint": "DNSの世界には「CNAMEを置けない特別な位置」があることを思い出しましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "標準構成 と Apex Proxying",
+          "columns": [
+            { "heading": "標準構成", "items": ["CNAMEのみサポート", "Aレコードは非対応"] },
+            { "heading": "Apex Proxying(Enterprise向け)", "items": ["Apexドメインを直接サポート"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-008",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "Cloudflare for SaaS(SSL for SaaS)のカスタムホスト名証明書発行に利用できる証明機関(CA)の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Sectigoのみが利用可能で、他のCAは一切利用できない",
+          "wrongFeedback": "SectigoはBackup証明書専用のCAであり、SSL for SaaSでは利用されません。"
+        },
+        {
+          "text": "Let's Encryptのみが利用可能で、Google Trust ServicesやSSL.comは利用できない",
+          "wrongFeedback": "Let's Encryptだけでなく、Google Trust ServicesやSSL.comも利用できます。"
+        },
+        {
+          "text": "SSL for SaaSでは、どのCAを使うか選択することは一切できず、常に単一のCAが自動的に割り当てられる",
+          "wrongFeedback": "SSL for SaaSはLet's Encrypt・Google Trust Services・SSL.comという複数のCAに対応しています。"
+        },
+        {
+          "text": "Let's Encrypt、Google Trust Services、SSL.comのいずれかが利用可能で、Sectigoは(Backup証明書専用のため)SSL for SaaSでは利用されない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "SSL for SaaS(Cloudflare for SaaSのカスタムホスト名証明書)は、Let's Encrypt・Google Trust Services・SSL.comのいずれかのCAで証明書を発行できます。Sectigoは、これらとは別にBackup証明書専用のCAとして使われており、SSL for SaaSの証明書発行には使われません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-authorities/",
+      "hint": "一覧表の中で、他のCAとは違う特別な用途に限定されているCAがどれか思い出しましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "SSL for SaaSで使われるCA",
+          "columns": [
+            { "heading": "SSL for SaaSで利用可能", "items": ["Let's Encrypt", "Google Trust Services", "SSL.com"] },
+            { "heading": "利用されない", "items": ["Sectigo(Backup証明書専用)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-009",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "カスタムホスト名の長さが64文字(Common Nameの制限)を超える場合の対処方法として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`ssl.cloudflare_branding`を`true`に設定し、CNに`sni.cloudflaressl.com`を使い、実際のホスト名はSAN(Subject Alternative Name)に含める"
+        },
+        {
+          "text": "64文字を超えるホスト名は、どのような設定を行っても証明書を発行できず、常にエラーになる",
+          "wrongFeedback": "`cloudflare_branding`を`true`に設定することで、64文字を超えるホスト名でも証明書を発行できます。"
+        },
+        {
+          "text": "ホスト名を64文字以内に短縮するようDNSプロバイダー側で自動的にリダイレクト設定が行われる",
+          "wrongFeedback": "自動的なリダイレクト設定ではなく、証明書の`cloudflare_branding`オプションによる対応です。"
+        },
+        {
+          "text": "`cloudflare_branding`を`true`にすると、実際のホスト名は証明書からは完全に除外される",
+          "wrongFeedback": "実際の長いホスト名は除外されるのではなく、Subject Alternative Name(SAN)として証明書に含まれます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "証明書のCommon Name(CN)にはRFC 5280により64文字の制限があります。64文字を超えるホスト名の場合、証明書作成時に`ssl.cloudflare_branding`を`true`に設定すると、CNには`sni.cloudflaressl.com`が使われ、実際の長いホスト名はSubject Alternative Name(SAN)として証明書に含まれるようになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/create-custom-hostnames/#hostnames-over-64-characters",
+      "hint": "長すぎる名前を、証明書の「代表名」ではなく「別名リスト」の方に押し込める方法を考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "cloudflare_brandingの効果",
+          "columns": [
+            { "heading": "Common Name(CN)", "items": ["sni.cloudflaressl.com"] },
+            { "heading": "Subject Alternative Name(SAN)", "items": ["実際の長いホスト名"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-010",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "同一のホスト名に対して複数の種類の証明書が存在しうる場合の、証明書タイプの優先順位に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Universal証明書が全証明書タイプの中で常に最優先され、Custom(カスタム)証明書やCustom Hostname証明書よりも優先して選ばれる仕組みになっている",
+          "wrongFeedback": "逆です。Universal証明書は最も優先順位が低く、Custom証明書やCustom Hostname証明書の方が優先されます。"
+        },
+        {
+          "text": "Custom Hostname(Cloudflare for SaaS)証明書は、Advanced証明書より優先順位が低い",
+          "wrongFeedback": "Custom Hostname証明書はAdvanced証明書より優先順位が高いです。"
+        },
+        {
+          "text": "Keyless SSL > Custom > Custom Hostname(SaaS) > Advanced系 > Universalの順で優先される"
+        },
+        {
+          "text": "証明書タイプの優先順位は毎回ランダムに決定され、固定された順序は存在しない",
+          "wrongFeedback": "固定された優先順位が存在します。ランダムに決定されるものではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "同一ホスト名に複数タイプの証明書が存在しうる場合、Cloudflareは固定された優先順位で証明書を選択します。優先順位は、Keyless SSL(最優先)→ Custom Legacy → Custom Modern → Custom Hostname(Cloudflare for SaaS)→ Advanced → Advanced(Total TLS)→ Universal(最も低い)、という順です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#certificate-deployment",
+      "hint": "「顧客がより手をかけて用意した証明書」ほど優先され、「Cloudflareが自動発行するデフォルト」ほど優先度が低い、という傾向を考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "証明書タイプの優先順位",
+          "items": [
+            { "text": "1. Keyless SSL" },
+            { "text": "2-3. Custom Legacy/Modern" },
+            { "text": "4. Custom Hostname(SaaS)" },
+            { "text": "5-6. Advanced/Total TLS" },
+            { "text": "7. Universal" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-011",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "複数のゾーンに同じホスト名へのプロキシ済みDNSレコードが存在する場合の「ホスト名優先度」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "完全一致するホスト名のケースでは、常にDNS(論理DNSゾーン)がカスタムホスト名より優先される",
+          "wrongFeedback": "完全一致の場合はカスタムホスト名(新しいものはさらにレガシーより優先)がDNSより優先されます。"
+        },
+        {
+          "text": "完全一致するホスト名の場合は新しいカスタムホスト名 > レガシーカスタムホスト名 > DNSの順で優先されるが、ワイルドカードホスト名の一致の場合はDNS > 新しいカスタムホスト名の順に優先順位が変わる"
+        },
+        {
+          "text": "ワイルドカードホスト名の一致の場合、新しいカスタムホスト名が常にDNSより優先される",
+          "wrongFeedback": "ワイルドカード一致の場合は逆で、DNS(論理DNSゾーン)の方が新しいカスタムホスト名より優先されます。"
+        },
+        {
+          "text": "完全一致・ワイルドカード一致のどちらであっても、優先順位は全く同じ順序になる",
+          "wrongFeedback": "完全一致とワイルドカード一致とでは、優先順位の順序が異なります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "完全に一致するホスト名の場合、優先順位は新しいカスタムホスト名 > レガシーカスタムホスト名 > DNS(論理DNSゾーン)の順です。一方、ワイルドカードホスト名の一致の場合は、DNS(論理DNSゾーン)> 新しいカスタムホスト名の順に優先順位が入れ替わります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#hostname-priority",
+      "hint": "「ぴったり一致」のときと「ワイルドカードでの一致」のときとで、優先順位の並びが入れ替わることを意識しましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "完全一致 と ワイルドカード一致",
+          "columns": [
+            { "heading": "完全一致", "items": ["新カスタムホスト名", "レガシーカスタムホスト名", "DNS"] },
+            { "heading": "ワイルドカード一致", "items": ["DNS", "新カスタムホスト名"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-012",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "「O2O(Orange-to-Orange)」構成に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "O2Oは`account_id`が同一のCloudflareアカウント内にある2つのゾーンの間でのみ発生する構成である",
+          "wrongFeedback": "O2Oは異なるCloudflareアカウントに属する2つのゾーンの間で発生する構成です。"
+        },
+        {
+          "text": "O2OはAレコードによるルーティングでのみ発生し、CNAMEベースの構成では発生しない",
+          "wrongFeedback": "逆です。O2OはCNAMEベースの構成が前提であり、Aレコード(Apex Proxying)では発生しません。"
+        },
+        {
+          "text": "O2Oが有効かどうかは、ゾーン設定やAPIのフィールドで直接確認できる",
+          "wrongFeedback": "O2Oが有効かどうかを示すAPIフィールドやゾーン設定はありません。リクエストごとの`cf-connecting-o2o: 1`ヘッダーで検出する必要があります。"
+        },
+        {
+          "text": "顧客の(SaaS事業者とは別の)ゾーンでプロキシ済みCNAMEを設定すると発生し、顧客側の設定が先に適用されたのち`cf-connecting-o2o: 1`ヘッダー付きでSaaS事業者側に転送される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "O2Oは、顧客が(SaaS事業者とは異なる)自分自身のCloudflareゾーンを持ち、そのゾーンでカスタムホスト名に一致するプロキシ済みCNAMEレコードを設定した場合に発生します。この場合、まず顧客のゾーンの設定がトラフィックに適用され、その後SaaS事業者のゾーンの設定が適用されます。SaaS事業者側のリクエストには`cf-connecting-o2o: 1`というHTTPヘッダーが付与され、これによってO2Oトラフィックを検出できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/saas-customers/how-it-works/",
+      "hint": "「顧客自身のCloudflareゾーン」と「SaaS事業者のゾーン」、2つのオレンジ雲を通過するときに何が起きるか考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "O2Oのトラフィックフロー",
+          "actors": ["訪問者", "顧客所有ゾーン", "SaaS事業者ゾーン", "SaaS事業者オリジン"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "リクエスト" },
+            { "from": 1, "to": 2, "text": "顧客ゾーンの設定適用後に転送" },
+            { "from": 2, "to": 3, "text": "cf-connecting-o2o: 1付きで転送" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-013",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "顧客が自分自身のCloudflareゾーンを持たず、ドメインをSaaS事業者のCloudflare for SaaSにのみオンボードしている場合の挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "O2Oは有効にならず、トラフィックにはSaaS事業者のゾーンで設定されたルールのみが適用される"
+        },
+        {
+          "text": "存在しないはずの顧客自身のゾーン設定までもがO2Oとして仮想的に生成され、SaaS事業者側の設定と合わせて二重に適用されてしまう",
+          "wrongFeedback": "顧客自身のゾーンが存在しない場合、O2Oは有効になりません。SaaS事業者のゾーン設定のみが適用されます。"
+        },
+        {
+          "text": "顧客が自分のゾーンを持たない場合、そもそもカスタムホスト名を有効化すること自体ができない",
+          "wrongFeedback": "顧客自身のゾーンがなくてもカスタムホスト名は有効化できます。ただしO2Oにはならないというだけです。"
+        },
+        {
+          "text": "SaaS事業者のゾーン設定は適用されず、顧客のオリジンサーバーの設定のみがそのまま適用される",
+          "wrongFeedback": "SaaS事業者のゾーンの設定が適用されないというのは誤りです。O2Oが無効な場合、SaaS事業者側のゾーン設定がトラフィックに適用されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "顧客が自分自身のCloudflareゾーンを持たず、ドメインをSaaS事業者のCloudflare for SaaSにのみオンボードしている場合、O2Oは有効になりません。この場合、トラフィックにはSaaS事業者のゾーンで設定されたルールのみが適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/saas-customers/how-it-works/#without-o2o",
+      "hint": "通過するオレンジ雲が「1つだけ」の場合、誰の設定が適用されるか考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "O2Oなしのトラフィックフロー",
+          "steps": [
+            { "text": "訪問者からのリクエスト" },
+            { "text": "SaaS事業者ゾーンのみを通過" },
+            { "text": "SaaS事業者オリジンへ" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-014",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "Cloudflare for SaaSのカスタムホスト名クォータに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "割り当てられたクォータはハードリミットであり、到達した瞬間にすべてのプランで新規作成APIが即座に失敗する",
+          "wrongFeedback": "割り当てられたクォータ(`allocated`)自体はソフトリミットです。ハードな強制がかかるのは非Enterpriseプランの`hard_cap`到達時です。"
+        },
+        {
+          "text": "Enterpriseプランも含め、`hard_cap`に到達すると以後は一切カスタムホスト名を作成できなくなる",
+          "wrongFeedback": "Enterpriseプランは`hard_cap`到達後もカスタムホスト名を作成し続けられます。"
+        },
+        {
+          "text": "割り当てられたクォータ(`allocated`)はソフトリミットで超過後も作成は継続できるが課金警告が付与され、非Enterpriseプランには`hard_cap`という強制的な作成拒否のしきい値がある"
+        },
+        {
+          "text": "クォータはゾーン単位でのみ設定でき、アカウント全体でのクォータという概念は存在しない",
+          "wrongFeedback": "クォータはゾーン単位だけでなく、アカウント全体で適用される場合もあります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare for SaaSのカスタムホスト名クォータ(`allocated`)はソフトリミットで、到達しても新規作成は継続できますが、レスポンスに課金警告が含まれるようになります。非Enterpriseプランには、これとは別に`hard_cap`という強制的なしきい値があり、到達するとAPIが新規作成リクエストを拒否します。Enterpriseプランはこのしきい値を超えても作成を継続できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/quotas-and-billing/",
+      "hint": "「警告が出るだけの上限」と「実際に止められる上限」の、2段階のしきい値があることを意識しましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "クォータの2段階のしきい値",
+          "columns": [
+            { "heading": "allocated(ソフトリミット)", "items": ["超過後も作成継続可", "課金警告あり"] },
+            { "heading": "hard_cap(非Enterprise)", "items": ["到達で作成拒否", "Enterpriseは超過可"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-015",
+      "category": "cloudflare-for-saas",
+      "difficulty": "intermediate",
+      "question": "Cloudflare for SaaSにおいて、課金対象としてカウントされるカスタムホスト名に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "検証待ち(pending validation)のカスタムホスト名は、まだアクティブでないため課金対象のカウントには含まれない",
+          "wrongFeedback": "検証待ちや有効化待ちのカスタムホスト名も、削除するまでは使用量カウントに含まれます。"
+        },
+        {
+          "text": "検証待ちや有効化待ちのものも含め、作成されたカスタムホスト名はすべて削除するまで使用量としてカウントされ続ける"
+        },
+        {
+          "text": "課金対象のカウントから除外したい場合は、`status`を`inactive`に一時的に変更すればよい",
+          "wrongFeedback": "ステータスの変更ではなく、実際にカスタムホスト名を削除することでのみ使用量カウントから除外されます。"
+        },
+        {
+          "text": "使用していないカスタムホスト名は、一定期間が経過すると自動的に削除されカウントからも除外される",
+          "wrongFeedback": "自動削除の仕組みはありません。使用量カウントから除外するには明示的に削除する必要があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "作成されたカスタムホスト名は、検証待ちや有効化待ちの状態であっても、削除するまでは使用量カウントに含まれます。未使用のカスタムホスト名を削除すると、その時点で使用量カウントから除外されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/quotas-and-billing/#billable-hostnames",
+      "hint": "「まだ使える状態になっていない」ことと「カウントされない」ことは、同じではないと考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "課金カウントの対象",
+          "columns": [
+            { "heading": "カウントされる", "items": ["検証待ち", "有効化待ち", "アクティブ"] },
+            { "heading": "カウントされない", "items": ["削除済み"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-016",
+      "category": "cloudflare-for-saas",
+      "difficulty": "advanced",
+      "question": "WAF for SaaSを使って、カスタムホスト名ごとに異なるセキュリティルールを適用する仕組みとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "各カスタムホスト名に`custom_hostnames`とは別の専用Cloudflareゾーンを個別に作成し、ゾーンごとにWAFルールを別々に設定する",
+          "wrongFeedback": "専用ゾーンを個別作成する仕組みではありません。同一ゾーン内でcustom metadataとRuleset Engineの式を使って区別します。"
+        },
+        {
+          "text": "カスタムホスト名のホスト名文字列そのものを正規表現によって直接それぞれのWAFルールの条件式に埋め込んでしまい、ホスト名が増えるたびに個別のルールを延々とハードコードして管理し続ける",
+          "wrongFeedback": "ホスト名を直接ハードコードする方法ではなく、custom metadataというタグ付けの仕組みを使います。"
+        },
+        {
+          "text": "SaaS事業者側では設定できず、各顧客が自分自身でWAFルールを個別に作成する必要がある",
+          "wrongFeedback": "SaaS事業者側でcustom metadataとRuleset Engineの式を使い、まとめて設定・管理できます。"
+        },
+        {
+          "text": "カスタムホスト名に`security_level`のようなcustom metadataを付与し、Ruleset Engineの式でそのタグを参照して適用するWAFルールを切り替える"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "WAF for SaaSでは、カスタムホスト名にcustom metadata(例: `security_level`というタグと`low`/`medium`/`high`といった値)を付与し、Ruleset Engineの式(`lookup_json_string(cf.hostname.metadata, \"security_level\")`)でそのタグを参照します。これにより、同じゾーン内でタグの値に応じて異なるWAFカスタムルール・レート制限ルール・マネージドルールを適用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/security/waf-for-saas/",
+      "hint": "「ホスト名そのもの」ではなく「ホスト名に付けたラベル」を条件式が参照する仕組みを考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "custom metadataによるWAF制御",
+          "steps": [
+            { "text": "カスタムホスト名にcustom metadataを付与", "sub": "例: security_level=low" },
+            { "text": "Ruleset Engineの式でタグを参照" },
+            { "text": "タグの値に応じたWAF/レート制限を適用" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-017",
+      "category": "cloudflare-for-saas",
+      "difficulty": "advanced",
+      "question": "無料プランの顧客が持つワイルドカードのプロキシ済みDNSレコードと、Enterpriseプランを契約するSaaS事業者のワイルドカードカスタムホスト名が競合した場合の、プラン上限の適用に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "SaaS事業者がワイルドカードのカスタムホスト名を使っている場合、顧客の無料プランの制限がそのまま優先され、Enterpriseプランの上限を適用したい場合は顧客側をDNSのみ(プロキシなし)にするか、SaaS事業者側で完全一致のカスタムホスト名を使う必要がある"
+        },
+        {
+          "text": "SaaS事業者がEnterpriseプランであれば、顧客のプランに関わらず常にEnterpriseプランの上限が適用される",
+          "wrongFeedback": "ワイルドカードカスタムホスト名の場合、顧客のプラン(この場合は無料プラン)の上限が優先されます。"
+        },
+        {
+          "text": "顧客とSaaS事業者、双方のプランの上限のうち、より緩い(大きい)方が自動的に選択されて適用される",
+          "wrongFeedback": "自動的により緩い方が選ばれるという仕組みではありません。ワイルドカード一致の場合は顧客側のプラン上限が優先されます。"
+        },
+        {
+          "text": "この競合状態はCloudflareのシステムによって自動的に検出され、いずれか一方のレコードが強制的に無効化される",
+          "wrongFeedback": "レコードが強制的に無効化される仕組みではありません。優先順位のルールに従ってプラン上限が決まるだけです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "ワイルドカードホスト名が一致する場合、DNS(顧客の論理ゾーン)が新しいカスタムホスト名より優先されるため、顧客の無料プランの制限がそのまま適用されます(Cloudflareはそのゾーンを無料ゾーンとして扱います)。SaaS事業者のEnterpriseプランの上限を適用したい場合は、顧客側のレコードをDNSのみ(プロキシなし)にするか、SaaS事業者側で完全一致のカスタムホスト名を使う必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#scenario-2",
+      "hint": "ワイルドカード一致のときの優先順位のルールを、前の設問で整理したことを思い出しましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ワイルドカード競合時のプラン上限",
+          "columns": [
+            { "heading": "ワイルドカード一致時", "items": ["顧客側(DNS)のプラン上限が優先"] },
+            { "heading": "Enterprise上限を適用したい場合", "items": ["顧客側をDNSのみにする", "または完全一致のカスタムホスト名を使う"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-018",
+      "category": "cloudflare-for-saas",
+      "difficulty": "advanced",
+      "question": "同じホスト名・同じ証明書タイプの証明書が複数存在する場合の、Cloudflareの証明書デプロイの優先順位に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "常に最も古く発行された証明書が優先され、新しく発行された証明書は無視される",
+          "wrongFeedback": "逆です。基本的には最も新しく発行された証明書が優先されます。"
+        },
+        {
+          "text": "複数の証明書が存在する場合、Cloudflareはランダムに1つを選んで提示する",
+          "wrongFeedback": "ランダムな選択ではありません。発行日時や有効期限に基づいた明確なルールがあります。"
+        },
+        {
+          "text": "基本的には最も新しく発行された証明書が優先されるが、証明書の削除が発生した場合は、残っている証明書のうち有効期限が最も遅いものが優先される"
+        },
+        {
+          "text": "証明書の削除が発生した場合は、残っている証明書の中で最も有効期限が早いものが優先される",
+          "wrongFeedback": "逆です。削除が発生した場合は、有効期限が最も遅い(遠い)証明書が優先されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "同じホスト名・同じ証明書タイプの証明書が複数存在する場合、基本的には最も新しく発行された証明書が優先されます。ただし証明書の削除が発生した場合は、残っている証明書のうち有効期限が最も遅い(最も先の日付の)ものが優先されるようになります。その後、有効期限が近かった証明書が更新されると、再びその証明書が最新の有効期限を持つものとして優先されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#certificate-deployment",
+      "hint": "「普段のルール」と「証明書が削除されたときだけ適用される例外」を分けて考えましょう。",
+      "tags": ["cloudflare-for-saas", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "証明書デプロイの優先順位",
+          "columns": [
+            { "heading": "通常時", "items": ["最も新しく発行された証明書が優先"] },
+            { "heading": "証明書削除が発生した場合", "items": ["有効期限が最も遅い証明書が優先"] }
+          ]
+        }
+      ]
     }
   ]
 }

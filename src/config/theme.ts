@@ -313,6 +313,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'プライベートネットワーク内のリソースにWorkerから安全に接続できる',
     },
     {
+      id: 'cloudflare-for-saas',
+      name: 'Cloudflare for SaaS',
+      icon: '🏢',
+      color: 'slate',
+      weight: 10,
+      description:
+        '顧客が自分の独自ドメインをSaaS事業者のCloudflareゾーンに向けられるようにするカスタムホスト名。所有権検証・証明書発行、O2O、WAF for SaaS',
+      skillDescription: 'SaaSプラットフォームで顧客ごとのカスタムドメインを安全に提供できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

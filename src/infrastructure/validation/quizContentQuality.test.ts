@@ -28,7 +28,7 @@ const singleQuizzes = quizzes.filter((q) => q.type !== 'multi')
 const multiQuizzes = quizzes.filter((q) => q.type === 'multi')
 const validCategoryIds = PREDEFINED_CATEGORIES.map((c) => c.id)
 
-/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag-/rt-/vp- + 3桁連番） */
+/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag-/rt-/vp-/cs- + 3桁連番） */
 const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wk: 'workers',
   wr: 'wrangler',
@@ -47,6 +47,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   ag: 'ai-gateway',
   rt: 'realtime',
   vp: 'workers-vpc',
+  cs: 'cloudflare-for-saas',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -85,6 +86,18 @@ const VALID_DOC_PAGES = [
   'cloudflare-for-platforms/workers-for-platforms/reference/pricing/',
   'cloudflare-for-platforms/workers-for-platforms/reference/worker-isolation/',
   'cloudflare-for-platforms/workers-for-platforms/reference/local-development/',
+  'cloudflare-for-platforms/cloudflare-for-saas/',
+  'cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/',
+  'cloudflare-for-platforms/cloudflare-for-saas/start/enable/',
+  'cloudflare-for-platforms/cloudflare-for-saas/domain-support/create-custom-hostnames/',
+  'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/',
+  'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/realtime-validation/',
+  'cloudflare-for-platforms/cloudflare-for-saas/quotas-and-billing/',
+  'cloudflare-for-platforms/cloudflare-for-saas/security/waf-for-saas/',
+  'cloudflare-for-platforms/cloudflare-for-saas/saas-customers/how-it-works/',
+  'ssl/reference/certificate-authorities/',
+  'ssl/reference/certificate-statuses/',
+  'ssl/reference/certificate-and-hostname-priority/',
   'cloudflare-one/access-controls/policies/',
   'containers/',
   'containers/get-started/',
@@ -564,6 +577,7 @@ describe('Quiz Content Quality', () => {
         'ai-gateway',
         'realtime',
         'workers-vpc',
+        'cloudflare-for-saas',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

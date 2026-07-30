@@ -129,6 +129,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('ai-gateway')
     expect(ids).toContain('realtime')
     expect(ids).toContain('workers-vpc')
+    expect(ids).toContain('cloudflare-for-saas')
     expect(ids).toContain('architecture')
   })
 
