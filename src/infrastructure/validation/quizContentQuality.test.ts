@@ -57,6 +57,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   ch: 'cache',
   ru: 'rules',
   dn: 'dns',
+  sl: 'ssl-tls',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -271,6 +272,20 @@ const VALID_DOC_PAGES = [
   'dns/zone-setups/partial-setup/',
   'dns/cname-flattening/',
   'dns/zone-setups/zone-transfers/',
+  'ssl/',
+  'ssl/origin-configuration/ssl-modes/',
+  'ssl/origin-configuration/ssl-modes/flexible/',
+  'ssl/origin-configuration/ssl-modes/full/',
+  'ssl/origin-configuration/ssl-modes/full-strict/',
+  'ssl/origin-configuration/ssl-modes/ssl-only-origin-pull/',
+  'ssl/edge-certificates/universal-ssl/',
+  'ssl/origin-configuration/origin-ca/',
+  'ssl/edge-certificates/custom-certificates/',
+  'ssl/edge-certificates/advanced-certificate-manager/',
+  'ssl/edge-certificates/additional-options/minimum-tls/',
+  'ssl/edge-certificates/additional-options/always-use-https/',
+  'ssl/edge-certificates/additional-options/automatic-https-rewrites/',
+  'ssl/reference/certificate-validity-periods/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -704,6 +719,7 @@ describe('Quiz Content Quality', () => {
         'cache',
         'rules',
         'dns',
+        'ssl-tls',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

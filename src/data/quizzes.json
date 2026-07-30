@@ -28582,6 +28582,696 @@
           ]
         }
       ]
+    },
+    {
+      "id": "sl-001",
+      "category": "ssl-tls",
+      "difficulty": "beginner",
+      "question": "Cloudflare SSL/TLSにおける「エッジ証明書」と「オリジン証明書」の違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "エッジ証明書は訪問者とCloudflare間の通信を暗号化し、オリジン証明書はCloudflareとオリジンサーバー間の通信を暗号化する、対象とする区間が異なる証明書である"
+        },
+        {
+          "text": "エッジ証明書とオリジン証明書は全く同じ証明書であり、どちらも訪問者とオリジンサーバー間を直接暗号化する",
+          "wrongFeedback": "同じ証明書ではありません。エッジ証明書は訪問者↔Cloudflare間、オリジン証明書はCloudflare↔オリジン間という別々の区間を暗号化します。"
+        },
+        {
+          "text": "オリジン証明書は訪問者のブラウザに直接提示され、エッジ証明書はオリジンサーバーにのみインストールされる",
+          "wrongFeedback": "説明が逆です。訪問者のブラウザに提示されるのはエッジ証明書で、オリジンサーバーにインストールされるのがオリジン証明書です。"
+        },
+        {
+          "text": "エッジ証明書・オリジン証明書という区分はCloudflareには存在せず、常に単一の証明書だけがすべての区間をカバーする",
+          "wrongFeedback": "そのような区分がないわけではありません。Cloudflareでは訪問者側・オリジン側で別々の証明書を扱う仕組みが用意されています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "エッジ証明書は訪問者とCloudflare間の通信(HTTPS)を暗号化するための証明書で、Universal SSLやAdvanced Certificate Managerなどで発行されます。オリジン証明書は、Cloudflareとオリジンサーバー間の通信を暗号化するための証明書で、Origin CA証明書などが該当します。2つは異なる区間を保護する別々の証明書です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/",
+      "hint": "「訪問者から見える区間」と「Cloudflareの裏側でオリジンとつながる区間」という、2つの異なる通信区間を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "エッジ証明書 と オリジン証明書",
+          "columns": [
+            { "heading": "エッジ証明書", "items": ["訪問者↔Cloudflare間"] },
+            { "heading": "オリジン証明書", "items": ["Cloudflare↔オリジン間"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-002",
+      "category": "ssl-tls",
+      "difficulty": "beginner",
+      "question": "暗号化モード「Flexible」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "訪問者とCloudflare間・Cloudflareとオリジン間の両方が常にHTTPSで暗号化される、最も安全なモードである",
+          "wrongFeedback": "両方が暗号化されるわけではありません。FlexibleではCloudflareとオリジン間はHTTPで平文のままです。"
+        },
+        {
+          "text": "訪問者とCloudflare間はHTTPSで暗号化されるが、Cloudflareとオリジン間はHTTPのまま平文でやり取りされる"
+        },
+        {
+          "text": "訪問者とCloudflare間はHTTPのまま平文でやり取りされ、Cloudflareとオリジン間のみがHTTPSで暗号化される",
+          "wrongFeedback": "説明が逆です。Flexibleでは訪問者とCloudflare間がHTTPSで暗号化され、Cloudflareとオリジン間がHTTPのままです。"
+        },
+        {
+          "text": "Flexibleモードはオリジン証明書の検証を厳格に行う点でFull(strict)と同等であり、違いは訪問者側の設定のみである",
+          "wrongFeedback": "Flexibleではオリジン証明書自体が不要です。Full(strict)のような証明書検証は行われません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Flexibleモードでは、訪問者とCloudflare間の通信はHTTPSで暗号化されますが、Cloudflareとオリジン間の通信はHTTPのまま平文でやり取りされます。そのためオリジンサーバーにSSL証明書は不要ですが、機密情報(個人情報やログイン情報)を扱うアプリケーションには推奨されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/",
+      "hint": "「訪問者側だけ」暗号化され、「オリジン側」はまだ平文のままという、部分的な保護だと考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Flexibleモードの通信",
+          "steps": [
+            { "text": "訪問者 ←HTTPS(暗号化)→ Cloudflare" },
+            { "text": "Cloudflare ←HTTP(平文)→ オリジン" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-003",
+      "category": "ssl-tls",
+      "difficulty": "intermediate",
+      "question": "暗号化モード「Full」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Fullモードではオリジン証明書は不要で、Cloudflareとオリジン間の通信は常に平文のHTTPで行われる",
+          "wrongFeedback": "Fullモードでは訪問者が要求したスキームに応じてCloudflareとオリジン間もHTTPSで通信されます。常に平文というのは誤りです。"
+        },
+        {
+          "text": "Fullモードでは、オリジンが提示する証明書は必ず公的な認証局(CA)またはOrigin CAから発行されたものでなければならない",
+          "wrongFeedback": "この検証はFull(strict)モードの要件です。Fullモードでは証明書の発行元や有効性は検証されません。"
+        },
+        {
+          "text": "Fullモードは訪問者側・オリジン側の両方でHTTPSが使われるが、オリジンが提示する証明書は期限切れ・自己署名・ホスト名不一致であっても検証なしに受け入れられる"
+        },
+        {
+          "text": "Fullモードは、Enterpriseプランでのみ選択できる特別な暗号化モードである",
+          "wrongFeedback": "Fullモードはプランに関わらず選択できる標準的な暗号化モードです。Enterprise限定ではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Fullモードでは、訪問者側・オリジン側の両方でHTTPSが使われますが、オリジンが提示する証明書は検証されません。そのため、期限切れ・自己署名・ホスト名が一致しない証明書であっても受け入れられてしまいます。より厳格な検証を求める場合はFull(strict)モードを使います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full/",
+      "hint": "「暗号化はされているが、その証明書が本物かどうかまでは確認しない」という中間的な安全性を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Full と Full(strict)",
+          "columns": [
+            { "heading": "Full", "items": ["両区間HTTPS", "証明書は検証なし"] },
+            { "heading": "Full(strict)", "items": ["両区間HTTPS", "証明書を厳格に検証"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-004",
+      "category": "ssl-tls",
+      "difficulty": "beginner",
+      "question": "暗号化モード「Full(strict)」でオリジンが提示する証明書に求められる要件として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "証明書が有効期限内でありさえすれば要件を満たし、発行元がどこであるか(自己署名を含む)やホスト名の一致は一切問われない",
+          "wrongFeedback": "有効期限だけでなく、発行元(公的CAまたはOrigin CA)とホスト名の一致も要件に含まれます。"
+        },
+        {
+          "text": "証明書の発行元さえ公的な認証局であれば要件を満たし、有効期限が切れていることやホスト名が一致しないことは問われない",
+          "wrongFeedback": "発行元だけでなく、有効期限内であることとホスト名の一致も要件に含まれます。"
+        },
+        {
+          "text": "自己署名証明書であっても、Common Nameがリクエストされたホスト名と正確に一致してさえいれば、この要件は満たされる",
+          "wrongFeedback": "自己署名証明書はFull(strict)の要件を満たしません。公的な認証局またはCloudflareのOrigin CAからの発行が必要です。"
+        },
+        {
+          "text": "有効期限内であること・公的な認証局またはCloudflareのOrigin CAから発行されていること・Common NameまたはSANが要求されたホスト名と一致すること、という3つの条件をすべて満たす必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Full(strict)モードでオリジンが提示する証明書は、有効期限内であること・公的な認証局またはCloudflareのOrigin CAから発行されていること・Common NameまたはSubject Alternative Name(SAN)が要求されたホスト名と一致すること、という3つの条件をすべて満たす必要があります。これらを満たさない場合、訪問者は526エラーに遭遇する可能性があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/",
+      "hint": "「期限」「発行元」「ホスト名の一致」という3つの観点すべてをクリアする必要があると考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Full(strict)の証明書要件",
+          "items": [
+            { "text": "有効期限内であること" },
+            { "text": "公的CAまたはOrigin CAから発行" },
+            { "text": "CN/SANがホスト名と一致" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-005",
+      "category": "ssl-tls",
+      "difficulty": "advanced",
+      "question": "訪問者がリクエストしたスキームに応じてオリジンへの接続方法が変わる他のモードとの違いを踏まえると、「Strict(SSL-Only Origin Pull)」モードに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "訪問者がリクエストしたスキームに関わらず、Cloudflareとオリジン間の通信は常にHTTPSで行われ、Enterpriseプラン限定のモードである"
+        },
+        {
+          "text": "このモードはFree・Pro・Businessを含むすべてのプランで選択できる、標準的な暗号化モードの1つである",
+          "wrongFeedback": "Strict(SSL-Only Origin Pull)はEnterpriseプラン限定のモードです。すべてのプランで選択できるわけではありません。"
+        },
+        {
+          "text": "このモードでは、訪問者がHTTPでリクエストした場合、Cloudflareとオリジン間の通信もHTTPのまま平文で行われる",
+          "wrongFeedback": "Strict(SSL-Only Origin Pull)では、訪問者がリクエストしたスキームに関わらず、Cloudflareとオリジン間は常にHTTPSで通信されます。"
+        },
+        {
+          "text": "オリジン証明書の検証要件はFullモードと同じで、期限切れや自己署名の証明書でも受け入れられる",
+          "wrongFeedback": "検証要件はFullモードではなく、Full(strict)モードと同じです。期限切れや自己署名の証明書は受け入れられません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Strict(SSL-Only Origin Pull)モードでは、訪問者がリクエストしたスキーム(HTTPかHTTPSか)に関わらず、Cloudflareとオリジン間の通信は常にHTTPSで行われます。オリジン証明書の検証要件はFull(strict)モードと同じです。このモードはEnterpriseプラン限定です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/ssl-only-origin-pull/",
+      "hint": "「訪問者側の要求内容に関わらず、オリジン側は常に暗号化を強制する」という、より厳格な挙動を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Strict(SSL-Only Origin Pull)",
+          "columns": [
+            { "heading": "オリジンとの通信", "items": ["常にHTTPS(訪問者側の要求に関わらず)"] },
+            { "heading": "利用可能プラン", "items": ["Enterprise限定"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-006",
+      "category": "ssl-tls",
+      "difficulty": "advanced",
+      "question": "デフォルト以外のポートを使う場合の挙動を踏まえると、Flexibleモードのポートに関する制限として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Flexibleモードは、あらゆるポート番号でのHTTPS接続に対して同じ挙動を保証する",
+          "wrongFeedback": "あらゆるポートで同じ挙動が保証されるわけではありません。デフォルトポート(443)以外のHTTPS接続はFullモードにフォールバックします。"
+        },
+        {
+          "text": "Flexibleの挙動が保証されるのはデフォルトポート(443)でのHTTPS接続のみで、それ以外のポートを使うHTTPS接続はFullモードにフォールバックする"
+        },
+        {
+          "text": "Flexibleモードはポート80(HTTP)でのみ動作し、ポート443(HTTPS)ではそもそも機能しない",
+          "wrongFeedback": "Flexibleモードは訪問者とCloudflare間をHTTPSで暗号化する仕組みであり、ポート443での接続を前提としています。"
+        },
+        {
+          "text": "Flexibleモードには、そもそもポートに関する制限は一切存在しない",
+          "wrongFeedback": "制限は存在します。デフォルトポート(443)以外のHTTPS接続では、Fullモードへフォールバックします。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Flexibleモードがサポートするのは、デフォルトポート(443)でのHTTPS接続のみです。それ以外のポートを使ったHTTPS接続は、Fullモードの挙動にフォールバックします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/#limitations",
+      "hint": "「標準的なポート」に限定された挙動であり、それ以外では別のモードの挙動に切り替わると考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Flexibleモードのポート制限",
+          "steps": [
+            { "text": "ポート443でのHTTPS接続" },
+            { "text": "Flexibleモードとして動作" },
+            { "text": "それ以外のポートはFullモードへフォールバック" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-007",
+      "category": "ssl-tls",
+      "difficulty": "advanced",
+      "question": "「Automatic SSL/TLS(デフォルト)」による暗号化モードのアップグレードプロセスに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "アップグレードは常に全トラフィックへ即座に一括適用され、段階的な移行プロセスは存在しない",
+          "wrongFeedback": "一括適用ではありません。1%のトラフィックから始め、問題がなければ10%刻みで段階的に100%まで増やしていきます。"
+        },
+        {
+          "text": "Automatic SSL/TLSは、より安全なモードへのアップグレードだけでなく、より安全性の低いモードへのダウングレードも自動的に行う",
+          "wrongFeedback": "Automatic SSL/TLSは安全性の低いモードへは自動的に変更しません。例えばオリジン証明書が期限切れになっても、Full(strict)からFullへ自動的にダウングレードすることはありません。"
+        },
+        {
+          "text": "アップグレードは全トラフィックの1%から始まり、問題がなければ10%刻みで段階的に100%まで適用範囲が広がる"
+        },
+        {
+          "text": "オリジンへの接続に失敗した場合でも、Automatic SSL/TLSはアップグレードプロセスを中断せず、そのまま強行して完了させる",
+          "wrongFeedback": "強行するわけではありません。オリジンへの接続に失敗した場合、Cloudflareはアップグレードを中止し、以前のモードへ即座にロールバックします。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Automatic SSL/TLSによるアップグレードは、まず全トラフィックの1%に新しい暗号化モードを適用することから始まります。問題が見つからなければ、10%刻みで段階的に適用範囲を広げ、最終的に100%のトラフィックに適用されます。オリジンへの接続が途中で失敗した場合は、アップグレードを中止して以前のモードへ即座にロールバックします。また、より安全性の低いモードへ自動的にダウングレードすることはありません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/#automatic-ssltls-default",
+      "hint": "「いきなり全部」ではなく、「少しずつ試して問題がなければ広げていく」慎重な移行方法を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Automatic SSL/TLSの段階的アップグレード",
+          "steps": [
+            { "text": "1%のトラフィックへ適用" },
+            { "text": "問題なければ10%刻みで拡大" },
+            { "text": "100%到達で恒久的に設定変更" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-008",
+      "category": "ssl-tls",
+      "difficulty": "beginner",
+      "question": "Universal SSLに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Universal SSLはOrganization Validated(OV)証明書であり、組織の実在性を検証したうえで発行される",
+          "wrongFeedback": "Universal SSLはDomain Validated(DV)証明書です。組織の実在性を検証するOVではありません。"
+        },
+        {
+          "text": "Universal SSLは有料のアドオンであり、追加費用を支払わない限り利用できない",
+          "wrongFeedback": "Universal SSLは無料で提供されます。追加費用は不要です。"
+        },
+        {
+          "text": "Universal SSLの証明書は、ドメインをCloudflareへ移行する前の段階でも発行される",
+          "wrongFeedback": "Universal SSL証明書は、ドメインがCloudflare上でアクティブになった後に発行されます。移行前の段階では発行されません。"
+        },
+        {
+          "text": "無料で自動発行されるDomain Validated(DV)証明書で、Fullセットアップではルートドメインと第1階層のサブドメインをカバーし、Partial(CNAME)セットアップではプロキシ済みの各サブドメインごとに個別の証明書が発行される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Universal SSLは無料で自動的に発行・更新・デプロイされるDomain Validated(DV)証明書です。Fullセットアップのゾーンでは、ルートドメイン(例:`example.com`)と第1階層のサブドメイン(例:`www.example.com`)をカバーします。Partial(CNAME)セットアップでは、プロキシ済みの各サブドメインごとに階層に関わらず個別の証明書が発行されます。証明書はドメインがCloudflare上でアクティブになった後に発行されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/",
+      "hint": "「無料で自動的に付与される」証明書が、セットアップの種類によって「カバーする範囲の決まり方」が違うと考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Universal SSLのカバー範囲",
+          "columns": [
+            { "heading": "Fullセットアップ", "items": ["ルートドメイン+第1階層サブドメイン"] },
+            { "heading": "Partial(CNAME)セットアップ", "items": ["プロキシ済みサブドメインごとに個別発行"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-009",
+      "category": "ssl-tls",
+      "difficulty": "intermediate",
+      "question": "Universal SSL証明書の有効期間と自動更新のタイミングに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "有効期間は1年間で、期限の90日前から自動更新の試行が始まる",
+          "wrongFeedback": "有効期間・更新開始のタイミングともに異なります。Universal SSLの有効期間は90日間で、期限の30日前から更新が試行されます。"
+        },
+        {
+          "text": "有効期間は90日間で、期限の30日前から自動更新の試行が始まる"
+        },
+        {
+          "text": "有効期間は無期限であり、証明書が更新されることは基本的にない",
+          "wrongFeedback": "無期限ではありません。Universal SSL証明書の有効期間は90日間で、定期的に自動更新されます。"
+        },
+        {
+          "text": "有効期間は30日間で、期限の90日前から自動更新の試行が始まる",
+          "wrongFeedback": "有効期間と更新開始タイミングの数値が逆です。有効期間は90日間、更新開始は期限の30日前です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Universal SSL証明書の有効期間は90日間です。Cloudflareが管理する証明書の自動更新は、有効期限の30日前から試行が始まり、期限の24時間前まで継続されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#universal-ssl",
+      "hint": "「有効期間の長さ」と「更新を試み始めるタイミング」は別々の数値だと考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Universal SSLの有効期間",
+          "columns": [
+            { "heading": "有効期間", "items": ["90日間"] },
+            { "heading": "自動更新開始", "items": ["期限の30日前"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-010",
+      "category": "ssl-tls",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Origin CA証明書のSAN(Subject Alternative Name)に関する正しい制約はどれですか？",
+      "options": [
+        {
+          "text": "1つの証明書に含められるSANは最大10個までであり、それを超える場合は複数の証明書に分割する必要がある",
+          "wrongFeedback": "上限は10個ではありません。Origin CA証明書は最大200個のSANを含められます。"
+        },
+        {
+          "text": "SANとしてIPアドレスを指定することができ、完全修飾ドメイン名(FQDN)は使用できない",
+          "wrongFeedback": "説明が逆です。Origin CA証明書ではSANとしてIPアドレスは使用できず、FQDNやワイルドカードのみが使用できます。"
+        },
+        {
+          "text": "1つの証明書に最大200個のSANを含められ、ワイルドカードは1階層分のみカバーするがそのワイルドカードを複数使うことはできる"
+        },
+        {
+          "text": "ワイルドカードSANは複数階層をまとめてカバーでき、`*.example.com`だけで`api.staging.example.com`のような多階層のサブドメインも保護できる",
+          "wrongFeedback": "ワイルドカードは1階層分のみをカバーします。`*.example.com`だけでは`api.staging.example.com`のような多階層のサブドメインは保護できません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Origin CA証明書は1つにつき最大200個のSANを含められます。ワイルドカード(例:`*.example.com`)は1階層分のみをカバーしますが、`*.example.com`と`*.secure.example.com`のように、異なる階層のワイルドカードを同じ証明書内で複数使うことができます。なお、IPアドレスをSANとして指定することはできません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/#hostname-and-wildcard-coverage",
+      "hint": "「1つのワイルドカードでカバーできる範囲」と「証明書全体に含められる個数の上限」という2つの制約を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Origin CA証明書のSAN制約",
+          "columns": [
+            { "heading": "SANの上限", "items": ["最大200個"] },
+            { "heading": "ワイルドカード", "items": ["1階層分のみ・複数併用可"] },
+            { "heading": "IPアドレス", "items": ["SANとして指定不可"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-011",
+      "category": "ssl-tls",
+      "difficulty": "advanced",
+      "question": "証明書の期限切れに気づく手段を自分で用意する必要があるかどうかを踏まえると、Cloudflare Origin CA証明書の既知の制限事項として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Origin CA証明書はAPI Accessの権限を持たないユーザーでも、ダッシュボードから制限なく作成・失効ができる",
+          "wrongFeedback": "API Accessの権限を持たないユーザーは、証明書の作成・失効を試みるとエラーになります。制限なくできるわけではありません。"
+        },
+        {
+          "text": "Origin CA証明書はFull(strict)モードとは互換性がなく、Flexibleモードでのみ使用できる",
+          "wrongFeedback": "Origin CA証明書はFull(strict)モードとの互換性を目的として設計されています。Flexibleモード限定ではありません。"
+        },
+        {
+          "text": "Origin CA証明書はデフォルトで期限切れの90日前にリマインダーメールが送信される",
+          "wrongFeedback": "現時点でOrigin CA証明書の期限切れ通知は送信されません。これが既知の制限事項として挙げられています。"
+        },
+        {
+          "text": "Cloudflareは現時点でOrigin CA証明書の期限切れ通知を送信しないため、長期間有効な証明書を使う場合は自分自身で有効期限を追跡する必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cloudflareは現時点でOrigin CA証明書の期限切れ通知を送信しません。長期間有効な証明書に依存している場合は、自分自身の証明書管理システムや監視の仕組みで有効期限を追跡しておく必要があります。また、証明書の作成・失効にはAPI Accessの権限が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/",
+      "hint": "「Cloudflareが自動で教えてくれない」情報があるため、自分で管理する必要がある点を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Origin CA証明書の期限管理",
+          "steps": [
+            { "text": "Origin CA証明書を発行" },
+            { "text": "Cloudflareからの期限切れ通知はなし" },
+            { "text": "自分自身の監視体制で有効期限を追跡" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-012",
+      "category": "ssl-tls",
+      "difficulty": "beginner",
+      "question": "「カスタム証明書(Custom certificates)」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "カスタム証明書を使う主な理由は、証明機関(CA)を自分で選びたい場合や、Cloudflareが提供しないOrganization Validated(OV)・Extended Validation(EV)証明書が必要な場合である"
+        },
+        {
+          "text": "証明書の発行・更新の管理をCloudflareが自動で行ってくれ、Universal SSLと全く同じ運用モデルである",
+          "wrongFeedback": "自動管理されるわけではありません。カスタム証明書はUniversal SSLやAdvanced Certificate Managerとは異なり、発行・更新をユーザー自身が管理する必要があります。"
+        },
+        {
+          "text": "カスタム証明書はDomain Validated(DV)証明書専用の仕組みであり、OV・EV証明書をアップロードすることはできない",
+          "wrongFeedback": "DV専用ではありません。カスタム証明書は、Cloudflare管理の証明書では対応できないOV・EV証明書を使いたい場合にこそ利用されます。"
+        },
+        {
+          "text": "カスタム証明書を使う場合、証明書のピンニング(certificate pinning)は他の証明書タイプと同様にサポートされない",
+          "wrongFeedback": "むしろ逆で、Cloudflare上で証明書ピンニングが機能する唯一の証明書タイプがカスタム証明書です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "カスタム証明書は、証明機関(CA)を自分で選びたい場合や、Cloudflareが提供するUniversal SSL・Advanced Certificate ManagerではサポートされないOrganization Validated(OV)・Extended Validation(EV)証明書が必要な場合に使われます。Universal SSLやAdvanced Certificate Managerとは異なり、証明書の発行・更新・期限管理はユーザー自身が行う必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/custom-certificates/",
+      "hint": "「Cloudflareにお任せできない、より高度な検証レベルの証明書」が必要な場面を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "カスタム証明書を使う理由",
+          "columns": [
+            { "heading": "理由", "items": ["CAを自分で選びたい", "OV・EV証明書が必要"] },
+            { "heading": "運用責任", "items": ["発行・更新・期限管理はユーザー自身"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-013",
+      "category": "ssl-tls",
+      "difficulty": "intermediate",
+      "question": "Advanced Certificate Managerで発行できる証明書に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1つの証明書に含められるホスト名は無制限で、ゾーンApexを含める必要もない",
+          "wrongFeedback": "無制限ではありません。1つの証明書に含められるホスト名は最大50個までで、その中にゾーンApexを含める必要があります。"
+        },
+        {
+          "text": "1つの証明書に含められるホスト名(SAN)は最大50個までで、その中にはゾーンApexを含める必要があり、Enterpriseプランでは1ゾーンあたり最大100個のエッジ証明書を追加できる"
+        },
+        {
+          "text": "Advanced Certificate Managerで発行される証明書はOrganization Validated(OV)であり、Domain Validated(DV)は選択できない",
+          "wrongFeedback": "逆です。Advanced Certificate Managerの証明書はDomain Validated(DV)です。OV・EVが必要な場合はカスタム証明書を使う必要があります。"
+        },
+        {
+          "text": "Advanced Certificate Managerで発行される証明書は、Cloudflare PagesやR2のカスタムドメインにもそのまま適用される",
+          "wrongFeedback": "Advanced Certificate Managerの証明書はPagesやR2のカスタムドメインには適用されません。これらの製品はCloudflare for SaaSの証明書を使います。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Advanced Certificate Managerで発行する証明書には、最大50個のホスト名(SAN)を含めることができ、そのうちの1つはゾーンApexである必要があります。Enterpriseプランでは、Advanced Certificate Managerのサブスクリプションによって1ゾーンあたり最大100個のエッジ証明書を追加できます。証明書はDomain Validated(DV)で、Cloudflare PagesやR2のカスタムドメインには適用されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/advanced-certificate-manager/",
+      "hint": "「1つの証明書に入れられるホスト名の数」と「ゾーン全体で持てる証明書の数」という2つの異なる上限を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Advanced Certificate Managerの上限",
+          "columns": [
+            { "heading": "1証明書あたりのSAN", "items": ["最大50個(ゾーンApex必須)"] },
+            { "heading": "Enterpriseの追加エッジ証明書", "items": ["1ゾーンあたり最大100個"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-014",
+      "category": "ssl-tls",
+      "difficulty": "advanced",
+      "question": "Advanced Certificate Managerで選択できる証明書の有効期間に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1ヶ月・2週間の短い有効期間は、Let's Encryptを含むすべての認証局で選択できる",
+          "wrongFeedback": "Let's Encryptは1ヶ月・2週間という短い有効期間をサポートしていません。すべての認証局で選択できるわけではありません。"
+        },
+        {
+          "text": "有効期間として選択できるのは3ヶ月固定のみであり、それ以外の期間は一切選択できない",
+          "wrongFeedback": "3ヶ月固定ではありません。1年(Enterprise+SSL.com限定)・3ヶ月・1ヶ月・2週間という複数の選択肢があります。"
+        },
+        {
+          "text": "1年間の有効期間は、Enterpriseプランでかつ認証局にSSL.comを選んだ場合にのみ選択できる特別なオプションである"
+        },
+        {
+          "text": "自動更新が試行される期間(期限の何日前から)は、選択した有効期間の長さに関わらずすべて一律で30日間である",
+          "wrongFeedback": "一律30日間ではありません。自動更新の試行期間は有効期間ごとに異なり、1年・3ヶ月は30日前から、1ヶ月は7日前から、2週間は3日前からです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Advanced Certificate Managerで選択できる証明書の有効期間は、1年(Enterpriseプランでかつ認証局にSSL.comを選んだ場合のみ)・3ヶ月(自動更新は30日前から)・1ヶ月(自動更新は7日前から、Let's Encrypt非対応)・2週間(自動更新は3日前から、Let's Encrypt非対応)です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#advanced-certificates",
+      "hint": "選択できる有効期間のうち1つだけが、特定のプランと特定の認証局の組み合わせでしか選べない特別扱いになっている点を考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Advanced証明書の有効期間",
+          "columns": [
+            { "heading": "1年", "items": ["Enterprise+SSL.com限定"] },
+            { "heading": "3ヶ月", "items": ["30日前から更新"] },
+            { "heading": "1ヶ月/2週間", "items": ["Let's Encrypt非対応"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-015",
+      "category": "ssl-tls",
+      "difficulty": "intermediate",
+      "question": "最小TLSバージョン(Minimum TLS version)の設定に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "設定できるのはゾーン単位のみであり、ホスト名(サブドメイン)ごとに異なる最小TLSバージョンを設定することはできない",
+          "wrongFeedback": "Advanced Certificate Managerを使えば、ホスト名ごとに異なる最小TLSバージョンを設定できます。ゾーン単位のみに限定されているわけではありません。"
+        },
+        {
+          "text": "最小TLSバージョンの設定は、Cloudflare Pagesのホスト名に対しても他のホスト名と全く同様に設定できる",
+          "wrongFeedback": "Pagesのホスト名に対しては最小TLSバージョンを設定できません。"
+        },
+        {
+          "text": "最小TLSバージョンとして設定できるのはTLS 1.2以上のみであり、TLS 1.0やTLS 1.1を最小値として指定することはできない",
+          "wrongFeedback": "TLS 1.0やTLS 1.1も最小値として指定可能です。TLS 1.2以上に制限されているわけではありません。"
+        },
+        {
+          "text": "ゾーン単位ではダッシュボードやAPIから設定できるが、ホスト名(サブドメイン)ごとの設定にはAdvanced Certificate Managerが必要である"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "最小TLSバージョンは、ゾーン単位であればダッシュボードやAPI(`min_tls_version`)から設定できます。ホスト名(サブドメイン)ごとに個別の最小TLSバージョンを設定するには、Advanced Certificate Managerが必要です。またこの設定はCloudflare Pagesのホスト名やR2のカスタムドメインには適用されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/minimum-tls/",
+      "hint": "「ゾーン全体に対する設定」と「個別のホスト名に対するより細かい設定」とで、必要なものが違うと考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "最小TLSバージョンの設定範囲",
+          "columns": [
+            { "heading": "ゾーン単位", "items": ["ダッシュボード/APIで設定可"] },
+            { "heading": "ホスト名単位", "items": ["Advanced Certificate Managerが必要"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-016",
+      "category": "ssl-tls",
+      "difficulty": "advanced",
+      "question": "「Always Use HTTPS」機能とHSTS(HTTP Strict Transport Security)の違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Always Use HTTPSはHTTPリクエストをHTTPSへ能動的にリダイレクトする機能であるのに対し、HSTSはブラウザ側に永続化されるレスポンスヘッダーによる指示である"
+        },
+        {
+          "text": "Always Use HTTPSとHSTSは全く同じ仕組みを指す別名であり、機能的な違いは存在しない",
+          "wrongFeedback": "同じ仕組みではありません。Always Use HTTPSは能動的なリダイレクト、HSTSはブラウザに保存されるヘッダー指示という異なる仕組みです。"
+        },
+        {
+          "text": "HSTSはCloudflareのエッジで能動的にリダイレクトを行う機能で、Always Use HTTPSはブラウザ側に保存される設定である",
+          "wrongFeedback": "説明が逆です。能動的なリダイレクトを行うのはAlways Use HTTPSで、ブラウザ側に保存される設定がHSTSです。"
+        },
+        {
+          "text": "Always Use HTTPSを有効にすれば、ミックスコンテンツ(HTTPとHTTPSが混在する)の警告問題も自動的にすべて解決される",
+          "wrongFeedback": "Always Use HTTPSだけではミックスコンテンツの問題は解決されません。この目的には別途Automatic HTTPS Rewritesが使われます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Always Use HTTPSは、すべてのサブドメイン・ホストに対するHTTPリクエストをHTTPSへ能動的にリダイレクトする機能です。一方、HSTSはブラウザに永続化されるレスポンスヘッダーによる指示で、以降そのブラウザが自動的にHTTPS接続のみを使うよう仕向けます。両者は異なる仕組みであり、Always Use HTTPS単体ではミックスコンテンツの問題は解決されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/always-use-https/",
+      "hint": "「サーバー側が能動的に誘導する」仕組みと、「ブラウザ側が過去の指示を覚えていて自発的に守る」仕組みの違いを考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Always Use HTTPS と HSTS",
+          "columns": [
+            { "heading": "Always Use HTTPS", "items": ["能動的なリダイレクト"] },
+            { "heading": "HSTS", "items": ["ブラウザに永続化されるヘッダー指示"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-017",
+      "category": "ssl-tls",
+      "difficulty": "advanced",
+      "question": "書き換えても安全かどうかをどのように判断しているかを踏まえると、「Automatic HTTPS Rewrites」機能に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "この機能はページ内のスクリプトやiframeなどのアクティブコンテンツには一切適用されず、画像などのパッシブコンテンツのみを対象とする",
+          "wrongFeedback": "アクティブコンテンツ(スクリプト・iframeなど)は常に書き換えの対象です。パッシブコンテンツ(画像など)はHTTPS経由での到達が確認できた場合のみ書き換えられます。"
+        },
+        {
+          "text": "EFFのHTTPS Everywhereリストと、ChromeのHSTSプリロードリストを参考にして、ページ内のHTTPリンクをHTTPSへ書き換えるかどうかを判断する"
+        },
+        {
+          "text": "この機能はDNSレベルでの書き換えであり、レスポンスのHTMLコンテンツ自体は変更しない",
+          "wrongFeedback": "DNSレベルの書き換えではありません。実際のレスポンス内のHTMLコンテンツに含まれるHTTPリンクをHTTPSへ書き換えます。"
+        },
+        {
+          "text": "Automatic HTTPS Rewritesを有効にすると、オリジン側で発生していたミックスコンテンツの原因そのものが自動的に修正され、オリジン側のコード変更は一切不要になる",
+          "wrongFeedback": "オリジン側のコードそのものが修正されるわけではありません。Cloudflareがレスポンス内のリンクを判断して書き換えるだけです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Automatic HTTPS Rewritesは、EFFのHTTPS Everywhereリストと、ChromeのHSTSプリロードリストを参考にして、ページのレスポンス内にあるHTTPリンクをHTTPSへ安全に書き換えられるかどうかを判断します。スクリプトやiframeなどのアクティブコンテンツは常に書き換え対象ですが、画像などのパッシブコンテンツはHTTPS経由での到達性が確認できた場合にのみ書き換えられます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/automatic-https-rewrites/",
+      "hint": "「安全に書き換えられるかどうか」を判断するために、既存の信頼できるリストを参考にしていると考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "アクティブコンテンツとパッシブコンテンツ",
+          "columns": [
+            { "heading": "アクティブ(スクリプト等)", "items": ["常に書き換え対象"] },
+            { "heading": "パッシブ(画像等)", "items": ["到達性確認できた場合のみ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sl-018",
+      "category": "ssl-tls",
+      "difficulty": "intermediate",
+      "question": "Cloudflareが発行する証明書の有効期間を短く保つ理由に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "証明書の発行コストを削減するためであり、セキュリティ上の理由はほとんど関係していない",
+          "wrongFeedback": "コスト削減が主な理由ではありません。鍵の漏洩リスクの限定と、自動化の促進というセキュリティ上の理由が挙げられています。"
+        },
+        {
+          "text": "認証局(CA)の技術的な制約により、Cloudflareが長期間有効な証明書を発行すること自体が不可能だからである",
+          "wrongFeedback": "技術的に不可能というわけではありません(実際、Enterprise+SSL.comの組み合わせでは1年間の証明書も選択できます)。短い有効期間は意図的なセキュリティ方針によるものです。"
+        },
+        {
+          "text": "鍵が漏洩したり誤って発行されたりした場合の被害期間を限定できることと、更新作業の頻度が上がることで自動化が促進され、証明書の期限切れや鍵材料の不適切な管理を防ぎやすくなることの2つが理由である"
+        },
+        {
+          "text": "証明書の有効期間が短いほど、Webサイトの表示速度(パフォーマンス)が向上するという直接的な技術的因果関係があるためである",
+          "wrongFeedback": "有効期間の長さと表示速度に直接的な技術的因果関係はありません。短い有効期間の理由はセキュリティと自動化の促進です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflareが発行する証明書の有効期間を3ヶ月以下に抑える主な理由は2つあります。1つは、鍵が漏洩したり誤って発行されたりした場合でも、被害が及ぶ期間を短く限定できることです。もう1つは、更新作業を頻繁に行う必要があることで自動化が促進され、証明書の期限切れや鍵材料への不適切なアクセスを防ぎやすくなることです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#benefits-of-shorter-validity-periods",
+      "hint": "「何か問題が起きたときの被害の範囲」と「作業の自動化」という、2つのセキュリティ上のメリットを考えましょう。",
+      "tags": ["ssl-tls", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "短い有効期間の2つの利点",
+          "items": [
+            { "text": "鍵漏洩・誤発行時の被害期間を限定" },
+            { "text": "更新の自動化を促進" }
+          ]
+        }
+      ]
     }
   ]
 }

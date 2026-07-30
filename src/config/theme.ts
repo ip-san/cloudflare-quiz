@@ -413,6 +413,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'ドメインのDNS設定とプロキシの挙動を正しく設計・トラブルシュートできる',
     },
     {
+      id: 'ssl-tls',
+      name: 'SSL/TLS',
+      icon: '🔏',
+      color: 'cobalt',
+      weight: 10,
+      description:
+        '暗号化モード(Flexible・Full・Full strict)・Universal SSL・Origin CA証明書・Advanced Certificate Manager・証明書の有効期間',
+      skillDescription: 'エンドツーエンドの暗号化を適切な強度で設計・構成できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',
