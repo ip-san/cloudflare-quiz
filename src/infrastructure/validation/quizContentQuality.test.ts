@@ -60,6 +60,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   sl: 'ssl-tls',
   sp: 'speed',
   tn: 'tunnel',
+  cx: 'client-side-security',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -318,6 +319,22 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/update-cloudflared/',
+  'client-side-security/',
+  'client-side-security/get-started/',
+  'client-side-security/how-it-works/',
+  'client-side-security/how-it-works/malicious-script-detection/',
+  'client-side-security/detection/monitor-connections-scripts/',
+  'client-side-security/detection/review-changed-scripts/',
+  'client-side-security/detection/review-malicious-scripts/',
+  'client-side-security/rules/',
+  'client-side-security/rules/csp-directives/',
+  'client-side-security/rules/violations/',
+  'client-side-security/reference/csp-header/',
+  'client-side-security/reference/pci-dss/',
+  'client-side-security/reference/script-statuses/',
+  'client-side-security/reference/settings/',
+  'client-side-security/alerts/alert-types/',
+  'client-side-security/best-practices/handle-an-alert/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -754,6 +771,7 @@ describe('Quiz Content Quality', () => {
         'ssl-tls',
         'speed',
         'tunnel',
+        'client-side-security',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

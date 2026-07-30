@@ -443,6 +443,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'ファイアウォールにインバウンドポートを開けずに、社内リソースを安全に公開・接続できる',
     },
     {
+      id: 'client-side-security',
+      name: 'Client-side Security',
+      icon: '🔍',
+      color: 'lavender',
+      weight: 10,
+      description:
+        '旧Page Shield。CSPレポートによるスクリプト・接続・Cookieの監視、悪性スクリプト検知、コンテンツセキュリティルール',
+      skillDescription: 'サードパーティスクリプト経由の情報窃取(Magecart型攻撃)を検知・防御できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

@@ -31637,6 +31637,969 @@
           ]
         }
       ]
+    },
+    {
+      "id": "cx-001",
+      "category": "client-side-security",
+      "difficulty": "beginner",
+      "question": "Client-side security(旧Page Shield)がブラウザ内のスクリプトを検知する仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ページに専用のJavaScriptエージェントを注入するのではなく、CSP(Content Security Policy)のreport-onlyヘッダーをHTMLレスポンスの一部に付与し、ブラウザが生成する違反レポートをもとにスクリプトや接続の一覧を構築する"
+        },
+        {
+          "text": "訪問者のブラウザにMutationObserverベースの監視スクリプトを注入し、DOMの変化をリアルタイムでCloudflareへ送信する",
+          "wrongFeedback": "MutationObserverベースの監視スクリプトを注入する仕組みではありません。ブラウザネイティブのCSP report-onlyヘッダーを使う方式です。"
+        },
+        {
+          "text": "オリジンサーバーへの全リクエストをディープパケットインスペクションし、JavaScriptファイルの内容を直接解析することでスクリプトを検知する",
+          "wrongFeedback": "ディープパケットインスペクションではなく、ブラウザが送信するCSP違反レポートをもとに検知します。"
+        },
+        {
+          "text": "すべてのHTMLレスポンスに対して常にCSPヘッダーをブロックモードで付与するため、モニタリング中は未知のスクリプトの読み込みが常にブロックされる",
+          "wrongFeedback": "モニタリング用ヘッダーはreport-onlyであり、何もブロックしません。また全レスポンスではなくサンプルに付与されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Client-side securityは、ページに監視用のJavaScriptを注入するのではなく、ブラウザネイティブの仕組みであるCSP(Content Security Policy)のreport-onlyヘッダーをHTMLレスポンスのサンプルに付与します。ブラウザはこのポリシーに基づいて検知したスクリプトや接続の違反レポートをCloudflareへ送信し、Cloudflareはそのレポートをもとにスクリプトや接続の一覧を構築します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/#header-used-for-resource-monitoring",
+      "hint": "「ブラウザに何かを注入する」のではなく「ブラウザの標準機能に報告させる」仕組みだと考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "CSP report-onlyによる検知の流れ",
+          "steps": [
+            {
+              "text": "HTMLレスポンスのサンプルにCSP report-onlyヘッダーを付与"
+            },
+            {
+              "text": "ブラウザがページのスクリプト・接続を評価"
+            },
+            {
+              "text": "ポリシー違反(検知対象)をブラウザが自動レポート"
+            },
+            {
+              "text": "Cloudflareがレポートからスクリプト・接続一覧を構築"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-002",
+      "category": "client-side-security",
+      "difficulty": "intermediate",
+      "question": "リソースモニタリング用CSPヘッダーとコンテンツセキュリティルール用CSPヘッダーの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "リソースモニタリング用ヘッダーはHTMLレスポンスの100%に付与されるのに対し、ルール用ヘッダーはサンプリングされた一部のレスポンスにのみ付与される",
+          "wrongFeedback": "逆です。サンプリングされるのはモニタリング用ヘッダーで、ルール用ヘッダーはルールの式に一致する全レスポンスに(サンプリングなしで)付与されます。"
+        },
+        {
+          "text": "リソースモニタリング用ヘッダーは監視を有効にすると自動的にHTMLレスポンスのサンプルへ付与されるのに対し、ルール用ヘッダーは管理者が定義したルールに基づき、一致するレスポンスの100%へサンプリングなしで付与される"
+        },
+        {
+          "text": "どちらのヘッダーも`content-security-policy`(ブロックモード)のみが使われ、`content-security-policy-report-only`が使われることはない",
+          "wrongFeedback": "`content-security-policy-report-only`はモニタリング用ヘッダーとLogルールで使われます。ブロックモードの`content-security-policy`が使われるのはAllowルールのみです。"
+        },
+        {
+          "text": "ルール用ヘッダーは検知したすべてのスクリプトと接続を報告する目的で使われ、許可リスト(allowlist)の内容とは無関係に生成される",
+          "wrongFeedback": "ルール用ヘッダーのCSPディレクティブは管理者が定義した許可リスト(allowlist)から生成されます。すべての検知結果を報告するのはモニタリング用ヘッダーの役割です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "リソースモニタリング用ヘッダーはモニタリングを有効にすると自動的にHTMLレスポンスのサンプルへ付与され、検知したすべてのスクリプト・接続を報告します。一方、コンテンツセキュリティルール用ヘッダーは管理者が定義したルールの式に一致するレスポンスの100%へ、サンプリングなしで付与され、そのディレクティブは許可リスト(allowlist)の内容から生成されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/#comparison-of-csp-headers",
+      "hint": "「自動で全体を把握するための仕組み」と「管理者が定義した通りに全件へ適用する仕組み」の違いを考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "モニタリング用ヘッダー vs ルール用ヘッダー",
+          "columns": [
+            {
+              "heading": "リソースモニタリング用",
+              "items": [
+                "監視有効化で自動付与",
+                "HTMLレスポンスのサンプルに付与",
+                "検知した全スクリプト・接続を報告"
+              ]
+            },
+            {
+              "heading": "コンテンツセキュリティルール用",
+              "items": [
+                "管理者が定義したルールに基づく",
+                "一致するレスポンスの100%に付与",
+                "許可リストからディレクティブを生成"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-003",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "Cloudflareがリソースモニタリング用に付与するCSPヘッダーが`connect-src 'none'`を含んでいることの意味として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "`connect-src 'none'`は接続を完全にブロックする設定であり、モニタリング中はスクリプトが外部へ一切通信できなくなる",
+          "wrongFeedback": "このヘッダーはreport-onlyのため、実際には何もブロックしません。ブロックされているように見えても、report-onlyモードでは違反として報告されるだけです。"
+        },
+        {
+          "text": "`connect-src 'none'`はサンプリング対象外のレスポンスにのみ適用され、サンプリング対象のレスポンスには適用されない",
+          "wrongFeedback": "サンプリング対象・対象外という区別はこの文脈にはありません。ヘッダー自体がサンプリングされたレスポンスに付与されます。"
+        },
+        {
+          "text": "`connect-src 'none'`はreport-onlyモードで使われているため実際には接続をブロックしないが、あらゆる接続がポリシー違反と見なされ、ブラウザがその接続についての違反レポートをCloudflareへ送信する仕組みを利用して、すべての接続を検知している"
+        },
+        {
+          "text": "`connect-src 'none'`はスクリプトの読み込みを制限する設定であり、接続(connection)の監視には関与しない",
+          "wrongFeedback": "`connect-src`は接続(connection)を対象とするディレクティブです。スクリプトの読み込みを制限するのは`script-src`です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "モニタリング用ヘッダーはreport-onlyモードのため`connect-src 'none'`が付与されていても実際には接続をブロックしません。しかしポリシー上はあらゆる接続が「許可されていない」ため違反と見なされ、ブラウザはその接続についての違反レポートをCloudflareへ送信します。この仕組みを利用して、スクリプトが行うすべての接続を検知しています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/reference/csp-header/",
+      "hint": "「何も許可しない」というポリシーの厳しさと、report-onlyモードという緩さが両立している点に注目しましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "connect-src 'none'による接続検知",
+          "steps": [
+            {
+              "text": "ヘッダーに connect-src 'none' を設定"
+            },
+            {
+              "text": "スクリプトが外部へ接続を試みる"
+            },
+            {
+              "text": "ブラウザがポリシー違反と判定"
+            },
+            {
+              "text": "report-onlyのため接続自体は許可、違反レポートのみ送信"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-004",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "スクリプト・接続に付与されるステータス(Infrequent・Active・Inactive)の管理方法を踏まえると、それらに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Activeステータスのスクリプトは、報告が7日間途絶えると即座にすべての情報が削除される",
+          "wrongFeedback": "7日間報告が途絶えるとInactiveへ変わりますが、即座に削除されるわけではありません。情報が完全に削除されるのは、Inactiveのまま合計30日間報告がない場合です。"
+        },
+        {
+          "text": "InfrequentステータスのスクリプトはActiveステータスのスクリプトより多くの報告件数を持つ",
+          "wrongFeedback": "逆です。Infrequentは報告件数が少ない(3件未満)ステータスで、Activeの方が報告件数が多い(3件超)ステータスです。"
+        },
+        {
+          "text": "Inactiveステータスになったスクリプトは、その後どれだけ経過しても再びActiveステータスに戻ることはない",
+          "wrongFeedback": "再び報告されればActiveステータスに戻ります。永久にInactiveのままというわけではありません。"
+        },
+        {
+          "text": "報告件数が少ないInfrequentステータスのスクリプトは、報告が5日間途絶えると情報が削除され、以前Activeだったスクリプトは7日間報告が途絶えるとInactiveへ変わり、その後合計30日間報告がなければ情報が削除される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Infrequentステータス(報告件数が少ないスクリプト)は、5日間報告が途絶えると情報が削除されます。以前Activeだったスクリプトは、7日間報告が途絶えるとInactiveへ変わり、その後再び報告されればActiveへ戻りますが、合計30日間報告がなければ情報が削除されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/reference/script-statuses/#available-statuses",
+      "hint": "「削除までの猶予日数」がステータスごとに異なることに注目しましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "スクリプト・接続のステータス",
+          "columns": [
+            {
+              "heading": "Infrequent",
+              "items": [
+                "報告3件未満",
+                "5日間無報告で削除"
+              ]
+            },
+            {
+              "heading": "Active",
+              "items": [
+                "報告3件超",
+                "7日間無報告でInactiveへ"
+              ]
+            },
+            {
+              "heading": "Inactive",
+              "items": [
+                "再報告でActiveへ復帰",
+                "合計30日間無報告で削除"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-005",
+      "category": "client-side-security",
+      "difficulty": "intermediate",
+      "question": "Cloudflareがスクリプトや接続を悪性と判定する仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "スクリプトのコード自体を解析する仕組み、スクリプトのURLを脅威インテリジェンスと照合する仕組み、スクリプトのドメインを脅威インテリジェンスと照合する仕組みという、3つの独立した仕組みを組み合わせて判定している"
+        },
+        {
+          "text": "判定はスクリプトのコード解析のみに依存しており、URLやドメインに基づく脅威インテリジェンスとの照合は行われない",
+          "wrongFeedback": "コード解析だけでなく、URLベース・ドメインベースの脅威インテリジェンス照合も独立した仕組みとして併用されています。"
+        },
+        {
+          "text": "3つの検知の仕組みは互いに排他的であり、あるスクリプトが同時に複数の仕組みで悪性と判定されることはない",
+          "wrongFeedback": "複数の検知メカニズムが同時に同じスクリプトを悪性と判定することもあり、その場合は誤検知である可能性がむしろ低くなるとされています。"
+        },
+        {
+          "text": "脅威フィードが更新されても、過去に検知済みのスクリプトや接続の分類が再評価されることはなく、最初の判定結果がそのまま維持される",
+          "wrongFeedback": "脅威フィードが更新されると、過去に検知済みのスクリプトや接続についても再チェックが行われ、分類が最新の状態に反映されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflareは、スクリプトのJavaScriptコード自体を解析する仕組み(悪性スクリプト検知)、スクリプトのURLを脅威インテリジェンスと照合する仕組み(悪性URLチェック)、スクリプトのドメインを脅威インテリジェンスと照合する仕組み(悪性ドメインチェック)という3つの独立した仕組みを組み合わせて判定しています。複数の仕組みが同時に悪性と判定した場合、誤検知である可能性は低くなります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/",
+      "hint": "「コードそのもの」「URL」「ドメイン」という3つの異なるレベルでチェックしていることを考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "3つの独立した検知の仕組み",
+          "items": [
+            {
+              "text": "悪性スクリプト検知(コード解析)"
+            },
+            {
+              "text": "悪性URLチェック(脅威インテリジェンス照合)"
+            },
+            {
+              "text": "悪性ドメインチェック(脅威インテリジェンス照合)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-006",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "スクリプトのJS整合性スコア(JS integrity score)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "スコアは0から100の範囲で、100に近いほどリスクが高いスクリプトと判定される",
+          "wrongFeedback": "スコアの範囲は1〜99です。また数値が低いほどリスクが高く、高いほど安全とみなされます。"
+        },
+        {
+          "text": "スコアは1から99の範囲で付与され、数値が低いほどリスクが高いスクリプトとされ、現在の閾値は10に設定されており、これを下回ると悪性と分類される"
+        },
+        {
+          "text": "スコアはMagecart・Crypto mining・Malwareの3種類を合算した単一の総合スコアのみが提供され、それぞれの個別スコアは提供されない",
+          "wrongFeedback": "総合的なJS整合性スコアに加えて、Magecart・Crypto mining・Malwareそれぞれについて個別のスコア(1〜99)も提供されます。"
+        },
+        {
+          "text": "このスコアの計算には、Cloudflareの顧客データを学習に使った独自のクローズドソースモデルが使われている",
+          "wrongFeedback": "この分析にはオープンソースモデルが使われており、顧客データはモデルの学習には使用されません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "JS整合性スコアは1〜99の範囲で各スクリプトバージョンに付与され、数値が低いほどリスクが高いことを示します。現在の悪性判定の閾値は10に設定されており、これを下回ると悪性と分類されます。加えて、Magecart・Crypto mining・Malwareそれぞれについて個別のスコア(1〜99)も提供されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/#malicious-script-detection",
+      "hint": "スコアの数値がどちらの方向に振れると危険なのか、そして悪性と判定される境界が存在することに注目しましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "JS整合性スコアの意味",
+          "columns": [
+            {
+              "heading": "スコア1に近い",
+              "items": [
+                "リスクが高い",
+                "悪性の可能性が高い"
+              ]
+            },
+            {
+              "heading": "スコア99に近い",
+              "items": [
+                "リスクが低い",
+                "安全とみなされる"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-007",
+      "category": "client-side-security",
+      "difficulty": "intermediate",
+      "question": "悪性スクリプト検知の対象範囲に関する制約として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "スクリプトのファイルサイズに関わらず、あらゆるサイズのスクリプトが機械学習による分類の対象になる",
+          "wrongFeedback": "サイズによる制約があります。現在、スクリプト分類器は300KBまでのスクリプトのみを対象としています。"
+        },
+        {
+          "text": "スクリプト分類器の対象サイズ上限は3MBであり、それを超えるスクリプトのみ他のシグナルで補完することが推奨される",
+          "wrongFeedback": "上限は3MBではなく300KBです。3MBという数値は誤りです。"
+        },
+        {
+          "text": "現在のスクリプト分類器は300KBまでのスクリプトのみを対象としており、それを超えるスクリプトについては脅威インテリジェンスに基づくシグナルなど他の手段を監視戦略に組み込むことが推奨されている"
+        },
+        {
+          "text": "300KBを超えるスクリプトは自動的に悪性と判定され、手動でのレビューが必須となる",
+          "wrongFeedback": "自動的に悪性と判定されるわけではありません。300KBを超えるスクリプトは単に機械学習による分類の対象外となるだけです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "現在のスクリプト分類器は300KBまでのスクリプトのみを対象としています。これを超えるスクリプトは機械学習による分類の対象外となるため、脅威インテリジェンスに基づくURL/ドメインチェックなど他のシグナルを監視戦略に組み込むことが推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/#malicious-script-detection",
+      "hint": "巨大なスクリプトをすべて解析しようとすると何が起きるか、という観点で考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "スクリプトサイズによる分類対象の判定",
+          "steps": [
+            {
+              "text": "スクリプトのサイズを確認"
+            },
+            {
+              "text": "300KB以下なら機械学習による分類の対象"
+            },
+            {
+              "text": "300KB超なら分類器の対象外"
+            },
+            {
+              "text": "脅威インテリジェンスなど他のシグナルで補完"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-008",
+      "category": "client-side-security",
+      "difficulty": "intermediate",
+      "question": "悪性と判定されたスクリプトや接続に付与されるカテゴリに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "カテゴリはCommand-and-Control(C2)・Botnetの1種類のみが定義されており、それ以外のカテゴリは存在しない",
+          "wrongFeedback": "Command-and-Control(C2)・Botnetの他にも、Crypto mining・Phishing・Malware・タイポスクワッティングなど複数のカテゴリが定義されています。"
+        },
+        {
+          "text": "1つのスクリプトや接続には常に1つのカテゴリのみが割り当てられ、複数のカテゴリに同時に該当することはない",
+          "wrongFeedback": "1つのスクリプトや接続が複数のカテゴリに同時に該当することもあります。"
+        },
+        {
+          "text": "カテゴリの分類は脅威インテリジェンスフィードとは無関係に、Cloudflare独自のスコアリングのみで決定される",
+          "wrongFeedback": "カテゴリは脅威インテリジェンスフィードのデータに基づいて分類されます。"
+        },
+        {
+          "text": "Command-and-Control(C2)・Botnet、Crypto mining、Phishing、Malware、タイポスクワッティング・なりすましなど複数のカテゴリが定義されており、1つのスクリプトや接続が同時に複数のカテゴリに該当することもある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "悪性と判定されたスクリプトや接続には、Security threats・Command-and-Control(C2)・Botnet・Crypto mining・Spyware・Phishing・Malware・DGAドメイン・タイポスクワッティング/なりすましなど複数のカテゴリが定義されており、これらは脅威インテリジェンスフィードのデータに基づいて分類されます。1つのスクリプトや接続が複数のカテゴリに同時に該当することもあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/#malicious-script-and-connection-categories",
+      "hint": "1つの悪性スクリプトが「複数の顔」を持つ可能性を考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "悪性カテゴリの例(一部)",
+          "items": [
+            {
+              "text": "Command-and-Control(C2) & Botnet"
+            },
+            {
+              "text": "Crypto mining"
+            },
+            {
+              "text": "Phishing"
+            },
+            {
+              "text": "Malware"
+            },
+            {
+              "text": "タイポスクワッティング・なりすまし"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-009",
+      "category": "client-side-security",
+      "difficulty": "intermediate",
+      "question": "プランによるClient-side securityの機能差に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Free・Proプランではスクリプトモニタリングと接続(connection)モニタリングの両方に完全にアクセスできる",
+          "wrongFeedback": "Free・Proプランではスクリプトモニタリングのみアクセスでき、接続モニタリングは含まれません。"
+        },
+        {
+          "text": "Free・Proプランではスクリプトモニタリングのみにアクセスでき、ドメインベースの脅威インテリジェンスはすべての顧客が利用できる一方、悪性スクリプト検知やURLベースの脅威インテリジェンスの利用にはClient-Side Security Advancedが必要である"
+        },
+        {
+          "text": "ドメインベースの脅威インテリジェンスもClient-Side Security Advancedの契約者専用の機能であり、無料プランでは一切利用できない",
+          "wrongFeedback": "ドメインベースの脅威インテリジェンスはすべての顧客が利用できます。Advanced限定なのは悪性スクリプト検知とURLベースの脅威インテリジェンスです。"
+        },
+        {
+          "text": "コンテンツセキュリティルール(旧ポリシー)は、Advancedを契約していなくてもすべてのプランで無制限に利用できる",
+          "wrongFeedback": "コンテンツセキュリティルールはClient-Side Security Advanced契約者専用の機能です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Free・Proプランではスクリプトモニタリングのみにアクセスでき、接続モニタリングは含まれません。ドメインベースの脅威インテリジェンスはすべての顧客が利用できますが、悪性スクリプト検知やURLベースの脅威インテリジェンス、コンテンツセキュリティルールなどの機能を利用するにはClient-Side Security Advancedの契約が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/",
+      "hint": "「すべての顧客が使える機能」と「Advanced限定の機能」を切り分けて考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プランによる機能差",
+          "columns": [
+            {
+              "heading": "Free/Pro",
+              "items": [
+                "スクリプトモニタリングのみ",
+                "ドメインベース脅威インテリジェンス(全顧客共通)"
+              ]
+            },
+            {
+              "heading": "Client-Side Security Advanced",
+              "items": [
+                "接続モニタリング",
+                "悪性スクリプト検知・URLベース脅威インテリジェンス",
+                "コンテンツセキュリティルール"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-010",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "アラート発生後にどちらのダッシュボード表示を確認すべきか判断する場面を想定すると、変更されたスクリプトのレビューと、悪性スクリプトのレビューの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "変更されたスクリプトのレビューは、Cloudflareが提供するJS整合性スコアと脅威インテリジェンスの一致状況を必ず確認する作業である",
+          "wrongFeedback": "JS整合性スコアや脅威インテリジェンスの一致状況を確認するのは、悪性スクリプトのレビュー(Malicious code analysis・Threat intelligence欄)の役割です。変更されたスクリプトのレビューで確認すべきは、依存関係の変化が想定内かどうかです。"
+        },
+        {
+          "text": "悪性スクリプトのレビューでは、変更が想定内かどうかを管理者が判断するだけで、スコアや脅威インテリジェンスとの照合結果は表示されない",
+          "wrongFeedback": "悪性スクリプトのレビューでは、Malicious code analysisのスコアやThreat intelligenceとの一致状況が表示されます。想定内かどうかの判断だけを行うのは変更スクリプトのレビューの方です。"
+        },
+        {
+          "text": "変更されたスクリプトのレビューは、時間の経過とともにJavaScriptの依存関係がどう変化したかを追跡し、その変更が想定内かどうかを検証する作業である一方、悪性スクリプトのレビューでは、Malicious code analysisのスコアや脅威インテリジェンスとの一致状況を確認して脅威度を判断する"
+        },
+        {
+          "text": "変更されたスクリプトに関するアラート(Code change alert)は週に1回まとめて送信されるのに対し、悪性スクリプトに関するアラートはリアルタイムで即座に送信される",
+          "wrongFeedback": "Code change alertは週1回ではなく、毎日送信される通知です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "変更されたスクリプトのレビューは、時間の経過に伴うJavaScript依存関係の変化を追跡し、その変更が想定内かどうかを検証する作業です。一方、悪性スクリプトのレビューでは、Malicious code analysisのスコアや脅威インテリジェンスとの一致状況(URL・ドメインの一致)を確認して脅威度を判断します。Code change alertは毎日送信される通知です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/detection/review-changed-scripts/",
+      "hint": "「変化を追跡する」作業と「脅威度をスコアで判断する」作業、それぞれ何を確認しているか考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "変更スクリプトレビュー vs 悪性スクリプトレビュー",
+          "columns": [
+            {
+              "heading": "変更されたスクリプト",
+              "items": [
+                "依存関係の変化を追跡",
+                "想定内の変更かを検証",
+                "Code change alert(毎日)"
+              ]
+            },
+            {
+              "heading": "悪性スクリプト",
+              "items": [
+                "Malicious code analysisのスコア",
+                "脅威インテリジェンスとの一致状況",
+                "悪性リソースアラート"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-011",
+      "category": "client-side-security",
+      "difficulty": "intermediate",
+      "question": "コンテンツセキュリティルール(旧ポリシー)のLogアクションとAllowアクションの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Logアクションはリソースをブロックしたうえでログに記録し、Allowアクションはリソースを読み込みつつ何も記録しない",
+          "wrongFeedback": "説明が入れ替わっています。Logアクションはブロックせずに違反として報告するだけで、Allowアクションが許可リスト外のリソースをブロックしてログに記録します。"
+        },
+        {
+          "text": "AllowアクションはCSPヘッダーとして`content-security-policy-report-only`を使用し、Logアクションは`content-security-policy`を使用する",
+          "wrongFeedback": "説明が入れ替わっています。Logアクションが`content-security-policy-report-only`、Allowアクションが`content-security-policy`を使用します。"
+        },
+        {
+          "text": "LogアクションとAllowアクションは同時に有効化できず、いずれか一方のアクションしか設定できないルールタイプがアカウント全体で固定されている",
+          "wrongFeedback": "そのような制約はありません。ルールごとにLogまたはAllowのアクションを個別に設定でき、検証が済んだルールをLogからAllowへ切り替えることもできます。"
+        },
+        {
+          "text": "Logアクションは許可リストに含まれないリソースをブロックせずに違反として報告するのに対し、Allowアクションは許可リストに含まれないリソースを実際にブロックしたうえで違反として記録する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Logアクションは許可リストに含まれないリソースをブロックせず、違反として報告するだけです(`content-security-policy-report-only`を使用)。Allowアクションは許可リストに含まれないリソースを実際にブロックし、違反として記録します(`content-security-policy`を使用)。新しいルールはまずLogアクションで検証し、その後Allowアクションへ切り替えるのが推奨される運用です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/#rule-actions",
+      "hint": "「観察するだけ」のアクションと「実際に締め出す」アクションの違いを考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Logアクション vs Allowアクション",
+          "columns": [
+            {
+              "heading": "Log",
+              "items": [
+                "ブロックしない",
+                "違反として報告のみ",
+                "report-onlyヘッダー"
+              ]
+            },
+            {
+              "heading": "Allow",
+              "items": [
+                "許可リスト外をブロック",
+                "ブロック後に違反を記録",
+                "ブロック用ヘッダー"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-012",
+      "category": "client-side-security",
+      "difficulty": "beginner",
+      "question": "新しいコンテンツセキュリティルールを本番環境へ導入する際の推奨される進め方として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "まずLogアクションでルールを作成して一定期間の違反(rule violations)を確認し、意図しないリソースがブロックされないことを検証したうえで、アクションをAllowへ切り替えて実際のブロックを有効化する"
+        },
+        {
+          "text": "検証を省略し、最初からAllowアクションでルールを作成することが推奨される方法であり、Logアクションは実運用では使用しない",
+          "wrongFeedback": "推奨される方法は逆です。まずLogアクションで検証してから、Allowアクションへ切り替えることが推奨されています。"
+        },
+        {
+          "text": "Logアクションで作成したルールは、後からAllowアクションへ切り替えることができないため、最初にどちらのアクションを使うか慎重に決める必要がある",
+          "wrongFeedback": "LogアクションからAllowアクションへの切り替えは可能です。検証後にアクションを変更する運用が推奨されています。"
+        },
+        {
+          "text": "ルールのアクションに関わらず、違反(rule violations)はダッシュボードには表示されず、GraphQL APIまたはLogpushでのみ確認できる",
+          "wrongFeedback": "違反はダッシュボードでも確認できます。GraphQL APIやLogpushは追加の取得手段として提供されています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "新しいコンテンツセキュリティルールを導入する際は、まずLogアクションでルールを作成し、一定期間の違反(rule violations)を確認して意図しないリソースがブロックされないことを検証します。検証が済んだら、アクションをAllowへ切り替えて実際のブロックを有効化するという段階的な導入が推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/#rule-actions",
+      "hint": "いきなり本番でブロックを始めるのではなく、まず「様子見」の段階を挟むことを考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ルール導入の推奨フロー",
+          "steps": [
+            {
+              "text": "Logアクションでルールを作成"
+            },
+            {
+              "text": "一定期間、rule violationsを確認"
+            },
+            {
+              "text": "意図しないブロックがないことを検証"
+            },
+            {
+              "text": "Allowアクションへ切り替えて本番適用"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-013",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "ルールで制御できることと実際に検知されることは別だという点を踏まえると、コンテンツセキュリティルールがサポートするCSPディレクティブに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "サポートされるすべてのCSPディレクティブについて、Cloudflareのリソースモニタリング機能によって検知(monitored)されている",
+          "wrongFeedback": "検知(monitored)されているのは`script-src`と`connect-src`の2つのディレクティブのみです。それ以外のディレクティブはルールで制御できますが、モニタリングの対象ではありません。"
+        },
+        {
+          "text": "多くのCSPディレクティブをルールで制御できるが、Cloudflareのリソースモニタリング機能によって実際に検知(monitored)されているのは`script-src`と`connect-src`の2つのディレクティブのみである"
+        },
+        {
+          "text": "ホスト名やURIの値でワイルドカード(`*`)を使う場合、サブドメインのどの階層にも自由に配置できる",
+          "wrongFeedback": "ワイルドカードが使えるのは最も左側(leftmost)のサブドメインの位置のみです。任意の階層に自由に配置できるわけではありません。"
+        },
+        {
+          "text": "`frame-ancestors`ディレクティブは、他のディレクティブと同様に`'unsafe-inline'`や`'unsafe-eval'`といった特殊な値をすべてサポートしている",
+          "wrongFeedback": "`frame-ancestors`がサポートする特殊な値は`'none'`と`'self'`のみで、`'unsafe-inline'`や`'unsafe-eval'`はサポートされていません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "コンテンツセキュリティルールは`default-src`・`img-src`・`style-src`など多くのCSPディレクティブをサポートしますが、Cloudflareのリソースモニタリング機能によって実際に検知(monitored)されているのは`script-src`(Scripts)と`connect-src`(Connections)の2つのディレクティブのみです。それ以外はルールによる制御は可能でも、モニタリングの対象外です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/csp-directives/",
+      "hint": "「ルールで制御できるディレクティブの数」と「実際に検知されているディレクティブの数」は同じとは限りません。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "CSPディレクティブの検知対象",
+          "columns": [
+            {
+              "heading": "モニタリング対象(Yes)",
+              "items": ["script-src(Scripts)", "connect-src(Connections)"]
+            },
+            {
+              "heading": "モニタリング対象外(No)",
+              "items": ["default-src / img-src / style-src など", "ルールでの制御は可能"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-014",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "CSPレポートの送信先(reporting endpoint)をCloudflare所有のエンドポイントから自社ホスト名へ変更する設定に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "この設定はすべてのプランで利用でき、事前の考慮事項なしにいつでも切り替えられる",
+          "wrongFeedback": "この設定はClient-Side Security Advanced契約者専用です。また`cdn-cgi/*`のURLパスに一致するレート制限ルールやカスタムルールが存在しないことを事前に確認する必要があります。"
+        },
+        {
+          "text": "自社ホスト名へ変更した場合、`report-uri`には`cdn-cgi/*`ではなく完全に自由なパスを指定でき、既存のレート制限ルールやカスタムルールとの間で問題が起きることはない",
+          "wrongFeedback": "自社ホスト名を使う場合のパスは`cdn-cgi/script-monitor/report`のような固定形式で、`cdn-cgi/*`に一致するレート制限ルールやカスタムルールがあると干渉する可能性があるため、事前確認が必要です。"
+        },
+        {
+          "text": "この設定はClient-Side Security Advanced契約者のみが利用でき、切り替える前に`cdn-cgi/*`のURLパスに一致するレート制限ルールやカスタムルールが存在しないことを確認する必要がある"
+        },
+        {
+          "text": "自社ホスト名へ変更すると、CSPレポートの送信自体が無効化され、モニタリング機能全体が停止する",
+          "wrongFeedback": "モニタリング機能は停止しません。レポートの送信先ホストが変わるだけで、モニタリング自体は継続します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "CSPレポートの送信先を自社ホスト名へ変更する設定はClient-Side Security Advanced契約者のみが利用できます。切り替える前に、`cdn-cgi/*`のURLパスに一致するレート制限ルールやカスタムルールが存在しないことを確認する必要があります。これらが存在すると、CSPレポートの送信に干渉する可能性があるためです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/reference/settings/#prerequisites-for-using-the-same-hostname-for-csp-reports",
+      "hint": "レポート送信先を自社ドメイン配下に変更することで、既存の他のルールと衝突する可能性を考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "レポート送信先を自社ホスト名へ変更する前の確認事項",
+          "steps": [
+            {
+              "text": "Client-Side Security Advancedを契約していることを確認"
+            },
+            {
+              "text": "cdn-cgi/*に一致するレート制限ルールがないか確認"
+            },
+            {
+              "text": "cdn-cgi/*に一致するカスタムルールがないか確認"
+            },
+            {
+              "text": "問題なければ「Same hostname」へ設定を切り替え"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-015",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "コンテンツセキュリティルールの違反(rule violations)を確認する方法に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "違反情報はダッシュボードでのみ確認でき、GraphQL APIやLogpushのような他の手段では取得できない",
+          "wrongFeedback": "GraphQL API(`pageShieldReportsAdaptiveGroups`データセット)やLogpush(`page_shield_events`データセット)でも取得できます。"
+        },
+        {
+          "text": "GraphQL APIの`pageShieldReportsAdaptiveGroups`データセットでは、過去90日分の違反情報を無制限にクエリできる",
+          "wrongFeedback": "クエリできるのは過去90日分ではなく過去30日分の違反情報です。"
+        },
+        {
+          "text": "Logpushで違反情報を取得する場合、専用の別サービスへの契約が必要で、既存のLogpushの設定フローとは異なる手順が必要になる",
+          "wrongFeedback": "既存のLogpushの仕組みの中で`page_shield_events`データセットを指定するだけで、専用の別サービス契約は不要です。"
+        },
+        {
+          "text": "違反情報はダッシュボードで確認できるほか、GraphQL APIの`pageShieldReportsAdaptiveGroups`データセット(過去30日分をクエリ可能)や、Logpushの`page_shield_events`データセットを通じても取得できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "コンテンツセキュリティルールの違反情報はダッシュボードで確認できるほか、GraphQL APIの`pageShieldReportsAdaptiveGroups`データセット(過去30日分をクエリ可能)や、Logpushの`page_shield_events`データセットを通じても取得できます。既存のLogpushの設定フローの中でこのデータセットを指定するだけで利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/violations/#get-rule-violations-via-graphql-api",
+      "hint": "ダッシュボード以外にも、自動化やログ基盤へ連携する手段が用意されていることを考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "ルール違反の確認方法",
+          "nodes": [
+            {
+              "id": "violation",
+              "text": "rule violation",
+              "sub": "コンテンツセキュリティルール違反"
+            },
+            {
+              "id": "dashboard",
+              "text": "ダッシュボード"
+            },
+            {
+              "id": "graphql",
+              "text": "GraphQL API",
+              "sub": "過去30日分"
+            },
+            {
+              "id": "logpush",
+              "text": "Logpush",
+              "sub": "page_shield_events"
+            }
+          ],
+          "edges": [
+            {
+              "from": "violation",
+              "to": "dashboard"
+            },
+            {
+              "from": "violation",
+              "to": "graphql"
+            },
+            {
+              "from": "violation",
+              "to": "logpush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-016",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "通知対象がプランや状態によって絞り込まれることを踏まえると、Client-side securityのアラート種別に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "新規リソースアラートにはBusiness以上のプランが必要で、コード変更アラートと悪性リソースアラートはClient-Side Security Advanced限定であり、悪性リソースアラートはActiveステータスのリソースのみを対象とする"
+        },
+        {
+          "text": "3種類のアラートグループはすべてFreeプランを含むあらゆるプランで利用でき、プランによる制限は一切ない",
+          "wrongFeedback": "新規リソースアラートにはBusiness以上、コード変更アラートと悪性リソースアラートにはClient-Side Security Advancedが必要という制限があります。"
+        },
+        {
+          "text": "悪性リソースアラートは、InfrequentやInactiveステータスのリソースも含め、検知されたすべてのリソースを対象に送信される",
+          "wrongFeedback": "悪性リソースアラートはActiveステータスのリソースのみを対象とします。InfrequentやInactiveのリソースはアラートの対象外です。"
+        },
+        {
+          "text": "証明書の有効期限切れを通知するアラート種別が、新規リソース・コード変更・悪性リソースの3種類に加えて存在する",
+          "wrongFeedback": "証明書関連のアラート種別は存在しません。定義されているのは新規リソースアラート・コード変更アラート・悪性リソースアラートの3グループです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "アラートは3グループに分かれます。新規リソースアラートにはBusiness以上のプランが必要、コード変更アラートと悪性リソースアラートはClient-Side Security Advanced限定です。また、悪性リソースアラートはActiveステータスのリソースのみを対象とし、InfrequentやInactiveのリソースは対象外です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/alerts/alert-types/#malicious-resource-alerts",
+      "hint": "「どのプランで使えるか」と「どのステータスのリソースが対象か」を分けて整理しましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "アラート種別とプラン要件",
+          "items": [
+            {
+              "text": "新規リソースアラート(Business以上)"
+            },
+            {
+              "text": "コード変更アラート(Advanced限定・毎日)"
+            },
+            {
+              "text": "悪性リソースアラート(Advanced限定・Activeのみ対象)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-017",
+      "category": "client-side-security",
+      "difficulty": "advanced",
+      "question": "悪性の可能性があるスクリプトのアラートを受け取った際に推奨される調査手順に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "最初のステップとして、常にスクリプトのソースコードを取得してVM上で解析することから始めるべきで、ダッシュボードでの確認は不要である",
+          "wrongFeedback": "推奨される最初のステップは、どの検知の仕組み(Malicious code/URL/domain)がアラートの引き金になったかをダッシュボードの詳細画面で確認することです。スクリプトコードの解析はオプションの最終ステップです。"
+        },
+        {
+          "text": "まずどの検知の仕組みがアラートの引き金になったかを確認し、次に「Page URLs」に記載されたページを開いてブラウザの開発者ツールのNetworkタブでそのスクリプトや接続が実際に読み込まれているか確認し、その後Security Center Investigateのようなツールでドメインやスクリプトの評判を調べる"
+        },
+        {
+          "text": "スクリプトが実際のページで読み込まれていることを確認できない場合、それは検知結果が完全な誤検知であることを意味し、それ以上調査する必要はない",
+          "wrongFeedback": "読み込みが確認できない場合でも、ブラウザ拡張機能・アプリの状態・地理的条件・攻撃者が一部の訪問者にのみ配信している可能性など複数の理由が考えられ、追加の調査(オンライン検索やコードベースのスキャンなど)が推奨されています。"
+        },
+        {
+          "text": "Cloudflareの機械学習モデルが「malicious code」と判定した場合、外部の脅威分析ツールでも必ず同じ判定結果が得られる",
+          "wrongFeedback": "Cloudflare独自のML技術のため、外部ツールでは同じ判定結果が得られないこともあると明記されています。誤検知が疑われる場合はアカウントチームへの連絡が推奨されています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "推奨される調査手順は、(1) どの検知の仕組みがアラートの引き金になったかを確認、(2) 「Page URLs」のページを開いて開発者ツールのNetworkタブでスクリプトや接続が実際に読み込まれているか確認、(3) Security Center Investigateのようなツールでドメインやスクリプトの評判を調べる、という流れです。読み込みが確認できない場合も、誤検知と断定せず複数の可能性を検討したうえで追加調査を行います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/best-practices/handle-an-alert/#1-understand-what-triggered-the-alert",
+      "hint": "アラートを受け取ったら、いきなり手を動かす前に何を確認すべきか、順序を意識してみましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "アラート調査の推奨手順",
+          "actors": [
+            "管理者",
+            "ダッシュボード",
+            "ブラウザ開発者ツール"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "検知の仕組みを確認"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "text": "Page URLsで読み込みを確認"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "Security Center Investigateで評判を確認"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cx-018",
+      "category": "client-side-security",
+      "difficulty": "intermediate",
+      "question": "Client-side securityとPCI DSS(Payment Card Industry Data Security Standard)コンプライアンスの関係に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "PCI DSS v4のクライアントサイドセキュリティ要件は、v3の頃から存在する既存要件であり、v4で新たに追加されたものではない",
+          "wrongFeedback": "これらの要件(6.4.3・11.6.1)はPCI DSS v4で新たに追加された要件です。"
+        },
+        {
+          "text": "PCI DSS対応支援の機能を使うために特別なプラン要件はなく、Client-Side Security Advancedでなくても標準機能だけで要件を満たせる",
+          "wrongFeedback": "PCI DSS要件への対応支援にはClient-Side Security Advancedの契約が必須です。"
+        },
+        {
+          "text": "PCI DSS v4のクライアントサイドセキュリティに関する要件6.4.3および11.6.1への対応を支援する機能であり、これらの要件への対応にはClient-Side Security Advancedの契約が必要である"
+        },
+        {
+          "text": "この機能はPCI DSSの要件のうち、ネットワークセグメンテーション(要件1)とアクセス制御(要件7)への対応を主に支援するものである",
+          "wrongFeedback": "支援対象として明記されているのは要件6.4.3と11.6.1です。ネットワークセグメンテーションやアクセス制御の要件ではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Client-side securityは、PCI DSS v4で新たに追加されたクライアントサイドセキュリティに関する要件6.4.3および11.6.1への対応を支援する機能です。これらの要件への対応支援にはClient-Side Security Advancedの契約が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/client-side-security/reference/pci-dss/",
+      "hint": "決済ページに関わる要件が、PCI DSSのどのバージョンで追加されたかを考えましょう。",
+      "tags": [
+        "client-side-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "PCI DSS対応支援の位置づけ",
+          "steps": [
+            {
+              "text": "PCI DSS v4で要件6.4.3・11.6.1が追加"
+            },
+            {
+              "text": "Client-Side Security Advancedを契約"
+            },
+            {
+              "text": "Client-side securityで対応を支援"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
