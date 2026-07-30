@@ -283,6 +283,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '顧客ごとに隔離されたWorkerを持つマルチテナント基盤を構築できる',
     },
     {
+      id: 'ai-gateway',
+      name: 'AI Gateway',
+      icon: '🌉',
+      color: 'fuchsia',
+      weight: 10,
+      description:
+        'OpenAI・Anthropicなど複数のAIプロバイダーへのリクエストを一元管理するプロキシ。キャッシュ・レート制限・支出上限・ガードレール・Dynamic Routingなどの運用機能',
+      skillDescription: '複数のAIプロバイダーを一元的なゲートウェイ経由で安全・低コストに運用できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

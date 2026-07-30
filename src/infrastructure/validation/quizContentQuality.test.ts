@@ -28,7 +28,7 @@ const singleQuizzes = quizzes.filter((q) => q.type !== 'multi')
 const multiQuizzes = quizzes.filter((q) => q.type === 'multi')
 const validCategoryIds = PREDEFINED_CATEGORIES.map((c) => c.id)
 
-/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp- + 3桁連番） */
+/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag- + 3桁連番） */
 const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wk: 'workers',
   wr: 'wrangler',
@@ -44,6 +44,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   ob: 'observability',
   ct: 'containers',
   wp: 'workers-for-platforms',
+  ag: 'ai-gateway',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -56,6 +57,18 @@ const VALID_DOC_PAGES = [
   'ai-gateway/features/caching/',
   'ai-gateway/configuration/fallbacks/',
   'ai-gateway/observability/logging/',
+  'ai-gateway/configuration/authentication/',
+  'ai-gateway/configuration/custom-providers/',
+  'ai-gateway/configuration/request-handling/',
+  'ai-gateway/features/rate-limiting/',
+  'ai-gateway/features/spend-limits/',
+  'ai-gateway/features/unified-billing/',
+  'ai-gateway/features/dynamic-routing/',
+  'ai-gateway/features/guardrails/',
+  'ai-gateway/usage/universal/',
+  'ai-gateway/usage/worker-binding-methods/',
+  'ai-gateway/reference/limits/',
+  'ai-gateway/reference/pricing/',
   'cache/advanced-configuration/cache-reserve/',
   'cache/how-to/tiered-cache/',
   'cloudflare-for-platforms/workers-for-platforms/',
@@ -523,6 +536,7 @@ describe('Quiz Content Quality', () => {
         'observability',
         'containers',
         'workers-for-platforms',
+        'ai-gateway',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

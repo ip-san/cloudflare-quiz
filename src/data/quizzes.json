@@ -16091,6 +16091,708 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ag-001",
+      "category": "ai-gateway",
+      "difficulty": "beginner",
+      "question": "AI GatewayでAuthenticated Gatewayを有効にした場合の認証ヘッダーに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "provider-native endpoints(`gateway.ai.cloudflare.com`)とREST API(`api.cloudflare.com`)のどちらでも、必ず`cf-aig-authorization`ヘッダーだけを使う",
+          "wrongFeedback": "REST APIでは標準の`Authorization`ヘッダーを使います。`cf-aig-authorization`が必要なのはprovider-native endpointsの場合です。"
+        },
+        {
+          "text": "Authenticated Gatewayを有効にすると、Workerのバインディング経由のリクエストであっても毎回`cf-aig-authorization`ヘッダーを手動で付与する必要がある",
+          "wrongFeedback": "バインディング経由のリクエストはアカウント内で事前に認証済み扱いとなり、`cf-aig-authorization`ヘッダーを手動で付ける必要はありません。"
+        },
+        {
+          "text": "REST API(`api.cloudflare.com`)を使う場合は標準の`Authorization`ヘッダーで、provider-native endpoints(`gateway.ai.cloudflare.com`)を使う場合は`cf-aig-authorization`ヘッダーでCloudflare APIトークンを渡す"
+        },
+        {
+          "text": "Authenticated Gatewayは無料プランでは有効化できず、Enterpriseプラン限定の機能である",
+          "wrongFeedback": "プラン限定の機能ではありません。どのプランでも有効化できます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Authenticated Gatewayを有効にすると、各リクエストに有効なCloudflare APIトークンが必須になります。REST API(`api.cloudflare.com`)を使う場合は標準の`Authorization`ヘッダー、provider-native endpoints(`gateway.ai.cloudflare.com`)を使う場合は`cf-aig-authorization`ヘッダーでトークンを渡します。Workerのバインディング経由のリクエストは、アカウント内で事前に認証済みとして扱われます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/authentication/",
+      "hint": "呼び出し方(REST APIか、provider-native endpointsか)によって、認証情報を渡す「場所」が変わることを意識しましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "認証ヘッダーの使い分け",
+          "columns": [
+            { "heading": "REST API", "items": ["標準のAuthorizationヘッダー"] },
+            { "heading": "provider-native endpoints", "items": ["cf-aig-authorizationヘッダー"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-002",
+      "category": "ai-gateway",
+      "difficulty": "beginner",
+      "question": "AI Gatewayの「Rate limiting」機能の基本的な役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "特定の時間枠内に送信できるリクエスト数を制限し、超過した場合は`429 Too Many Requests`を返して処理をブロックする"
+        },
+        {
+          "text": "モデルごとの応答内容(トークン数)を制限し、超過した分の文章を自動的に要約する",
+          "wrongFeedback": "応答内容の要約機能ではありません。リクエストの「件数」を時間枠内で制限する仕組みです。"
+        },
+        {
+          "text": "`metadata.cost`のようなカスタムディメンションでリクエストにかかった金額を追跡し、予算を超えたら安いモデルに自動的に切り替える",
+          "wrongFeedback": "それはRate limitingではなくSpend limitsの説明です。Rate limitingはリクエストの件数を制限します。"
+        },
+        {
+          "text": "リクエストの内容を検査し、有害なコンテンツを含む場合にブロックする",
+          "wrongFeedback": "それはGuardrailsの説明です。Rate limitingはリクエストの件数を制限する機能です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Rate limitingは、特定の時間枠内に送信できるリクエスト数を制限する機能です。制限を超えると、サーバーは`429 Too Many Requests`を返し、リクエストは処理されません。高額な請求や不審なアクティビティを防ぐために使います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/rate-limiting/",
+      "hint": "「一定時間にどれだけ呼べるか」を制限する仕組みを考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "formula",
+          "label": "Rate limitingの考え方",
+          "result": "リクエスト成功/失敗",
+          "components": [
+            { "text": "時間枠内のリクエスト数" },
+            { "text": "設定した上限", "highlight": true }
+          ],
+          "operator": "≤"
+        }
+      ]
+    },
+    {
+      "id": "ag-003",
+      "category": "ai-gateway",
+      "difficulty": "beginner",
+      "question": "AI Gatewayの「Spend limits」機能の基本的な役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "リクエストの件数を時間枠で制限する機能で、Rate limitingと全く同じ仕組みである",
+          "wrongFeedback": "Rate limitingはリクエストの「件数」、Spend limitsはリクエストの「実際の金額(コスト)」を基準にする点が異なります。"
+        },
+        {
+          "text": "モデルの料金に基づいてリクエストごとの実際のコストを追跡し、一定期間の累計支出が予算を超えたらリクエストをブロックする(または安いモデルへフォールバックする)"
+        },
+        {
+          "text": "AI Gatewayのダッシュボードにログインするたびに発生する追加料金を制限する機能",
+          "wrongFeedback": "ダッシュボードのログイン料金を制限する機能ではありません。モデルの利用コストの累計に対する予算管理の機能です。"
+        },
+        {
+          "text": "プロンプトや応答の文字数を制限し、それを超えると自動的に切り詰める",
+          "wrongFeedback": "文字数の切り詰め機能ではありません。トークン使用量とモデル料金をもとにしたコストの累計を追跡する機能です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Spend limitsは、リクエストごとのコストをモデルの料金とトークン使用量から計算し、一定期間の累計支出が設定した予算を超えるとリクエストをブロックする機能です。Rate limitingがリクエストの「件数」を基準にするのに対し、Spend limitsは実際の「金額」を基準にします。予算超過時にブロックする代わりに、安いモデルへフォールバックさせることもできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/spend-limits/",
+      "hint": "「何回呼んだか」ではなく「いくら使ったか」を基準に制限する仕組みを考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Rate limiting と Spend limits",
+          "columns": [
+            { "heading": "Rate limiting", "items": ["リクエストの件数が基準"] },
+            { "heading": "Spend limits", "items": ["実際のコスト(金額)が基準"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-004",
+      "category": "ai-gateway",
+      "difficulty": "beginner",
+      "question": "AI Gatewayの「Guardrails」機能の基本的な役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "リクエストをキャッシュし、同じ内容の問い合わせへの応答を高速化する機能",
+          "wrongFeedback": "それはCachingの説明です。Guardrailsはコンテンツの安全性を検査する機能です。"
+        },
+        {
+          "text": "複数のAIプロバイダーへのリクエストを一本化し、単一のCloudflare請求にまとめる機能",
+          "wrongFeedback": "それはUnified Billingの説明です。Guardrailsはコンテンツの安全性検査が目的です。"
+        },
+        {
+          "text": "リクエストの送信元IPアドレスを検証し、あらかじめ許可しておいた社内ネットワークからのアクセスだけを通過させる機能である",
+          "wrongFeedback": "IPアドレスによるネットワーク制御の機能ではありません。プロンプトや応答の内容そのものを検査する機能です。"
+        },
+        {
+          "text": "ユーザーのプロンプトとモデルの応答の両方を有害なコンテンツの観点で検査し、設定に応じてフラグ付けまたはブロックする"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Guardrailsは、アプリケーションとモデルプロバイダーの間に立つプロキシとして、ユーザーのプロンプトとモデルの応答の両方を暴力的・有害なコンテンツなどの観点で検査します。検査結果に応じて、フラグ付け(記録のみ)またはブロック(処理を止める)を選択できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/guardrails/",
+      "hint": "ユーザーとモデルのやり取りの「内容」そのものを、誰かが間でチェックしている場面を想像しましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Guardrailsの検査フロー",
+          "actors": ["ユーザー", "AI Gateway (Guardrails)", "モデル"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "プロンプト送信" },
+            { "from": 1, "to": 1, "text": "内容を検査" },
+            { "from": 1, "to": 2, "text": "問題なければ転送" },
+            { "from": 2, "to": 1, "text": "応答" },
+            { "from": 1, "to": 0, "text": "応答も検査後に返却" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-005",
+      "category": "ai-gateway",
+      "difficulty": "beginner",
+      "question": "AI Gatewayの「Unified Billing」機能の基本的な役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "OpenAIやAnthropicなど複数のAIプロバイダーへのリクエストを、各プロバイダー自身のAPIキーを用意することなくCloudflareにチャージしたクレジットで支払い、単一のCloudflare請求にまとめる"
+        },
+        {
+          "text": "複数のAIプロバイダーの料金プランを比較し、最も安いプロバイダーへ自動的にリクエストを振り分ける機能",
+          "wrongFeedback": "料金比較による自動振り分けの機能ではありません。各プロバイダーへの支払いをCloudflareのクレジットに一本化する機能です。"
+        },
+        {
+          "text": "自社が保有するAPIキーを暗号化してAI Gatewayのダッシュボードに安全に保管するだけの機能",
+          "wrongFeedback": "それはBYOK(Bring Your Own Keys)の説明に近いです。Unified BillingはCloudflareが管理する認証情報でプロバイダーに課金する仕組みです。"
+        },
+        {
+          "text": "Workers AI(`@cf/`から始まるモデル)の利用料金も含めて、すべてUnified Billingのクレジットから差し引かれる",
+          "wrongFeedback": "Workers AIモデルはUnified Billing経由では課金されず、通常のWorkers AI料金で別途課金されます。Unified Billingが対象とするのはサードパーティプロバイダーのモデルです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Unified Billingは、OpenAIやAnthropicなど複数のAIプロバイダーへのリクエストを、各プロバイダー自身のAPIキーを用意することなく、事前にチャージしたCloudflareのクレジットで支払い、単一のCloudflare請求にまとめる機能です。購入したクレジットには5%の手数料がかかりますが、推論そのものの単価にはプロバイダーの料金がそのまま適用されます。`@cf/`から始まるWorkers AIモデルはUnified Billingの対象外で、通常のWorkers AI料金が適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/unified-billing/",
+      "hint": "複数のプロバイダーそれぞれに個別のAPIキーや請求書を持たずに済む方法を考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "Unified Billingの構成",
+          "layers": [
+            { "text": "Cloudflareのクレジット", "sub": "事前にチャージ" },
+            { "text": "AI Gateway (Unified Billing)" },
+            { "text": "OpenAI/Anthropic等の各プロバイダー", "sub": "APIキー不要" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-006",
+      "category": "ai-gateway",
+      "difficulty": "beginner",
+      "question": "AI Gatewayの「Universal Endpoint」の現在の位置づけとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "現在も新規統合で最も推奨される標準の呼び出し方法であり、他の方式より優先して使うべきとされている",
+          "wrongFeedback": "Universal Endpointは非推奨(Deprecated)であり、新規統合には推奨されていません。"
+        },
+        {
+          "text": "Universal Endpointはすでに完全に廃止されており、既存の利用も含めて一切動作しない",
+          "wrongFeedback": "完全に廃止されたわけではなく、既存の統合では引き続き動作します。ただし新規統合には推奨されません。"
+        },
+        {
+          "text": "非推奨(Deprecated)となっており、新規統合にはOpenAI互換のエンドポイントとDynamic Routingの利用が推奨されているが、既存の統合では引き続き動作する"
+        },
+        {
+          "text": "Universal EndpointはWorkers AIのモデル専用であり、OpenAIなどのサードパーティプロバイダーは呼び出せない",
+          "wrongFeedback": "Universal Endpointはpayload内で`provider`を指定することで、Workers AIに限らず様々なサードパーティプロバイダーも呼び出せる仕組みでした。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Universal Endpointは非推奨(Deprecated)となっています。新規の統合ではOpenAI互換のエンドポイントと、フォールバック・リトライ・条件分岐ルーティングを担うDynamic Routingの利用が推奨されています。既存の統合では引き続き動作します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/usage/universal/",
+      "hint": "「新しく作るなら別の方法」だが「今動いているものは壊れない」、という移行期特有の状態を考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Universal Endpointの現在の位置づけ",
+          "columns": [
+            { "heading": "Universal Endpoint", "items": ["非推奨(Deprecated)", "既存統合は動作継続"] },
+            { "heading": "推奨される新方式", "items": ["OpenAI互換エンドポイント", "Dynamic Routing(フォールバック・リトライ)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-007",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "AI Gatewayのrate limitingにおける「fixed(固定)」と「sliding(スライディング)」の違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "fixedは常に直近の時間幅で件数を数え、slidingは時計の区切り(例: 10分ごと)でリセットされる",
+          "wrongFeedback": "説明が逆です。時計の区切りでリセットされるのがfixed、常に直近の時間幅で数えるのがslidingです。"
+        },
+        {
+          "text": "fixedは時計の区切りごとにカウントがリセットされるため区切りをまたぐと上限の倍近くが通ることがあるが、slidingは常に直近の時間幅で数えるためその抜け道が生じにくい"
+        },
+        {
+          "text": "fixedとslidingは名前が違うだけで、実際の挙動には一切差がない",
+          "wrongFeedback": "実際の挙動に差があります。区切りをまたぐリクエストの扱いが異なります。"
+        },
+        {
+          "text": "slidingは1時間単位でしか設定できず、fixedは秒単位で自由に設定できる",
+          "wrongFeedback": "時間単位の制約の違いではありません。カウントの数え方(区切りでリセットするか、常に直近の幅で数えるか)が違いです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "fixed(固定)ウィンドウは、12:00-12:10、12:10-12:20のように時計の区切りごとにカウントがリセットされます。そのため区切りの直前(12:09)と直後(12:11)にそれぞれ上限いっぱいのリクエストを送ると、実質的に短期間で上限の約2倍のリクエストが通ってしまうことがあります。sliding(スライディング)ウィンドウは常に「直近のX分間」で件数を数えるため、このような抜け道が生じにくくなります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/rate-limiting/",
+      "hint": "「時計の目盛りで区切る」のと「常に今から遡って数える」のとで、区切りをまたぐ瞬間の挙動がどう変わるか考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "fixed と sliding",
+          "columns": [
+            { "heading": "fixed", "items": ["時計の区切りでリセット", "区切りをまたぐと上限の倍近く通ることも"] },
+            { "heading": "sliding", "items": ["常に直近の時間幅で計測", "区切りをまたぐ抜け道が生じにくい"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-008",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "Spend limitsのルールにおける「Split by value」と「Filter by value」の違いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Split by valueはルールを1つの値だけに適用し、それ以外の値のリクエストには一切適用しない",
+          "wrongFeedback": "1つの値だけに適用してそれ以外を対象外にするのはFilter by valueの説明です。"
+        },
+        {
+          "text": "Filter by valueは値ごとに個別の予算バケットを作成し、それぞれ独立して管理する",
+          "wrongFeedback": "値ごとに個別の予算バケットを作るのはSplit by valueの説明です。Filter by valueは特定の値に一致する場合だけルールを適用します。"
+        },
+        {
+          "text": "どちらのモードも、`provider`ディメンションを何も設定しない場合と全く同じ挙動になる",
+          "wrongFeedback": "ディメンションを設定しない場合はすべての値が1つの予算バケットを共有しますが、Split/Filterはそれぞれ異なる挙動をします。"
+        },
+        {
+          "text": "Split by valueは(例えば`metadata.user_id`のような)ディメンションの値ごとに個別の予算バケットを作成し、Filter by valueは特定の値に一致するリクエストにのみルールを適用する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Split by valueは、指定したディメンション(例: `metadata.user_id`)の値ごとに独立した予算バケットを作成します。例えばユーザーIDでSplitすれば、ユーザーごとに別々の予算になります。一方Filter by valueは、指定した値(例: `metadata.team`が`engineering`)に一致するリクエストにのみそのルールを適用します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/spend-limits/#scoping-with-dimensions",
+      "hint": "「値ごとに財布を分ける」のか「特定の値のときだけこの財布を使う」のか、という違いを考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Split by value と Filter by value",
+          "columns": [
+            { "heading": "Split by value", "items": ["値ごとに独立した予算バケット", "例: ユーザーごとに個別予算"] },
+            { "heading": "Filter by value", "items": ["特定の値に一致する場合のみ適用", "例: engineeringチームだけに制限"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-009",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "Spend limitの予算に達した場合の挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "デフォルトでは`429`でブロックされるが、Dynamic Routingでフォールバックモデルを設定しておけば超過時に自動的にそちらへルーティングできる"
+        },
+        {
+          "text": "予算に達すると、`AI Gateway Run`権限の有無に関わらずそのアカウントに紐づくすべてのAI Gatewayの利用が例外なく即座に完全停止してしまう",
+          "wrongFeedback": "予算超過の影響は該当するルールのスコープ(モデル・プロバイダー・カスタムメタデータなど)に限定され、アカウント全体の利用が停止するわけではありません。"
+        },
+        {
+          "text": "予算に達しても常に処理は継続され、後から請求書に追加料金として反映されるだけである",
+          "wrongFeedback": "デフォルトの挙動はリクエストのブロック(`429`)です。処理を継続して後から請求するものではありません。"
+        },
+        {
+          "text": "予算に達すると、そのリクエストのキャッシュだけが自動的に無効化される",
+          "wrongFeedback": "キャッシュの無効化ではなく、`429`によるリクエストのブロック(または設定によるフォールバック)が挙動です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Spend limitの予算に達すると、デフォルトではリクエストが`429 Too Many Requests`でブロックされます。ブロックする代わりに、Dynamic Routingでプライマリモデルとフォールバックモデルを構成し、プライマリモデル側に予算を設定しておけば、予算超過時に自動的にフォールバックモデルへルーティングするよう構成することもできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/spend-limits/#behavior-when-a-limit-is-reached",
+      "hint": "予算を使い切ったときに「止める」以外にも、「安い代替手段に切り替える」という選択肢があることを考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "予算超過時の挙動",
+          "steps": [
+            { "text": "リクエストのコストを計算" },
+            { "text": "累計予算を超過" },
+            { "text": "デフォルト: 429でブロック" },
+            { "text": "設定次第: フォールバックモデルへルーティング" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-010",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "AI GatewayのDynamic Routingにおける「Rate Limit」ノードと「Budget Limit」ノードの役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "どちらも同じ機能で、リクエスト件数とコストの両方を同時に制限する単一のノードである",
+          "wrongFeedback": "Rate LimitノードとBudget Limitノードは別々のノードで、それぞれ制限する対象(件数かコストか)が異なります。"
+        },
+        {
+          "text": "Rate LimitノードはA/Bテストや段階的なロールアウトのために、リクエストを確率的に複数の出力へ振り分ける",
+          "wrongFeedback": "確率的な振り分けを行うのはPercentageノードの役割です。Rate Limitノードはリクエスト件数の上限を管理します。"
+        },
+        {
+          "text": "Rate Limitノードは(自分のキーごと・期間ごとの)リクエスト件数の上限を管理して超過時にフォールバックへ切り替え、Budget Limitノードは同様にコストの上限を管理して超過時にフォールバックへ切り替える"
+        },
+        {
+          "text": "Rate LimitノードとBudget Limitノードはどちらも、条件式(例: `user_plan == \"paid\"`)によるIf/Elseの分岐だけを行う",
+          "wrongFeedback": "条件式によるIf/Elseの分岐を行うのはConditionalノードの役割です。Rate Limit/Budget Limitノードは件数・コストの上限管理を行います。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Dynamic Routingでは、Rate Limitノードが(自分のキーごと・期間ごとの)リクエスト件数の上限を管理し、超過時にフォールバックへ切り替えます。Budget Limitノードは同様にコストの上限を管理し、超過時にフォールバックへ切り替えます。これらはConditional(条件分岐)やPercentage(確率的振り分け)といった他のノードと組み合わせて、コードを変更せずにルーティングフローを構築できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/dynamic-routing/",
+      "hint": "「件数」を数える仕組みと「金額」を数える仕組みは別物だと考え、それぞれの名前を思い出しましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Dynamic Routingの主なノード",
+          "items": [
+            { "text": "Conditional", "sub": "条件によるIf/Else分岐" },
+            { "text": "Percentage", "sub": "確率的な振り分け" },
+            { "text": "Rate Limit", "sub": "リクエスト件数の上限" },
+            { "text": "Budget Limit", "sub": "コストの上限" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-011",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "AI GatewayでCustom Providerを呼び出す際のURLルーティングに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Custom Providerのslugはそのままリクエストの`model`やURLパスに使い、プレフィックスを付ける必要はない",
+          "wrongFeedback": "Custom Providerを参照する際は、slugの前に`custom-`というプレフィックスを付ける必要があります。"
+        },
+        {
+          "text": "Custom Providerのslugには`custom-`というプレフィックスを付けて参照し、ゲートウェイURLの`custom-{slug}/`より後ろの部分がそのまま登録した`base_url`の末尾に連結されてアップストリームURLになる"
+        },
+        {
+          "text": "`base_url`にはAPIパス(例: `/v1/chat/completions`)まで含めて登録する必要があり、リクエストURL側にはパスを含めない",
+          "wrongFeedback": "`base_url`にはルートドメインのみを登録するべきで、APIパスの部分はリクエストURL側(`custom-{slug}/`より後ろ)に含めます。"
+        },
+        {
+          "text": "Custom Providerは常にOpenAI互換の`/chat/completions`形式のリクエストしか受け付けられず、それ以外のAPI形式には対応できない",
+          "wrongFeedback": "OpenAI互換形式はUnified API経由の場合の制約です。provider-specific endpointを使えば、プロバイダー独自のAPI形式にも対応できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Custom Providerを参照する際は、slugの前に`custom-`というプレフィックスを付けます。ゲートウェイURLの`custom-{slug}/`より後ろに続く部分は、登録した`base_url`の末尾にそのまま連結されてアップストリームURLになります。`base_url`にはルートドメインのみを登録し、APIパスの部分はリクエストURL側に含めるのが正しい設定方法です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/custom-providers/#how-url-routing-works",
+      "hint": "「固定で登録する部分」と「リクエストのたびに変わる部分」を、どう組み合わせて最終的なURLを組み立てるか考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "formula",
+          "label": "アップストリームURLの組み立て",
+          "result": "アップストリームURL",
+          "components": [
+            { "text": "base_url", "sub": "ルートドメインのみ登録" },
+            { "text": "custom-{slug}/より後ろのパス", "sub": "リクエストごとに指定", "highlight": true }
+          ],
+          "operator": "+"
+        }
+      ]
+    },
+    {
+      "id": "ag-012",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "Custom Providerの`base_url`設定でありがちな失敗として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`base_url`をHTTPSではなくHTTPで登録しても問題なく動作する",
+          "wrongFeedback": "`base_url`はHTTPSのURLである必要があり、HTTPは許可されていません。"
+        },
+        {
+          "text": "`base_url`に複数のslugを同時に登録することができず、1つのslugにつき複数のURLを割り当てる必要がある",
+          "wrongFeedback": "そのような制約の説明ではありません。よくある失敗は`base_url`とリクエストパスの間でパスの重複や欠落が起きることです。"
+        },
+        {
+          "text": "アップストリームプロバイダーが404を返す原因は常にAI Gateway側の障害であり、`base_url`やリクエストパスの設定を見直す必要はない",
+          "wrongFeedback": "404の主な原因は`base_url`の設定ミスやリクエストパスの誤りであることが多く、まず設定を確認すべきとされています。"
+        },
+        {
+          "text": "`base_url`にAPIパスの一部(例: `/v1`)を含めてしまうと、リクエスト側にも同じ`/v1`が含まれている場合にパスが重複し、アップストリームが`/v1/v1/chat/completions`のような誤ったパスを受け取ってしまう"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "よくある失敗は、`base_url`にAPIパスの一部(`/v1`など)を含めてしまい、リクエストURL側にも同じセグメントが含まれることで、アップストリームへのパスが重複してしまうことです(例: `/v1/v1/chat/completions`)。`base_url`にはルートドメインのみを設定し、パスはリクエスト側に任せるのが正しい設定です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/custom-providers/#404-when-making-requests-to-a-custom-provider",
+      "hint": "同じ「道順の一部」を2つの場所に重複して書いてしまうと何が起きるか考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "base_url設定の誤りと正しい設定",
+          "columns": [
+            { "heading": "誤り", "items": ["base_urlに/v1を含める", "リクエスト側にも/v1", "結果: /v1/v1/chat/completionsという誤ったパス"] },
+            { "heading": "正しい設定", "items": ["base_urlはルートドメインのみ", "パスはリクエスト側で指定"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-013",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "AI Gatewayのリクエストタイムアウトとリトライに関するヘッダー設定として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "タイムアウトは`cf-aig-request-timeout`で、リトライは`cf-aig-max-attempts`・`cf-aig-retry-delay`・`cf-aig-backoff`という3つの別ヘッダーの組み合わせで指定する"
+        },
+        {
+          "text": "タイムアウトとリトライはどちらも同じ`cf-aig-timeout`という1つのヘッダーだけで制御し、別々のヘッダーは存在しない",
+          "wrongFeedback": "タイムアウトとリトライはそれぞれ別のヘッダー(`cf-aig-request-timeout`と`cf-aig-max-attempts`等)で制御します。"
+        },
+        {
+          "text": "リトライ回数の上限は無制限に設定でき、`cf-aig-max-attempts`にどんな大きな値を指定してもそのまま適用される",
+          "wrongFeedback": "リトライ回数の上限は最大5回までです。無制限に設定できるわけではありません。"
+        },
+        {
+          "text": "リトライの遅延(`cf-aig-retry-delay`)は分単位で指定し、最大60分まで設定できる",
+          "wrongFeedback": "リトライの遅延はミリ秒単位で指定し、最大5秒までという制約があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "AI Gatewayでは、リクエストタイムアウトを`cf-aig-request-timeout`ヘッダー(ミリ秒)で指定します。リトライは`cf-aig-max-attempts`(最大5回)、`cf-aig-retry-delay`(ミリ秒、最大5秒)、`cf-aig-backoff`(`constant`/`linear`/`exponential`)という3つのヘッダーの組み合わせで制御します。最後のリトライ試行では、完了するまで待機します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/request-handling/",
+      "hint": "「どれだけ待つか」と「何回・どのくらいの間隔で再試行するか」は、別々の設定項目に分かれていることを意識しましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "タイムアウトとリトライの設定項目",
+          "columns": [
+            { "heading": "タイムアウト", "items": ["cf-aig-request-timeout"] },
+            { "heading": "リトライ", "items": ["cf-aig-max-attempts(最大5)", "cf-aig-retry-delay(最大5秒)", "cf-aig-backoff"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-014",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "`env.AI.run()`の第3引数`gateway`オブジェクトで指定できるオプションに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`skipCache`はキャッシュの保存期間(秒数)を指定するためのオプションで、真偽値ではなく数値を渡す",
+          "wrongFeedback": "`skipCache`は真偽値(boolean)で、そのリクエストのキャッシュ利用自体をスキップするかどうかを指定します。保存期間を指定するのは`cacheTtl`です。"
+        },
+        {
+          "text": "`metadata`オプションは、リクエストの認証に使うAPIトークンを直接指定するためのものである",
+          "wrongFeedback": "`metadata`は認証情報ではなく、ログエントリに付与するカスタムメタデータ(任意のキーバリュー)を指定するオプションです。"
+        },
+        {
+          "text": "`cacheTtl`でキャッシュの保持秒数、`cacheKey`でカスタムのキャッシュキー、`collectLog`でそのリクエストのログを収集するかどうか、`metadata`でログに付与するカスタムメタデータを指定できる"
+        },
+        {
+          "text": "`gateway`オブジェクトの`id`は省略可能で、省略した場合はデフォルトで一切ゲートウェイを経由せずにプロバイダーへ直接リクエストが送られる",
+          "wrongFeedback": "`id`は必須のパラメータです。`\"default\"`を指定すると、初回の認証済みリクエスト時に自動でゲートウェイが作成されます。省略してゲートウェイを経由しなくなるわけではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`env.AI.run()`の第3引数`gateway`オブジェクトでは、`cacheTtl`でキャッシュの保持秒数、`cacheKey`でカスタムのキャッシュキー、`skipCache`でそのリクエストのキャッシュ利用をスキップするかどうか、`collectLog`でそのリクエストのログを収集するかどうか、`metadata`でログに付与するカスタムメタデータを指定できます。`id`は必須で、`\"default\"`を指定すると初回の認証済みリクエスト時にゲートウェイが自動作成されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/usage/worker-binding-methods/#gateway-options",
+      "hint": "キャッシュに関するオプションが複数あることに注目し、それぞれ「何を」制御しているか整理しましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "gatewayオブジェクトの主なオプション",
+          "items": [
+            { "text": "cacheTtl", "sub": "キャッシュ保持秒数" },
+            { "text": "cacheKey", "sub": "カスタムキャッシュキー" },
+            { "text": "skipCache", "sub": "キャッシュ利用のスキップ" },
+            { "text": "collectLog", "sub": "ログ収集の有無" },
+            { "text": "metadata", "sub": "ログへのカスタムメタデータ" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-015",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "`env.AI.gateway()`が返すゲートウェイインスタンスのメソッドに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`getUrl()`は常にOpenAIプロバイダー専用のURLしか返せず、他のプロバイダーには使えない",
+          "wrongFeedback": "`getUrl()`は任意のプロバイダー名を引数として渡すことができ、プロバイダーごとのエンドポイントURLを取得できます。引数を省略すればゲートウェイ自体のベースURLを返します。"
+        },
+        {
+          "text": "`patchLog()`は特定のログエントリにフィードバックやスコア、メタデータを後から追加でき、`getLog()`は特定のログエントリの詳細を取得できる"
+        },
+        {
+          "text": "`getLog()`はログの内容を取得するだけでなく、そのログに対応するリクエストを再実行(リプレイ)する機能も持つ",
+          "wrongFeedback": "`getLog()`はログ内容を取得するだけの読み取り専用メソッドです。リクエストの再実行機能はありません。"
+        },
+        {
+          "text": "`patchLog()`はログエントリを毎回完全に置き換える(丸ごと上書きする)ことしかできず、一部のプロパティだけを部分的に更新することは一切許可されていない",
+          "wrongFeedback": "`patchLog()`の第2引数のプロパティはすべてオプショナルで、指定したプロパティだけを部分的に更新できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`env.AI.gateway(name)`が返すゲートウェイインスタンスは、`patchLog(logId, {...})`で特定のログエントリにフィードバック・スコア・メタデータを後から追加でき、`getLog(logId)`で特定のログエントリの詳細を取得できます。`getUrl(provider?)`はゲートウェイのベースURL、またはプロバイダー名を渡した場合はそのプロバイダー専用のエンドポイントURLを返します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/usage/worker-binding-methods/#envaigateway",
+      "hint": "「後から評価情報を付け足す」のと「内容を確認する」のは、別々のメソッドとして用意されていると考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "gatewayインスタンスの主なメソッド",
+          "items": [
+            { "text": "patchLog()", "sub": "フィードバック・スコアを後から追加" },
+            { "text": "getLog()", "sub": "ログ詳細を取得" },
+            { "text": "getUrl(provider?)", "sub": "ベースURL/プロバイダー別URLを取得" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-016",
+      "category": "ai-gateway",
+      "difficulty": "advanced",
+      "question": "Unified Billingが有効なAI Gatewayで、`@cf/meta/llama-3.1-8b-instruct`のようなWorkers AIモデルを`env.AI.run()`で呼び出した場合の課金について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Workers AIモデルもサードパーティモデルと同様に、Unified Billingのクレジットから5%の手数料込みで差し引かれる",
+          "wrongFeedback": "Unified Billingが対象とするのはサードパーティプロバイダー(OpenAIやAnthropicなど)のモデルであり、Workers AIモデルはその対象外です。"
+        },
+        {
+          "text": "Workers AIモデルはAI Gateway経由では一切課金されず、常に無料で利用できる",
+          "wrongFeedback": "無料というわけではありません。Workers AIモデルは通常のWorkers AI料金(トークン数に応じた課金)が適用されます。"
+        },
+        {
+          "text": "Workers AIモデルの課金額は、Unified Billingのクレジットとは別に、Unified Billingの5%手数料も上乗せされたうえで請求される",
+          "wrongFeedback": "Unified Billingの5%手数料は、Unified Billingのクレジット購入時にのみ適用されるものです。Workers AIモデルの課金には関係しません。"
+        },
+        {
+          "text": "Workers AIモデルはUnified Billingの対象外で、通常のWorkers AI料金(トークン使用量に応じた課金)がそのまま適用され、Unified Billingのクレジットからは差し引かれない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`@cf/`から始まるWorkers AIモデルは、AI Gateway経由で呼び出してもUnified Billingの対象外です。これらのモデルは通常のWorkers AI料金(トークン使用量に応じた課金)がそのまま適用され、Unified Billingのクレジットからは差し引かれません。Unified Billingが対象とするのは、OpenAIやAnthropic、Google AI Studioなどのサードパーティプロバイダーのモデルです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/unified-billing/#use-unified-billing",
+      "hint": "「Cloudflare自身が提供するモデル」と「外部プロバイダーのモデル」とで、課金の仕組みが同じとは限らないことを考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "モデル種別による課金の違い",
+          "columns": [
+            { "heading": "Workers AIモデル(@cf/)", "items": ["通常のWorkers AI料金", "Unified Billing対象外"] },
+            { "heading": "サードパーティモデル", "items": ["Unified Billingのクレジットから支払い", "5%手数料込みのクレジット購入"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-017",
+      "category": "ai-gateway",
+      "difficulty": "advanced",
+      "question": "AI GatewayのAPIトークン(`AI Gateway Run`権限を含む)のスコープに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`AI Gateway Run`権限はR2のバケット単位のスコープとは異なりアカウント全体に及ぶため、そのトークンを持つ第三者はBYOKで保存された認証情報を含め、アカウント内のすべてのゲートウェイにリクエストを送れてしまう"
+        },
+        {
+          "text": "`AI Gateway Run`権限は、R2のバケット単位のスコープと同様に特定の1つのゲートウェイだけに制限できる",
+          "wrongFeedback": "R2のバケット単位のスコープとは異なり、`AI Gateway Run`権限は特定の1つのゲートウェイだけに制限することはできません。"
+        },
+        {
+          "text": "ゲートウェイ間の分離を実現したい場合は、トークンのスコープを工夫するだけで十分であり、アカウントを分ける必要はない",
+          "wrongFeedback": "トークンのスコープではゲートウェイ単位の分離ができないため、ゲートウェイやテナント間の分離には別のCloudflareアカウントを使うか、Worker側のAI Gatewayバインディングを使うことが推奨されています。"
+        },
+        {
+          "text": "BYOKで保存されたプロバイダーの認証情報は、`AI Gateway Run`権限を持つトークンからは一切アクセスできないよう自動的に保護されている",
+          "wrongFeedback": "`AI Gateway Run`権限を持つトークンは、BYOKで保存された認証情報を使うゲートウェイも含め、アカウント内の全ゲートウェイにリクエストを送れてしまいます。自動的に保護されているわけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`AI Gateway Run`権限は、R2のバケット単位のスコープのように特定の1つのゲートウェイだけに制限することができず、アカウント全体に及びます。そのため、このトークンを持つ第三者は、BYOKで保存された認証情報を使うゲートウェイも含め、アカウント内のすべてのゲートウェイにリクエストを送信できてしまいます。ゲートウェイやテナント間の分離を実現したい場合は、別のCloudflareアカウントを使うか、Worker側のAI Gatewayバインディングを使うことが推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/authentication/#setting-up-authenticated-gateway-using-the-dashboard",
+      "hint": "R2のバケット単位のような「細かく絞り込めるスコープ」が、このトークンにも同じようにあるかどうか考えましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "トークンスコープの違い",
+          "columns": [
+            { "heading": "R2のAPIトークン", "items": ["バケット単位でスコープ可能"] },
+            { "heading": "AI Gateway Runトークン", "items": ["アカウント全体に及ぶ", "ゲートウェイ単位の制限は不可"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ag-018",
+      "category": "ai-gateway",
+      "difficulty": "intermediate",
+      "question": "AI Gatewayの制限値に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1アカウントあたり作成できるゲートウェイ数は、無料プラン・有料プランのどちらでも同じ上限が適用される",
+          "wrongFeedback": "無料プランは1アカウントあたり10個、有料プランは20個までと上限が異なります。"
+        },
+        {
+          "text": "ログの保存件数の上限は、無料プラン・有料プランともに「ゲートウェイごと」に適用される",
+          "wrongFeedback": "有料プランは「ゲートウェイごと」に1000万件までですが、無料プランは「アカウント全体」で10万件までという違いがあります。"
+        },
+        {
+          "text": "キャッシュ可能なリクエストサイズは1リクエストあたり25MBまで、キャッシュTTLは最大1か月まで、カスタムメタデータは1リクエストあたり最大5エントリまでという制限がある"
+        },
+        {
+          "text": "カスタムメタデータのエントリ数に上限はなく、1リクエストにいくつでも付与できる",
+          "wrongFeedback": "カスタムメタデータは1リクエストあたり最大5エントリまでという上限があります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "AI Gatewayでは、キャッシュ可能なリクエストサイズは1リクエストあたり25MBまで、キャッシュTTLは最大1か月まで、カスタムメタデータは1リクエストあたり最大5エントリまでという制限があります。また、ゲートウェイ数は無料プランで1アカウントあたり10個、有料プランで20個まで、ログ保存件数は有料プランで1ゲートウェイあたり1000万件、無料プランはアカウント全体で10万件までという違いもあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ai-gateway/reference/limits/",
+      "hint": "「サイズ」「期間」「個数」という異なる種類の上限が、それぞれ別の数値で決まっていることを整理しましょう。",
+      "tags": ["ai-gateway", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "AI Gatewayの主な制限値",
+          "columns": [
+            { "heading": "リクエストサイズ", "items": ["25MBまで"] },
+            { "heading": "キャッシュTTL", "items": ["最大1か月"] },
+            { "heading": "カスタムメタデータ", "items": ["1リクエストあたり最大5件"] }
+          ]
+        }
+      ]
     }
   ]
 }
