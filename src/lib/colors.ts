@@ -13,6 +13,7 @@ export const COLOR_MAP: Record<string, string> = {
   rose: '#f43f5e',
   sky: '#0ea5e9',
   amber: '#f59e0b',
+  violet: '#8b5cf6',
   gray: '#6b7280',
 }
 

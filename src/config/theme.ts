@@ -273,6 +273,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '既存のコンテナ資産をWorkersと組み合わせて動かせる',
     },
     {
+      id: 'workers-for-platforms',
+      name: 'Workers for Platforms',
+      icon: '🏗️',
+      color: 'violet',
+      weight: 10,
+      description:
+        'dispatch namespace・dynamic dispatch Workerによる顧客コードの隔離実行、Outbound Workerによる通信制御、マルチテナントSaaS基盤の構築',
+      skillDescription: '顧客ごとに隔離されたWorkerを持つマルチテナント基盤を構築できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

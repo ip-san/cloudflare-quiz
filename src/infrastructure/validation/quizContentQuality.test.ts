@@ -28,7 +28,7 @@ const singleQuizzes = quizzes.filter((q) => q.type !== 'multi')
 const multiQuizzes = quizzes.filter((q) => q.type === 'multi')
 const validCategoryIds = PREDEFINED_CATEGORIES.map((c) => c.id)
 
-/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct- + 3桁連番） */
+/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp- + 3桁連番） */
 const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wk: 'workers',
   wr: 'wrangler',
@@ -43,6 +43,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   px: 'platform-services',
   ob: 'observability',
   ct: 'containers',
+  wp: 'workers-for-platforms',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -58,6 +59,17 @@ const VALID_DOC_PAGES = [
   'cache/advanced-configuration/cache-reserve/',
   'cache/how-to/tiered-cache/',
   'cloudflare-for-platforms/workers-for-platforms/',
+  'cloudflare-for-platforms/workers-for-platforms/get-started/',
+  'cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/',
+  'cloudflare-for-platforms/workers-for-platforms/configuration/dynamic-dispatch/',
+  'cloudflare-for-platforms/workers-for-platforms/configuration/custom-limits/',
+  'cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/',
+  'cloudflare-for-platforms/workers-for-platforms/configuration/bindings/',
+  'cloudflare-for-platforms/workers-for-platforms/configuration/tags/',
+  'cloudflare-for-platforms/workers-for-platforms/reference/limits/',
+  'cloudflare-for-platforms/workers-for-platforms/reference/pricing/',
+  'cloudflare-for-platforms/workers-for-platforms/reference/worker-isolation/',
+  'cloudflare-for-platforms/workers-for-platforms/reference/local-development/',
   'cloudflare-one/access-controls/policies/',
   'containers/',
   'containers/get-started/',
@@ -510,6 +522,7 @@ describe('Quiz Content Quality', () => {
         'platform-services',
         'observability',
         'containers',
+        'workers-for-platforms',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

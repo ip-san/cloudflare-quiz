@@ -15373,6 +15373,724 @@
           ]
         }
       ]
+    },
+    {
+      "id": "wp-001",
+      "category": "workers-for-platforms",
+      "difficulty": "beginner",
+      "question": "Workers for Platformsの目的として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Workersのデプロイをすべて自動化し、CI/CDパイプラインを不要にする仕組み",
+          "wrongFeedback": "CI/CD代替ではありません。Workers for Platformsは顧客コードを安全に実行するためのマルチテナント基盤です。"
+        },
+        {
+          "text": "単一のWorkerのコールドスタート時間を短縮するための高速化機能",
+          "wrongFeedback": "コールドスタート高速化の機能ではありません。複数テナントのコードを安全に分離実行する仕組みです。"
+        },
+        {
+          "text": "顧客やAIが書いたコードを、テナントごとに隔離された安全なサンドボックス(Worker)で実行できるようにし、マルチテナントなプラットフォームを構築できるようにする"
+        },
+        {
+          "text": "1つのWorkerスクリプトを世界中の複数リージョンに複製し、可用性を高めるための仕組み",
+          "wrongFeedback": "リージョン間の複製機能ではありません。テナントごとに独立したWorker実行環境を提供する仕組みです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers for Platformsは、顧客が書いたコードやAIが生成したコードを、テナントごとに隔離された安全なサンドボックス(Worker)で実行できるようにする仕組みです。各顧客は自分専用のWorkerを持ち、完全に分離された環境でコードが実行されます。\n{{diagram:0}}\nSaaSプラットフォーム上で顧客ごとのカスタムロジックを安全に動かしたい場合に使われます。",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/",
+      "hint": "「他人のコードを、自分のインフラの上で安全に動かす」にはどんな隔離の仕組みが必要か考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "Workers for Platforms の構成",
+          "layers": [
+            { "text": "プラットフォーム運営者", "sub": "顧客コードを受け取る" },
+            { "text": "Workers for Platforms", "sub": "テナントごとに隔離実行" },
+            { "text": "各テナントのUser Worker", "sub": "完全分離" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-002",
+      "category": "workers-for-platforms",
+      "difficulty": "beginner",
+      "question": "dispatch namespaceの説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "顧客のWorkerをすべて保持するコンテナで、通常は顧客ごとに分けず単一のnamespace(例: production)にまとめるのがベストプラクティスとされている"
+        },
+        {
+          "text": "顧客1人につき1つのnamespaceを作成し、顧客数だけnamespaceを増やしていくのが公式に推奨された運用方法",
+          "wrongFeedback": "公式には顧客ごとにnamespaceを分けるのではなく、単一のnamespaceにまとめることが推奨されています。"
+        },
+        {
+          "text": "namespace内のWorkerは通常のWorkersと同じくアカウントごとのスクリプト数上限が適用される",
+          "wrongFeedback": "namespace内のWorkerには通常のアカウントごとのスクリプト数上限が適用されず、無制限にデプロイできます。"
+        },
+        {
+          "text": "namespace内の各Workerは同じキャッシュを共有し、他のテナントのキャッシュにアクセスできる",
+          "wrongFeedback": "デフォルト(untrusted mode)では、namespace内の各Workerはキャッシュを共有せず分離されています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "dispatch namespaceは、顧客のWorker(user Worker)をすべて保持するコンテナです。顧客ごとに別々のnamespaceを作るのではなく、単一のnamespace(例: production)にまとめ、変更を安全にテストしたい場合は別途stagingのnamespaceを用意するのがベストプラクティスです。namespace内のWorkerには通常のアカウントごとのスクリプト数上限が適用されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/#dispatch-namespace",
+      "hint": "顧客が増えるたびに「箱」を増やすべきか、それとも1つの大きな箱にまとめるべきか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "dispatch namespace の構造",
+          "items": [
+            { "text": "dispatch namespace (production)", "sub": "全顧客のWorkerを収容" },
+            { "text": "顧客A の User Worker" },
+            { "text": "顧客B の User Worker" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-003",
+      "category": "workers-for-platforms",
+      "difficulty": "beginner",
+      "question": "dynamic dispatch Workerの役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "顧客が書いたコードを直接実行するWorkerそのものであり、user Workerと同一のものを指す",
+          "wrongFeedback": "dynamic dispatch Workerとuser Workerは別物です。dynamic dispatch Workerはリクエストの入り口となり、適切なuser Workerへ振り分ける役割を持ちます。"
+        },
+        {
+          "text": "全リクエストの入り口となり、ホスト名やパスなどをもとにどのuser Workerが処理すべきかを判断してルーティングし、認証やレート制限などのプラットフォーム側のロジックも実行する"
+        },
+        {
+          "text": "顧客がアップロードしたコードの構文エラーを事前にチェックする静的解析専用のWorker",
+          "wrongFeedback": "静的解析専用の仕組みではありません。リクエストのルーティングとプラットフォームロジックの実行が役割です。"
+        },
+        {
+          "text": "namespace内のWorkerを定期的にすべて再デプロイするスケジューラ",
+          "wrongFeedback": "再デプロイのスケジューラではありません。リクエストが来るたびにルーティングを判断する役割です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "dynamic dispatch Workerは、プラットフォームへの全リクエストの入り口です。ホスト名・パス・ヘッダーなどをもとにどのuser Workerが処理すべきかを判断してルーティングし、認証やレート制限、カスタム上限の適用などのプラットフォーム側のロジックを実行します。`env.DISPATCHER.get(name)`でnamespace内のuser Workerを呼び出します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/#dynamic-dispatch-worker",
+      "hint": "「最初にリクエストを受け取って、誰に処理させるか決める」役割は誰が担うか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "リクエストの入り口",
+          "actors": ["クライアント", "dynamic dispatch Worker", "user Worker"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "リクエスト" },
+            { "from": 1, "to": 1, "text": "認証・ルーティング判定" },
+            { "from": 1, "to": 2, "text": "env.DISPATCHER.get(name)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-004",
+      "category": "workers-for-platforms",
+      "difficulty": "beginner",
+      "question": "user Workerに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "プラットフォーム運営者だけが書けるコードで、顧客が直接コードを書くことはできない",
+          "wrongFeedback": "user Workerは顧客(またはAI)が書いたコードを実行するためのものです。プラットフォーム運営者専用ではありません。"
+        },
+        {
+          "text": "dispatch namespaceの外側、通常のWorkersアカウントの直下にデプロイされる",
+          "wrongFeedback": "user Workerはdispatch namespaceの中にデプロイされます。"
+        },
+        {
+          "text": "1つのuser Workerが複数の顧客のコードを同時に実行し、内部で顧客ごとに処理を振り分ける",
+          "wrongFeedback": "1つのuser Workerは1顧客分のコードを実行します。複数顧客のコードを1つのWorkerが同時に実行するものではありません。"
+        },
+        {
+          "text": "顧客が書いたコードを、プラットフォームがAPI経由でdispatch namespaceにデプロイしたもので、KV・D1・R2などのバインディングを個別に付与できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "user Workerは、顧客が書いたコードをプラットフォームがAPI経由でdispatch namespaceにデプロイしたものです。dynamic dispatch Workerから呼び出され、KV・D1・R2などのバインディングを個別に付与することで、顧客ごとに異なるリソースへのアクセスを設定できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/#user-workers",
+      "hint": "誰が書いたコードを、誰が代わりにデプロイしているのか、という役割分担を考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "user Worker のデプロイフロー",
+          "steps": [
+            { "text": "顧客がコードを書く" },
+            { "text": "プラットフォームがAPI経由でデプロイ" },
+            { "text": "user WorkerとしてNamespaceに配置" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-005",
+      "category": "workers-for-platforms",
+      "difficulty": "beginner",
+      "question": "Workers for PlatformsとService Bindingsの使い分けとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "呼び出す相手のWorkerが事前に決まっている内部サービス間通信にはService Bindingsを使い、顧客が動的にアップロードするWorkerを呼び出す場合にはWorkers for Platformsを使う"
+        },
+        {
+          "text": "Service Bindingsは廃止予定の機能であり、今後はWorkers for Platformsのみを使うべきとされている",
+          "wrongFeedback": "Service Bindingsは廃止予定ではなく、呼び出し先が既知の内部サービス間通信に引き続き使われる現役の機能です。"
+        },
+        {
+          "text": "Workers for PlatformsとService Bindingsは同時に使うことができず、どちらか一方しか選べない",
+          "wrongFeedback": "両方を同時に使うことができます。dynamic dispatch WorkerがService Bindingsで内部サービスを呼びつつ、namespace内のuser Workerへもディスパッチできます。"
+        },
+        {
+          "text": "Service BindingsはWorker間通信をサポートしないため、HTTPリクエストの中継にしか使えない",
+          "wrongFeedback": "Service BindingsもWorker間通信をサポートする仕組みです。両者ともWorker-to-Worker通信を可能にします。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Service BindingsとWorkers for Platformsはどちらもワーカー間通信を可能にしますが、Service Bindingsは呼び出す相手のWorkerが事前にわかっている場合に使い、Workers for Platformsは顧客が動的にアップロードするWorkerを呼び出す場合に使います。両者は同時に使うこともできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/#workers-for-platforms-versus-service-bindings",
+      "hint": "呼び出す相手が「あらかじめ決まっているか」「後から動的に増えるか」という違いに注目しましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Service Bindings と Workers for Platforms",
+          "columns": [
+            { "heading": "Service Bindings", "items": ["呼び出し先が既知", "内部サービス間通信向き"] },
+            { "heading": "Workers for Platforms", "items": ["呼び出し先が動的", "顧客アップロードのWorker向き"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-006",
+      "category": "workers-for-platforms",
+      "difficulty": "beginner",
+      "question": "Outbound Workerの役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "user Workerへの受信リクエストを最初に受け取り、認証してから転送する",
+          "wrongFeedback": "受信リクエストを最初に受け取るのはdynamic dispatch Workerの役割です。Outbound Workerはuser Workerが行う外向きのfetch()を横取りします。"
+        },
+        {
+          "text": "user Workerのソースコードを暗号化してストレージに保存する",
+          "wrongFeedback": "コードの暗号化保存はOutbound Workerの役割ではありません。外向き通信の可視化・制御が目的です。"
+        },
+        {
+          "text": "user Workerが行う外向きのfetch()リクエストを横取りし、ログ記録・許可リストやブロックリストによる制御・認証ヘッダーの付与などができるようにする"
+        },
+        {
+          "text": "複数のuser Worker間でデータを直接共有するための共有ストレージを提供する",
+          "wrongFeedback": "Worker間のデータ共有ストレージではありません。外向き通信を中継・制御する仕組みです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Outbound Workerは、user Workerが行う外向きの`fetch()`リクエストを横取りする仕組みです。どの外部ホストにアクセスしているかのログ記録、許可リスト・ブロックリストによる制御、認証ヘッダーの自動付与などに使えます。Outbound Workerが有効な場合、user Workerは`connect()`によるTCPソケットの直接作成ができなくなります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/",
+      "hint": "user Workerが「外の世界へ話しかける」通信を、誰かが間に立ってチェックする仕組みを考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "Outbound Worker の位置づけ",
+          "nodes": [
+            { "id": "u", "text": "User Worker" },
+            { "id": "o", "text": "Outbound Worker" },
+            { "id": "e", "text": "外部API" }
+          ],
+          "edges": [
+            { "from": "u", "to": "o", "label": "fetch()" },
+            { "from": "o", "to": "e", "label": "認証ヘッダー付与などの後に転送" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-007",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "dynamic dispatch Workerがnamespace内のuser Workerを呼び出せるようにするための正しいwrangler設定と呼び出し方はどれですか？",
+      "options": [
+        {
+          "text": "`kv_namespaces`にnamespace名を指定し、`env.KV.get(workerName)`でWorkerを取得する",
+          "wrongFeedback": "KVバインディングではなく`dispatch_namespaces`という専用のバインディングを使います。"
+        },
+        {
+          "text": "`\"dispatch_namespaces\": [{ \"binding\": \"DISPATCHER\", \"namespace\": \"my-dispatch-namespace\" }]`を設定し、`env.DISPATCHER.get(workerName)`で対象のuser Workerを取得する"
+        },
+        {
+          "text": "`durable_objects`バインディングでnamespaceを指定し、`env.NAMESPACE.idFromName(workerName)`でWorkerを取得する",
+          "wrongFeedback": "Durable Objectsのバインディングではなく、専用の`dispatch_namespaces`バインディングを使います。"
+        },
+        {
+          "text": "`vars`にnamespace名を文字列で設定し、`fetch(vars.NAMESPACE + workerName)`のようにURLを組み立てて呼び出す",
+          "wrongFeedback": "`vars`ではなく`dispatch_namespaces`バインディングを使い、`env.DISPATCHER.get()`でWorkerのスタブを取得します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "wrangler設定に`dispatch_namespaces`バインディング(`binding`名と`namespace`名を指定)を追加すると、dynamic dispatch Workerは`env.DISPATCHER.get(workerName)`のようにしてnamespace内の任意のuser Workerを取得・呼び出せます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/dynamic-dispatch/#configure-the-dispatch-namespace-binding",
+      "hint": "namespace内のWorkerを「名前で取り出す」ために、どんな専用の入り口が用意されているか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "wrangler.jsonc の dispatch_namespaces",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            { "text": "{" },
+            { "text": "  \"dispatch_namespaces\": [", "highlight": true },
+            { "text": "    { \"binding\": \"DISPATCHER\", \"namespace\": \"my-dispatch-namespace\" }", "highlight": true },
+            { "text": "  ]" },
+            { "text": "}" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-008",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "dynamic dispatch Workerからuser Workerに対してCPU時間とサブリクエスト数の上限を設定する正しい方法はどれですか？",
+      "options": [
+        {
+          "text": "user Worker側のwrangler設定に`\"limits\": { \"cpu_ms\": 10 }`を追加し、user Worker自身が自分の上限を宣言する",
+          "wrongFeedback": "上限はuser Worker自身が宣言するのではなく、呼び出し側であるdynamic dispatch Workerが`env.DISPATCHER.get()`の第3引数として指定します。"
+        },
+        {
+          "text": "Cloudflareダッシュボードでアカウント全体の共通のCPU時間上限を1つだけ設定し、すべてのuser Workerに一律適用する",
+          "wrongFeedback": "ダッシュボードでの一律設定ではなく、コード内で顧客ごとに異なる上限を柔軟に指定できます。"
+        },
+        {
+          "text": "`outbound`パラメータに`{ limits: {...} }`を渡し、Outbound Worker側で上限を強制する",
+          "wrongFeedback": "上限は`outbound`パラメータではなく、`env.DISPATCHER.get(name, {}, { limits: {...} })`の第3引数で指定します。"
+        },
+        {
+          "text": "`env.DISPATCHER.get(workerName, {}, { limits: { cpuMs: ..., subRequests: ... } })`のように第3引数でCPU時間とサブリクエスト数の上限を指定し、顧客のプラン種別などに応じて動的に値を変える"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "custom limitsは、dynamic dispatch Worker側から`env.DISPATCHER.get(workerName, {}, { limits: { cpuMs, subRequests } })`のように第3引数として指定します。顧客のプラン(enterprise/pro/freeなど)に応じて異なる上限値を動的に設定できます。上限を超えるとuser Workerは例外を投げます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/custom-limits/",
+      "hint": "上限を「守らせる側」と「守る側」、どちらが上限値を決めて渡すのが自然か考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プラン別のカスタム上限例",
+          "columns": [
+            { "heading": "enterprise", "items": ["cpuMs: 50", "subRequests: 50"] },
+            { "heading": "pro", "items": ["cpuMs: 20", "subRequests: 20"] },
+            { "heading": "free", "items": ["cpuMs: 10", "subRequests: 5"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-009",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "dynamic dispatch Workerでのルーティング方式に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "サブドメインベースのルーティングでは`customer1.example.com`のようなホスト名からサブドメイン部分を取り出し、その名前のuser Workerを`env.DISPATCHER.get()`で呼び出す"
+        },
+        {
+          "text": "`env.USER_ROUTING`のようなKVを参照するKVベースのルーティングを使う場合であっても、ルーティング表をわずかに変更するたびに毎回dynamic dispatch Worker自体を再デプロイする必要がある",
+          "wrongFeedback": "KVベースのルーティングの利点は、KVの値を書き換えるだけでルーティング変更ができ、dispatch Worker自体の再デプロイが不要な点です。"
+        },
+        {
+          "text": "パスベースのルーティングは、Workers Routesの設定をパスごとに追加する以外に実現方法がない",
+          "wrongFeedback": "Workers Routesの設定を追加する方法ではなく、dynamic dispatch Worker内のコードでパスを解析してuser Worker名を決定します。"
+        },
+        {
+          "text": "ルーティング方式はサブドメインベースの1種類しか実装できず、パスベースやKVベースなど他の方式のルーティングは一切実装できない",
+          "wrongFeedback": "KVベース・サブドメインベース・パスベースなど、コードで自由にルーティングロジックを実装できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "dynamic dispatch Workerでは、KVに保存したマッピングを参照する「KVベース」、ホスト名のサブドメイン部分を使う「サブドメインベース」、URLパスの先頭セグメントを使う「パスベース」など、コードで自由にルーティングロジックを実装できます。KVベースならKVの値を書き換えるだけでルーティングを変更でき、dispatch Worker自体の再デプロイは不要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/dynamic-dispatch/#routing-examples",
+      "hint": "ホスト名・パス・外部データストアなど、ルーティング判断の材料として何を使えるか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ルーティング方式の比較",
+          "columns": [
+            { "heading": "サブドメインベース", "items": ["customer1.example.com", "hostnameの先頭部分"] },
+            { "heading": "パスベース", "items": ["example.com/customer-1", "pathの先頭セグメント"] },
+            { "heading": "KVベース", "items": ["KVに保存したマッピング参照", "再デプロイ不要で変更可"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-010",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "Outbound Workerを有効にするためのwrangler設定と、有効化によって制限される機能の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`outbound_workers`という独立したトップレベルの設定項目にサービス名を指定し、有効化してもuser Workerの機能に制限は生じない",
+          "wrongFeedback": "独立した`outbound_workers`という設定項目ではなく、`dispatch_namespaces`バインディングの`outbound`フィールドで指定します。また有効化するとuser Workerは`connect()`によるTCPソケット作成ができなくなります。"
+        },
+        {
+          "text": "`dispatch_namespaces`バインディングの`outbound`フィールドにサービス名を指定するが、有効化してもuser Workerの機能に制限は一切生じない",
+          "wrongFeedback": "設定方法は正しいですが、Outbound Workerを有効にするとuser Workerは`connect()`によるTCPソケットの直接作成ができなくなります。"
+        },
+        {
+          "text": "`dispatch_namespaces`バインディングの`outbound`フィールドに`service`(と必要なら`parameters`)を指定し、有効化するとuser Workerは`connect()`によるTCPソケットを直接作成できなくなる"
+        },
+        {
+          "text": "Outbound Workerの設定はuser Worker側のwrangler設定で行い、user Worker自身が自分の出力先を宣言する",
+          "wrongFeedback": "Outbound Workerの設定はuser Worker側ではなく、dynamic dispatch Worker側の`dispatch_namespaces`バインディングで行います。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Outbound Workerは、dynamic dispatch Worker側のwrangler設定にある`dispatch_namespaces`バインディングの`outbound`フィールドに`service`(呼び出すOutbound Workerの名前)と、必要なら`parameters`(渡す変数名)を指定して有効にします。Outbound Workerを有効にすると、user Workerは`connect()`による直接のTCPソケット作成ができなくなり、すべての外向き通信がOutbound Workerの`fetch`を経由するようになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/",
+      "hint": "外向き通信を「必ず一箇所を通す」ようにするなら、それ以外の直接的な抜け道は許されたままでよいか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "Outbound Worker の設定",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            { "text": "{" },
+            { "text": "  \"dispatch_namespaces\": [", "highlight": true },
+            { "text": "    {" },
+            { "text": "      \"binding\": \"dispatcher\", \"namespace\": \"<NAMESPACE_NAME>\"," },
+            { "text": "      \"outbound\": { \"service\": \"<SERVICE_NAME>\" }", "highlight": true },
+            { "text": "    }" },
+            { "text": "  ]" },
+            { "text": "}" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-011",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "user Workerにバインディングを追加する際の正しい手順はどれですか？",
+      "options": [
+        {
+          "text": "wrangler設定ファイル(`wrangler.jsonc`)の内容をそのままモジュールの1つとしてアップロードし、その中に書いた`kv_namespaces`フィールドで設定する",
+          "wrongFeedback": "APIでスクリプトをアップロードする場合、wrangler設定ファイルをモジュールとしてアップロードすることはできません。バインディングはmultipartアップロードの`metadata`オブジェクトで指定します。"
+        },
+        {
+          "text": "Upload User Worker APIを使い、multipartアップロードリクエストの`metadata`オブジェクトの`bindings`配列にバインディング定義を含める"
+        },
+        {
+          "text": "バインディングはダッシュボードのGUIからのみ追加可能で、APIから追加することはできない",
+          "wrongFeedback": "APIのmultipartアップロードの`metadata.bindings`を通じてプログラム的に追加できます。"
+        },
+        {
+          "text": "既存のバインディングを保持したまま新しいバインディングを追加したい場合でも、リクエストのたびに必ず全バインディングを毎回明示的に列挙し直さなければならない",
+          "wrongFeedback": "`keep_bindings`パラメータを使えば、既存のバインディングを保持したまま新しいバインディングだけを追加できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "user Workerへのバインディング追加は、Upload User Worker APIのmultipartアップロードリクエストにおける`metadata`オブジェクトの`bindings`配列で行います。既存のバインディングを保持したまま新しいバインディングを追加したい場合は、`keep_bindings`パラメータを使います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/bindings/",
+      "hint": "user Workerはwrangler CLIではなくAPI経由でデプロイされることを踏まえ、設定情報がどこに含まれるか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "バインディング追加の流れ",
+          "steps": [
+            { "text": "multipartアップロードを作成" },
+            { "text": "metadata.bindingsにバインディング定義" },
+            { "text": "Upload User Worker APIへPUT" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-012",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "Workers for PlatformsのTags機能に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1つのスクリプトに付与できるタグ数に上限はなく、無制限にタグを追加できる",
+          "wrongFeedback": "1スクリプトあたり最大8個までという上限があります。"
+        },
+        {
+          "text": "タグは課金計算のためだけに使われる内部的な仕組みで、検索やフィルタには使えない",
+          "wrongFeedback": "タグは顧客ID・プラン種別・環境などで検索・フィルタしたり、一括操作を行うために使います。課金専用の仕組みではありません。"
+        },
+        {
+          "text": "特定のタグが付いたWorkerを一括で削除することはできず、1つずつ個別に削除する必要がある",
+          "wrongFeedback": "タグでフィルタして一括削除するAPI(`tags`パラメータ指定での削除)が提供されています。"
+        },
+        {
+          "text": "顧客ID・プラン種別・環境などのタグを付与でき、タグでフィルタして一覧取得や一括削除といった操作ができる(1スクリプトあたり最大8個まで)"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Tagsは顧客ID・プラン種別・環境などのラベルをuser Workerに付与し、検索・フィルタ・一括操作(顧客が退会した際の一括削除など)を可能にする機能です。1スクリプトあたり最大8個までのタグを設定できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/tags/",
+      "hint": "大量のWorkerの中から「特定の顧客の分だけ」を探したり消したりしたいとき、何を目印にするか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Tags の使い方",
+          "items": [
+            { "text": "タグ", "sub": "顧客ID・プラン種別・環境など、最大8個" },
+            { "text": "フィルタ・一覧取得", "sub": "tags:yes/noで絞り込み" },
+            { "text": "一括削除", "sub": "特定タグのWorkerをまとめて削除" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-013",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "dispatch namespaceの「untrusted mode」(デフォルト)と「trusted mode」の違いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "untrusted modeでは`request.cf`オブジェクトにアクセスできずキャッシュもWorkerごとに分離されるが、trusted modeにすると`request.cf`が利用可能になりキャッシュも共有されるようになる"
+        },
+        {
+          "text": "untrusted modeとtrusted modeは同じ機能を提供し、名前が違うだけで実質的な差はない",
+          "wrongFeedback": "実質的な差があります。trusted modeでは`request.cf`が利用可能になり、キャッシュも共有される点が異なります。"
+        },
+        {
+          "text": "trusted modeは顧客が書いたコードを実行する場合に推奨される、より安全な設定である",
+          "wrongFeedback": "trusted modeは全Worker間でキャッシュが共有されクロステナントのアクセスが起こりうるため、自社が全コードを管理する社内プラットフォームなど、顧客コードを実行しない場合に向いています。"
+        },
+        {
+          "text": "untrusted modeでは`caches.default`が利用可能で、trusted modeでは逆に無効化される",
+          "wrongFeedback": "逆です。`caches.default`はnamespace内の全Workerで無効化されており、これはuntrusted/trusted両方に共通する制約です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "デフォルトのuntrusted modeでは、`request.cf`オブジェクトにアクセスできず、Cache APIや`fetch()`によるキャッシュもWorkerごとに分離されます。自社がすべてのWorkerコードを管理する場合にのみtrusted modeに切り替えることができ、その場合`request.cf`が利用可能になりますが、キャッシュはnamespace内の全Workerで共有されるようになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/worker-isolation/",
+      "hint": "「顧客のコードを信頼できるかどうか」によって、隔離の強さがどう変わるか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "untrusted mode と trusted mode",
+          "columns": [
+            { "heading": "untrusted (デフォルト)", "items": ["request.cf 利用不可", "キャッシュはWorkerごとに分離"] },
+            { "heading": "trusted", "items": ["request.cf 利用可能", "キャッシュはnamespace内で共有"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-014",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "Workers for Platformsの料金体系に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "リクエスト数・CPU時間・スクリプト数のすべてに無料枠はなく、利用した分がそのまま全額課金される",
+          "wrongFeedback": "月2000万件の無料リクエスト枠、月6000万CPUミリ秒の無料枠、1000スクリプトの無料枠が含まれています。"
+        },
+        {
+          "text": "dispatch Worker・user Worker・Outbound Workerを経由するチェーンでは、それぞれ個別にリクエスト課金が発生する",
+          "wrongFeedback": "dispatch Worker→user Worker→Outbound Workerのチェーン全体で、リクエスト課金は1回分としてカウントされます。"
+        },
+        {
+          "text": "月額$25の基本料金に加え、月2000万リクエスト・月6000万CPUミリ秒・1000スクリプトまでが含まれ、超過分にのみ追加料金が発生する"
+        },
+        {
+          "text": "サブリクエスト(Workerから発生する追加のリクエスト)にも別途課金される",
+          "wrongFeedback": "サブリクエストには別途課金されません。課金対象はWorkerへの受信(inbound)リクエストです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers for Platformsは月額$25の基本プランに、月2000万リクエスト・月6000万CPUミリ秒・1000スクリプトまでの利用枠が含まれており、超過分にのみ追加料金(リクエスト100万件あたり$0.30など)が発生します。dispatch Worker→user Worker→Outbound Workerのチェーン全体でリクエスト課金は1回分としてカウントされます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/pricing/",
+      "hint": "「基本料金に含まれる範囲」と「それを超えた分の追加料金」という2段階の構造を意識しましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "月額料金に含まれる利用枠",
+          "columns": [
+            { "heading": "リクエスト", "items": ["月2000万件込み", "超過は100万件$0.30"] },
+            { "heading": "CPU時間", "items": ["月6000万ms込み", "超過は100万msあたり$0.02"] },
+            { "heading": "スクリプト数", "items": ["1000個込み", "超過は1個$0.02"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-015",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "Workers for Platformsの制限に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1アカウントで作成できるスクリプト数には上限があり、通常のWorkersアカウントと同じ制限が適用される",
+          "wrongFeedback": "Workers for Platformsでは無制限のスクリプト数が提供されます。通常のアカウントごとのスクリプト数上限は適用されません。"
+        },
+        {
+          "text": "分離のためnamespace内の全Workerで`caches.default`が無効化されており、また現時点ではuser WorkerにGradual Deploymentsが未対応で、変更は常に100%のトラフィックへ一括デプロイされる"
+        },
+        {
+          "text": "Durable Objectのnamespace数にはWorkers for Platforms特有の上限が設けられている",
+          "wrongFeedback": "Workers for PlatformsにはDurable Objectのnamespace数の上限はありません。"
+        },
+        {
+          "text": "user Workerも`wrangler versions deploy`によるGradual Deploymentsに対応しており、段階的なロールアウトが可能である",
+          "wrongFeedback": "現時点でuser WorkerはGradual Deploymentsに対応しておらず、変更は一括で100%のトラフィックにデプロイされます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Workers for Platformsでは、分離のためnamespace内の全Workerで`caches.default`が無効化されています。また現時点ではuser WorkerはGradual Deploymentsに対応しておらず、変更を加えると新しいバージョンが一括で100%のトラフィックにデプロイされます。一方でスクリプト数やDurable Objectのnamespace数には上限がありません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/limits/",
+      "hint": "「上限がないもの」と「まだ対応していない機能」を分けて整理しましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "上限なしと制約ありの整理",
+          "columns": [
+            { "heading": "上限なし", "items": ["スクリプト数", "Durable Objectのnamespace数"] },
+            { "heading": "制約あり", "items": ["caches.defaultが無効", "Gradual Deployments未対応"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-016",
+      "category": "workers-for-platforms",
+      "difficulty": "advanced",
+      "question": "ローカルで動かしているdynamic dispatch Workerを、本番にデプロイ済みのuser Workerに接続してテストするための正しい設定はどれですか？",
+      "options": [
+        {
+          "text": "user Worker側のwrangler設定に`\"local_test\": true`を追加し、dispatch Worker側は何も変更しない",
+          "wrongFeedback": "`local_test`のような設定項目はありません。dispatch Worker側の`dispatch_namespaces`バインディングに`remote: true`を設定します。"
+        },
+        {
+          "text": "`wrangler dev --remote-namespace=production`というCLIフラグを使う",
+          "wrongFeedback": "そのようなCLIフラグはありません。wrangler設定ファイル内の`dispatch_namespaces`バインディングに`remote: true`を指定します。"
+        },
+        {
+          "text": "ローカル開発中はdispatch namespaceに一切接続できず、user Workerもすべてローカルにデプロイし直す必要がある",
+          "wrongFeedback": "`remote: true`を設定すれば、ローカルのdispatch WorkerからリモートのnamespaceのユーザーWorkerに接続してテストできます。"
+        },
+        {
+          "text": "`dispatch_namespaces`バインディングに`\"remote\": true`を指定し、`wrangler dev`実行時にローカルのdispatch Workerからリモートのuser Workerへルーティングする"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "dynamic dispatch Workerのwrangler設定ファイルにある`dispatch_namespaces`バインディングに`\"remote\": true`を指定すると、`wrangler dev`で起動したローカルのdispatch Workerが、リモート(本番など)のnamespaceにデプロイ済みのuser Workerへルーティングするようになります。ルーティングの変更やミドルウェア追加を、実際のuser Workerに対して安全にテストできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/local-development/",
+      "hint": "「自分のPCで動かしているコード」から「クラウド上の本物のリソース」へつなぐには、設定のどこを切り替えるべきか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "リモート接続の設定",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            { "text": "{" },
+            { "text": "  \"dispatch_namespaces\": [", "highlight": true },
+            { "text": "    {" },
+            { "text": "      \"binding\": \"DISPATCH_NAMESPACE\", \"namespace\": \"production\"," },
+            { "text": "      \"remote\": true", "highlight": true },
+            { "text": "    }" },
+            { "text": "  ]" },
+            { "text": "}" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-017",
+      "category": "workers-for-platforms",
+      "difficulty": "intermediate",
+      "question": "Outbound Workerが横取り(インターセプト)できない通信として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Durable Objectsから発生するfetch()リクエストや、mTLS証明書バインディングを使った通信"
+        },
+        {
+          "text": "user Worker本体のfetch()ハンドラから直接発行されるすべての外向きリクエスト",
+          "wrongFeedback": "user Worker本体から直接発行される外向きの`fetch()`リクエストは、Outbound Workerが正しくインターセプトする対象です。"
+        },
+        {
+          "text": "user Workerがサブドメインベースでルーティングされて呼び出される際の、dynamic dispatch Workerからのリクエスト",
+          "wrongFeedback": "これはdynamic dispatch Workerからuser Workerへの受信(inbound)リクエストであり、そもそもOutbound Workerの対象である外向き(outbound)通信とは方向が異なります。"
+        },
+        {
+          "text": "KVやD1へのアクセスなど、Cloudflareの他のバインディングを経由した通信",
+          "wrongFeedback": "この設問の文脈でドキュメントに明記されているのはDurable ObjectsとmTLS証明書バインディングであり、KV/D1バインディングについての明示的な記述ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Outbound Workerは、user Worker本体が発行する外向きの`fetch()`リクエストをインターセプトしますが、Durable Objectsから発生する`fetch()`リクエストや、mTLS証明書バインディングを使った通信はインターセプトの対象外です。\n{{diagram:0}}\nこれらの通信経路を使う処理がある場合は、別途アクセス制御を検討する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/",
+      "hint": "「user Worker本体からの外向き通信」以外に、別の経路でも外部と通信できる仕組みがあることを思い出しましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "インターセプトの対象範囲",
+          "columns": [
+            { "heading": "インターセプト対象", "items": ["user Worker本体のfetch()"] },
+            { "heading": "対象外", "items": ["Durable Objectsからのfetch()", "mTLS証明書バインディング経由の通信"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wp-018",
+      "category": "workers-for-platforms",
+      "difficulty": "advanced",
+      "question": "既にWorkerがデプロイされているdispatch namespaceを、あとからtrusted modeに切り替えた場合の挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "切り替えた瞬間に、既存のデプロイ済みWorkerも含めて即座に全て`request.cf`にアクセスできるようになる",
+          "wrongFeedback": "既にデプロイ済みのWorkerは、trusted modeに切り替えただけでは`request.cf`にアクセスできるようにならず、再デプロイが必要です。"
+        },
+        {
+          "text": "trusted modeへの切り替えはnamespaceを作り直さない限り反映されず、既存のAPIで設定を変更することはできない",
+          "wrongFeedback": "既存のnamespaceに対してAPIで`trusted_workers`を更新するだけで切り替えられ、namespaceを作り直す必要はありません。"
+        },
+        {
+          "text": "既にデプロイ済みのWorkerは`request.cf`を使えるようにするために再デプロイが必要だが、切り替え後に新しくデプロイするWorkerは自動的に`request.cf`にアクセスできる"
+        },
+        {
+          "text": "trusted modeへの切り替えは全Workerを一度削除しないと行えない安全装置がある",
+          "wrongFeedback": "Workerを削除する必要はありません。namespaceの設定をAPIで更新するだけで切り替えられます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "既にWorkerがデプロイされているnamespaceをtrusted modeに切り替えた場合、切り替え前からデプロイされていたWorkerは`request.cf`にアクセスできるようにするために再デプロイが必要です。一方、切り替え後に新しくデプロイするWorkerは自動的に`request.cf`へアクセスできるようになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/worker-isolation/#trusted-mode",
+      "hint": "設定を切り替えた「タイミング」の前後で、既存のものと新しいものとで扱いに差が出ないか考えましょう。",
+      "tags": ["workers-for-platforms", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "trusted mode切り替えの影響",
+          "steps": [
+            { "text": "namespaceをtrusted modeに切り替え" },
+            { "text": "既存デプロイ済みWorker", "sub": "再デプロイが必要" },
+            { "text": "以降の新規デプロイWorker", "sub": "自動でrequest.cfが利用可能" }
+          ]
+        }
+      ]
     }
   ]
 }
