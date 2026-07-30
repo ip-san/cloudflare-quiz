@@ -51,6 +51,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   pl: 'pipelines',
   ac: 'zero-trust-access',
   wf: 'waf',
+  bt: 'bots',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -193,6 +194,17 @@ const VALID_DOC_PAGES = [
   'waf/rate-limiting-rules/',
   'waf/rate-limiting-rules/parameters/',
   'waf/detections/leaked-credentials/',
+  'bots/',
+  'bots/get-started/bot-fight-mode/',
+  'bots/get-started/super-bot-fight-mode/',
+  'bots/get-started/bot-management/',
+  'bots/concepts/bot-score/',
+  'bots/reference/bot-management-variables/',
+  'bots/concepts/bot-tags/',
+  'bots/concepts/bot/verified-bots/',
+  'bots/additional-configurations/static-resources/',
+  'bots/additional-configurations/ja3-ja4-fingerprint/',
+  'bots/bot-analytics/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -620,6 +632,7 @@ describe('Quiz Content Quality', () => {
         'pipelines',
         'zero-trust-access',
         'waf',
+        'bots',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

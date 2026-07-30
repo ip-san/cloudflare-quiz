@@ -21,6 +21,7 @@ export const COLOR_MAP: Record<string, string> = {
   stone: '#78716c',
   gray: '#6b7280',
   maroon: '#7f1d1d',
+  navy: '#1e3a8a',
 }
 
 export function getColorHex(colorName: string): string {

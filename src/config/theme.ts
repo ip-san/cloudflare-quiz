@@ -353,6 +353,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'アプリ・APIをエッジのWAFでリクエスト単位に保護できる',
     },
     {
+      id: 'bots',
+      name: 'Bot対策',
+      icon: '🤖',
+      color: 'navy',
+      weight: 10,
+      description:
+        'Bot Fight Mode・Super Bot Fight Mode・Bot Managementの3段階のBot対策。ボットスコア・Verified Bots・JA3/JA4フィンガープリント',
+      skillDescription: 'ボットトラフィックを検知し、段階に応じた対策を選択できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

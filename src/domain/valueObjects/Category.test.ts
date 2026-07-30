@@ -133,6 +133,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('pipelines')
     expect(ids).toContain('zero-trust-access')
     expect(ids).toContain('waf')
+    expect(ids).toContain('bots')
     expect(ids).toContain('architecture')
   })
 
