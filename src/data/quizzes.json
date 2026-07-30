@@ -27888,6 +27888,700 @@
           ]
         }
       ]
+    },
+    {
+      "id": "dn-001",
+      "category": "dns",
+      "difficulty": "beginner",
+      "question": "Cloudflare DNSに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "AnycastネットワークによるDDoS攻撃・BGP経路ハイジャックからの保護を備えた権威DNSサービスであり、全プランで利用できる"
+        },
+        {
+          "text": "Cloudflare DNSはEnterpriseプラン限定の有料アドオンであり、Free・Pro・Businessプランでは一切利用できない",
+          "wrongFeedback": "Cloudflare DNSは全プランで利用できます。Enterprise限定というのは誤りです。"
+        },
+        {
+          "text": "Cloudflare DNSはキャッシュDNS(フルリゾルバ)専用のサービスであり、権威DNSとしては機能しない",
+          "wrongFeedback": "Cloudflare DNSは権威DNSサービスです。キャッシュDNS専用ではありません。"
+        },
+        {
+          "text": "Cloudflare DNSはBGP経路のハイジャックに対しては無防備であり、対策できるのはDDoS攻撃のみである",
+          "wrongFeedback": "Cloudflare DNSはDDoS攻撃だけでなく、BGP経路のハイジャックからの保護も提供します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare DNSは、Anycastネットワークを活用した高速で堅牢な権威DNSサービスであり、DDoS攻撃やBGP経路のハイジャック・リーク(誤った経路情報の広告)からドメインを保護します。すべてのCloudflareプランで利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/",
+      "hint": "「世界中に分散した拠点から同じIPアドレスで応答する」仕組みがもたらす耐障害性を考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Cloudflare DNSの特徴",
+          "items": [
+            { "text": "Anycastによる権威DNS" },
+            { "text": "DDoS攻撃からの保護" },
+            { "text": "BGP経路ハイジャックからの保護" },
+            { "text": "全プランで利用可能" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-002",
+      "category": "dns",
+      "difficulty": "beginner",
+      "question": "Cloudflareでプロキシ(オレンジクラウド)にできるDNSレコードの種類として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "TXT・MXレコードを含む、すべての種類のDNSレコードをプロキシできる",
+          "wrongFeedback": "すべての種類をプロキシできるわけではありません。プロキシできるのはIPアドレス解決に使われるA・AAAA・CNAMEレコードのみです。"
+        },
+        {
+          "text": "IPアドレス解決に使われるA・AAAA・CNAMEレコードのみがプロキシ可能で、MXやTXTなど他の種類のレコードは常にDNS-onlyになる"
+        },
+        {
+          "text": "MXレコードのみがプロキシ可能で、A・AAAA・CNAMEレコードは常にDNS-onlyになる",
+          "wrongFeedback": "逆です。プロキシ可能なのはA・AAAA・CNAMEレコードであり、MXレコードは常にDNS-onlyです。"
+        },
+        {
+          "text": "プロキシできるかどうかはレコードの種類ではなく、レコードのTTL値によって決まる",
+          "wrongFeedback": "TTL値によって決まるわけではありません。プロキシ可能かどうかはレコードの種類(A・AAAA・CNAMEかどうか)によって決まります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflareでプロキシ(オレンジクラウド)にできるのは、IPアドレス解決に使われるA・AAAA・CNAMEレコードのみです。MXやTXTなど、それ以外の種類のレコードは常にDNS-only(グレークラウド)として扱われます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/",
+      "hint": "「実際にHTTP/HTTPSトラフィックの宛先を指すレコード」だけがプロキシの対象になると考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プロキシ可能なレコード種類",
+          "columns": [
+            { "heading": "プロキシ可能", "items": ["A・AAAA・CNAME"] },
+            { "heading": "常にDNS-only", "items": ["MX・TXTなど"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-003",
+      "category": "dns",
+      "difficulty": "beginner",
+      "question": "DNSレコードを「プロキシ済み(オレンジクラウド)」にすることで得られる利点として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "プロキシを有効にすると、TTL値を自由にカスタマイズしてより長いキャッシュ期間を設定できるようになる",
+          "wrongFeedback": "プロキシ済みレコードのTTLはAuto(300秒)で固定され、編集することはできません。自由にカスタマイズできるわけではありません。"
+        },
+        {
+          "text": "DNSクエリへの応答速度が上がるだけで、DDoS保護やWAF・キャッシュなどの製品機能は一切適用されない",
+          "wrongFeedback": "応答速度だけの利点ではありません。DDoS保護やWAF・キャッシュ・リダイレクトルールといった製品機能も適用されます。"
+        },
+        {
+          "text": "オリジンIPアドレスを隠しつつDDoS攻撃から保護でき、WAFルール・キャッシュ・リダイレクトルールといったCloudflare製品の設定がトラフィックに適用される"
+        },
+        {
+          "text": "プロキシを有効にしても、オリジンサーバーの実際のIPアドレスはDNSクエリへの応答として引き続き公開される",
+          "wrongFeedback": "プロキシを有効にすると、DNSクエリへの応答はオリジンの実IPではなくCloudflareのAnycast IPアドレスになります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "DNSレコードをプロキシ済みにすると、DNSクエリへの応答がオリジンの実IPアドレスではなくCloudflareのAnycast IPアドレスになるため、オリジンIPアドレスを隠しつつDDoS攻撃から保護できます。また、WAFルール・キャッシュ・リダイレクトルールといったCloudflare製品の設定を、そのトラフィックに適用できるようになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#benefits",
+      "hint": "「本当の宛先を隠す」ことと、「その手前でいろいろな加工・保護ができる」ことの2つのメリットを考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "プロキシ済みレコードの利点",
+          "items": [
+            { "text": "オリジンIPを隠しDDoSから保護" },
+            { "text": "WAF・キャッシュ・リダイレクトルールの適用" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-004",
+      "category": "dns",
+      "difficulty": "intermediate",
+      "question": "プロキシ済み(オレンジクラウド)DNSレコードのTTL(Time to Live)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "デフォルトはAuto(300秒)だが、DNS-onlyレコードと同様に30秒から1日までの任意の値に自由に変更できる",
+          "wrongFeedback": "プロキシ済みレコードのTTLはAuto(300秒)固定であり、DNS-onlyレコードのように自由な値に変更することはできません。"
+        },
+        {
+          "text": "プロキシ済みレコードにはTTLという概念自体が存在せず、常にリアルタイムで解決される",
+          "wrongFeedback": "TTLという概念は存在します。値はAuto(300秒)に固定されています。"
+        },
+        {
+          "text": "TTLの値はプランによって異なり、Enterpriseプランでは他のプランより長いTTLを設定できる",
+          "wrongFeedback": "プランによる違いはありません。プロキシ済みレコードのTTLはどのプランでもAuto(300秒)固定です。"
+        },
+        {
+          "text": "常にAuto(300秒)固定であり、この値を手動で編集することはできない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "プロキシ済みレコードのTTLは常にAuto(300秒)固定で、この値を手動で編集することはできません。この短いTTLにより、CloudflareがレコードのAnycast IPアドレスを変更した場合でも、その変更が5分以内に反映されるようになっています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/",
+      "hint": "「変更をすばやく反映させたい」という目的のために、あえて短い固定値になっていると考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プロキシ済みレコードのTTL",
+          "columns": [
+            { "heading": "値", "items": ["Auto = 300秒"] },
+            { "heading": "編集可否", "items": ["編集不可(固定)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-005",
+      "category": "dns",
+      "difficulty": "intermediate",
+      "question": "同じ名前に複数のAレコードがあり、そのうち1つだけがプロキシ済みに設定されている場合の正しい挙動はどれですか？",
+      "options": [
+        {
+          "text": "同じ名前のAレコードのうち、1件でもプロキシ済みのものがあれば、その名前のすべてのAレコードがプロキシ済みとして扱われる"
+        },
+        {
+          "text": "プロキシ済みの1件だけがCloudflare経由になり、DNS-onlyの残りのレコードはそのまま直接オリジンへ解決される",
+          "wrongFeedback": "個別には扱われません。1件でもプロキシ済みがあれば、同じ名前のすべてのAレコードがプロキシ済みとして扱われます。"
+        },
+        {
+          "text": "同じ名前のAレコードのうち、プロキシ済みの割合が過半数を超えた場合にのみ、すべてがプロキシ済みとして扱われる",
+          "wrongFeedback": "過半数という条件はありません。1件でもプロキシ済みのレコードがあれば、同じ名前のすべてのAレコードがプロキシ済みとして扱われます。"
+        },
+        {
+          "text": "同じ名前に複数のAレコードを設定すること自体がCloudflareでは許可されておらず、設定時にエラーになる",
+          "wrongFeedback": "同じ名前に複数のAレコードを設定すること自体は許可されています。エラーにはなりません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "同じ名前に複数のA(またはAAAA)レコードがあり、そのうち1件でもプロキシ済みに設定されている場合、Cloudflareはその名前のすべてのA(またはAAAA)レコードをプロキシ済みとして扱います。個別に一部だけをDNS-onlyのままにしておくことはできません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#mix-proxied-and-unproxied",
+      "hint": "「1つでも該当すれば、その名前全体に適用される」という全か無かのルールを考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "混在時の扱い",
+          "steps": [
+            { "text": "同じ名前に複数のAレコード" },
+            { "text": "1件でもプロキシ済みがある" },
+            { "text": "その名前のすべてのAレコードがプロキシ済み扱い" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-006",
+      "category": "dns",
+      "difficulty": "advanced",
+      "question": "同じCloudflareアカウント内の`example.com`から`example.net`へCNAMEチェーンでつながっている場合、`example.net`側のCNAMEがプロキシ済みだとどうなるかに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`example.com`のトラフィックには影響せず、`example.net`のプロキシ設定はそのゾーン内だけで完結する",
+          "wrongFeedback": "そのゾーン内だけで完結するわけではありません。CNAMEチェーンの先がプロキシ済みであれば、`example.com`宛てのトラフィックもプロキシされたものとして扱われます。"
+        },
+        {
+          "text": "CNAMEチェーンの先(`example.net`側)がプロキシ済みであれば、`example.com`宛てのトラフィックもプロキシされたものとして扱われる"
+        },
+        {
+          "text": "CNAMEチェーンをまたいだプロキシの伝播は発生せず、`example.com`側のCNAMEを個別にプロキシ済みに設定しない限りDNS-onlyのままである",
+          "wrongFeedback": "CNAMEチェーンの先がプロキシ済みであれば、伝播してトラフィックがプロキシされたものとして扱われます。"
+        },
+        {
+          "text": "このような別ゾーンへのCNAMEチェーンの設定自体が、同一アカウント内であっても常にエラーとして拒否される",
+          "wrongFeedback": "同一アカウント内の別ゾーンへのCNAMEチェーンはエラーになりません。エラーになるのは、CNAMEの参照先が異なるCloudflareアカウントの場合です(Error 1014)。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "CloudflareはCNAMEチェーンの先がプロキシ済みであれば、その手前のホスト名宛てのトラフィックもプロキシされたものとして扱います。この例では、`example.net`側のCNAMEがプロキシ済みであるため、`example.com`宛てのトラフィックもプロキシされたものとして扱われます。なお、CNAMEの参照先が異なるCloudflareアカウントの場合は、Error 1014(CNAME Cross-User Banned)としてエラーになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#mix-proxied-and-unproxied",
+      "hint": "プロキシの設定が「チェーンの末端」から「入り口」へ向かって伝わっていくと考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "CNAMEチェーンでのプロキシ伝播",
+          "steps": [
+            { "text": "example.com → example.netへCNAME" },
+            { "text": "example.net側がプロキシ済み" },
+            { "text": "example.com宛てもプロキシ扱いに" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-007",
+      "category": "dns",
+      "difficulty": "beginner",
+      "question": "Webトラフィックを扱うDNSレコードを「DNS-only(グレークラウド)」のままにしておくことのリスクとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "DNSクエリの応答速度が極端に遅くなり、実用的な速度でサイトにアクセスできなくなる",
+          "wrongFeedback": "応答速度が極端に遅くなるわけではありません。主なリスクはオリジンIPアドレスの露出とDDoS保護・製品機能が適用されないことです。"
+        },
+        {
+          "text": "DNS-onlyのレコードはCloudflareのネームサーバーで一切名前解決できず、常にNXDOMAINエラーが返される",
+          "wrongFeedback": "DNS-onlyのレコードも通常どおり名前解決されます。NXDOMAINエラーが常に返されるわけではありません。"
+        },
+        {
+          "text": "オリジンサーバーの実IPアドレスがDNSクエリの応答として公開されるため、標的型攻撃への保護が失われ、CloudflareによるHTTP/HTTPS分析やDDoS保護、WAFなどの製品機能も適用されない"
+        },
+        {
+          "text": "DNS-onlyに設定したレコードは、7日間が経過すると自動的に削除されてしまう",
+          "wrongFeedback": "そのような自動削除の仕様はありません。DNS-onlyのレコードも通常のレコードとして保持され続けます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Webトラフィックを扱うレコードをDNS-onlyのままにしておくと、オリジンサーバーの実IPアドレスがDNSクエリへの応答として誰にでも公開されてしまいます。これにより標的型攻撃への保護が失われるほか、CloudflareによるHTTP/HTTPS分析や、DDoS保護・キャッシュ・WAFといった製品機能も適用されなくなります(DNS分析のみは可能です)。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#dns-only-records",
+      "hint": "「本当の宛先が誰にでも見えてしまう」ことが、どんな種類のリスクにつながるか考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "DNS-onlyのリスク",
+          "columns": [
+            { "heading": "露出するもの", "items": ["オリジンの実IPアドレス"] },
+            { "heading": "適用されないもの", "items": ["DDoS保護・WAF・キャッシュ", "HTTP/HTTPS分析"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-008",
+      "category": "dns",
+      "difficulty": "intermediate",
+      "question": "DNS-only(未プロキシ)レコードで設定できるTTLの範囲として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "プランに関わらず最小1秒から最大無制限までの、任意のTTL値を自由に設定できる",
+          "wrongFeedback": "最小1秒・無制限という範囲ではありません。実際は非Enterpriseで最小60秒・Enterpriseで最小30秒、最大1日までの範囲です。"
+        },
+        {
+          "text": "DNS-onlyレコードのTTLは、プロキシ済みレコードと全く同様にAuto(300秒)で固定され、編集することはできない",
+          "wrongFeedback": "DNS-onlyレコードのTTLは編集可能です。固定されているのはプロキシ済みレコードのTTLです。"
+        },
+        {
+          "text": "最小値はプランに関わらず一律で300秒であり、それ未満の値を設定することはできない",
+          "wrongFeedback": "一律300秒ではありません。非Enterpriseは60秒、Enterpriseは30秒まで短く設定できます。"
+        },
+        {
+          "text": "非Enterpriseプランでは最小60秒、Enterpriseプランでは最小30秒から、いずれのプランも最大1日まで設定でき、Autoを選ぶと300秒になる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "DNS-only(未プロキシ)レコードのTTLは、非Enterpriseプランで最小60秒、Enterpriseプランで最小30秒から、どちらのプランも最大1日まで設定できます。Autoを選択した場合の値は300秒(5分)です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/#unproxied-records",
+      "hint": "「より短い最小値を設定できる」特典が、どちらのプランに付いているか考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "DNS-onlyレコードのTTL範囲",
+          "columns": [
+            { "heading": "非Enterprise", "items": ["最小60秒〜最大1日"] },
+            { "heading": "Enterprise", "items": ["最小30秒〜最大1日"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-009",
+      "category": "dns",
+      "difficulty": "advanced",
+      "question": "他のDNSレコードのTTL設定とは独立して管理されている「ネームサーバーTTL(Nameserver TTL)」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "ネームサーバーTTLは通常のDNSレコードのTTLフィールドと全く同じ意味を持つ、別名の設定にすぎない",
+          "wrongFeedback": "全く同じ意味ではありません。ネームサーバーTTLは、Cloudflareのネームサーバーやカスタムネームサーバーにのみ影響する独立した設定です。"
+        },
+        {
+          "text": "ネームサーバーTTLは、Cloudflareのネームサーバーやカスタムネームサーバーにのみ影響する独立した設定であり、DNSレコード表にある他のNSレコードのTTLは、それぞれのレコード自身のTTLフィールドで制御される"
+        },
+        {
+          "text": "ネームサーバーTTLを変更すると、ゾーン内のすべてのA・AAAA・CNAMEレコードのTTLも連動して同じ値に自動的に変更される",
+          "wrongFeedback": "連動して変更されるわけではありません。ネームサーバーTTLは独立した設定です。"
+        },
+        {
+          "text": "ネームサーバーTTLという設定はCloudflareには存在せず、ネームサーバーのTTLは常に固定値で変更できない",
+          "wrongFeedback": "ネームサーバーTTLという設定は存在し、変更可能です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "ネームサーバーTTLは、Cloudflareのネームサーバーやカスタムネームサーバーにのみ影響する、他のDNSレコードのTTLとは別の独立した設定です。DNSレコード表に表示される他のNSレコードについては、それぞれのレコード自身が持つTTLフィールドによってTTLが制御されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/#nameserver-ttl",
+      "hint": "「ネームサーバーそのもの」に関するTTLと、「一般的なDNSレコード」のTTLは別物として管理されていると考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ネームサーバーTTL と 通常のレコードTTL",
+          "columns": [
+            { "heading": "ネームサーバーTTL", "items": ["Cloudflare/カスタムネームサーバー専用"] },
+            { "heading": "通常のレコードTTL", "items": ["各レコード自身のTTLフィールドで制御"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-010",
+      "category": "dns",
+      "difficulty": "intermediate",
+      "question": "Cloudflare DNSレコードの作成数の上限(クォータ)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "プランに関わらず、常にゾーン単位とアカウント単位の両方のクォータが同時に適用され、より小さい方の値が採用される",
+          "wrongFeedback": "両方が同時に適用されることはありません。プランに応じて、ゾーン単位またはアカウント単位のいずれか一方でクォータが適用されます。"
+        },
+        {
+          "text": "すべてのプランで、レコード数の上限は一律3,500件であり、作成日やプランによる違いは存在しない",
+          "wrongFeedback": "一律3,500件ではありません。Freeプランは1,000件または200件(作成日による)、Enterpriseはアカウント単位のクォータが適用されます。"
+        },
+        {
+          "text": "2024年9月1日より前に作成されたFreeゾーンは1,000件、それ以降に作成されたFreeゾーンは200件、Pro・Businessはそれぞれ3,500件が上限で、Enterpriseはゾーン単位ではなくアカウント単位のクォータが適用される"
+        },
+        {
+          "text": "レコード数のクォータはPro・Businessプランにのみ適用され、Free・Enterpriseプランには一切上限が存在しない",
+          "wrongFeedback": "Free・Enterpriseにも上限は存在します。Freeはゾーン単位、Enterpriseはアカウント単位のクォータが適用されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "DNSレコードのクォータは、プランに応じてゾーン単位またはアカウント単位のいずれか一方で適用されます(両方が同時に適用されることはありません)。2024年9月1日より前に作成されたFreeゾーンは1,000件、それ以降に作成されたFreeゾーンは200件、Pro・Businessはそれぞれ3,500件がゾーン単位の上限です。Enterpriseにはゾーン単位の上限がなく、代わりにアカウント単位のクォータ(パブリックゾーン・内部ゾーンそれぞれデフォルト100万件)が適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/#dns-records-quota",
+      "hint": "「ゾーンごとに数える」プランと「アカウント全体で数える」プランが分かれていると考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "DNSレコードのクォータ",
+          "columns": [
+            { "heading": "Free(2024/9/1以降)", "items": ["200件(ゾーン単位)"] },
+            { "heading": "Pro/Business", "items": ["3,500件(ゾーン単位)"] },
+            { "heading": "Enterprise", "items": ["アカウント単位のクォータ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-011",
+      "category": "dns",
+      "difficulty": "advanced",
+      "question": "Email Routingなど他のCloudflare製品が自動的に作成するDNSレコードと、DNSレコードのクォータの関係に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "こうした自動作成レコードはクォータの対象外として完全に除外され、いくつ作成されてもクォータの消費には一切カウントされない",
+          "wrongFeedback": "完全に除外されるわけではありません。自動作成レコードもクォータの対象としてカウントされますが、サービスの中断を避けるための若干の余裕(バッファ)が設けられています。"
+        },
+        {
+          "text": "自動作成レコードはクォータには含まれるが、ユーザー自身が作成するレコードよりも常に優先的に削除される",
+          "wrongFeedback": "優先的に削除されるという仕様はありません。バッファを持ってクォータが適用される点が正しい説明です。"
+        },
+        {
+          "text": "自動作成レコードがクォータに達すると、Email Routingなどの機能自体が即座に完全停止し、二度と有効化できなくなる",
+          "wrongFeedback": "即座に完全停止し二度と有効化できなくなるという仕様はありません。バッファを持ってクォータが適用され、サービスの中断を避ける設計になっています。"
+        },
+        {
+          "text": "自動作成レコードもクォータの対象としてカウントされるが、サービスの中断を避けるために若干の余裕(バッファ)を持って上限が適用され、結果としてゾーンが表面上の上限をわずかに超えて保持することがある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Email Routingなど他のCloudflare製品が自動的に作成するTXT・MXレコードなども、DNSレコードのクォータの対象としてカウントされます。ただし、こうしたサービスの中断を避けるため、若干の余裕(バッファ)を持ってクォータの上限が適用されており、結果としてゾーンが表面上の上限をわずかに超えて保持することがあります。ユーザー自身がダッシュボードやAPI経由で新規にレコードを作成するには、ゾーンがクォータの範囲内である必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/#dns-records-quota",
+      "hint": "「他のサービスが裏側で追加するレコード」を止めてしまわないよう、上限の適用に少し余裕を持たせていると考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "自動作成レコードとクォータ",
+          "steps": [
+            { "text": "他製品が自動でTXT/MXレコードを作成" },
+            { "text": "クォータの対象としてカウント(バッファ付き)" },
+            { "text": "ユーザーの新規作成には上限内であることが必要" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-012",
+      "category": "dns",
+      "difficulty": "beginner",
+      "question": "DNSレコードの種類のうち、「IPアドレス解決」の目的で使われるレコードタイプの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "A・AAAA・CNAMEの3種類"
+        },
+        {
+          "text": "MX・TXT・CAAの3種類",
+          "wrongFeedback": "これらはIPアドレス解決の目的では使われません。IPアドレス解決に使われるのはA・AAAA・CNAMEです。"
+        },
+        {
+          "text": "NS・SOA・DSの3種類",
+          "wrongFeedback": "これらはゾーン管理やDNSSECに関わるレコードタイプであり、IPアドレス解決の目的ではありません。"
+        },
+        {
+          "text": "SRV・URI・NAPTRの3種類",
+          "wrongFeedback": "これらは特定用途向けのレコードタイプであり、IPアドレス解決の目的ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "「IPアドレス解決」の目的で使われるDNSレコードタイプはA(IPv4)・AAAA(IPv6)・CNAME(別名)の3種類です。これらのレコードタイプのみがCloudflareでプロキシ(オレンジクラウド)にできる対象でもあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/dns-record-types/",
+      "hint": "プロキシできるレコードタイプと、この分類の対象は一致していると考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "IPアドレス解決に使われるレコード",
+          "columns": [
+            { "heading": "IPアドレス解決の対象", "items": ["A・AAAA・CNAME"] },
+            { "heading": "対象外", "items": ["MX・TXT・NSなど"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-013",
+      "category": "dns",
+      "difficulty": "advanced",
+      "question": "SOAレコードの「Minimum TTL」フィールドに関するデフォルト値と設定可能範囲として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "デフォルト値は300秒で、10秒から3,600秒までの範囲で設定できる",
+          "wrongFeedback": "デフォルト値・範囲ともに異なります。実際にはデフォルト1,800秒、範囲は60秒から86,400秒です。"
+        },
+        {
+          "text": "デフォルト値は1,800秒で、60秒から86,400秒までの範囲で設定できる"
+        },
+        {
+          "text": "デフォルト値は86,400秒で、1,800秒から604,800秒までの範囲で設定できる",
+          "wrongFeedback": "この数値はMinimum TTLの値ではなく、Expireフィールドの値(デフォルト604,800秒、範囲86,400秒〜2,419,200秒)を取り違えたものです。Minimum TTLのデフォルトは1,800秒です。"
+        },
+        {
+          "text": "Minimum TTLというフィールドはSOAレコードには存在せず、SOAレコードにはRefresh・Retry・Expireの3つのフィールドのみが存在する",
+          "wrongFeedback": "Minimum TTLというフィールドは実際に存在します。SOAレコードにはRefresh・Retry・Expireに加えてMinimum TTLも含まれます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "SOAレコードのMinimum TTLフィールドのデフォルト値は1,800秒で、60秒から86,400秒までの範囲で設定できます。SOAレコードには他にもRefresh(デフォルト10,000秒)・Retry(デフォルト2,400秒)・Expire(デフォルト604,800秒)・Record TTL(デフォルト3,600秒)といったフィールドがあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/dns-record-types/",
+      "hint": "SOAレコードの複数のTTL系フィールドの中でも、「最小値」を意味するフィールドの数値だと考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "SOA Minimum TTL",
+          "columns": [
+            { "heading": "デフォルト値", "items": ["1,800秒"] },
+            { "heading": "設定可能範囲", "items": ["60秒〜86,400秒"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-014",
+      "category": "dns",
+      "difficulty": "beginner",
+      "question": "CloudflareでDNSSECを有効化する際の正しい流れはどれですか？",
+      "options": [
+        {
+          "text": "レジストラ側でDS(Delegation Signer)レコードを事前に作成し、それをCloudflareにインポートすることでDNSSECが有効になる",
+          "wrongFeedback": "順序が逆です。Cloudflareがゾーンに署名してDSレコードを生成し、それをレジストラ側に追加します。レジストラ側で先にDSレコードを作成するわけではありません。"
+        },
+        {
+          "text": "DNSSECを有効化するとCloudflareが自動的にレジストラ側の設定も変更するため、利用者が手動でレジストラ側に何かを設定する必要は一切ない",
+          "wrongFeedback": "自動的にレジストラ側の設定まで変更されるわけではありません。生成されたDSレコードを利用者がレジストラに追加する必要があります(Cloudflare Registrarの場合は自動化されています)。"
+        },
+        {
+          "text": "CloudflareでDNSSECを有効化するとCloudflareがゾーンに署名し、公開署名鍵を公開してDSレコードを生成するので、そのDSレコードをレジストラに追加する"
+        },
+        {
+          "text": "DNSSECの有効化にはDS・DNSKEYレコードのどちらか一方のみが必要で、両方を同時に扱う必要はない",
+          "wrongFeedback": "DNSSECの仕組み自体はDNSKEY・DSレコードの両方を使います。DNSSEC有効化の手順として、Cloudflare側での署名とDSレコードの生成、レジストラへのDSレコード追加が必要です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "CloudflareでDNSSECを有効化すると、Cloudflareがゾーンに署名し、公開署名鍵を公開したうえでDS(Delegation Signer)レコードを生成します。利用者はこのDSレコードをレジストラ(ドメイン登録事業者)側に追加する必要があります(Cloudflare Registrarを使っている場合は自動的に処理されます)。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/dnssec/",
+      "hint": "「Cloudflare側でまず何が生成されるか」「それをどこに登録するか」という順序を考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "DNSSEC有効化の流れ",
+          "steps": [
+            { "text": "Cloudflareでゾーンに署名" },
+            { "text": "公開署名鍵とDSレコードを生成" },
+            { "text": "DSレコードをレジストラに追加" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-015",
+      "category": "dns",
+      "difficulty": "advanced",
+      "question": "既存のDNSプロバイダーがDNSSECの外部DNSKEYレコード追加(マルチシグナーDNSSEC)に対応していない場合、DNSSECを有効にしたままCloudflareへ移行する際に注意すべき正しい手順はどれですか？",
+      "options": [
+        {
+          "text": "先にネームサーバーをCloudflareへ切り替え、その後でレジストラ側のDSレコードを削除する",
+          "wrongFeedback": "この順序では、古いDSレコードがまだキャッシュされている検証リゾルバに対してCloudflareの鍵と一致せず、SERVFAILが発生する可能性があります。DSレコードの削除とTTL失効を先に行う必要があります。"
+        },
+        {
+          "text": "DSレコードの削除やTTLの失効を待つ必要は一切なく、いつでも即座にネームサーバーを切り替えてから新しいDSレコードを追加すればよい",
+          "wrongFeedback": "待つ必要がないわけではありません。古いDSレコードがキャッシュされたままの状態でネームサーバーを切り替えると、検証リゾルバがSERVFAILを返す可能性があります。"
+        },
+        {
+          "text": "この移行パスでは、常にドメインの一時的な停止(ダウンタイム)なしで完了させることができ、DNSSEC保護が途切れる瞬間は一切発生しない",
+          "wrongFeedback": "外部DNSKEYレコードに対応していない場合の移行パスでは、DNSSEC保護が一時的に途切れる期間が発生することが明記されています。ダウンタイムなしで完了できるのは、マルチシグナーDNSSECによるアクティブ移行に対応している場合です。"
+        },
+        {
+          "text": "レジストラ側のDSレコードを削除し、そのDSレコードのTTLが親ゾーンで完全に失効するのを待ってから、ネームサーバーをCloudflareへ切り替える"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "外部DNSKEYレコードの追加(マルチシグナーDNSSEC)に対応していないDNSプロバイダーからCloudflareへDNSSEC有効のまま移行する場合は、まずレジストラ側のDSレコードを削除し、そのDSレコードのTTLが親ゾーンで完全に失効するのを待つ必要があります(TLDによって一般的に24〜48時間程度)。その後、ネームサーバーをCloudflareへ切り替え、古いNSレコードのTTLが失効するのを待ってから、CloudflareでDNSSECを有効化して新しいDSレコードをレジストラに追加します。この順序を守らないと、検証リゾルバがSERVFAILを返す可能性があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/dnssec/#migrate-to-cloudflare-with-dnssec-active",
+      "hint": "「古い鍵の情報が完全に消えるのを待ってから」次のステップに進む必要がある、という順序の重要性を考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "DNSSEC有効のままの移行手順",
+          "steps": [
+            { "text": "レジストラのDSレコードを削除" },
+            { "text": "DSレコードのTTL失効を待つ" },
+            { "text": "ネームサーバーをCloudflareへ切り替え" },
+            { "text": "DNSSECを有効化し新DSレコードを追加" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-016",
+      "category": "dns",
+      "difficulty": "intermediate",
+      "question": "CNAMEフラット化(CNAME flattening)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "ゾーンApex(例:`example.com`)でCNAMEレコードを使えるようにする仕組みで、CNAMEチェーンをたどって最終的なIPアドレスを見つけ、それをそのまま応答として返す"
+        },
+        {
+          "text": "CNAMEフラット化を使うと、CNAMEチェーンの各段階のCNAMEレコードがそのまま複数連なった形で応答として返される",
+          "wrongFeedback": "複数のCNAMEがそのまま連なって返されるわけではありません。CNAMEフラット化はチェーンをたどった最終的なIPアドレスを返します。"
+        },
+        {
+          "text": "CNAMEフラット化を有効にすると、CNAMEの参照先がどのCloudflareアカウントに属していても問題なく解決できる",
+          "wrongFeedback": "異なるCloudflareアカウントへのCNAMEは、CNAMEフラット化の有無に関わらずError 1014(CNAME Cross-User Banned)として禁止されています。"
+        },
+        {
+          "text": "CNAMEの参照先にA・AAAAレコードが存在しない「dangling CNAME」の場合、Cloudflareはエラーとして`SERVFAIL`を返す",
+          "wrongFeedback": "`SERVFAIL`ではなく、IPアドレスがないため空の応答(NODATA)が返されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "CNAMEフラット化は、ゾーンApex(`example.com`のようなルートドメイン)でもCNAMEレコードを使えるようにする仕組みです。CloudflareはCNAMEチェーンをたどり(複数回のルックアップが必要な場合もあります)、最終的に到達したIPアドレスを見つけて、CNAMEそのものではなくそのIPアドレスを応答として返します。参照先にA/AAAAレコードがない「dangling CNAME」の場合は、空の応答(NODATA)が返されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/cname-flattening/",
+      "hint": "「CNAMEをそのまま返す」のではなく、「その先をたどって最終的な実体(IPアドレス)を返す」仕組みだと考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "CNAMEフラット化の仕組み",
+          "steps": [
+            { "text": "ゾーンApexにCNAMEを設定" },
+            { "text": "CloudflareがCNAMEチェーンをたどる" },
+            { "text": "最終的なIPアドレスを応答として返す" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-017",
+      "category": "dns",
+      "difficulty": "beginner",
+      "question": "Cloudflareの「Full(Primary)セットアップ」と「Partial(CNAME)セットアップ」の違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Fullセットアップは Business・Enterpriseプラン限定であり、Partialセットアップは全プランで利用できる",
+          "wrongFeedback": "逆です。Fullセットアップは全プランで利用でき、Business・Enterprise限定なのはPartialセットアップです。"
+        },
+        {
+          "text": "Fullセットアップは全プランで利用でき、Cloudflareが権威DNSプロバイダーになるのに対し、Partialセットアップは既存のDNSプロバイダーを維持したままBusiness・Enterpriseプランでのみ利用できる"
+        },
+        {
+          "text": "FullセットアップとPartialセットアップは、権威DNSプロバイダーがどこであるかという点では違いがなく、単にダッシュボードの表示名が異なるだけである",
+          "wrongFeedback": "権威DNSプロバイダーの違いは実質的な差です。FullではCloudflareが権威DNSになりますが、Partialでは既存のプロバイダーが権威DNSのままです。"
+        },
+        {
+          "text": "Partialセットアップは、Cloudflare Registrarでドメインを登録している場合にのみ利用できる特別な設定である",
+          "wrongFeedback": "Cloudflare Registrarで登録されたドメインではPartial(CNAME)セットアップはサポートされていません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Fullセットアップは、Cloudflareが権威DNSプロバイダーとなる設定で、全プランで利用できます。Partial(CNAME)セットアップは、既存のDNSプロバイダーを維持したまま特定のホスト名だけをCloudflareへ向けられる設定で、Business・Enterpriseプラン限定です。またPartialセットアップは、Cloudflare Registrarで登録されたドメインではサポートされていません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/zone-setups/",
+      "hint": "「Cloudflareにすべて任せる」のか、「既存のDNSプロバイダーを維持しつつ一部だけCloudflareへ」なのか、という違いを考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Full と Partial セットアップ",
+          "columns": [
+            { "heading": "Full(Primary)", "items": ["全プラン", "Cloudflareが権威DNS"] },
+            { "heading": "Partial(CNAME)", "items": ["Business/Enterprise限定", "既存プロバイダーを維持"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dn-018",
+      "category": "dns",
+      "difficulty": "intermediate",
+      "question": "Cloudflareを「セカンダリDNS」として使うゾーン転送(Zone Transfers)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "ゾーン転送によるセカンダリDNS設定は全プランで利用でき、AXFR/IXFRを使って他のDNSプロバイダーと連携する",
+          "wrongFeedback": "全プランで利用できるわけではありません。ゾーン転送によるセカンダリDNS設定はEnterpriseプラン限定の機能です。"
+        },
+        {
+          "text": "セカンダリDNSとして運用する場合、CloudflareがゾーンのDNSSEC設定を扱うことは一切できない",
+          "wrongFeedback": "セカンダリとして運用する場合でも、設定に応じてDNSSECを扱うためのオプションが複数用意されています。一切扱えないわけではありません。"
+        },
+        {
+          "text": "ゾーン転送によるセカンダリDNS設定はEnterpriseプラン限定で、AXFR/IXFRというプロトコルを使い、既存のプライマリDNSプロバイダーと並行してCloudflareを運用できる"
+        },
+        {
+          "text": "ゾーン転送はDNSレコードの変更をリアルタイムのWebhookで通知する仕組みであり、AXFR/IXFRとは無関係な独自プロトコルである",
+          "wrongFeedback": "リアルタイムWebhookではありません。ゾーン転送は標準的なDNSプロトコルであるAXFR(全体転送)・IXFR(差分転送)を使う仕組みです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "ゾーン転送によるセカンダリDNS設定は、Enterpriseプラン限定の機能です。AXFR(全体転送)・IXFR(差分転送)という標準的なDNSプロトコルを使い、既存のプライマリDNSプロバイダーと並行してCloudflareをセカンダリDNSとして運用できます。セカンダリとして運用する場合でも、設定に応じてDNSSECを扱う複数のオプションが用意されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/dns/zone-setups/zone-transfers/",
+      "hint": "「既存のプライマリDNSはそのまま残しつつ、Cloudflareを追加のセカンダリとして連携させる」仕組みだと考えましょう。",
+      "tags": ["dns", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ゾーン転送(セカンダリDNS)",
+          "columns": [
+            { "heading": "プラン", "items": ["Enterprise限定"] },
+            { "heading": "プロトコル", "items": ["AXFR(全体転送)・IXFR(差分転送)"] }
+          ]
+        }
+      ]
     }
   ]
 }

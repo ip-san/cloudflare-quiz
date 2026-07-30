@@ -56,6 +56,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   lb: 'load-balancing',
   ch: 'cache',
   ru: 'rules',
+  dn: 'dns',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -259,6 +260,17 @@ const VALID_DOC_PAGES = [
   'rules/configuration-rules/settings/',
   'rules/snippets/',
   'rules/snippets/when-to-use/',
+  'dns/',
+  'dns/proxy-status/',
+  'dns/manage-dns-records/',
+  'dns/manage-dns-records/reference/dns-record-types/',
+  'dns/manage-dns-records/reference/ttl/',
+  'dns/dnssec/',
+  'dns/zone-setups/',
+  'dns/zone-setups/full-setup/',
+  'dns/zone-setups/partial-setup/',
+  'dns/cname-flattening/',
+  'dns/zone-setups/zone-transfers/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -691,6 +703,7 @@ describe('Quiz Content Quality', () => {
         'load-balancing',
         'cache',
         'rules',
+        'dns',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

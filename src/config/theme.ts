@@ -403,6 +403,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'リクエスト/レスポンスの書き換えやオリジンの振り分けをコードを書かずに設計できる',
     },
     {
+      id: 'dns',
+      name: 'DNS',
+      icon: '🌐',
+      color: 'moss',
+      weight: 10,
+      description:
+        'DNSレコードの管理・プロキシステータス(オレンジ/グレークラウド)・CNAMEフラット化・DNSSEC・ゾーンセットアップの種類',
+      skillDescription: 'ドメインのDNS設定とプロキシの挙動を正しく設計・トラブルシュートできる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

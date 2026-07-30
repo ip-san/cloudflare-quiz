@@ -26,6 +26,7 @@ export const COLOR_MAP: Record<string, string> = {
   gold: '#ca8a04',
   copper: '#c2410c',
   denim: '#1d4ed8',
+  moss: '#4d7c0f',
 }
 
 export function getColorHex(colorName: string): string {
