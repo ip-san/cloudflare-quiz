@@ -433,6 +433,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'サイトの表示速度を計測し、適切な最適化機能を選んで改善できる',
     },
     {
+      id: 'tunnel',
+      name: 'Cloudflare Tunnel',
+      icon: '🚇',
+      color: 'burgundy',
+      weight: 10,
+      description:
+        'cloudflaredによるアウトバウンド接続・公開アプリのルーティング・プライベートネットワーク接続・レプリカによる高可用性',
+      skillDescription: 'ファイアウォールにインバウンドポートを開けずに、社内リソースを安全に公開・接続できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

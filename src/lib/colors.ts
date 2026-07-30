@@ -29,6 +29,7 @@ export const COLOR_MAP: Record<string, string> = {
   moss: '#4d7c0f',
   cobalt: '#4338ca',
   coral: '#fb923c',
+  burgundy: '#9f1239',
 }
 
 export function getColorHex(colorName: string): string {

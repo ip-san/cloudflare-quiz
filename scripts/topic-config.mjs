@@ -317,6 +317,29 @@ export const DOC_PAGES = [
   { name: 'speed/optimization/protocol/0-rtt-connection-resumption' },
   { name: 'speed/optimization/content/fonts' },
   { name: 'speed/optimization/content/compression' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/get-started' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/create-remote-tunnel' },
+  {
+    name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/tunnel-permissions',
+  },
+  {
+    name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file',
+  },
+  {
+    name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/create-local-tunnel',
+  },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/dns' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-with-firewall' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/update-cloudflared' },
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels/metrics' },
   { name: 'r2' },
   { name: 'r2/api/s3/presigned-urls' },
   { name: 'r2/api/tokens' },
@@ -404,6 +427,28 @@ export const DOC_PAGE_OVERRIDES = {
   // Wrangler's own CLI schema at build time) — no override target exists.
   // quiz-fact-check.mjs will report d1 subcommand terms as "not found"
   // regardless; verify those manually against `wrangler d1 --help`.
+  // Cloudflare Tunnel doc pages under cloudflare-one/ are thin
+  // `<Render file="tunnel/..." />` stubs with no literal headings/prose of
+  // their own — the real reference content lives in shared partials under
+  // src/content/partials/cloudflare-one/tunnel/. Point fetch-docs.mjs at
+  // those partials directly so quiz-lint's anchor check and
+  // quiz-fact-check.mjs's term search have real text to validate against.
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters':
+    'partials/cloudflare-one/tunnel/run-parameters.mdx',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/tunnel-permissions':
+    'partials/cloudflare-one/tunnel/locally-managed/tunnel-permissions.mdx',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file':
+    'partials/cloudflare-one/tunnel/locally-managed/configuration-file.mdx',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/create-local-tunnel':
+    'partials/cloudflare-one/tunnel/locally-managed/create-local-tunnel.mdx',
+  // routing-to-tunnel/dns and monitor-tunnels/metrics keep their default
+  // (non-overridden) fetch: unlike the other stubs above, these two pages
+  // have real literal `##` headings of their own (e.g. "## Create a DNS
+  // record", "## Default metrics server address") even though the body text
+  // under each heading is still a <Render> import — so anchor validation
+  // works without an override, at the cost of thinner body prose.
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/update-cloudflared':
+    'partials/cloudflare-one/tunnel/update-cloudflared.mdx',
 }
 
 /**

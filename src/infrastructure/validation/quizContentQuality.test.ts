@@ -59,6 +59,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   dn: 'dns',
   sl: 'ssl-tls',
   sp: 'speed',
+  tn: 'tunnel',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -300,6 +301,23 @@ const VALID_DOC_PAGES = [
   'speed/optimization/protocol/0-rtt-connection-resumption/',
   'speed/optimization/content/fonts/',
   'speed/optimization/content/compression/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/create-remote-tunnel/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/tunnel-permissions/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/create-local-tunnel/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/dns/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels/metrics/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-with-firewall/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/update-cloudflared/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -735,6 +753,7 @@ describe('Quiz Content Quality', () => {
         'dns',
         'ssl-tls',
         'speed',
+        'tunnel',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

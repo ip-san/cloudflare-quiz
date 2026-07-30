@@ -27915,16 +27915,27 @@
       "explanation": "Cloudflare DNSは、Anycastネットワークを活用した高速で堅牢な権威DNSサービスであり、DDoS攻撃やBGP経路のハイジャック・リーク(誤った経路情報の広告)からドメインを保護します。すべてのCloudflareプランで利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/",
       "hint": "「世界中に分散した拠点から同じIPアドレスで応答する」仕組みがもたらす耐障害性を考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "hierarchy",
           "label": "Cloudflare DNSの特徴",
           "items": [
-            { "text": "Anycastによる権威DNS" },
-            { "text": "DDoS攻撃からの保護" },
-            { "text": "BGP経路ハイジャックからの保護" },
-            { "text": "全プランで利用可能" }
+            {
+              "text": "Anycastによる権威DNS"
+            },
+            {
+              "text": "DDoS攻撃からの保護"
+            },
+            {
+              "text": "BGP経路ハイジャックからの保護"
+            },
+            {
+              "text": "全プランで利用可能"
+            }
           ]
         }
       ]
@@ -27955,14 +27966,27 @@
       "explanation": "Cloudflareでプロキシ(オレンジクラウド)にできるのは、IPアドレス解決に使われるA・AAAA・CNAMEレコードのみです。MXやTXTなど、それ以外の種類のレコードは常にDNS-only(グレークラウド)として扱われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/",
       "hint": "「実際にHTTP/HTTPSトラフィックの宛先を指すレコード」だけがプロキシの対象になると考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "プロキシ可能なレコード種類",
           "columns": [
-            { "heading": "プロキシ可能", "items": ["A・AAAA・CNAME"] },
-            { "heading": "常にDNS-only", "items": ["MX・TXTなど"] }
+            {
+              "heading": "プロキシ可能",
+              "items": [
+                "A・AAAA・CNAME"
+              ]
+            },
+            {
+              "heading": "常にDNS-only",
+              "items": [
+                "MX・TXTなど"
+              ]
+            }
           ]
         }
       ]
@@ -27993,14 +28017,21 @@
       "explanation": "DNSレコードをプロキシ済みにすると、DNSクエリへの応答がオリジンの実IPアドレスではなくCloudflareのAnycast IPアドレスになるため、オリジンIPアドレスを隠しつつDDoS攻撃から保護できます。また、WAFルール・キャッシュ・リダイレクトルールといったCloudflare製品の設定を、そのトラフィックに適用できるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#benefits",
       "hint": "「本当の宛先を隠す」ことと、「その手前でいろいろな加工・保護ができる」ことの2つのメリットを考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "hierarchy",
           "label": "プロキシ済みレコードの利点",
           "items": [
-            { "text": "オリジンIPを隠しDDoSから保護" },
-            { "text": "WAF・キャッシュ・リダイレクトルールの適用" }
+            {
+              "text": "オリジンIPを隠しDDoSから保護"
+            },
+            {
+              "text": "WAF・キャッシュ・リダイレクトルールの適用"
+            }
           ]
         }
       ]
@@ -28031,14 +28062,27 @@
       "explanation": "プロキシ済みレコードのTTLは常にAuto(300秒)固定で、この値を手動で編集することはできません。この短いTTLにより、CloudflareがレコードのAnycast IPアドレスを変更した場合でも、その変更が5分以内に反映されるようになっています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/",
       "hint": "「変更をすばやく反映させたい」という目的のために、あえて短い固定値になっていると考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "プロキシ済みレコードのTTL",
           "columns": [
-            { "heading": "値", "items": ["Auto = 300秒"] },
-            { "heading": "編集可否", "items": ["編集不可(固定)"] }
+            {
+              "heading": "値",
+              "items": [
+                "Auto = 300秒"
+              ]
+            },
+            {
+              "heading": "編集可否",
+              "items": [
+                "編集不可(固定)"
+              ]
+            }
           ]
         }
       ]
@@ -28069,15 +28113,24 @@
       "explanation": "同じ名前に複数のA(またはAAAA)レコードがあり、そのうち1件でもプロキシ済みに設定されている場合、Cloudflareはその名前のすべてのA(またはAAAA)レコードをプロキシ済みとして扱います。個別に一部だけをDNS-onlyのままにしておくことはできません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#mix-proxied-and-unproxied",
       "hint": "「1つでも該当すれば、その名前全体に適用される」という全か無かのルールを考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "混在時の扱い",
           "steps": [
-            { "text": "同じ名前に複数のAレコード" },
-            { "text": "1件でもプロキシ済みがある" },
-            { "text": "その名前のすべてのAレコードがプロキシ済み扱い" }
+            {
+              "text": "同じ名前に複数のAレコード"
+            },
+            {
+              "text": "1件でもプロキシ済みがある"
+            },
+            {
+              "text": "その名前のすべてのAレコードがプロキシ済み扱い"
+            }
           ]
         }
       ]
@@ -28108,15 +28161,24 @@
       "explanation": "CloudflareはCNAMEチェーンの先がプロキシ済みであれば、その手前のホスト名宛てのトラフィックもプロキシされたものとして扱います。この例では、`example.net`側のCNAMEがプロキシ済みであるため、`example.com`宛てのトラフィックもプロキシされたものとして扱われます。なお、CNAMEの参照先が異なるCloudflareアカウントの場合は、Error 1014(CNAME Cross-User Banned)としてエラーになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#mix-proxied-and-unproxied",
       "hint": "プロキシの設定が「チェーンの末端」から「入り口」へ向かって伝わっていくと考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "CNAMEチェーンでのプロキシ伝播",
           "steps": [
-            { "text": "example.com → example.netへCNAME" },
-            { "text": "example.net側がプロキシ済み" },
-            { "text": "example.com宛てもプロキシ扱いに" }
+            {
+              "text": "example.com → example.netへCNAME"
+            },
+            {
+              "text": "example.net側がプロキシ済み"
+            },
+            {
+              "text": "example.com宛てもプロキシ扱いに"
+            }
           ]
         }
       ]
@@ -28147,14 +28209,28 @@
       "explanation": "Webトラフィックを扱うレコードをDNS-onlyのままにしておくと、オリジンサーバーの実IPアドレスがDNSクエリへの応答として誰にでも公開されてしまいます。これにより標的型攻撃への保護が失われるほか、CloudflareによるHTTP/HTTPS分析や、DDoS保護・キャッシュ・WAFといった製品機能も適用されなくなります(DNS分析のみは可能です)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#dns-only-records",
       "hint": "「本当の宛先が誰にでも見えてしまう」ことが、どんな種類のリスクにつながるか考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "DNS-onlyのリスク",
           "columns": [
-            { "heading": "露出するもの", "items": ["オリジンの実IPアドレス"] },
-            { "heading": "適用されないもの", "items": ["DDoS保護・WAF・キャッシュ", "HTTP/HTTPS分析"] }
+            {
+              "heading": "露出するもの",
+              "items": [
+                "オリジンの実IPアドレス"
+              ]
+            },
+            {
+              "heading": "適用されないもの",
+              "items": [
+                "DDoS保護・WAF・キャッシュ",
+                "HTTP/HTTPS分析"
+              ]
+            }
           ]
         }
       ]
@@ -28185,14 +28261,27 @@
       "explanation": "DNS-only(未プロキシ)レコードのTTLは、非Enterpriseプランで最小60秒、Enterpriseプランで最小30秒から、どちらのプランも最大1日まで設定できます。Autoを選択した場合の値は300秒(5分)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/#unproxied-records",
       "hint": "「より短い最小値を設定できる」特典が、どちらのプランに付いているか考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "DNS-onlyレコードのTTL範囲",
           "columns": [
-            { "heading": "非Enterprise", "items": ["最小60秒〜最大1日"] },
-            { "heading": "Enterprise", "items": ["最小30秒〜最大1日"] }
+            {
+              "heading": "非Enterprise",
+              "items": [
+                "最小60秒〜最大1日"
+              ]
+            },
+            {
+              "heading": "Enterprise",
+              "items": [
+                "最小30秒〜最大1日"
+              ]
+            }
           ]
         }
       ]
@@ -28223,14 +28312,27 @@
       "explanation": "ネームサーバーTTLは、Cloudflareのネームサーバーやカスタムネームサーバーにのみ影響する、他のDNSレコードのTTLとは別の独立した設定です。DNSレコード表に表示される他のNSレコードについては、それぞれのレコード自身が持つTTLフィールドによってTTLが制御されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/#nameserver-ttl",
       "hint": "「ネームサーバーそのもの」に関するTTLと、「一般的なDNSレコード」のTTLは別物として管理されていると考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "ネームサーバーTTL と 通常のレコードTTL",
           "columns": [
-            { "heading": "ネームサーバーTTL", "items": ["Cloudflare/カスタムネームサーバー専用"] },
-            { "heading": "通常のレコードTTL", "items": ["各レコード自身のTTLフィールドで制御"] }
+            {
+              "heading": "ネームサーバーTTL",
+              "items": [
+                "Cloudflare/カスタムネームサーバー専用"
+              ]
+            },
+            {
+              "heading": "通常のレコードTTL",
+              "items": [
+                "各レコード自身のTTLフィールドで制御"
+              ]
+            }
           ]
         }
       ]
@@ -28261,15 +28363,33 @@
       "explanation": "DNSレコードのクォータは、プランに応じてゾーン単位またはアカウント単位のいずれか一方で適用されます(両方が同時に適用されることはありません)。2024年9月1日より前に作成されたFreeゾーンは1,000件、それ以降に作成されたFreeゾーンは200件、Pro・Businessはそれぞれ3,500件がゾーン単位の上限です。Enterpriseにはゾーン単位の上限がなく、代わりにアカウント単位のクォータ(パブリックゾーン・内部ゾーンそれぞれデフォルト100万件)が適用されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/#dns-records-quota",
       "hint": "「ゾーンごとに数える」プランと「アカウント全体で数える」プランが分かれていると考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "DNSレコードのクォータ",
           "columns": [
-            { "heading": "Free(2024/9/1以降)", "items": ["200件(ゾーン単位)"] },
-            { "heading": "Pro/Business", "items": ["3,500件(ゾーン単位)"] },
-            { "heading": "Enterprise", "items": ["アカウント単位のクォータ"] }
+            {
+              "heading": "Free(2024/9/1以降)",
+              "items": [
+                "200件(ゾーン単位)"
+              ]
+            },
+            {
+              "heading": "Pro/Business",
+              "items": [
+                "3,500件(ゾーン単位)"
+              ]
+            },
+            {
+              "heading": "Enterprise",
+              "items": [
+                "アカウント単位のクォータ"
+              ]
+            }
           ]
         }
       ]
@@ -28300,15 +28420,24 @@
       "explanation": "Email Routingなど他のCloudflare製品が自動的に作成するTXT・MXレコードなども、DNSレコードのクォータの対象としてカウントされます。ただし、こうしたサービスの中断を避けるため、若干の余裕(バッファ)を持ってクォータの上限が適用されており、結果としてゾーンが表面上の上限をわずかに超えて保持することがあります。ユーザー自身がダッシュボードやAPI経由で新規にレコードを作成するには、ゾーンがクォータの範囲内である必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/#dns-records-quota",
       "hint": "「他のサービスが裏側で追加するレコード」を止めてしまわないよう、上限の適用に少し余裕を持たせていると考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "自動作成レコードとクォータ",
           "steps": [
-            { "text": "他製品が自動でTXT/MXレコードを作成" },
-            { "text": "クォータの対象としてカウント(バッファ付き)" },
-            { "text": "ユーザーの新規作成には上限内であることが必要" }
+            {
+              "text": "他製品が自動でTXT/MXレコードを作成"
+            },
+            {
+              "text": "クォータの対象としてカウント(バッファ付き)"
+            },
+            {
+              "text": "ユーザーの新規作成には上限内であることが必要"
+            }
           ]
         }
       ]
@@ -28339,14 +28468,27 @@
       "explanation": "「IPアドレス解決」の目的で使われるDNSレコードタイプはA(IPv4)・AAAA(IPv6)・CNAME(別名)の3種類です。これらのレコードタイプのみがCloudflareでプロキシ(オレンジクラウド)にできる対象でもあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/dns-record-types/",
       "hint": "プロキシできるレコードタイプと、この分類の対象は一致していると考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "IPアドレス解決に使われるレコード",
           "columns": [
-            { "heading": "IPアドレス解決の対象", "items": ["A・AAAA・CNAME"] },
-            { "heading": "対象外", "items": ["MX・TXT・NSなど"] }
+            {
+              "heading": "IPアドレス解決の対象",
+              "items": [
+                "A・AAAA・CNAME"
+              ]
+            },
+            {
+              "heading": "対象外",
+              "items": [
+                "MX・TXT・NSなど"
+              ]
+            }
           ]
         }
       ]
@@ -28377,14 +28519,27 @@
       "explanation": "SOAレコードのMinimum TTLフィールドのデフォルト値は1,800秒で、60秒から86,400秒までの範囲で設定できます。SOAレコードには他にもRefresh(デフォルト10,000秒)・Retry(デフォルト2,400秒)・Expire(デフォルト604,800秒)・Record TTL(デフォルト3,600秒)といったフィールドがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/dns-record-types/",
       "hint": "SOAレコードの複数のTTL系フィールドの中でも、「最小値」を意味するフィールドの数値だと考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "SOA Minimum TTL",
           "columns": [
-            { "heading": "デフォルト値", "items": ["1,800秒"] },
-            { "heading": "設定可能範囲", "items": ["60秒〜86,400秒"] }
+            {
+              "heading": "デフォルト値",
+              "items": [
+                "1,800秒"
+              ]
+            },
+            {
+              "heading": "設定可能範囲",
+              "items": [
+                "60秒〜86,400秒"
+              ]
+            }
           ]
         }
       ]
@@ -28415,15 +28570,24 @@
       "explanation": "CloudflareでDNSSECを有効化すると、Cloudflareがゾーンに署名し、公開署名鍵を公開したうえでDS(Delegation Signer)レコードを生成します。利用者はこのDSレコードをレジストラ(ドメイン登録事業者)側に追加する必要があります(Cloudflare Registrarを使っている場合は自動的に処理されます)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/dnssec/",
       "hint": "「Cloudflare側でまず何が生成されるか」「それをどこに登録するか」という順序を考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "DNSSEC有効化の流れ",
           "steps": [
-            { "text": "Cloudflareでゾーンに署名" },
-            { "text": "公開署名鍵とDSレコードを生成" },
-            { "text": "DSレコードをレジストラに追加" }
+            {
+              "text": "Cloudflareでゾーンに署名"
+            },
+            {
+              "text": "公開署名鍵とDSレコードを生成"
+            },
+            {
+              "text": "DSレコードをレジストラに追加"
+            }
           ]
         }
       ]
@@ -28454,16 +28618,27 @@
       "explanation": "外部DNSKEYレコードの追加(マルチシグナーDNSSEC)に対応していないDNSプロバイダーからCloudflareへDNSSEC有効のまま移行する場合は、まずレジストラ側のDSレコードを削除し、そのDSレコードのTTLが親ゾーンで完全に失効するのを待つ必要があります(TLDによって一般的に24〜48時間程度)。その後、ネームサーバーをCloudflareへ切り替え、古いNSレコードのTTLが失効するのを待ってから、CloudflareでDNSSECを有効化して新しいDSレコードをレジストラに追加します。この順序を守らないと、検証リゾルバがSERVFAILを返す可能性があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/dnssec/#migrate-to-cloudflare-with-dnssec-active",
       "hint": "「古い鍵の情報が完全に消えるのを待ってから」次のステップに進む必要がある、という順序の重要性を考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "DNSSEC有効のままの移行手順",
           "steps": [
-            { "text": "レジストラのDSレコードを削除" },
-            { "text": "DSレコードのTTL失効を待つ" },
-            { "text": "ネームサーバーをCloudflareへ切り替え" },
-            { "text": "DNSSECを有効化し新DSレコードを追加" }
+            {
+              "text": "レジストラのDSレコードを削除"
+            },
+            {
+              "text": "DSレコードのTTL失効を待つ"
+            },
+            {
+              "text": "ネームサーバーをCloudflareへ切り替え"
+            },
+            {
+              "text": "DNSSECを有効化し新DSレコードを追加"
+            }
           ]
         }
       ]
@@ -28494,15 +28669,24 @@
       "explanation": "CNAMEフラット化は、ゾーンApex(`example.com`のようなルートドメイン)でもCNAMEレコードを使えるようにする仕組みです。CloudflareはCNAMEチェーンをたどり(複数回のルックアップが必要な場合もあります)、最終的に到達したIPアドレスを見つけて、CNAMEそのものではなくそのIPアドレスを応答として返します。参照先にA/AAAAレコードがない「dangling CNAME」の場合は、空の応答(NODATA)が返されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/cname-flattening/",
       "hint": "「CNAMEをそのまま返す」のではなく、「その先をたどって最終的な実体(IPアドレス)を返す」仕組みだと考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "CNAMEフラット化の仕組み",
           "steps": [
-            { "text": "ゾーンApexにCNAMEを設定" },
-            { "text": "CloudflareがCNAMEチェーンをたどる" },
-            { "text": "最終的なIPアドレスを応答として返す" }
+            {
+              "text": "ゾーンApexにCNAMEを設定"
+            },
+            {
+              "text": "CloudflareがCNAMEチェーンをたどる"
+            },
+            {
+              "text": "最終的なIPアドレスを応答として返す"
+            }
           ]
         }
       ]
@@ -28533,14 +28717,29 @@
       "explanation": "Fullセットアップは、Cloudflareが権威DNSプロバイダーとなる設定で、全プランで利用できます。Partial(CNAME)セットアップは、既存のDNSプロバイダーを維持したまま特定のホスト名だけをCloudflareへ向けられる設定で、Business・Enterpriseプラン限定です。またPartialセットアップは、Cloudflare Registrarで登録されたドメインではサポートされていません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/zone-setups/",
       "hint": "「Cloudflareにすべて任せる」のか、「既存のDNSプロバイダーを維持しつつ一部だけCloudflareへ」なのか、という違いを考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Full と Partial セットアップ",
           "columns": [
-            { "heading": "Full(Primary)", "items": ["全プラン", "Cloudflareが権威DNS"] },
-            { "heading": "Partial(CNAME)", "items": ["Business/Enterprise限定", "既存プロバイダーを維持"] }
+            {
+              "heading": "Full(Primary)",
+              "items": [
+                "全プラン",
+                "Cloudflareが権威DNS"
+              ]
+            },
+            {
+              "heading": "Partial(CNAME)",
+              "items": [
+                "Business/Enterprise限定",
+                "既存プロバイダーを維持"
+              ]
+            }
           ]
         }
       ]
@@ -28571,14 +28770,27 @@
       "explanation": "ゾーン転送によるセカンダリDNS設定は、Enterpriseプラン限定の機能です。AXFR(全体転送)・IXFR(差分転送)という標準的なDNSプロトコルを使い、既存のプライマリDNSプロバイダーと並行してCloudflareをセカンダリDNSとして運用できます。セカンダリとして運用する場合でも、設定に応じてDNSSECを扱う複数のオプションが用意されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/zone-setups/zone-transfers/",
       "hint": "「既存のプライマリDNSはそのまま残しつつ、Cloudflareを追加のセカンダリとして連携させる」仕組みだと考えましょう。",
-      "tags": ["dns", "practical"],
+      "tags": [
+        "dns",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "ゾーン転送(セカンダリDNS)",
           "columns": [
-            { "heading": "プラン", "items": ["Enterprise限定"] },
-            { "heading": "プロトコル", "items": ["AXFR(全体転送)・IXFR(差分転送)"] }
+            {
+              "heading": "プラン",
+              "items": [
+                "Enterprise限定"
+              ]
+            },
+            {
+              "heading": "プロトコル",
+              "items": [
+                "AXFR(全体転送)・IXFR(差分転送)"
+              ]
+            }
           ]
         }
       ]
@@ -28609,14 +28821,27 @@
       "explanation": "エッジ証明書は訪問者とCloudflare間の通信(HTTPS)を暗号化するための証明書で、Universal SSLやAdvanced Certificate Managerなどで発行されます。オリジン証明書は、Cloudflareとオリジンサーバー間の通信を暗号化するための証明書で、Origin CA証明書などが該当します。2つは異なる区間を保護する別々の証明書です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/",
       "hint": "「訪問者から見える区間」と「Cloudflareの裏側でオリジンとつながる区間」という、2つの異なる通信区間を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "エッジ証明書 と オリジン証明書",
           "columns": [
-            { "heading": "エッジ証明書", "items": ["訪問者↔Cloudflare間"] },
-            { "heading": "オリジン証明書", "items": ["Cloudflare↔オリジン間"] }
+            {
+              "heading": "エッジ証明書",
+              "items": [
+                "訪問者↔Cloudflare間"
+              ]
+            },
+            {
+              "heading": "オリジン証明書",
+              "items": [
+                "Cloudflare↔オリジン間"
+              ]
+            }
           ]
         }
       ]
@@ -28647,14 +28872,21 @@
       "explanation": "Flexibleモードでは、訪問者とCloudflare間の通信はHTTPSで暗号化されますが、Cloudflareとオリジン間の通信はHTTPのまま平文でやり取りされます。そのためオリジンサーバーにSSL証明書は不要ですが、機密情報(個人情報やログイン情報)を扱うアプリケーションには推奨されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/",
       "hint": "「訪問者側だけ」暗号化され、「オリジン側」はまだ平文のままという、部分的な保護だと考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "Flexibleモードの通信",
           "steps": [
-            { "text": "訪問者 ←HTTPS(暗号化)→ Cloudflare" },
-            { "text": "Cloudflare ←HTTP(平文)→ オリジン" }
+            {
+              "text": "訪問者 ←HTTPS(暗号化)→ Cloudflare"
+            },
+            {
+              "text": "Cloudflare ←HTTP(平文)→ オリジン"
+            }
           ]
         }
       ]
@@ -28685,14 +28917,29 @@
       "explanation": "Fullモードでは、訪問者側・オリジン側の両方でHTTPSが使われますが、オリジンが提示する証明書は検証されません。そのため、期限切れ・自己署名・ホスト名が一致しない証明書であっても受け入れられてしまいます。より厳格な検証を求める場合はFull(strict)モードを使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full/",
       "hint": "「暗号化はされているが、その証明書が本物かどうかまでは確認しない」という中間的な安全性を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Full と Full(strict)",
           "columns": [
-            { "heading": "Full", "items": ["両区間HTTPS", "証明書は検証なし"] },
-            { "heading": "Full(strict)", "items": ["両区間HTTPS", "証明書を厳格に検証"] }
+            {
+              "heading": "Full",
+              "items": [
+                "両区間HTTPS",
+                "証明書は検証なし"
+              ]
+            },
+            {
+              "heading": "Full(strict)",
+              "items": [
+                "両区間HTTPS",
+                "証明書を厳格に検証"
+              ]
+            }
           ]
         }
       ]
@@ -28723,15 +28970,24 @@
       "explanation": "Full(strict)モードでオリジンが提示する証明書は、有効期限内であること・公的な認証局またはCloudflareのOrigin CAから発行されていること・Common NameまたはSubject Alternative Name(SAN)が要求されたホスト名と一致すること、という3つの条件をすべて満たす必要があります。これらを満たさない場合、訪問者は526エラーに遭遇する可能性があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/",
       "hint": "「期限」「発行元」「ホスト名の一致」という3つの観点すべてをクリアする必要があると考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "hierarchy",
           "label": "Full(strict)の証明書要件",
           "items": [
-            { "text": "有効期限内であること" },
-            { "text": "公的CAまたはOrigin CAから発行" },
-            { "text": "CN/SANがホスト名と一致" }
+            {
+              "text": "有効期限内であること"
+            },
+            {
+              "text": "公的CAまたはOrigin CAから発行"
+            },
+            {
+              "text": "CN/SANがホスト名と一致"
+            }
           ]
         }
       ]
@@ -28762,14 +29018,27 @@
       "explanation": "Strict(SSL-Only Origin Pull)モードでは、訪問者がリクエストしたスキーム(HTTPかHTTPSか)に関わらず、Cloudflareとオリジン間の通信は常にHTTPSで行われます。オリジン証明書の検証要件はFull(strict)モードと同じです。このモードはEnterpriseプラン限定です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/ssl-only-origin-pull/",
       "hint": "「訪問者側の要求内容に関わらず、オリジン側は常に暗号化を強制する」という、より厳格な挙動を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Strict(SSL-Only Origin Pull)",
           "columns": [
-            { "heading": "オリジンとの通信", "items": ["常にHTTPS(訪問者側の要求に関わらず)"] },
-            { "heading": "利用可能プラン", "items": ["Enterprise限定"] }
+            {
+              "heading": "オリジンとの通信",
+              "items": [
+                "常にHTTPS(訪問者側の要求に関わらず)"
+              ]
+            },
+            {
+              "heading": "利用可能プラン",
+              "items": [
+                "Enterprise限定"
+              ]
+            }
           ]
         }
       ]
@@ -28800,15 +29069,24 @@
       "explanation": "Flexibleモードがサポートするのは、デフォルトポート(443)でのHTTPS接続のみです。それ以外のポートを使ったHTTPS接続は、Fullモードの挙動にフォールバックします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/#limitations",
       "hint": "「標準的なポート」に限定された挙動であり、それ以外では別のモードの挙動に切り替わると考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "Flexibleモードのポート制限",
           "steps": [
-            { "text": "ポート443でのHTTPS接続" },
-            { "text": "Flexibleモードとして動作" },
-            { "text": "それ以外のポートはFullモードへフォールバック" }
+            {
+              "text": "ポート443でのHTTPS接続"
+            },
+            {
+              "text": "Flexibleモードとして動作"
+            },
+            {
+              "text": "それ以外のポートはFullモードへフォールバック"
+            }
           ]
         }
       ]
@@ -28839,15 +29117,24 @@
       "explanation": "Automatic SSL/TLSによるアップグレードは、まず全トラフィックの1%に新しい暗号化モードを適用することから始まります。問題が見つからなければ、10%刻みで段階的に適用範囲を広げ、最終的に100%のトラフィックに適用されます。オリジンへの接続が途中で失敗した場合は、アップグレードを中止して以前のモードへ即座にロールバックします。また、より安全性の低いモードへ自動的にダウングレードすることはありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/#automatic-ssltls-default",
       "hint": "「いきなり全部」ではなく、「少しずつ試して問題がなければ広げていく」慎重な移行方法を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "Automatic SSL/TLSの段階的アップグレード",
           "steps": [
-            { "text": "1%のトラフィックへ適用" },
-            { "text": "問題なければ10%刻みで拡大" },
-            { "text": "100%到達で恒久的に設定変更" }
+            {
+              "text": "1%のトラフィックへ適用"
+            },
+            {
+              "text": "問題なければ10%刻みで拡大"
+            },
+            {
+              "text": "100%到達で恒久的に設定変更"
+            }
           ]
         }
       ]
@@ -28878,14 +29165,27 @@
       "explanation": "Universal SSLは無料で自動的に発行・更新・デプロイされるDomain Validated(DV)証明書です。Fullセットアップのゾーンでは、ルートドメイン(例:`example.com`)と第1階層のサブドメイン(例:`www.example.com`)をカバーします。Partial(CNAME)セットアップでは、プロキシ済みの各サブドメインごとに階層に関わらず個別の証明書が発行されます。証明書はドメインがCloudflare上でアクティブになった後に発行されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/",
       "hint": "「無料で自動的に付与される」証明書が、セットアップの種類によって「カバーする範囲の決まり方」が違うと考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Universal SSLのカバー範囲",
           "columns": [
-            { "heading": "Fullセットアップ", "items": ["ルートドメイン+第1階層サブドメイン"] },
-            { "heading": "Partial(CNAME)セットアップ", "items": ["プロキシ済みサブドメインごとに個別発行"] }
+            {
+              "heading": "Fullセットアップ",
+              "items": [
+                "ルートドメイン+第1階層サブドメイン"
+              ]
+            },
+            {
+              "heading": "Partial(CNAME)セットアップ",
+              "items": [
+                "プロキシ済みサブドメインごとに個別発行"
+              ]
+            }
           ]
         }
       ]
@@ -28916,14 +29216,27 @@
       "explanation": "Universal SSL証明書の有効期間は90日間です。Cloudflareが管理する証明書の自動更新は、有効期限の30日前から試行が始まり、期限の24時間前まで継続されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#universal-ssl",
       "hint": "「有効期間の長さ」と「更新を試み始めるタイミング」は別々の数値だと考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Universal SSLの有効期間",
           "columns": [
-            { "heading": "有効期間", "items": ["90日間"] },
-            { "heading": "自動更新開始", "items": ["期限の30日前"] }
+            {
+              "heading": "有効期間",
+              "items": [
+                "90日間"
+              ]
+            },
+            {
+              "heading": "自動更新開始",
+              "items": [
+                "期限の30日前"
+              ]
+            }
           ]
         }
       ]
@@ -28954,15 +29267,33 @@
       "explanation": "Origin CA証明書は1つにつき最大200個のSANを含められます。ワイルドカード(例:`*.example.com`)は1階層分のみをカバーしますが、`*.example.com`と`*.secure.example.com`のように、異なる階層のワイルドカードを同じ証明書内で複数使うことができます。なお、IPアドレスをSANとして指定することはできません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/#hostname-and-wildcard-coverage",
       "hint": "「1つのワイルドカードでカバーできる範囲」と「証明書全体に含められる個数の上限」という2つの制約を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Origin CA証明書のSAN制約",
           "columns": [
-            { "heading": "SANの上限", "items": ["最大200個"] },
-            { "heading": "ワイルドカード", "items": ["1階層分のみ・複数併用可"] },
-            { "heading": "IPアドレス", "items": ["SANとして指定不可"] }
+            {
+              "heading": "SANの上限",
+              "items": [
+                "最大200個"
+              ]
+            },
+            {
+              "heading": "ワイルドカード",
+              "items": [
+                "1階層分のみ・複数併用可"
+              ]
+            },
+            {
+              "heading": "IPアドレス",
+              "items": [
+                "SANとして指定不可"
+              ]
+            }
           ]
         }
       ]
@@ -28993,15 +29324,24 @@
       "explanation": "Cloudflareは現時点でOrigin CA証明書の期限切れ通知を送信しません。長期間有効な証明書に依存している場合は、自分自身の証明書管理システムや監視の仕組みで有効期限を追跡しておく必要があります。また、証明書の作成・失効にはAPI Accessの権限が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/",
       "hint": "「Cloudflareが自動で教えてくれない」情報があるため、自分で管理する必要がある点を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "Origin CA証明書の期限管理",
           "steps": [
-            { "text": "Origin CA証明書を発行" },
-            { "text": "Cloudflareからの期限切れ通知はなし" },
-            { "text": "自分自身の監視体制で有効期限を追跡" }
+            {
+              "text": "Origin CA証明書を発行"
+            },
+            {
+              "text": "Cloudflareからの期限切れ通知はなし"
+            },
+            {
+              "text": "自分自身の監視体制で有効期限を追跡"
+            }
           ]
         }
       ]
@@ -29032,14 +29372,28 @@
       "explanation": "カスタム証明書は、証明機関(CA)を自分で選びたい場合や、Cloudflareが提供するUniversal SSL・Advanced Certificate ManagerではサポートされないOrganization Validated(OV)・Extended Validation(EV)証明書が必要な場合に使われます。Universal SSLやAdvanced Certificate Managerとは異なり、証明書の発行・更新・期限管理はユーザー自身が行う必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/custom-certificates/",
       "hint": "「Cloudflareにお任せできない、より高度な検証レベルの証明書」が必要な場面を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "カスタム証明書を使う理由",
           "columns": [
-            { "heading": "理由", "items": ["CAを自分で選びたい", "OV・EV証明書が必要"] },
-            { "heading": "運用責任", "items": ["発行・更新・期限管理はユーザー自身"] }
+            {
+              "heading": "理由",
+              "items": [
+                "CAを自分で選びたい",
+                "OV・EV証明書が必要"
+              ]
+            },
+            {
+              "heading": "運用責任",
+              "items": [
+                "発行・更新・期限管理はユーザー自身"
+              ]
+            }
           ]
         }
       ]
@@ -29070,14 +29424,27 @@
       "explanation": "Advanced Certificate Managerで発行する証明書には、最大50個のホスト名(SAN)を含めることができ、そのうちの1つはゾーンApexである必要があります。Enterpriseプランでは、Advanced Certificate Managerのサブスクリプションによって1ゾーンあたり最大100個のエッジ証明書を追加できます。証明書はDomain Validated(DV)で、Cloudflare PagesやR2のカスタムドメインには適用されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/advanced-certificate-manager/",
       "hint": "「1つの証明書に入れられるホスト名の数」と「ゾーン全体で持てる証明書の数」という2つの異なる上限を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Advanced Certificate Managerの上限",
           "columns": [
-            { "heading": "1証明書あたりのSAN", "items": ["最大50個(ゾーンApex必須)"] },
-            { "heading": "Enterpriseの追加エッジ証明書", "items": ["1ゾーンあたり最大100個"] }
+            {
+              "heading": "1証明書あたりのSAN",
+              "items": [
+                "最大50個(ゾーンApex必須)"
+              ]
+            },
+            {
+              "heading": "Enterpriseの追加エッジ証明書",
+              "items": [
+                "1ゾーンあたり最大100個"
+              ]
+            }
           ]
         }
       ]
@@ -29108,15 +29475,33 @@
       "explanation": "Advanced Certificate Managerで選択できる証明書の有効期間は、1年(Enterpriseプランでかつ認証局にSSL.comを選んだ場合のみ)・3ヶ月(自動更新は30日前から)・1ヶ月(自動更新は7日前から、Let's Encrypt非対応)・2週間(自動更新は3日前から、Let's Encrypt非対応)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#advanced-certificates",
       "hint": "選択できる有効期間のうち1つだけが、特定のプランと特定の認証局の組み合わせでしか選べない特別扱いになっている点を考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Advanced証明書の有効期間",
           "columns": [
-            { "heading": "1年", "items": ["Enterprise+SSL.com限定"] },
-            { "heading": "3ヶ月", "items": ["30日前から更新"] },
-            { "heading": "1ヶ月/2週間", "items": ["Let's Encrypt非対応"] }
+            {
+              "heading": "1年",
+              "items": [
+                "Enterprise+SSL.com限定"
+              ]
+            },
+            {
+              "heading": "3ヶ月",
+              "items": [
+                "30日前から更新"
+              ]
+            },
+            {
+              "heading": "1ヶ月/2週間",
+              "items": [
+                "Let's Encrypt非対応"
+              ]
+            }
           ]
         }
       ]
@@ -29147,14 +29532,27 @@
       "explanation": "最小TLSバージョンは、ゾーン単位であればダッシュボードやAPI(`min_tls_version`)から設定できます。ホスト名(サブドメイン)ごとに個別の最小TLSバージョンを設定するには、Advanced Certificate Managerが必要です。またこの設定はCloudflare Pagesのホスト名やR2のカスタムドメインには適用されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/minimum-tls/",
       "hint": "「ゾーン全体に対する設定」と「個別のホスト名に対するより細かい設定」とで、必要なものが違うと考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "最小TLSバージョンの設定範囲",
           "columns": [
-            { "heading": "ゾーン単位", "items": ["ダッシュボード/APIで設定可"] },
-            { "heading": "ホスト名単位", "items": ["Advanced Certificate Managerが必要"] }
+            {
+              "heading": "ゾーン単位",
+              "items": [
+                "ダッシュボード/APIで設定可"
+              ]
+            },
+            {
+              "heading": "ホスト名単位",
+              "items": [
+                "Advanced Certificate Managerが必要"
+              ]
+            }
           ]
         }
       ]
@@ -29185,14 +29583,27 @@
       "explanation": "Always Use HTTPSは、すべてのサブドメイン・ホストに対するHTTPリクエストをHTTPSへ能動的にリダイレクトする機能です。一方、HSTSはブラウザに永続化されるレスポンスヘッダーによる指示で、以降そのブラウザが自動的にHTTPS接続のみを使うよう仕向けます。両者は異なる仕組みであり、Always Use HTTPS単体ではミックスコンテンツの問題は解決されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/always-use-https/",
       "hint": "「サーバー側が能動的に誘導する」仕組みと、「ブラウザ側が過去の指示を覚えていて自発的に守る」仕組みの違いを考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Always Use HTTPS と HSTS",
           "columns": [
-            { "heading": "Always Use HTTPS", "items": ["能動的なリダイレクト"] },
-            { "heading": "HSTS", "items": ["ブラウザに永続化されるヘッダー指示"] }
+            {
+              "heading": "Always Use HTTPS",
+              "items": [
+                "能動的なリダイレクト"
+              ]
+            },
+            {
+              "heading": "HSTS",
+              "items": [
+                "ブラウザに永続化されるヘッダー指示"
+              ]
+            }
           ]
         }
       ]
@@ -29223,14 +29634,27 @@
       "explanation": "Automatic HTTPS Rewritesは、EFFのHTTPS Everywhereリストと、ChromeのHSTSプリロードリストを参考にして、ページのレスポンス内にあるHTTPリンクをHTTPSへ安全に書き換えられるかどうかを判断します。スクリプトやiframeなどのアクティブコンテンツは常に書き換え対象ですが、画像などのパッシブコンテンツはHTTPS経由での到達性が確認できた場合にのみ書き換えられます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/automatic-https-rewrites/",
       "hint": "「安全に書き換えられるかどうか」を判断するために、既存の信頼できるリストを参考にしていると考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "アクティブコンテンツとパッシブコンテンツ",
           "columns": [
-            { "heading": "アクティブ(スクリプト等)", "items": ["常に書き換え対象"] },
-            { "heading": "パッシブ(画像等)", "items": ["到達性確認できた場合のみ"] }
+            {
+              "heading": "アクティブ(スクリプト等)",
+              "items": [
+                "常に書き換え対象"
+              ]
+            },
+            {
+              "heading": "パッシブ(画像等)",
+              "items": [
+                "到達性確認できた場合のみ"
+              ]
+            }
           ]
         }
       ]
@@ -29261,14 +29685,21 @@
       "explanation": "Cloudflareが発行する証明書の有効期間を3ヶ月以下に抑える主な理由は2つあります。1つは、鍵が漏洩したり誤って発行されたりした場合でも、被害が及ぶ期間を短く限定できることです。もう1つは、更新作業を頻繁に行う必要があることで自動化が促進され、証明書の期限切れや鍵材料への不適切なアクセスを防ぎやすくなることです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#benefits-of-shorter-validity-periods",
       "hint": "「何か問題が起きたときの被害の範囲」と「作業の自動化」という、2つのセキュリティ上のメリットを考えましょう。",
-      "tags": ["ssl-tls", "practical"],
+      "tags": [
+        "ssl-tls",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "hierarchy",
           "label": "短い有効期間の2つの利点",
           "items": [
-            { "text": "鍵漏洩・誤発行時の被害期間を限定" },
-            { "text": "更新の自動化を促進" }
+            {
+              "text": "鍵漏洩・誤発行時の被害期間を限定"
+            },
+            {
+              "text": "更新の自動化を促進"
+            }
           ]
         }
       ]
@@ -29299,14 +29730,28 @@
       "explanation": "Observatoryは、Google Lighthouseを使ってページを計測するBrowser testやネットワーク・バックエンドの詳細な内訳を提供するNetwork testといった合成テスト(synthetic tests)と、実際のユーザーから収集するリアルユーザーモニタリング(RUM)という2種類のデータソースを組み合わせて、パフォーマンスの分析と最適化の提案を行います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/observatory/",
       "hint": "「実験室で再現した条件」で測るテストと、「実際に使っている人たち」から集めるデータの2つを考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Observatoryの2種類のデータソース",
           "columns": [
-            { "heading": "合成テスト", "items": ["Browser test(Lighthouse)", "Network test"] },
-            { "heading": "リアルユーザーモニタリング(RUM)", "items": ["実際の訪問者から収集"] }
+            {
+              "heading": "合成テスト",
+              "items": [
+                "Browser test(Lighthouse)",
+                "Network test"
+              ]
+            },
+            {
+              "heading": "リアルユーザーモニタリング(RUM)",
+              "items": [
+                "実際の訪問者から収集"
+              ]
+            }
           ]
         }
       ]
@@ -29337,14 +29782,28 @@
       "explanation": "RUMは、実際に世界中のさまざまな環境からアクセスするユーザーのデータを収集するため、合成テストでは再現できない多様な条件を反映できます。加えて、First Input Delay(FID)やInteraction to Next Paint(INP)という、実際のユーザー操作に関わる2つの指標を提供しますが、これらは合成テストでは取得できません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
       "hint": "「実際に人が操作したときの反応の速さ」を測るには、本物のユーザーからのデータが必要だと考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "RUM特有の指標",
           "columns": [
-            { "heading": "RUMのみで取得可能", "items": ["FID(First Input Delay)", "INP(Interaction to Next Paint)"] },
-            { "heading": "合成テストでも取得可能", "items": ["Lighthouseスコア等"] }
+            {
+              "heading": "RUMのみで取得可能",
+              "items": [
+                "FID(First Input Delay)",
+                "INP(Interaction to Next Paint)"
+              ]
+            },
+            {
+              "heading": "合成テストでも取得可能",
+              "items": [
+                "Lighthouseスコア等"
+              ]
+            }
           ]
         }
       ]
@@ -29375,15 +29834,24 @@
       "explanation": "Freeプランでは、RUMが自動的に有効化されており、デフォルトではEUのトラフィックが除外されます。この挙動は必要に応じてオフに切り替えることができます。Free以外のプランでは、必要に応じてRUMを有効化します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
       "hint": "「デフォルトで有効」なのに、「特定の地域だけ除外」されているという2段階の初期設定を考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "FreeプランのRUMデフォルト設定",
           "steps": [
-            { "text": "RUMが自動的に有効化" },
-            { "text": "EUトラフィックはデフォルトで除外" },
-            { "text": "必要に応じてオフへ切り替え可能" }
+            {
+              "text": "RUMが自動的に有効化"
+            },
+            {
+              "text": "EUトラフィックはデフォルトで除外"
+            },
+            {
+              "text": "必要に応じてオフへ切り替え可能"
+            }
           ]
         }
       ]
@@ -29414,15 +29882,33 @@
       "explanation": "Observatoryの合成テストの月間クォータは、Proプランで単発テスト50本・定期テスト5本(毎日)、Businessプランで単発テスト100本・定期テスト10本(毎日)、Enterpriseプランで単発テスト150本・定期テスト15本(毎日)です。Freeプラン向けのクォータは用意されておらず、合成テストの実行にはPro以上のプランが必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/observatory/run-speed-test/#quotas",
       "hint": "プランが上がるにつれて、「単発テストの本数」も「定期テストの本数」も比例して増えていくと考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "合成テストの月間クォータ",
           "columns": [
-            { "heading": "Pro", "items": ["単発50・定期5(毎日)"] },
-            { "heading": "Business", "items": ["単発100・定期10(毎日)"] },
-            { "heading": "Enterprise", "items": ["単発150・定期15(毎日)"] }
+            {
+              "heading": "Pro",
+              "items": [
+                "単発50・定期5(毎日)"
+              ]
+            },
+            {
+              "heading": "Business",
+              "items": [
+                "単発100・定期10(毎日)"
+              ]
+            },
+            {
+              "heading": "Enterprise",
+              "items": [
+                "単発150・定期15(毎日)"
+              ]
+            }
           ]
         }
       ]
@@ -29453,15 +29939,24 @@
       "explanation": "Rocket Loaderは、インライン・外部の両方のJavaScriptについて、実行順序を維持したままコンテンツのレンダリング後まで読み込みを遅延させる非同期読み込みの仕組みです。これにより初期表示関連の指標(TTFP・TTFCP・TTFMPなど)が改善します。Rocket Loaderと互換性のないブラウザは、Cloudflareが自動的に検出して機能を無効化します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/rocket-loader/",
       "hint": "「コンテンツを先に見せて、JavaScriptは後回しにする」という優先順位の付け方を考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "Rocket Loaderの動作",
           "steps": [
-            { "text": "ページのコンテンツを先にレンダリング" },
-            { "text": "JavaScriptの読み込みを遅延" },
-            { "text": "実行順序を維持したまま非同期実行" }
+            {
+              "text": "ページのコンテンツを先にレンダリング"
+            },
+            {
+              "text": "JavaScriptの読み込みを遅延"
+            },
+            {
+              "text": "実行順序を維持したまま非同期実行"
+            }
           ]
         }
       ]
@@ -29492,14 +29987,27 @@
       "explanation": "Rocket LoaderはEmail Obfuscationと同様に非標準のタグを使用するため、w3.orgのような厳格なHTML検証ツールで検証するとエラーになりますが、これはサイト訪問者にとっての実際の問題を意味するものではないとされています。JavaScriptやjQueryに問題が見られる場合は、Rocket Loaderを無効化して再テストすることが推奨されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/rocket-loader/#limitations",
       "hint": "「形式的な検証ツールが指摘するエラー」と「実際に訪問者が体験する問題」は、必ずしも一致しないと考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "検証エラーと実害の違い",
           "columns": [
-            { "heading": "w3.org等での検証", "items": ["非標準タグによりエラーになる"] },
-            { "heading": "訪問者への実際の影響", "items": ["実害を意味しない"] }
+            {
+              "heading": "w3.org等での検証",
+              "items": [
+                "非標準タグによりエラーになる"
+              ]
+            },
+            {
+              "heading": "訪問者への実際の影響",
+              "items": [
+                "実害を意味しない"
+              ]
+            }
           ]
         }
       ]
@@ -29530,14 +30038,27 @@
       "explanation": "Polishは、オリジンから取得した画像をCloudflareのキャッシュ内で自動的に最適化する仕組みで、画像のURLは変わらずマークアップの変更も不要です。一方、Cloudflare Imagesはリサイズ・切り抜き・透かしなどの処理を適用した新しい画像を新しいURLで生成する仕組みで、生成された画像はすでに最適化済みのため、追加でPolishを適用する必要はありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/images/polish/",
       "hint": "「既存の画像をそのまま軽くする」機能と、「新しい加工済み画像を作り出す」機能は、役割が異なると考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "Polish と Cloudflare Images",
           "columns": [
-            { "heading": "Polish", "items": ["既存画像を同一URLで最適化"] },
-            { "heading": "Cloudflare Images", "items": ["新しいURLで加工済み画像を生成"] }
+            {
+              "heading": "Polish",
+              "items": [
+                "既存画像を同一URLで最適化"
+              ]
+            },
+            {
+              "heading": "Cloudflare Images",
+              "items": [
+                "新しいURLで加工済み画像を生成"
+              ]
+            }
           ]
         }
       ]
@@ -29568,15 +30089,24 @@
       "explanation": "Mirageは2025年9月15日に非推奨となり、現在は提供されていません。ネイティブの遅延読み込み(`loading=\"lazy\"`属性)や`srcset`・`<picture>`要素によるレスポンシブ画像、HTTP/2・HTTP/3の普及といったWeb標準・ブラウザ機能の進化により、Mirageの主な機能が不要になったことが非推奨の理由です。移行先としてはPolish・Image Resizing・ネイティブの遅延読み込み・レスポンシブ画像が推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/images/mirage/",
       "hint": "かつてモバイル向けに使われていた機能が、Web標準自体の進化によって役目を終えたと考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "Mirageの非推奨と移行先",
           "steps": [
-            { "text": "2025年9月15日にMirageが非推奨・提供終了" },
-            { "text": "Web標準(loading=lazy・srcset等)が普及" },
-            { "text": "Polish・Image Resizing等へ移行" }
+            {
+              "text": "2025年9月15日にMirageが非推奨・提供終了"
+            },
+            {
+              "text": "Web標準(loading=lazy・srcset等)が普及"
+            },
+            {
+              "text": "Polish・Image Resizing等へ移行"
+            }
           ]
         }
       ]
@@ -29607,16 +30137,34 @@
       "explanation": "Early Hintsは、RFC 8297で定義された`103 Early Hints`という新しいHTTPステータスコードを使う仕組みです。オリジンサーバーが完全な応答を準備している待ち時間を利用して、`Link`ヘッダーを含む予備的な`103`レスポンスをブラウザへ送信し、必要になるアセットを事前に読み込み始められるようにします。この仕組みは現在、HTTP/2とHTTP/3でのみサポートされています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/",
       "hint": "「本番の答えが届く前に、先に手がかりだけ教えてあげる」という予備的な応答だと考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "sequence",
           "label": "Early Hintsの流れ",
-          "actors": ["ブラウザ", "Cloudflare/オリジン"],
+          "actors": [
+            "ブラウザ",
+            "Cloudflare/オリジン"
+          ],
           "messages": [
-            { "from": 0, "to": 1, "text": "ページをリクエスト" },
-            { "from": 1, "to": 0, "text": "103 Early Hints(Linkヘッダー)" },
-            { "from": 1, "to": 0, "text": "完全なレスポンス" }
+            {
+              "from": 0,
+              "to": 1,
+              "text": "ページをリクエスト"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "103 Early Hints(Linkヘッダー)"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "完全なレスポンス"
+            }
           ]
         }
       ]
@@ -29647,15 +30195,24 @@
       "explanation": "Early Hintsが生成・キャッシュされるのは、URIの拡張子が`.html`・`.htm`・`.php`のいずれか、または拡張子がない場合、ステータスコードが200・301・302のいずれかである場合、そしてオリジンのレスポンスに`preload`または`preconnect`のrelタイプを指定した`Link`ヘッダーが含まれている場合です。キャッシュのキーはリクエストURIによって決まり、クエリ文字列は無視されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#generate-early-hints",
       "hint": "「どんなURLの種類」「どんなステータスコード」「オリジンが何を返しているか」という3つの条件がそろう必要があると考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "hierarchy",
           "label": "Early Hintsが生成される条件",
           "items": [
-            { "text": "拡張子: .html/.htm/.php または拡張子なし" },
-            { "text": "ステータスコード: 200/301/302" },
-            { "text": "Linkヘッダーにpreload/preconnectを含む" }
+            {
+              "text": "拡張子: .html/.htm/.php または拡張子なし"
+            },
+            {
+              "text": "ステータスコード: 200/301/302"
+            },
+            {
+              "text": "Linkヘッダーにpreload/preconnectを含む"
+            }
           ]
         }
       ]
@@ -29686,15 +30243,24 @@
       "explanation": "Early Hintsのレスポンスは、オリジンサーバーやWorkerに到達する前に送信されることがあります。そのため、認証が必要なページでEarly Hintsを有効にしている場合、未認証の訪問者に対しても、本来返されるはずの403 Forbiddenレスポンスより先に、キャッシュされたLinkヘッダーを含む103レスポンスが送信されてしまう可能性がある点に注意が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#emit-early-hints",
       "hint": "「本来の認証チェックが行われる前に」何かが先に送られてしまう可能性があると考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "認証ページでのEarly Hintsの注意点",
           "steps": [
-            { "text": "未認証の訪問者がリクエスト" },
-            { "text": "キャッシュされた103レスポンスが先に送信" },
-            { "text": "オリジンの403 Forbiddenは後から到達" }
+            {
+              "text": "未認証の訪問者がリクエスト"
+            },
+            {
+              "text": "キャッシュされた103レスポンスが先に送信"
+            },
+            {
+              "text": "オリジンの403 Forbiddenは後から到達"
+            }
           ]
         }
       ]
@@ -29725,14 +30291,27 @@
       "explanation": "`RequestSource`が`earlyHintsCache`である`504`レスポンスは、Early Hintsのキャッシュを確認するための内部的なサブリクエストであり、エンドユーザーへのリクエストでもオリジンへのリクエストでもありません。このレスポンスステータスは、該当するリクエストURIに対するEarly Hintsのキャッシュ状態のみを示し、`200`はキャッシュヒット、`504`はキャッシュミスを意味する、想定内・無害な応答です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#emit-early-hints",
       "hint": "「実際のリクエストの失敗」ではなく、「内部的な確認作業の結果を示す符号」だと考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "earlyHintsCacheのステータス意味",
           "columns": [
-            { "heading": "200", "items": ["Early Hintsキャッシュヒット"] },
-            { "heading": "504", "items": ["Early Hintsキャッシュミス(無害)"] }
+            {
+              "heading": "200",
+              "items": [
+                "Early Hintsキャッシュヒット"
+              ]
+            },
+            {
+              "heading": "504",
+              "items": [
+                "Early Hintsキャッシュミス(無害)"
+              ]
+            }
           ]
         }
       ]
@@ -29763,15 +30342,24 @@
       "explanation": "Auto Minify(HTML・CSS・JSの自動圧縮)は2024年8月5日に非推奨となりました。APIの設定エンドポイント(`/zones/{zone_id}/settings/minify`)自体は現在も存在しますが、これはすでにAuto Minifyを使っている既存ユーザーが機能をオフに切り替えられるようにするためだけに残されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/troubleshooting/disable-auto-minify/",
       "hint": "「新規に有効化することを推奨する機能」ではなく、「すでに使っている人がオフにするための出口」だけが残っていると考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "flow",
           "label": "Auto Minifyの現状",
           "steps": [
-            { "text": "2024年8月5日に非推奨化" },
-            { "text": "APIエンドポイントは存続" },
-            { "text": "既存ユーザーがオフにする用途のみ" }
+            {
+              "text": "2024年8月5日に非推奨化"
+            },
+            {
+              "text": "APIエンドポイントは存続"
+            },
+            {
+              "text": "既存ユーザーがオフにする用途のみ"
+            }
           ]
         }
       ]
@@ -29802,15 +30390,33 @@
       "explanation": "HTTP/2はすべてのプランでデフォルトで有効になっています。利用にはCloudflareエッジでのSSL証明書が必要です。Freeプランでは、この設定を無効化することはできません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/protocol/http2/",
       "hint": "「デフォルトで有効」という点と「Freeプランではオフにできない」という点は、別々の事実として押さえましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "HTTP/2の設定",
           "columns": [
-            { "heading": "デフォルト", "items": ["全プランで有効"] },
-            { "heading": "Freeプラン", "items": ["無効化不可"] },
-            { "heading": "前提条件", "items": ["エッジSSL証明書が必要"] }
+            {
+              "heading": "デフォルト",
+              "items": [
+                "全プランで有効"
+              ]
+            },
+            {
+              "heading": "Freeプラン",
+              "items": [
+                "無効化不可"
+              ]
+            },
+            {
+              "heading": "前提条件",
+              "items": [
+                "エッジSSL証明書が必要"
+              ]
+            }
           ]
         }
       ]
@@ -29841,14 +30447,27 @@
       "explanation": "HTTP/3が使うQUICは、TCPのヘッドオブラインブロッキング問題を解決するため、パケットロスの多い(lossyな)ネットワークにおけるパフォーマンスがTCPベースの通信より向上する場合があります。HTTP/3はすべてのプランで利用できますが、この設定が適用されるのは訪問者とCloudflare間の通信のみで、Cloudflareとオリジン間の通信はまだHTTP/3に対応していません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/protocol/http3/",
       "hint": "「訪問者側の接続」と「オリジン側の接続」のうち、どちらか一方にしかまだ適用されていないと考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "HTTP/3が適用される区間",
           "columns": [
-            { "heading": "訪問者↔Cloudflare", "items": ["HTTP/3対応"] },
-            { "heading": "Cloudflare↔オリジン", "items": ["未対応"] }
+            {
+              "heading": "訪問者↔Cloudflare",
+              "items": [
+                "HTTP/3対応"
+              ]
+            },
+            {
+              "heading": "Cloudflare↔オリジン",
+              "items": [
+                "未対応"
+              ]
+            }
           ]
         }
       ]
@@ -29879,14 +30498,27 @@
       "explanation": "0-RTT Connection Resumptionは、GET・HEAD・OPTIONSリクエストに対応していますが、POSTリクエストには対応していません。0-RTTを使ったリクエストには、オリジンサーバーが0-RTT再開を使ったリクエストであることを識別できるよう`Early-Data: 1`ヘッダーが付与されます。デフォルトでは無効になっており、また訪問者とCloudflare間でのみ確立され、オリジンサーバーまでは拡張されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/protocol/0-rtt-connection-resumption/",
       "hint": "「安全に繰り返せるリクエスト」と「そうでないリクエスト」とで、対応の有無が分かれていると考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "0-RTTが対応するメソッド",
           "columns": [
-            { "heading": "対応", "items": ["GET・HEAD・OPTIONS"] },
-            { "heading": "非対応", "items": ["POST"] }
+            {
+              "heading": "対応",
+              "items": [
+                "GET・HEAD・OPTIONS"
+              ]
+            },
+            {
+              "heading": "非対応",
+              "items": [
+                "POST"
+              ]
+            }
           ]
         }
       ]
@@ -29917,15 +30549,33 @@
       "explanation": "訪問者へのコンテンツ配信時にCloudflareがデフォルトで使用する圧縮方式は、Freeプランで Zstandard、Pro・Businessプランで Brotli、Enterpriseプランで Gzipです。実際に適用される圧縮方式は、訪問者のブラウザが`accept-encoding`ヘッダーで対応を示している方式にも依存します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/compression/#compression-methods-by-plan",
       "hint": "「最も新しい圧縮方式」と「最も伝統的な圧縮方式」が、意外なプランの組み合わせで既定値になっていると考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "デフォルトの圧縮方式",
           "columns": [
-            { "heading": "Free", "items": ["Zstandard"] },
-            { "heading": "Pro/Business", "items": ["Brotli"] },
-            { "heading": "Enterprise", "items": ["Gzip"] }
+            {
+              "heading": "Free",
+              "items": [
+                "Zstandard"
+              ]
+            },
+            {
+              "heading": "Pro/Business",
+              "items": [
+                "Brotli"
+              ]
+            },
+            {
+              "heading": "Enterprise",
+              "items": [
+                "Gzip"
+              ]
+            }
           ]
         }
       ]
@@ -29956,14 +30606,1034 @@
       "explanation": "Cloudflareがレスポンスを圧縮する際の最小サイズは、Gzipの場合48バイト、Brotli・Zstandardの場合50バイトです。この最小サイズを下回るレスポンスは、コンテンツタイプに関わらず圧縮されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/compression/#compression-between-cloudflare-and-website-visitors",
       "hint": "「あまりに小さいレスポンスは、圧縮してもかえって効率が悪い」という考え方から来る下限値を考えましょう。",
-      "tags": ["speed", "practical"],
+      "tags": [
+        "speed",
+        "practical"
+      ],
       "diagrams": [
         {
           "type": "comparison",
           "label": "圧縮の最小サイズ",
           "columns": [
-            { "heading": "Gzip", "items": ["48バイト以上"] },
-            { "heading": "Brotli/Zstandard", "items": ["50バイト以上"] }
+            {
+              "heading": "Gzip",
+              "items": [
+                "48バイト以上"
+              ]
+            },
+            {
+              "heading": "Brotli/Zstandard",
+              "items": [
+                "50バイト以上"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-001",
+      "category": "tunnel",
+      "difficulty": "beginner",
+      "question": "Cloudflare Tunnelの接続方式に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "cloudflaredがオリジンからCloudflareのグローバルネットワークへアウトバウンド接続を確立し、ファイアウォールはインバウンドトラフィックをすべてブロックしたまま外部からのアクセスを受け付けられる"
+        },
+        {
+          "text": "Cloudflare Tunnelを使うには、オリジンサーバーにパブリックIPアドレスを割り当て、インバウンドポートを個別に開放する必要がある",
+          "wrongFeedback": "パブリックIPやインバウンドポート開放は不要です。cloudflaredがアウトバウンド接続を確立する方式のため、インバウンドはすべてブロックしたままで運用できます。"
+        },
+        {
+          "text": "cloudflaredは常にインバウンド待受のみを行い、Cloudflareエッジからのアウトバウンド接続を受け入れることで通信する",
+          "wrongFeedback": "逆です。cloudflaredがCloudflareへアウトバウンド接続を開始します。エッジからオリジンへの接続はありません。"
+        },
+        {
+          "text": "アウトバウンド接続はTLS終端をオリジン側で行うため、Cloudflareエッジを経由しない直接接続になる",
+          "wrongFeedback": "Cloudflareエッジを経由しない直接接続にはなりません。トラフィックは常にCloudflareのグローバルネットワークを介して双方向に流れます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Tunnelはアウトバウンド専用の接続モデルを採用しています。cloudflaredがオリジンからCloudflareのグローバルネットワークへアウトバウンド接続を確立すると、その接続上で双方向にトラフィックが流れるようになります。管理者はファイアウォールでインバウンドトラフィックをすべてブロックしつつ、このアウトバウンド接続のみを許可することで、Cloudflare以外からのアクセスを遮断できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/#outbound-only-connections",
+      "hint": "「外から中へ」ではなく「中から外へ」接続を開始するのがポイントです。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "アウトバウンド接続の確立",
+          "steps": [
+            {
+              "text": "オリジンでcloudflaredを起動"
+            },
+            {
+              "text": "Cloudflareへアウトバウンド接続を確立"
+            },
+            {
+              "text": "確立した接続上で双方向通信"
+            },
+            {
+              "text": "インバウンドはファイアウォールで全遮断可能"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-002",
+      "category": "tunnel",
+      "difficulty": "intermediate",
+      "question": "単一のcloudflaredインスタンスを実行したときに確立される接続について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "1本のアウトバウンド接続のみを確立し、そのサーバーが単一障害点になる",
+          "wrongFeedback": "1本ではありません。cloudflaredは複数の接続を並行して確立するため、単一障害点にはなりにくい設計です。"
+        },
+        {
+          "text": "少なくとも2つの異なるデータセンターにまたがる4台のサーバーへ、4本のアウトバウンド接続を確立し、可用性を確保する"
+        },
+        {
+          "text": "4本の接続を確立するが、すべて同一のデータセンター内のサーバーに接続されるため冗長化の効果は限定的である",
+          "wrongFeedback": "同一データセンターに限定されません。少なくとも2つの異なるデータセンターに分散して接続されるため、データセンター単位の障害にも耐えられます。"
+        },
+        {
+          "text": "接続数はプランによって変動し、Freeプランでは1本、Enterpriseプランでは4本になる",
+          "wrongFeedback": "プランによる接続数の違いはありません。追加設定なしで常に4本の接続が確立される仕組みです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "cloudflaredは追加設定なしで高可用性を持つよう設計されています。トンネルを実行すると、オリジンサーバーとCloudflareネットワークの間に4本のアウトバウンド接続が確立され、これらは少なくとも2つの異なるデータセンターに分散した4台のサーバーへ接続されます。これにより、1本の接続・1台のサーバー・1つのデータセンターのいずれかに障害が発生しても、リソースへのアクセスは維持されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability/",
+      "hint": "追加のレプリカを立てなくても、標準でどれだけ冗長化されているかを考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "1インスタンスあたり4本の接続",
+          "nodes": [
+            {
+              "id": "origin",
+              "text": "cloudflared",
+              "sub": "オリジンサーバー"
+            },
+            {
+              "id": "dc1",
+              "text": "データセンター1",
+              "sub": "2台のサーバー"
+            },
+            {
+              "id": "dc2",
+              "text": "データセンター2",
+              "sub": "2台のサーバー"
+            }
+          ],
+          "edges": [
+            {
+              "from": "origin",
+              "to": "dc1",
+              "label": "接続1・2"
+            },
+            {
+              "from": "origin",
+              "to": "dc2",
+              "label": "接続3・4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-003",
+      "category": "tunnel",
+      "difficulty": "intermediate",
+      "question": "リモート管理(remotely-managed)トンネルとローカル管理(locally-managed)トンネルの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "リモート管理トンネルはconfig.ymlファイルを必須とし、ローカル管理トンネルはダッシュボードでのみ設定変更ができる",
+          "wrongFeedback": "逆です。config.ymlを使うのはローカル管理トンネルで、リモート管理トンネルはダッシュボードやAPIで設定を保持します。"
+        },
+        {
+          "text": "どちらの管理方式でも機能差は一切存在せず、単にトンネルを作成した画面が違うだけである",
+          "wrongFeedback": "作成方法の違いだけではありません。設定の保存場所(サーバー側かローカルか)や、認証・実行の方法も異なります。"
+        },
+        {
+          "text": "ローカル管理トンネルはCLIで作成し、認証情報ファイル(credentials-file)や設定内容をオリジン側のconfig.ymlに保持するのに対し、リモート管理トンネルはダッシュボードやAPIで作成し、トークンを使ってcloudflaredをそのトンネルに関連付ける"
+        },
+        {
+          "text": "ローカル管理トンネルはトークン(`--token`)を使ってcloudflaredをトンネルに関連付け、リモート管理トンネルはcert.pemと認証情報ファイルをローカルに保存する",
+          "wrongFeedback": "説明が入れ替わっています。トークンを使うのはリモート管理トンネル、cert.pem・認証情報ファイルを使うのはローカル管理トンネルです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "ローカル管理トンネルはCLI(`cloudflared tunnel login`・`create`など)で作成し、アカウント証明書(cert.pem)やトンネル認証情報ファイル、ingressルールなどをオリジン側のconfig.ymlに保持します。一方リモート管理トンネルはダッシュボードやAPIで作成し、発行されたトークンを使って`cloudflared tunnel run --token`のようにcloudflaredをそのトンネルに関連付けます。設定はCloudflare側に保存されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/create-remote-tunnel/",
+      "hint": "設定ファイルがオリジン側にあるかCloudflare側にあるか、という保存場所の違いに注目しましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "リモート管理 vs ローカル管理",
+          "columns": [
+            {
+              "heading": "リモート管理トンネル",
+              "items": [
+                "ダッシュボード/APIで作成",
+                "トークンで関連付け",
+                "設定はCloudflare側に保存"
+              ]
+            },
+            {
+              "heading": "ローカル管理トンネル",
+              "items": [
+                "CLIで作成",
+                "cert.pem・認証情報ファイルで認証",
+                "config.ymlをオリジン側に保存"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-004",
+      "category": "tunnel",
+      "difficulty": "beginner",
+      "question": "cloudflaredのCLIでローカル管理トンネルを新規作成する際の手順として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "`cloudflared tunnel create <NAME>` でアカウント証明書(cert.pem)を発行し、その後 `cloudflared tunnel login` でトンネルごとの認証情報ファイルを生成する",
+          "wrongFeedback": "順序が逆です。cert.pemを発行するのは`tunnel login`、トンネルごとの認証情報ファイルを生成するのは`tunnel create`です。"
+        },
+        {
+          "text": "`cloudflared tunnel run` でトンネルを新規作成し、`cloudflared tunnel create` で実際にトラフィックを流し始める",
+          "wrongFeedback": "説明が入れ替わっています。`tunnel create`がトンネルの作成、`tunnel run`が実行(トラフィックを流す)です。"
+        },
+        {
+          "text": "設定ファイルを作成しなくても `cloudflared tunnel run` を実行すれば、cloudflaredがCloudflare側で自動生成したingressルールを使って動作する",
+          "wrongFeedback": "自動生成はされません。ローカル管理トンネルではconfig.ymlなどでルーティング先を明示的に指定する必要があります。"
+        },
+        {
+          "text": "`cloudflared tunnel login` でアカウント証明書(cert.pem)を取得し、`cloudflared tunnel create <NAME>` でトンネル固有の認証情報ファイルを生成したうえで、config.ymlを作成してから `cloudflared tunnel run` で実行する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "ローカル管理トンネルの基本的な作成手順は、(1) `cloudflared tunnel login` でアカウント証明書(cert.pem)を取得、(2) `cloudflared tunnel create <NAME>` でトンネルを作成しトンネル固有の認証情報ファイル(<UUID>.json)を生成、(3) config.ymlを作成してルーティング先を定義、(4) `cloudflared tunnel run` でトンネルを実行、という流れになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/create-local-tunnel/",
+      "hint": "「アカウント全体の認証」→「トンネル固有の作成」→「設定」→「実行」という積み上げの順序を考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "ローカル管理トンネルの作成手順",
+          "actors": [
+            "管理者",
+            "cloudflared"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "tunnel login (cert.pem取得)"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "tunnel create <NAME> (認証情報ファイル生成)"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "config.ymlを作成"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "tunnel run <NAME>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-005",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "アカウント証明書(cert.pem)とトンネル認証情報ファイル(<TUNNEL-UUID>.json)の違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "cert.pemはアカウント全体に対するスコープを持ち`cloudflared tunnel login`実行時に発行される一方、認証情報ファイルは特定のトンネルのみを実行する権限を持ち`cloudflared tunnel create`実行時に生成される"
+        },
+        {
+          "text": "cert.pemは`cloudflared tunnel run`で使う特定のトンネルのみを実行する権限しか持たず、逆に認証情報ファイルの方がアカウント全体でトンネルの作成・削除・一覧表示のような管理操作を行える",
+          "wrongFeedback": "説明が入れ替わっています。アカウント全体の管理権限を持つのはcert.pem、特定トンネルの実行権限のみを持つのが認証情報ファイルです。"
+        },
+        {
+          "text": "どちらのファイルも中身の形式やスコープまで含めて完全に同一であり、単にファイル名や拡張子が異なるだけで実質的な違いは一切存在しない",
+          "wrongFeedback": "実質的な違いがあります。スコープ(アカウント全体か特定トンネルのみか)や、認証情報ファイルには有効期限という概念がない点などが異なります。"
+        },
+        {
+          "text": "cert.pemは発行されてからちょうど24時間が経過した時点で自動的に失効する一方、認証情報ファイルの方は一度発行されると有効期限という概念自体が存在せず失効しない",
+          "wrongFeedback": "cert.pemは24時間で失効するものではなく、少なくとも10年間有効です。24時間という数値は誤りです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "cert.pemは`cloudflared tunnel login`実行時に発行されるアカウントスコープの証明書で、そのアカウント内のトンネルの作成・削除・一覧表示などを管理する権限を持ちます。一方、トンネル認証情報ファイル(<TUNNEL-UUID>.json)は`cloudflared tunnel create`実行時に生成され、そのトンネルを実行する権限のみを持つトンネル固有のファイルです。認証情報ファイルは特定トンネルの実行専用として、実行担当者に安全に配布できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/tunnel-permissions/",
+      "hint": "「アカウント全体の管理権限」と「1つのトンネルを動かすだけの権限」、どちらのファイルがどちらに対応するか整理しましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "cert.pem vs 認証情報ファイル",
+          "columns": [
+            {
+              "heading": "cert.pem",
+              "items": [
+                "アカウント全体のスコープ",
+                "tunnel login時に発行",
+                "作成・削除・一覧表示が可能"
+              ]
+            },
+            {
+              "heading": "認証情報ファイル(.json)",
+              "items": [
+                "トンネル固有のスコープ",
+                "tunnel create時に生成",
+                "そのトンネルの実行のみ可能"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-006",
+      "category": "tunnel",
+      "difficulty": "intermediate",
+      "question": "公開アプリケーション(published application)用にトンネルへDNSルーティングを設定する方法として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ホスト名からオリジンのIPアドレスへ直接Aレコードを作成し、cloudflaredはそのAレコードを参照してトラフィックを転送する",
+          "wrongFeedback": "Aレコードではなく、`<UUID>.cfargotunnel.com`を指すCNAMEレコードを作成してルーティングします。"
+        },
+        {
+          "text": "ホスト名から`<UUID>.cfargotunnel.com`を指すCNAMEレコードを作成することでルーティングし、このDNSレコードはトンネルの稼働状態とは独立して存在するため、トンネルが停止していてもレコード自体は残る"
+        },
+        {
+          "text": "DNSレコードはトンネルの起動と同時に自動作成され、トンネルを停止すると自動的に削除される",
+          "wrongFeedback": "自動削除はされません。DNSレコードとトンネルは独立しており、トンネルを停止してもレコードはそのまま残ります。"
+        },
+        {
+          "text": "CNAMEレコードはダッシュボードからのみ作成でき、`cloudflared` CLIから直接作成することはできない",
+          "wrongFeedback": "CLIからも`cloudflared tunnel route dns`コマンドで直接作成できます。ダッシュボード限定ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "公開アプリケーションへのルーティングは、ホスト名から`<UUID>.cfargotunnel.com`(トンネルのサブドメイン)を指すCNAMEレコードを作成することで設定します。このDNSレコードはトンネルの稼働状態とは独立して存在するオブジェクトのため、トンネルが停止してもレコードが自動削除されることはなく、その状態で訪問者がアクセスするとエラーになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/dns/#create-a-dns-record",
+      "hint": "DNSレコードとトンネルの「稼働状態」が連動しているかどうかを考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "公開アプリケーションのDNSルーティング",
+          "nodes": [
+            {
+              "id": "host",
+              "text": "app.example.com",
+              "sub": "CNAMEレコード"
+            },
+            {
+              "id": "sub",
+              "text": "<UUID>.cfargotunnel.com",
+              "sub": "トンネルサブドメイン"
+            },
+            {
+              "id": "tunnel",
+              "text": "cloudflared",
+              "sub": "トンネル"
+            }
+          ],
+          "edges": [
+            {
+              "from": "host",
+              "to": "sub",
+              "label": "CNAME"
+            },
+            {
+              "from": "sub",
+              "to": "tunnel",
+              "label": "ルーティング"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-007",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "複数のホスト名を1つのトンネルで公開する構成を前提とすると、config.ymlのingressルールの評価順序と構成に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ingressルールはリスト内でランダムな順序で評価され、最初に一致したものではなく最も条件が厳しいものが優先される",
+          "wrongFeedback": "ランダムではなく、リストの上から下へ順に評価されます。最も条件が厳しいものが優先されるわけでもありません。"
+        },
+        {
+          "text": "catch-allルール(最後の行)は省略可能であり、省略した場合はすべてのリクエストがcloudflaredの起動時に選んだ最初のサービスへ転送される",
+          "wrongFeedback": "catch-allルールは省略できません。設定ファイルには必ずhostnameを指定しない最後の行(catch-allルール)を含める必要があります。"
+        },
+        {
+          "text": "ingressルールは上から下へ順に評価され、hostnameやpathを指定しないルールはすべてに一致するため、設定ファイルの最後には必ずcatch-allルールを置く必要がある"
+        },
+        {
+          "text": "ワイルドカードは`*.example.com`のようにホスト名の先頭でのみ使用でき、`test.*.example.com`のようにホスト名の途中に置くこともサポートされている",
+          "wrongFeedback": "ホスト名の途中に置くワイルドカードはサポートされていません。`test.*.example.com`のような形式は使用できません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "cloudflaredはconfig.ymlのingressルールを上から下へ順に評価し、最初に一致したルールを適用します。hostnameやpathを指定しないルールはすべてのリクエストに一致するため、設定ファイルの最後には必ずcatch-allルールを置く必要があります。これを省略するとcloudflaredの設定として不正になります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file/#how-traffic-is-matched",
+      "hint": "どのルールにも一致しなかったリクエストを、最終的に誰が受け止めるかを考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ingressルールの評価順序",
+          "steps": [
+            {
+              "text": "1行目のhostname/pathと照合"
+            },
+            {
+              "text": "一致しなければ次の行へ"
+            },
+            {
+              "text": "以降のルールも上から順に照合"
+            },
+            {
+              "text": "最後の行(catch-all)が全リクエストを受け止める"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-008",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "config.ymlのingressルールで指定できるサービスタイプに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "`hello_world`はリモート管理・ローカル管理のどちらのトンネルでも利用できるテスト用サービスである",
+          "wrongFeedback": "`hello_world`はローカル管理トンネルでのみ利用できるテスト用サービスです。"
+        },
+        {
+          "text": "`bastion`はSSH専用のサービスタイプであり、HTTPやTCPのトラフィックには使用できない",
+          "wrongFeedback": "`bastion`はcloudflaredをジャンプホストとして機能させ、任意のローカルアドレスへのアクセスを可能にするサービスタイプで、SSH専用ではありません。"
+        },
+        {
+          "text": "`unix`はUnixソケットではなくTCPポートを介してHTTP相当の通信を行うサービスタイプである",
+          "wrongFeedback": "実際にはUnixソケットを介して通信するサービスタイプです。TCPポートを使うのは`http`や`tcp`のようなサービスタイプです。"
+        },
+        {
+          "text": "`http_status`は指定した固定のHTTPステータスコードだけを返すサービスタイプで、たとえばcatch-allルールで`http_status:404`のように使うことで、どのホスト名にも一致しなかったリクエストに404を返せる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`http_status`は固定のHTTPステータスコードのみを返すサービスタイプで、`service: http_status:404`のように指定します。ingressルールのcatch-allとして使うことで、どのホスト名にも一致しなかったリクエストに404を返す、という構成がよく使われます。`hello_world`はローカル管理トンネル限定のテストサービス、`bastion`は任意のローカルアドレスへのジャンプホスト、`unix`はUnixソケット経由の通信です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file/#services",
+      "hint": "実際のバックエンドに転送せず、決まった応答だけを返すサービスタイプを考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "サービスタイプの分類",
+          "columns": [
+            {
+              "heading": "バックエンドへ転送",
+              "items": [
+                "http / https",
+                "tcp / ssh / rdp",
+                "unix / unix+tls"
+              ]
+            },
+            {
+              "heading": "固定応答・特殊用途",
+              "items": [
+                "http_status(固定ステータス)",
+                "hello_world(テスト用)",
+                "bastion(ジャンプホスト)"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-009",
+      "category": "tunnel",
+      "difficulty": "intermediate",
+      "question": "cloudflaredの設定ファイル(config.yml)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "設定ファイルが存在しない場合、cloudflaredはデフォルトでポート80番にアウトバウンドトラフィックをプロキシする",
+          "wrongFeedback": "デフォルトはポート80番ではなく8080番です。"
+        },
+        {
+          "text": "プライベートネットワークをCloudflare One Client経由で公開する場合は、設定ファイルに`warp-routing`キーを追加し`enabled: true`を設定する必要がある"
+        },
+        {
+          "text": "設定ファイルには`tunnel`フィールド(トンネルのUUIDまたは名前)を記載する必要がなく、認証情報ファイル(credentials-file)のパスだけで十分である",
+          "wrongFeedback": "`tunnel`フィールドも必須の項目です。認証情報ファイルのパスだけでは設定として不十分です。"
+        },
+        {
+          "text": "originRequestのようなオリジン固有の設定は、トップレベルで設定した値を個々のingressルールで上書きすることができない",
+          "wrongFeedback": "上書きできます。トップレベルの`originRequest`はデフォルト値として機能し、個々のingressルールで指定すれば特定サービスだけ値を上書きできます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "公開アプリケーションではなくプライベートネットワークをCloudflare One Client経由で公開する場合、config.ymlに`warp-routing`キーを追加し`enabled: true`と設定する必要があります。設定ファイルが存在しない場合、cloudflaredはデフォルトでポート8080番にアウトバウンドトラフィックをプロキシします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file/",
+      "hint": "公開アプリケーションとプライベートネットワークとで、設定ファイルに追加すべきキーが違うことを思い出しましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "プライベートネットワーク用config.yml",
+          "filepath": "config.yml",
+          "lines": [
+            {
+              "text": "tunnel: <Tunnel-UUID>"
+            },
+            {
+              "text": "credentials-file: /path/<Tunnel-UUID>.json"
+            },
+            {
+              "text": "warp-routing:"
+            },
+            {
+              "text": "  enabled: true",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-010",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "cloudflaredの設定ファイルでオリジンごとの設定を上書きする仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "トップレベルの`originRequest`で`connectTimeout: 30s`を設定すると、個々のingressルールでは上書きできず、すべてのサービスに一律30秒が適用される",
+          "wrongFeedback": "上書き可能です。個々のingressルール内で`originRequest`を指定すれば、そのサービスだけ異なる値に上書きできます。"
+        },
+        {
+          "text": "originRequestの設定はconfig.ymlのトップレベルにのみ記述でき、ingressルールの中には記述できない",
+          "wrongFeedback": "ingressルールの中にも`originRequest`を記述でき、そのサービス固有の設定として上書きに使われます。"
+        },
+        {
+          "text": "トップレベルの`originRequest`で設定した値は全サービスのデフォルトとなり、特定のingressルール内で同じキーを指定すればそのサービスだけ値を上書きできる"
+        },
+        {
+          "text": "`http_status`のような組み込みサービスタイプに対しても、`originRequest`の`connectTimeout`などの設定が必須となる",
+          "wrongFeedback": "`http_status`のような一部の組み込みサービスは設定を一切使用しないため、`originRequest`の指定は不要です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "config.ymlのトップレベルに記述した`originRequest`(例: `connectTimeout: 30s`)は、全サービスのデフォルト設定として機能します。特定のingressルール内で同じキーを再度指定すれば、そのサービスだけ値を上書きできます。一方、`http_status`のような固定応答を返すだけのサービスは、そもそもオリジンへ接続しないため`originRequest`の設定を使いません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file/#origin-configuration",
+      "hint": "トップレベルの設定を「初期値」、ingressルール内の設定を「例外」と考えてみましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "originRequestの上書き例",
+          "filepath": "config.yml",
+          "lines": [
+            {
+              "text": "originRequest:"
+            },
+            {
+              "text": "  connectTimeout: 30s"
+            },
+            {
+              "text": "ingress:"
+            },
+            {
+              "text": "  - service: localhost:8002"
+            },
+            {
+              "text": "    originRequest:"
+            },
+            {
+              "text": "      connectTimeout: 10s",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-011",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "Cloudflare Tunnelでプライベートネットワークへのルーティングを設定する際の推奨事項として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "プライベートネットワークへのCIDRルートを追加すると、エンドユーザーは追加の認証なしに誰でもそのネットワークへアクセスできるようになる",
+          "wrongFeedback": "誰でもアクセスできるわけではありません。エンドユーザーはCloudflare One Client等でデバイスをCloudflareに接続し、Zero Trust組織に登録する必要があります。"
+        },
+        {
+          "text": "CIDRルートを追加すると、Cloudflare側がそのIP範囲に属するすべてのサブネットを自動的にGatewayブロックポリシーで保護するため、追加の設定は不要である",
+          "wrongFeedback": "自動的な保護はされません。管理者が明示的にGatewayのブロック/許可ポリシーを設定する必要があります。"
+        },
+        {
+          "text": "プライベートネットワークルートは、公開アプリケーション(published application)と同様にHTTPトラフィックのみを公開でき、非HTTPサービスは公開できない",
+          "wrongFeedback": "逆です。プライベートネットワークルートはHTTP・非HTTPの両方のリソースを公開できます(公開アプリケーションと異なる点です)。"
+        },
+        {
+          "text": "Cloudflare One Clientユーザーがプライベートネットワーク全体へアクセスできてしまうのを防ぐため、プライベートIP空間に対するcatch-allのGatewayブロックポリシーを作成し、その上に個別アプリケーションへのAllowポリシーを重ねることが推奨される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "プライベートネットワークへCIDRルートを追加しただけでは、Cloudflare One Clientユーザーがネットワーク全体にアクセスできてしまう可能性があります。これを防ぐため、プライベートIP空間全体に対するcatch-allのGatewayブロックポリシーを作成し、その上に優先度の高い個別アプリケーションへのAllowポリシーを重ねる構成が推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/",
+      "hint": "「まず全部ブロックしてから、必要な分だけ許可する」という優先順位の付け方を考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "プライベートIP空間のポリシー構成",
+          "layers": [
+            {
+              "text": "個別アプリケーションへのAllowポリシー(高優先度)"
+            },
+            {
+              "text": "プライベートIP空間全体へのcatch-allブロックポリシー(低優先度)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-012",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "Cloudflareの仮想ネットワーク(virtual network)機能に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "本番環境とステージング環境が同じプライベートIP範囲(例: 10.128.0.0/24)を使っていても、それぞれ別の仮想ネットワークに割り当てることで、Cloudflareがどちらの環境宛てかを判別してルーティングできる"
+        },
+        {
+          "text": "仮想ネットワークは同一アカウント内で1つしか作成できず、複数の環境を分離することはできない",
+          "wrongFeedback": "複数の仮想ネットワークを作成でき、環境ごとにルーティングテーブルを分離できます。1つしか作成できないというのは誤りです。"
+        },
+        {
+          "text": "仮想ネットワークはIPアドレスの重複を防ぐための機能であり、重複したCIDR範囲を持つ2つのネットワークを同時に使うことはできない",
+          "wrongFeedback": "逆に、重複したCIDR範囲を持つ複数のネットワークを区別するための機能です。同時利用が可能になります。"
+        },
+        {
+          "text": "Cloudflare One Clientのユーザーは、接続先の仮想ネットワークを選択できず、常にアカウント全体で単一のルーティングテーブルが使われる",
+          "wrongFeedback": "ユーザーはCloudflare One Client上で接続先の仮想ネットワークを選択できます。単一のルーティングテーブルに固定されるわけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "仮想ネットワークはアカウント内でのルーティング分離を提供する機能です。それぞれの仮想ネットワークが独自のルーティングテーブルを持つため、本番環境とステージング環境が同じプライベートIP範囲(例: 10.128.0.0/24)を使っていても、別の仮想ネットワークに割り当てることでCloudflareがどちらの環境宛てかを判別できます。ユーザーはCloudflare One Client上で接続先の仮想ネットワークを選択します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/",
+      "hint": "同じIPアドレス範囲を使う複数の環境を、Cloudflareがどう区別しているかを考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "重複CIDRを仮想ネットワークで分離",
+          "nodes": [
+            {
+              "id": "client",
+              "text": "Cloudflare One Client",
+              "sub": "接続先VNを選択"
+            },
+            {
+              "id": "vn1",
+              "text": "仮想ネットワーク: 本番",
+              "sub": "10.128.0.0/24"
+            },
+            {
+              "id": "vn2",
+              "text": "仮想ネットワーク: ステージング",
+              "sub": "10.128.0.0/24"
+            }
+          ],
+          "edges": [
+            {
+              "from": "client",
+              "to": "vn1",
+              "label": "本番を選択"
+            },
+            {
+              "from": "client",
+              "to": "vn2",
+              "label": "ステージングを選択",
+              "dashed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-013",
+      "category": "tunnel",
+      "difficulty": "intermediate",
+      "question": "cloudflaredレプリカ(replicas)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "レプリカはラウンドロビンやハッシュベースのルーティングによるインテリジェントなトラフィック分散をサポートしており、Load Balancerを使わなくても均等な負荷分散が可能である",
+          "wrongFeedback": "レプリカはラウンドロビンやハッシュベースのようなトラフィックステアリングをサポートしていません。インテリジェントな分散が必要な場合はCloudflare Load Balancerを使用します。"
+        },
+        {
+          "text": "レプリカは同一のトンネルに対して追加のcloudflaredインスタンスを起動する仕組みで、あるホストが停止しても残りのレプリカがトラフィックを処理し続けられる"
+        },
+        {
+          "text": "レプリカを追加するには、それぞれ別のトンネルを新規作成し、別々のUUIDを割り当てる必要がある",
+          "wrongFeedback": "レプリカは同一のトンネルを共有します。別々のトンネルを作成する必要はありません(複数トンネルが必要になるのはLoad Balancer構成の場合です)。"
+        },
+        {
+          "text": "リクエストは常にラウンドロビンで各レプリカに均等に振り分けられ、地理的な近さは考慮されない",
+          "wrongFeedback": "実際には地理的に最も近いレプリカへ転送されます。均等なラウンドロビン分散が行われるわけではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "レプリカは、同一のトンネルに対して追加のcloudflaredインスタンスを起動する仕組みです。それぞれのレプリカが4本の新しい接続を確立し、オリジンへの追加の入口となります。すべてのレプリカが同じトンネルを共有するため、あるホストのcloudflaredが停止しても、残りのレプリカがトラフィックを処理し続けられます。ただし、ラウンドロビンのようなトラフィックステアリングはサポートされていません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability/#cloudflared-replicas",
+      "hint": "レプリカが「別のトンネル」を作るのか、「同じトンネル」を補強するのか考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "1つのトンネルを複数レプリカで冗長化",
+          "items": [
+            {
+              "text": "トンネル(1つ)"
+            },
+            {
+              "text": "レプリカ1(cloudflaredインスタンス)"
+            },
+            {
+              "text": "レプリカ2(cloudflaredインスタンス)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-014",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "cloudflaredレプリカとCloudflare Load Balancerの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Load Balancerを使う場合もレプリカと同様、すべてのcloudflaredインスタンスが同一のトンネルを共有する",
+          "wrongFeedback": "Load Balancer構成では通常、データセンターごとに別々のトンネルを作成します。同一トンネルを共有するのはレプリカの特徴です。"
+        },
+        {
+          "text": "プライベートホスト名ルート(hostname route)で接続されたサービスは、高可用性のためにLoad Balancerとレプリカのどちらも自由に選んで組み合わせられる",
+          "wrongFeedback": "プライベートホスト名ルートは現時点でLoad Balancingと互換性がありません。この場合はレプリカを使う必要があります。"
+        },
+        {
+          "text": "Load Balancerを使う典型的な構成では、データセンターごとに1つのトンネルを作成し、トンネルごとに1つのLoad Balancerプールを割り当てるのに対し、レプリカはすべて同一のトンネルを使い回す"
+        },
+        {
+          "text": "Load Balancerはインバウンドのヘルスチェックのみを行い、トンネルが非アクティブ状態になった際のフェイルオーバーには対応していない",
+          "wrongFeedback": "Load Balancerはトンネルが非アクティブ状態になった際のフェイルオーバーロジックの実装にも使われます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "レプリカがすべて同一のトンネルを使い回すのに対し、Load Balancerを使う典型的な構成では、データセンターごとに1つのトンネルを作成し、トンネルごとに1つのLoad Balancerプールを割り当てます。また、プライベートホスト名ルートは現時点でLoad Balancingと互換性がなく、その場合の高可用性確保にはレプリカを使う必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability/#cloudflare-load-balancers",
+      "hint": "「1つのトンネルを補強する」仕組みと「複数のトンネルを束ねる」仕組みの違いを考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "レプリカ vs Load Balancer",
+          "columns": [
+            {
+              "heading": "レプリカ",
+              "items": [
+                "同一トンネルを共有",
+                "トラフィックステアリングなし",
+                "ホスト名ルートと互換"
+              ]
+            },
+            {
+              "heading": "Load Balancer",
+              "items": [
+                "データセンターごとに別トンネル",
+                "ステアリングアルゴリズムを選択可能",
+                "ホスト名ルートとは非互換"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-015",
+      "category": "tunnel",
+      "difficulty": "intermediate",
+      "question": "cloudflaredがCloudflareのグローバルネットワークに接続するためのファイアウォール要件に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "cloudflaredは接続にポート443番のみを使用し、ポート7844番は不要である",
+          "wrongFeedback": "必須なのはポート7844番(TCP/UDP、`http2`/`quic`用)です。443番はソフトウェア更新確認など一部のオプション機能でのみ使用されます。"
+        },
+        {
+          "text": "ポート7844番は`quic`プロトコル用のUDPのみをサポートし、TCPでの接続には対応していない",
+          "wrongFeedback": "ポート7844番はUDP(`quic`用)とTCP(`http2`用)の両方をサポートします。UDPのみではありません。"
+        },
+        {
+          "text": "オプションのポート443番への接続がブロックされると、cloudflaredは起動に失敗し、トンネル自体が機能しなくなる",
+          "wrongFeedback": "ポート443番の接続がブロックされてもログにエラーが出るだけで、cloudflaredは正常に動作を続けます。トンネル自体は機能します。"
+        },
+        {
+          "text": "必須の通信はポート7844番(TCP/UDPで`http2`/`quic`用)であり、ポート443番はソフトウェア更新確認などのオプション機能用で、これがブロックされてもcloudflaredはログエラーを出しつつ正常に動作し続ける"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "cloudflaredがCloudflareのグローバルネットワークに接続するために必須なのはポート7844番で、TCP(`http2`用)・UDP(`quic`用)の両方を許可する必要があります。ポート443番はソフトウェア更新確認など一部のオプション機能でのみ使用され、これがブロックされてもログにエラーが出るだけでcloudflaredは正常に動作を続けます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-with-firewall/#ports",
+      "hint": "「なければトンネルが動かないポート」と「なくても動くが一部機能が制限されるポート」を分けて考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "ファイアウォールで許可するポート",
+          "rowHeader": "ポート",
+          "colHeader": "区分",
+          "rows": [
+            "7844(TCP/UDP)",
+            "443(TCP)"
+          ],
+          "cols": [
+            "必須/任意",
+            "ブロック時の影響"
+          ],
+          "cells": [
+            [
+              "必須",
+              "cloudflaredが接続できない"
+            ],
+            [
+              "任意",
+              "ログエラーのみ、動作は継続"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-016",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "接続先ネットワークの制約によって挙動が変わりうることを踏まえると、`cloudflared tunnel run`の設定フラグに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "`--protocol`のデフォルト値は`auto`で、通常は`quic`プロトコルが自動的に選ばれるが、UDP接続を確立できない環境では`http2`にフォールバックする"
+        },
+        {
+          "text": "`--region us`を指定すると、Cloudflareの全リージョンからランダムに近いデータセンターへ接続されるようになり、通常の動作と変わらない",
+          "wrongFeedback": "`--region us`はアメリカ国内のデータセンターのみを経由するように接続を制限する機能で、通常の(グローバルリージョンの)動作とは異なります。"
+        },
+        {
+          "text": "`--loglevel debug`を指定しても、ログに出力される情報量は`info`と変わらず、単に出力先が変わるだけである",
+          "wrongFeedback": "`debug`レベルではリクエストURLやヘッダーなど、`info`より大幅に詳細な情報が出力されます。出力先ではなく詳細度が変わります。"
+        },
+        {
+          "text": "`--retries`のデフォルト値は無制限であり、接続エラーが発生する限り無限に再試行し続ける",
+          "wrongFeedback": "デフォルトは無制限ではなく5回です。指数バックオフを使って再試行します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`--protocol`のデフォルト値は`auto`で、通常は`quic`プロトコルを自動的に選択します。cloudflaredがUDP接続を確立できない環境では`http2`にフォールバックします。`--region us`はアメリカ国内のデータセンターのみを経由するよう制限する機能、`--loglevel debug`はリクエストURLやヘッダーまで含む詳細なログを出力する機能、`--retries`のデフォルトは5回です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/#protocol",
+      "hint": "「自動選択、ただし条件次第で別方式に切り替わる」という挙動を考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "--protocol autoの挙動",
+          "steps": [
+            {
+              "text": "--protocol auto(デフォルト)"
+            },
+            {
+              "text": "quicプロトコルを優先して試行"
+            },
+            {
+              "text": "UDP接続を確立できない場合"
+            },
+            {
+              "text": "http2プロトコルへフォールバック"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-017",
+      "category": "tunnel",
+      "difficulty": "intermediate",
+      "question": "cloudflaredのメトリクスサーバーに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "メトリクスはJSON形式でのみ提供され、Prometheusのようなツールでスクレイピングすることはできない",
+          "wrongFeedback": "メトリクスはPrometheus形式で提供されるHTTPエンドポイントとして公開され、Prometheusでのスクレイピングが可能です。"
+        },
+        {
+          "text": "非コンテナ環境では、`127.0.0.1`上のポート20241〜20245の範囲内で最初に空いているポートにメトリクスサーバーが起動し、`--metrics`フラグでアドレスをカスタマイズできる"
+        },
+        {
+          "text": "メトリクスサーバーはデフォルトで無効になっており、有効化用のフラグを指定しない限り一切起動しない",
+          "wrongFeedback": "メトリクスサーバーは追加設定なしでもデフォルトで起動します。有効化のためのフラグは不要です。"
+        },
+        {
+          "text": "コンテナ環境(Docker・Kubernetes)でも、メトリクスサーバーのデフォルトバインドアドレスは`127.0.0.1`のままで変わらない",
+          "wrongFeedback": "コンテナ環境では`0.0.0.0`にバインドされます。`127.0.0.1`のままなのは非コンテナ環境の場合です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "非コンテナ環境では、cloudflaredは`127.0.0.1`上のポート20241〜20245の範囲で最初に空いているポートにPrometheus形式のメトリクスサーバーを起動します(すべて使用中の場合はランダムなポート)。コンテナ環境では`0.0.0.0`にバインドされます。`--metrics <IP:PORT>`フラグで公開アドレスをカスタマイズできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels/metrics/#default-metrics-server-address",
+      "hint": "メトリクスサーバーを起動するために、特別なフラグが必要かどうかを考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "メトリクスサーバー起動時のログ",
+          "lines": [
+            {
+              "type": "info",
+              "text": "cloudflaredを起動"
+            },
+            {
+              "type": "response",
+              "text": "INF Starting metrics server on 127.0.0.1:20241/metrics"
+            },
+            {
+              "type": "command",
+              "text": "curl http://127.0.0.1:20241/metrics"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tn-018",
+      "category": "tunnel",
+      "difficulty": "advanced",
+      "question": "サービスを停止させずに運用し続けることを前提とすると、cloudflaredの自動更新とゼロダウンタイム更新に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "`--autoupdate-freq`のデフォルト値は1時間ごとであり、cloudflaredは1時間おきに更新確認と再起動を行う",
+          "wrongFeedback": "デフォルトは24時間ごとです。1時間ごとではありません。"
+        },
+        {
+          "text": "Windows版のcloudflaredも他のOSと同様に自動更新され、手動でのアップデート操作は不要である",
+          "wrongFeedback": "Windows版は自動更新されません。`cloudflared update`コマンドによる手動でのアップデートが必要です。"
+        },
+        {
+          "text": "ゼロダウンタイムで更新するには、新しいバージョンのcloudflaredインスタンス(別のレプリカ、またはLoad Balancerのプール内の新インスタンス)を先に起動し、正常に動作することを確認してから古いインスタンスを停止する"
+        },
+        {
+          "text": "設定ファイルを変更した場合、実行中のcloudflaredインスタンスを一度も停止せずに変更を自動的に反映させることができる",
+          "wrongFeedback": "実行中のインスタンスは設定変更を自動反映しません。新しい設定のレプリカを起動し、稼働を確認してから旧インスタンスを停止する手順が必要です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "cloudflaredはデフォルトで24時間ごとに更新確認・再起動を行います(`--autoupdate-freq`のデフォルトは`24h`)。Windows版は自動更新されず、`cloudflared update`による手動アップデートが必要です。ダウンタイムなしで更新・設定変更を反映するには、新しいバージョン(または新しい設定)のインスタンスを先に起動して正常動作を確認してから、古いインスタンスを停止するという手順を踏みます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/update-cloudflared/#update-with-multiple-cloudflared-instances",
+      "hint": "「古いものを止めてから新しいものを起動する」のではなく、その逆の順序を考えましょう。",
+      "tags": [
+        "tunnel",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "ゼロダウンタイム更新の手順",
+          "actors": [
+            "管理者",
+            "旧インスタンス",
+            "新インスタンス"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 2,
+              "text": "新インスタンスを起動"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "text": "正常動作を確認"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "旧インスタンスを停止"
+            }
           ]
         }
       ]

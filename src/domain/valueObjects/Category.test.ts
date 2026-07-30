@@ -141,6 +141,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('dns')
     expect(ids).toContain('ssl-tls')
     expect(ids).toContain('speed')
+    expect(ids).toContain('tunnel')
     expect(ids).toContain('architecture')
   })
 
