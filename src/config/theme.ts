@@ -423,6 +423,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'エンドツーエンドの暗号化を適切な強度で設計・構成できる',
     },
     {
+      id: 'speed',
+      name: 'Speed',
+      icon: '🚀',
+      color: 'coral',
+      weight: 10,
+      description:
+        'Observatory・Rocket Loader・Polish・Early Hints・HTTP/3・0-RTT・コンテンツ圧縮などのパフォーマンス最適化機能',
+      skillDescription: 'サイトの表示速度を計測し、適切な最適化機能を選んで改善できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

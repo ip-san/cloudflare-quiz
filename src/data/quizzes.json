@@ -29272,6 +29272,701 @@
           ]
         }
       ]
+    },
+    {
+      "id": "sp-001",
+      "category": "speed",
+      "difficulty": "beginner",
+      "question": "Cloudflare Observatoryが提供する2種類のデータソースの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Google Lighthouseを使うBrowser testやネットワーク性能を計測するNetwork testといった合成テスト(synthetic tests)と、実際のユーザーから計測するリアルユーザーモニタリング(RUM)"
+        },
+        {
+          "text": "Cloudflareのサーバーログのみを分析するログベースの計測と、外部SaaSベンダーが提供するサードパーティ計測の2種類",
+          "wrongFeedback": "ログベースの計測やサードパーティ計測ではありません。Observatoryは合成テストとリアルユーザーモニタリング(RUM)の2種類のデータソースを組み合わせます。"
+        },
+        {
+          "text": "WorkersのCPU時間を計測するプロファイリングツールと、KVの読み書きレイテンシを計測するツールの2種類",
+          "wrongFeedback": "WorkersのCPUプロファイリングやKVレイテンシ計測は、Observatoryの提供するデータソースではありません。"
+        },
+        {
+          "text": "デスクトップ版のみを計測するテストと、モバイル版のみを計測するテストという、デバイス種別で分かれた2種類",
+          "wrongFeedback": "デバイス種別による分類ではありません。Observatoryのデータソースは合成テストとリアルユーザーモニタリング(RUM)です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Observatoryは、Google Lighthouseを使ってページを計測するBrowser testやネットワーク・バックエンドの詳細な内訳を提供するNetwork testといった合成テスト(synthetic tests)と、実際のユーザーから収集するリアルユーザーモニタリング(RUM)という2種類のデータソースを組み合わせて、パフォーマンスの分析と最適化の提案を行います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/observatory/",
+      "hint": "「実験室で再現した条件」で測るテストと、「実際に使っている人たち」から集めるデータの2つを考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Observatoryの2種類のデータソース",
+          "columns": [
+            { "heading": "合成テスト", "items": ["Browser test(Lighthouse)", "Network test"] },
+            { "heading": "リアルユーザーモニタリング(RUM)", "items": ["実際の訪問者から収集"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-002",
+      "category": "speed",
+      "difficulty": "intermediate",
+      "question": "リアルユーザーモニタリング(RUM)が提供する指標のうち、合成テストでは取得できないものとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "合成テストとRUMは全く同じ指標セットを提供し、取得できる指標に違いは一切ない",
+          "wrongFeedback": "違いはあります。RUMはFirst Input Delay(FID)やInteraction to Next Paint(INP)という、合成テストにはないユーザー操作に関する指標を提供します。"
+        },
+        {
+          "text": "First Input Delay(FID)やInteraction to Next Paint(INP)といった、実際のユーザー操作に関わる指標"
+        },
+        {
+          "text": "ページの読み込みに使われたHTTPステータスコードの一覧",
+          "wrongFeedback": "HTTPステータスコードの一覧はRUM特有の指標として説明されているわけではありません。RUM特有の指標として挙げられているのはFIDやINPといったユーザー操作関連の指標です。"
+        },
+        {
+          "text": "Lighthouseスコアそのものであり、これはRUMのみが計算できる指標である",
+          "wrongFeedback": "Lighthouseスコアは合成テストのBrowser testが提供するものであり、RUM特有の指標ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "RUMは、実際に世界中のさまざまな環境からアクセスするユーザーのデータを収集するため、合成テストでは再現できない多様な条件を反映できます。加えて、First Input Delay(FID)やInteraction to Next Paint(INP)という、実際のユーザー操作に関わる2つの指標を提供しますが、これらは合成テストでは取得できません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
+      "hint": "「実際に人が操作したときの反応の速さ」を測るには、本物のユーザーからのデータが必要だと考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "RUM特有の指標",
+          "columns": [
+            { "heading": "RUMのみで取得可能", "items": ["FID(First Input Delay)", "INP(Interaction to Next Paint)"] },
+            { "heading": "合成テストでも取得可能", "items": ["Lighthouseスコア等"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-003",
+      "category": "speed",
+      "difficulty": "intermediate",
+      "question": "RUM(リアルユーザーモニタリング)のFreeプランにおけるデフォルトの挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Freeプランでは、RUMは明示的に有効化しない限り常に無効のままである",
+          "wrongFeedback": "Freeプランでは自動的にRUMが有効化されています。明示的な有効化操作は不要です。"
+        },
+        {
+          "text": "Freeプランでは、EUのトラフィックを含むすべての地域のデータが自動的に収集される",
+          "wrongFeedback": "Freeプランではデフォルトで EUのトラフィックが除外されます。すべての地域が自動的に含まれるわけではありません。"
+        },
+        {
+          "text": "Freeプランでは自動的にRUMが有効化されており、デフォルトではEUのトラフィックが除外されるが、この設定はオフに切り替えることができる"
+        },
+        {
+          "text": "RUMはEnterpriseプラン限定の機能であり、Freeプランでは一切利用できない",
+          "wrongFeedback": "RUMはFreeプランでも自動的に有効化されています。Enterprise限定というのは誤りです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Freeプランでは、RUMが自動的に有効化されており、デフォルトではEUのトラフィックが除外されます。この挙動は必要に応じてオフに切り替えることができます。Free以外のプランでは、必要に応じてRUMを有効化します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
+      "hint": "「デフォルトで有効」なのに、「特定の地域だけ除外」されているという2段階の初期設定を考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "FreeプランのRUMデフォルト設定",
+          "steps": [
+            { "text": "RUMが自動的に有効化" },
+            { "text": "EUトラフィックはデフォルトで除外" },
+            { "text": "必要に応じてオフへ切り替え可能" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-004",
+      "category": "speed",
+      "difficulty": "advanced",
+      "question": "Observatoryの合成テスト(Synthetic test)の月間クォータに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Freeプランでも他のプランと同じ本数のテストを実行でき、プランによる差は存在しない",
+          "wrongFeedback": "Freeプラン向けのクォータ行は用意されておらず、合成テストの実行にはPro以上のプランが必要です。プランによる差がないわけではありません。"
+        },
+        {
+          "text": "Proプランの単発テストの上限は、Enterpriseプランの上限よりも多い",
+          "wrongFeedback": "逆です。Proプランの単発テストの上限(50本)は、Enterpriseプランの上限(150本)よりも少ないです。"
+        },
+        {
+          "text": "定期テストの頻度はプランに関わらず常に週次(毎週)であり、毎日実行するオプションは存在しない",
+          "wrongFeedback": "定期テストの頻度は毎日(Daily)です。週次固定ではありません。"
+        },
+        {
+          "text": "Businessプランは単発テスト100本・定期テスト10本(毎日)であり、Enterpriseプランは単発テスト150本・定期テスト15本(毎日)である"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Observatoryの合成テストの月間クォータは、Proプランで単発テスト50本・定期テスト5本(毎日)、Businessプランで単発テスト100本・定期テスト10本(毎日)、Enterpriseプランで単発テスト150本・定期テスト15本(毎日)です。Freeプラン向けのクォータは用意されておらず、合成テストの実行にはPro以上のプランが必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/observatory/run-speed-test/#quotas",
+      "hint": "プランが上がるにつれて、「単発テストの本数」も「定期テストの本数」も比例して増えていくと考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "合成テストの月間クォータ",
+          "columns": [
+            { "heading": "Pro", "items": ["単発50・定期5(毎日)"] },
+            { "heading": "Business", "items": ["単発100・定期10(毎日)"] },
+            { "heading": "Enterprise", "items": ["単発150・定期15(毎日)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-005",
+      "category": "speed",
+      "difficulty": "beginner",
+      "question": "Rocket Loaderに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "インライン・外部の両方のJavaScriptについて、実行順序を維持したままレンダリング後まで読み込みを遅延させ、対応していないブラウザはCloudflareが自動的に検出して機能を無効化する"
+        },
+        {
+          "text": "Rocket LoaderはCSSファイルの読み込みのみを遅延させる機能であり、JavaScriptには一切関与しない",
+          "wrongFeedback": "CSSではなくJavaScriptの読み込みを遅延させる機能です。CSSには関与しません。"
+        },
+        {
+          "text": "Rocket Loaderを有効にすると、JavaScriptの実行順序が保証されなくなり、スクリプトごとに任意の順序で実行される",
+          "wrongFeedback": "実行順序は維持されます。順序が保証されなくなるという説明は誤りです。"
+        },
+        {
+          "text": "Rocket Loaderは外部JavaScriptファイルのみを対象とし、インラインで記述されたJavaScriptには適用されない",
+          "wrongFeedback": "インラインスクリプトも対象に含まれます。外部ファイルのみに限定されているわけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Rocket Loaderは、インライン・外部の両方のJavaScriptについて、実行順序を維持したままコンテンツのレンダリング後まで読み込みを遅延させる非同期読み込みの仕組みです。これにより初期表示関連の指標(TTFP・TTFCP・TTFMPなど)が改善します。Rocket Loaderと互換性のないブラウザは、Cloudflareが自動的に検出して機能を無効化します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/rocket-loader/",
+      "hint": "「コンテンツを先に見せて、JavaScriptは後回しにする」という優先順位の付け方を考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Rocket Loaderの動作",
+          "steps": [
+            { "text": "ページのコンテンツを先にレンダリング" },
+            { "text": "JavaScriptの読み込みを遅延" },
+            { "text": "実行順序を維持したまま非同期実行" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-006",
+      "category": "speed",
+      "difficulty": "advanced",
+      "question": "厳格なHTML検証ツールとの相性を踏まえると、Rocket Loaderの制限事項に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Rocket LoaderがHTML検証エラーを引き起こす場合、それは必ずサイト訪問者にとって深刻な表示崩れを引き起こしていることを意味する",
+          "wrongFeedback": "HTML検証エラー自体は、訪問者にとっての実際の問題を意味するものではないと明記されています。深刻な表示崩れを必ず意味するわけではありません。"
+        },
+        {
+          "text": "Rocket Loaderは非標準のタグを使用するため、w3.orgなどの厳格なHTML検証ツールでは検証エラーになるが、これは訪問者にとっての実際の問題を意味するものではない"
+        },
+        {
+          "text": "JavaScriptやjQueryに問題が発生した場合の推奨対応は、ブラウザのキャッシュをクリアすることであり、Rocket Loader自体を無効化する必要はない",
+          "wrongFeedback": "推奨される対応はRocket Loaderを無効化して再テストすることです。ブラウザキャッシュのクリアではありません。"
+        },
+        {
+          "text": "Rocket LoaderはHTML標準に完全準拠したタグのみを使用するため、厳格な検証ツールでもエラーは一切発生しない",
+          "wrongFeedback": "Rocket Loaderは非標準のタグを使用するため、厳格な検証ツールではエラーが発生します(訪問者への実害はないとされています)。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Rocket LoaderはEmail Obfuscationと同様に非標準のタグを使用するため、w3.orgのような厳格なHTML検証ツールで検証するとエラーになりますが、これはサイト訪問者にとっての実際の問題を意味するものではないとされています。JavaScriptやjQueryに問題が見られる場合は、Rocket Loaderを無効化して再テストすることが推奨されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/rocket-loader/#limitations",
+      "hint": "「形式的な検証ツールが指摘するエラー」と「実際に訪問者が体験する問題」は、必ずしも一致しないと考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "検証エラーと実害の違い",
+          "columns": [
+            { "heading": "w3.org等での検証", "items": ["非標準タグによりエラーになる"] },
+            { "heading": "訪問者への実際の影響", "items": ["実害を意味しない"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-007",
+      "category": "speed",
+      "difficulty": "beginner",
+      "question": "Cloudflare PolishとCloudflare Imagesの関係に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Cloudflare Imagesで生成した画像には、すでに最適化済みであるかどうかに関わらず、さらにPolishによる追加の最適化を必ず適用する必要がある",
+          "wrongFeedback": "Cloudflare Imagesで生成された画像はすでに最適化済みであり、Polishを追加で適用する必要はないとされています。"
+        },
+        {
+          "text": "Polishを使うと画像ごとに新しいURLが発行されるため、既存のページ内のマークアップをすべて新しいURLへ書き換える必要がある",
+          "wrongFeedback": "Polishは同じURLのまま画像を最適化するため、マークアップを書き換える必要はありません。"
+        },
+        {
+          "text": "Polishはオリジンから配信される画像をキャッシュ内で自動的に最適化する仕組みでURLは変わらないが、Cloudflare Imagesはリサイズ・切り抜き・透かしなどを適用した新しい画像を新しいURLで生成する仕組みであり、Images側の出力にPolishを適用する必要はない"
+        },
+        {
+          "text": "PolishとCloudflare Imagesは競合する製品であり、同じゾーンで両方を同時に使うことはできない",
+          "wrongFeedback": "競合する製品ではありません。両者は異なる役割を持ち、互いに補完し合う関係にあります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Polishは、オリジンから取得した画像をCloudflareのキャッシュ内で自動的に最適化する仕組みで、画像のURLは変わらずマークアップの変更も不要です。一方、Cloudflare Imagesはリサイズ・切り抜き・透かしなどの処理を適用した新しい画像を新しいURLで生成する仕組みで、生成された画像はすでに最適化済みのため、追加でPolishを適用する必要はありません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/images/polish/",
+      "hint": "「既存の画像をそのまま軽くする」機能と、「新しい加工済み画像を作り出す」機能は、役割が異なると考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Polish と Cloudflare Images",
+          "columns": [
+            { "heading": "Polish", "items": ["既存画像を同一URLで最適化"] },
+            { "heading": "Cloudflare Images", "items": ["新しいURLで加工済み画像を生成"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-008",
+      "category": "speed",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Mirageの現在の状況に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Mirageは現在も提供されている現行機能であり、モバイル向けの画像最適化に今なお推奨される選択肢である",
+          "wrongFeedback": "Mirageは2025年9月15日に非推奨となり提供終了しています。現行の推奨機能ではありません。"
+        },
+        {
+          "text": "Mirageは非推奨になったが、既存の`mirage`設定を持つゾーンに限り現在も無期限に動作し続ける",
+          "wrongFeedback": "無期限に動作し続けるわけではありません。Mirageは提供終了しており、現在は利用できません。"
+        },
+        {
+          "text": "Mirageが非推奨になった主な理由は、Cloudflare Imagesとの機能重複によるコスト削減であり、Webの技術標準の進化とは無関係である",
+          "wrongFeedback": "非推奨の主な理由として挙げられているのは、`loading=\"lazy\"`属性・`srcset`/`<picture>`要素・HTTP/2やHTTP/3の普及といったWeb標準・ブラウザ機能の進化です。"
+        },
+        {
+          "text": "Mirageは2025年9月15日に非推奨となり提供終了しており、移行先としてネイティブの遅延読み込み(`loading=\"lazy\"`)・レスポンシブ画像・Polish・Image Resizingが推奨されている"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Mirageは2025年9月15日に非推奨となり、現在は提供されていません。ネイティブの遅延読み込み(`loading=\"lazy\"`属性)や`srcset`・`<picture>`要素によるレスポンシブ画像、HTTP/2・HTTP/3の普及といったWeb標準・ブラウザ機能の進化により、Mirageの主な機能が不要になったことが非推奨の理由です。移行先としてはPolish・Image Resizing・ネイティブの遅延読み込み・レスポンシブ画像が推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/images/mirage/",
+      "hint": "かつてモバイル向けに使われていた機能が、Web標準自体の進化によって役目を終えたと考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Mirageの非推奨と移行先",
+          "steps": [
+            { "text": "2025年9月15日にMirageが非推奨・提供終了" },
+            { "text": "Web標準(loading=lazy・srcset等)が普及" },
+            { "text": "Polish・Image Resizing等へ移行" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-009",
+      "category": "speed",
+      "difficulty": "beginner",
+      "question": "Early Hintsの仕組みに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Early Hintsは`EARLY`のような新しいHTTPメソッドを定義するものであり、既存の`GET`や`POST`とは別の専用メソッドを使う",
+          "wrongFeedback": "新しいHTTPメソッドではなく、`103`という新しいステータスコードを使う仕組みです。"
+        },
+        {
+          "text": "RFC 8297で定義された`103 Early Hints`という予備的なHTTPレスポンスを使い、`Link`ヘッダーで必要なアセットをブラウザへ事前に伝える"
+        },
+        {
+          "text": "Early Hintsはオリジンサーバーの応答準備が完了した後にのみ送信される、通常のレスポンスに付随する追加ヘッダーである",
+          "wrongFeedback": "逆です。Early Hintsはオリジンが完全な応答を準備している「待ち時間」を利用して、その前に送信される予備的なレスポンスです。"
+        },
+        {
+          "text": "Early HintsはHTTP/1.1・HTTP/2・HTTP/3のすべてのプロトコルバージョンで等しくサポートされている",
+          "wrongFeedback": "Early HintsはHTTP/2とHTTP/3でのみサポートされており、HTTP/1.1ではサポートされていません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Early Hintsは、RFC 8297で定義された`103 Early Hints`という新しいHTTPステータスコードを使う仕組みです。オリジンサーバーが完全な応答を準備している待ち時間を利用して、`Link`ヘッダーを含む予備的な`103`レスポンスをブラウザへ送信し、必要になるアセットを事前に読み込み始められるようにします。この仕組みは現在、HTTP/2とHTTP/3でのみサポートされています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/",
+      "hint": "「本番の答えが届く前に、先に手がかりだけ教えてあげる」という予備的な応答だと考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Early Hintsの流れ",
+          "actors": ["ブラウザ", "Cloudflare/オリジン"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "ページをリクエスト" },
+            { "from": 1, "to": 0, "text": "103 Early Hints(Linkヘッダー)" },
+            { "from": 1, "to": 0, "text": "完全なレスポンス" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-010",
+      "category": "speed",
+      "difficulty": "advanced",
+      "question": "URIの拡張子・ステータスコード・オリジンのレスポンス内容という複数の観点を踏まえると、Early Hintsが生成・キャッシュされる条件として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "URIの拡張子や既存のレスポンスヘッダーの内容に関わらず、すべてのリクエストに対して無条件にEarly Hintsが生成される",
+          "wrongFeedback": "無条件ではありません。特定の拡張子・ステータスコード・`Link`ヘッダーの存在という条件を満たす場合にのみ生成されます。"
+        },
+        {
+          "text": "ステータスコードが4xx・5xxのエラー系である場合にのみEarly Hintsが生成され、200番台の成功レスポンスでは生成されない",
+          "wrongFeedback": "逆です。Early Hintsが生成されるのは200・301・302といった成功・リダイレクト系のレスポンスに限られます。"
+        },
+        {
+          "text": "拡張子が`.html`・`.htm`・`.php`のいずれか、または拡張子なしのURIであり、ステータスコードが200・301・302のいずれかで、オリジンのレスポンスに`preload`または`preconnect`を指定した`Link`ヘッダーが含まれている場合"
+        },
+        {
+          "text": "画像ファイル(`.jpg`・`.png`など)のURIに対してのみEarly Hintsが生成され、HTMLページには適用されない",
+          "wrongFeedback": "画像ファイル限定ではありません。むしろ`.html`・`.htm`・`.php`または拡張子なしのURIが対象です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Early Hintsが生成・キャッシュされるのは、URIの拡張子が`.html`・`.htm`・`.php`のいずれか、または拡張子がない場合、ステータスコードが200・301・302のいずれかである場合、そしてオリジンのレスポンスに`preload`または`preconnect`のrelタイプを指定した`Link`ヘッダーが含まれている場合です。キャッシュのキーはリクエストURIによって決まり、クエリ文字列は無視されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#generate-early-hints",
+      "hint": "「どんなURLの種類」「どんなステータスコード」「オリジンが何を返しているか」という3つの条件がそろう必要があると考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Early Hintsが生成される条件",
+          "items": [
+            { "text": "拡張子: .html/.htm/.php または拡張子なし" },
+            { "text": "ステータスコード: 200/301/302" },
+            { "text": "Linkヘッダーにpreload/preconnectを含む" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-011",
+      "category": "speed",
+      "difficulty": "advanced",
+      "question": "認証が必要なページでEarly Hintsを有効にした場合の注意点として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Cloudflareは認証が必要なページに対しては、Early Hintsの生成を常に自動的にブロックするため、この点について特別な注意は不要である",
+          "wrongFeedback": "自動的にブロックされるわけではありません。未認証の訪問者にもキャッシュされた103レスポンスが先に送信されてしまう可能性があり、注意が必要です。"
+        },
+        {
+          "text": "Early Hintsは常にオリジンサーバーでの認証チェックが完了した後にのみ送信されるため、認証まわりで問題になることはない",
+          "wrongFeedback": "逆です。Early Hintsはオリジンサーバーやworkerに到達する前に送信されることがあるため、認証チェックより先に送られる可能性があります。"
+        },
+        {
+          "text": "この問題は403エラーではなく、500番台のサーバーエラーが返る場合にのみ発生する",
+          "wrongFeedback": "説明されている懸念は403 Forbiddenに関するものです。500番台のサーバーエラーに限定された話ではありません。"
+        },
+        {
+          "text": "Early HintsのレスポンスはオリジンサーバーやWorkerに到達する前に送信されることがあるため、未認証の訪問者に対しても、本来の403 Forbiddenレスポンスより先にキャッシュされた103レスポンスが送信されてしまう可能性がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Early Hintsのレスポンスは、オリジンサーバーやWorkerに到達する前に送信されることがあります。そのため、認証が必要なページでEarly Hintsを有効にしている場合、未認証の訪問者に対しても、本来返されるはずの403 Forbiddenレスポンスより先に、キャッシュされたLinkヘッダーを含む103レスポンスが送信されてしまう可能性がある点に注意が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#emit-early-hints",
+      "hint": "「本来の認証チェックが行われる前に」何かが先に送られてしまう可能性があると考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "認証ページでのEarly Hintsの注意点",
+          "steps": [
+            { "text": "未認証の訪問者がリクエスト" },
+            { "text": "キャッシュされた103レスポンスが先に送信" },
+            { "text": "オリジンの403 Forbiddenは後から到達" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-012",
+      "category": "speed",
+      "difficulty": "advanced",
+      "question": "Early Hints有効時にログで見られる、`RequestSource`が`earlyHintsCache`である`504`レスポンスに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "これはEarly Hintsのキャッシュを確認するための内部的なサブリクエストであり、エンドユーザーへのリクエストでもオリジンへのリクエストでもなく、キャッシュミス(該当するEarly Hintsが存在しない)を示す想定内・無害な応答である"
+        },
+        {
+          "text": "これはエンドユーザーからの実際のリクエストがオリジンサーバーで処理に失敗したことを示す、対応が必要な深刻なエラーである",
+          "wrongFeedback": "エンドユーザーからの実際のリクエストではありません。これはEarly Hintsのキャッシュを確認するための内部的なサブリクエストであり、対応が必要な深刻なエラーではありません。"
+        },
+        {
+          "text": "これはオリジンサーバーへ実際に転送された、Early Hints関連のリクエストであり、オリジン側の設定不備を示している",
+          "wrongFeedback": "オリジンへ転送されるリクエストではありません。これはCloudflare内部で完結するサブリクエストです。"
+        },
+        {
+          "text": "この`504`は、Early Hintsのキャッシュがヒットしたこと(該当するEarly Hintsが見つかったこと)を示している",
+          "wrongFeedback": "逆です。キャッシュヒットの場合は`200`が返り、`504`はキャッシュミス(該当するEarly Hintsがない場合)を示します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`RequestSource`が`earlyHintsCache`である`504`レスポンスは、Early Hintsのキャッシュを確認するための内部的なサブリクエストであり、エンドユーザーへのリクエストでもオリジンへのリクエストでもありません。このレスポンスステータスは、該当するリクエストURIに対するEarly Hintsのキャッシュ状態のみを示し、`200`はキャッシュヒット、`504`はキャッシュミスを意味する、想定内・無害な応答です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#emit-early-hints",
+      "hint": "「実際のリクエストの失敗」ではなく、「内部的な確認作業の結果を示す符号」だと考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "earlyHintsCacheのステータス意味",
+          "columns": [
+            { "heading": "200", "items": ["Early Hintsキャッシュヒット"] },
+            { "heading": "504", "items": ["Early Hintsキャッシュミス(無害)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-013",
+      "category": "speed",
+      "difficulty": "intermediate",
+      "question": "「Auto Minify(HTML・CSS・JSの自動圧縮)」機能の現在の状況として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Auto Minifyは現在も新規ユーザーに積極的に推奨されている、標準的なコンテンツ最適化機能である",
+          "wrongFeedback": "Auto Minifyは2024年8月5日に非推奨となっています。新規ユーザーに積極的に推奨されている機能ではありません。"
+        },
+        {
+          "text": "Auto Minifyは2024年8月5日に非推奨となっており、API上の設定エンドポイントは既存ユーザーが機能をオフにできるようにするためだけに残されている"
+        },
+        {
+          "text": "Auto Minifyは非推奨になっておらず、Rocket Loaderと組み合わせて使うことが公式に推奨されている現行機能である",
+          "wrongFeedback": "非推奨になっていないという説明は誤りです。Auto Minifyは2024年8月5日に非推奨となっています。"
+        },
+        {
+          "text": "Auto Minifyが非推奨になったのは、CSSやJSファイルの圧縮によって視覚的なレイアウト崩れが多発したためである",
+          "wrongFeedback": "レイアウト崩れが理由として明記されているわけではありません。特定の非推奨理由については文書に詳細な記載はなく、単に非推奨化されたことが述べられています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Auto Minify(HTML・CSS・JSの自動圧縮)は2024年8月5日に非推奨となりました。APIの設定エンドポイント(`/zones/{zone_id}/settings/minify`)自体は現在も存在しますが、これはすでにAuto Minifyを使っている既存ユーザーが機能をオフに切り替えられるようにするためだけに残されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/troubleshooting/disable-auto-minify/",
+      "hint": "「新規に有効化することを推奨する機能」ではなく、「すでに使っている人がオフにするための出口」だけが残っていると考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Auto Minifyの現状",
+          "steps": [
+            { "text": "2024年8月5日に非推奨化" },
+            { "text": "APIエンドポイントは存続" },
+            { "text": "既存ユーザーがオフにする用途のみ" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-014",
+      "category": "speed",
+      "difficulty": "beginner",
+      "question": "HTTP/2に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "HTTP/2はEnterpriseプラン限定の機能であり、Free・Pro・Businessプランでは利用できない",
+          "wrongFeedback": "HTTP/2はすべてのプランでデフォルトで有効になっています。Enterprise限定ではありません。"
+        },
+        {
+          "text": "HTTP/2を有効にするために、CloudflareエッジでのSSL証明書は不要である",
+          "wrongFeedback": "HTTP/2の利用にはCloudflareエッジでのSSL証明書が必要です。証明書が不要というのは誤りです。"
+        },
+        {
+          "text": "すべてのプランでデフォルトで有効になっており、Freeプランではこの設定を無効化することができない"
+        },
+        {
+          "text": "Freeプランを含むすべてのプランで、HTTP/2をオフに切り替えることができる",
+          "wrongFeedback": "Freeプランでは、HTTP/2をオフに切り替えることはできません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "HTTP/2はすべてのプランでデフォルトで有効になっています。利用にはCloudflareエッジでのSSL証明書が必要です。Freeプランでは、この設定を無効化することはできません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/protocol/http2/",
+      "hint": "「デフォルトで有効」という点と「Freeプランではオフにできない」という点は、別々の事実として押さえましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "HTTP/2の設定",
+          "columns": [
+            { "heading": "デフォルト", "items": ["全プランで有効"] },
+            { "heading": "Freeプラン", "items": ["無効化不可"] },
+            { "heading": "前提条件", "items": ["エッジSSL証明書が必要"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-015",
+      "category": "speed",
+      "difficulty": "intermediate",
+      "question": "HTTP/3(QUICを使用)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "HTTP/3の設定は訪問者とオリジンサーバー間の通信にも適用され、Cloudflareとオリジン間も自動的にHTTP/3で通信されるようになる",
+          "wrongFeedback": "HTTP/3はまだCloudflareとオリジン間の通信には対応していません。この設定は訪問者とCloudflare間の通信にのみ適用されます。"
+        },
+        {
+          "text": "HTTP/3はEnterpriseプラン限定の機能であり、他のプランでは利用できない",
+          "wrongFeedback": "HTTP/3はすべてのプランで利用できます。Enterprise限定ではありません。"
+        },
+        {
+          "text": "HTTP/3はTCPをベースにした改良版プロトコルであり、UDPは一切使用しない",
+          "wrongFeedback": "HTTP/3はQUIC(UDPベースのプロトコル)を使用します。TCPベースというのは誤りです。"
+        },
+        {
+          "text": "QUICはTCPのヘッドオブラインブロッキング問題を解決するため、パケットロスの多い(lossyな)ネットワークでのパフォーマンスがTCPベースの通信より向上しうる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "HTTP/3が使うQUICは、TCPのヘッドオブラインブロッキング問題を解決するため、パケットロスの多い(lossyな)ネットワークにおけるパフォーマンスがTCPベースの通信より向上する場合があります。HTTP/3はすべてのプランで利用できますが、この設定が適用されるのは訪問者とCloudflare間の通信のみで、Cloudflareとオリジン間の通信はまだHTTP/3に対応していません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/protocol/http3/",
+      "hint": "「訪問者側の接続」と「オリジン側の接続」のうち、どちらか一方にしかまだ適用されていないと考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "HTTP/3が適用される区間",
+          "columns": [
+            { "heading": "訪問者↔Cloudflare", "items": ["HTTP/3対応"] },
+            { "heading": "Cloudflare↔オリジン", "items": ["未対応"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-016",
+      "category": "speed",
+      "difficulty": "advanced",
+      "question": "0-RTT Connection Resumption(0-RTT接続再開)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "0-RTTはGET・HEAD・OPTIONSリクエストに対応しているがPOSTリクエストには対応しておらず、0-RTTを使ったリクエストには`Early-Data: 1`ヘッダーが付与される"
+        },
+        {
+          "text": "0-RTTは`POST`リクエストを含むすべてのHTTPメソッドに対応している",
+          "wrongFeedback": "POSTリクエストには対応していません。対応しているのはGET・HEAD・OPTIONSのみです。"
+        },
+        {
+          "text": "0-RTTはデフォルトで有効になっており、無効化するには明示的な設定変更が必要である",
+          "wrongFeedback": "逆です。0-RTTはデフォルトで無効になっており、有効化するには明示的な設定変更が必要です。"
+        },
+        {
+          "text": "0-RTTの接続再開は、訪問者とCloudflare間だけでなく、Cloudflareとオリジン間にも同様に適用される",
+          "wrongFeedback": "0-RTTは訪問者とCloudflare間でのみ確立され、オリジンサーバーまで拡張されるわけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "0-RTT Connection Resumptionは、GET・HEAD・OPTIONSリクエストに対応していますが、POSTリクエストには対応していません。0-RTTを使ったリクエストには、オリジンサーバーが0-RTT再開を使ったリクエストであることを識別できるよう`Early-Data: 1`ヘッダーが付与されます。デフォルトでは無効になっており、また訪問者とCloudflare間でのみ確立され、オリジンサーバーまでは拡張されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/protocol/0-rtt-connection-resumption/",
+      "hint": "「安全に繰り返せるリクエスト」と「そうでないリクエスト」とで、対応の有無が分かれていると考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "0-RTTが対応するメソッド",
+          "columns": [
+            { "heading": "対応", "items": ["GET・HEAD・OPTIONS"] },
+            { "heading": "非対応", "items": ["POST"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-017",
+      "category": "speed",
+      "difficulty": "intermediate",
+      "question": "訪問者へのコンテンツ配信時に、Cloudflareがデフォルトで使用する圧縮方式のプラン別の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Freeプランはデフォルトでランダムに圧縮方式を切り替え、Pro以上のプランでは常にGzipのみが使われる",
+          "wrongFeedback": "ランダムな切り替えではありません。Freeプランのデフォルトの圧縮方式はZstandardで、Gzipが既定なのはEnterpriseプランです。"
+        },
+        {
+          "text": "Freeプランのデフォルトの圧縮方式はZstandardで、Pro・BusinessプランのデフォルトはBrotli、EnterpriseプランのデフォルトはGzipである"
+        },
+        {
+          "text": "すべてのプランでデフォルトの圧縮方式は共通してBrotliであり、プランによる違いは存在しない",
+          "wrongFeedback": "プランによって異なります。Freeプランのデフォルトの圧縮方式はZstandard、Pro・BusinessはBrotli、EnterpriseはGzipです。"
+        },
+        {
+          "text": "Enterpriseプランのデフォルトの圧縮方式はZstandardであり、Freeプランのデフォルトの圧縮方式はGzipである",
+          "wrongFeedback": "説明が逆です。Freeプランのデフォルトの圧縮方式はZstandard、Enterpriseプランのデフォルトの圧縮方式はGzipです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "訪問者へのコンテンツ配信時にCloudflareがデフォルトで使用する圧縮方式は、Freeプランで Zstandard、Pro・Businessプランで Brotli、Enterpriseプランで Gzipです。実際に適用される圧縮方式は、訪問者のブラウザが`accept-encoding`ヘッダーで対応を示している方式にも依存します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/compression/#compression-methods-by-plan",
+      "hint": "「最も新しい圧縮方式」と「最も伝統的な圧縮方式」が、意外なプランの組み合わせで既定値になっていると考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "デフォルトの圧縮方式",
+          "columns": [
+            { "heading": "Free", "items": ["Zstandard"] },
+            { "heading": "Pro/Business", "items": ["Brotli"] },
+            { "heading": "Enterprise", "items": ["Gzip"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sp-018",
+      "category": "speed",
+      "difficulty": "advanced",
+      "question": "圧縮方式によって基準が異なる可能性を踏まえると、Cloudflareがレスポンスを圧縮する際の最小サイズの制約に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "圧縮方式に関わらず、最小サイズの制約は一律で1KB(1,024バイト)である",
+          "wrongFeedback": "一律1KBではありません。Gzipは48バイト、Brotli・Zstandardは50バイトという、より小さい最小サイズが設定されています。"
+        },
+        {
+          "text": "最小サイズの制約が存在するのはBrotli・Zstandardのみであり、Gzipには最小サイズの制約が存在しない",
+          "wrongFeedback": "Gzipにも最小サイズの制約(48バイト)が存在します。Brotli・Zstandard限定ではありません。"
+        },
+        {
+          "text": "Gzipについては48バイト以上、Brotli・Zstandardについては50バイト以上のレスポンスサイズが必要で、これを下回るレスポンスはコンテンツタイプに関わらず圧縮されない"
+        },
+        {
+          "text": "レスポンスサイズが最小値を下回った場合でも、コンテンツタイプが`text/html`であれば例外的に圧縮される",
+          "wrongFeedback": "コンテンツタイプによる例外はありません。最小サイズを下回るレスポンスは、コンテンツタイプに関わらず圧縮されません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflareがレスポンスを圧縮する際の最小サイズは、Gzipの場合48バイト、Brotli・Zstandardの場合50バイトです。この最小サイズを下回るレスポンスは、コンテンツタイプに関わらず圧縮されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/compression/#compression-between-cloudflare-and-website-visitors",
+      "hint": "「あまりに小さいレスポンスは、圧縮してもかえって効率が悪い」という考え方から来る下限値を考えましょう。",
+      "tags": ["speed", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "圧縮の最小サイズ",
+          "columns": [
+            { "heading": "Gzip", "items": ["48バイト以上"] },
+            { "heading": "Brotli/Zstandard", "items": ["50バイト以上"] }
+          ]
+        }
+      ]
     }
   ]
 }

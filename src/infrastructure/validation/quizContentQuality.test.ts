@@ -58,6 +58,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   ru: 'rules',
   dn: 'dns',
   sl: 'ssl-tls',
+  sp: 'speed',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -286,6 +287,19 @@ const VALID_DOC_PAGES = [
   'ssl/edge-certificates/additional-options/always-use-https/',
   'ssl/edge-certificates/additional-options/automatic-https-rewrites/',
   'ssl/reference/certificate-validity-periods/',
+  'speed/',
+  'speed/observatory/',
+  'speed/observatory/run-speed-test/',
+  'speed/optimization/content/rocket-loader/',
+  'images/polish/',
+  'speed/optimization/images/mirage/',
+  'cache/advanced-configuration/early-hints/',
+  'speed/optimization/content/troubleshooting/disable-auto-minify/',
+  'speed/optimization/protocol/http2/',
+  'speed/optimization/protocol/http3/',
+  'speed/optimization/protocol/0-rtt-connection-resumption/',
+  'speed/optimization/content/fonts/',
+  'speed/optimization/content/compression/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -720,6 +734,7 @@ describe('Quiz Content Quality', () => {
         'rules',
         'dns',
         'ssl-tls',
+        'speed',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

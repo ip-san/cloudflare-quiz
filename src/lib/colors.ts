@@ -28,6 +28,7 @@ export const COLOR_MAP: Record<string, string> = {
   denim: '#1d4ed8',
   moss: '#4d7c0f',
   cobalt: '#4338ca',
+  coral: '#fb923c',
 }
 
 export function getColorHex(colorName: string): string {
