@@ -130,6 +130,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('realtime')
     expect(ids).toContain('workers-vpc')
     expect(ids).toContain('cloudflare-for-saas')
+    expect(ids).toContain('pipelines')
     expect(ids).toContain('architecture')
   })
 

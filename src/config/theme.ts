@@ -323,6 +323,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'SaaSプラットフォームで顧客ごとのカスタムドメインを安全に提供できる',
     },
     {
+      id: 'pipelines',
+      name: 'Pipelines',
+      icon: '🌊',
+      color: 'stone',
+      weight: 10,
+      description:
+        'ストリーミングデータをStreamsで受け取り、SQLで変換してSinks経由でR2にIceberg/Parquet/JSONとして配信するETL基盤',
+      skillDescription: 'ストリーミングデータを取り込み・変換してR2に分析可能な形で保存できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

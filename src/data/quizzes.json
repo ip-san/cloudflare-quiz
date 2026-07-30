@@ -18886,6 +18886,708 @@
           ]
         }
       ]
+    },
+    {
+      "id": "pl-001",
+      "category": "pipelines",
+      "difficulty": "beginner",
+      "question": "Cloudflare Pipelinesの目的として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "R2に保存済みのデータを定期的にスキャンし、不要なファイルを自動的に削除するライフサイクル管理サービス",
+          "wrongFeedback": "データのライフサイクル管理(自動削除)機能ではありません。ストリーミングデータの取り込み・変換・配信を行う仕組みです。"
+        },
+        {
+          "text": "サーバーログ・モバイルアプリのイベント・IoTテレメトリなどのストリーミングデータを取り込み、SQLで変換し、Apache IcebergテーブルやParquet/JSONファイルとしてR2に配信する"
+        },
+        {
+          "text": "複数のWorkerスクリプトを1つにバンドルし、単一のデプロイ単位として配信するビルドツール",
+          "wrongFeedback": "Workerのビルド・バンドリングツールではありません。ストリーミングデータをR2に配信する仕組みです。"
+        },
+        {
+          "text": "Cloudflareネットワーク上のトラフィックをリアルタイムに可視化するモニタリングダッシュボード専用の機能",
+          "wrongFeedback": "トラフィック可視化ダッシュボードではありません。データの取り込み・変換・配信のためのデータパイプラインです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Pipelinesは、サーバーログ・モバイルアプリのイベント・IoTテレメトリ・クリックストリームといったストリーミングデータを取り込み、SQLで変換したうえで、Apache IcebergテーブルやParquet/JSONファイルとしてR2に配信する仕組みです。ストリーミング基盤を自前で管理することなく、分析に使えるデータウェアハウス・レイクハウスを構築できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/",
+      "hint": "大量に流れてくるイベントデータを、後で分析しやすい形にしてどこかに「溜めておく」仕組みを考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Pipelinesの流れ",
+          "steps": [
+            { "text": "イベントデータを取り込む", "sub": "HTTP/Workerバインディング" },
+            { "text": "SQLで変換" },
+            { "text": "R2へ配信", "sub": "Iceberg/Parquet/JSON" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-002",
+      "category": "pipelines",
+      "difficulty": "beginner",
+      "question": "Cloudflare Pipelinesを構成する3つの主要コンポーネントの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "非同期処理のためのキューであるWorker・キーバリューストアであるKV・リレーショナルデータベースであるD1の組み合わせ",
+          "wrongFeedback": "これらはPipelinesの構成要素ではありません。Pipelinesの構成要素はStreams・Pipelines(SQL変換)・Sinksです。"
+        },
+        {
+          "text": "メッセージングを担うQueues・状態保持を担うDurable Objects・キャッシュを担うCache APIの組み合わせ",
+          "wrongFeedback": "これらはPipelinesの構成要素ではありません。"
+        },
+        {
+          "text": "オンプレミス接続用のTunnel・プライベート接続用のVPC Service・仮想ネットワークのVPC Networkの組み合わせ",
+          "wrongFeedback": "これらはWorkers VPCの構成要素です。Pipelinesの構成要素とは異なります。"
+        },
+        {
+          "text": "データを受け取り一時的に蓄えるStreams、SQLでデータを変換するPipelines、変換後のデータの配信先を定義するSinks"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cloudflare Pipelinesは、データを受け取り一時的に蓄えるStreams、StreamsとSinksをSQL変換でつなぐPipelines、変換後のデータの配信先(R2など)を定義するSinksという3つの主要コンポーネントで構成されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/",
+      "hint": "「データを受け取る場所」「加工する場所」「届け先」という3段階の役割分担を考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Pipelinesの3つの構成要素",
+          "items": [
+            { "text": "Streams", "sub": "データの取り込み・一時保存" },
+            { "text": "Pipelines", "sub": "SQLによる変換" },
+            { "text": "Sinks", "sub": "R2への配信先定義" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-003",
+      "category": "pipelines",
+      "difficulty": "beginner",
+      "question": "Cloudflare PipelinesのStreamsに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "HTTPエンドポイントやWorkerバインディング経由でイベントを受け取る、耐久性のあるバッファ済みキューであり、1つのStreamを複数のPipelineから読み取ってデータを異なる宛先に振り分けることができる"
+        },
+        {
+          "text": "1つのStreamは同時に1つのPipelineからしか読み取ることができず、複数のPipelineで共有することはできない",
+          "wrongFeedback": "1つのStreamは複数のPipelineから読み取ることができ、同じデータを異なる変換・宛先に振り分けられます。"
+        },
+        {
+          "text": "Streamはメモリ上にのみデータを保持する一時的なバッファであり、Worker側の処理が遅延するとデータは失われる",
+          "wrongFeedback": "Streamは耐久性のあるバッファであり、下流の処理が遅延・失敗してもデータが失われないよう設計されています。"
+        },
+        {
+          "text": "Streamが受け付けられるデータ形式はProtocol Buffers(protobuf)のみで、JSON形式のデータは受け付けられない",
+          "wrongFeedback": "StreamsはJSON形式のイベントを受け付けます。Protocol Buffers専用ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Streamsは、HTTPエンドポイントやWorkerバインディング経由でイベントを受け取る、耐久性のあるバッファ済みキューです。下流の処理に遅延や失敗があってもデータが失われないように設計されています。1つのStreamを複数のPipelineから読み取ることができるため、同じデータをリアルタイム分析用と長期保存用など、異なる宛先に振り分けることができます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/",
+      "hint": "1つの「データの流れ」を、複数の異なる目的に使い回せるかどうかを考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "Streamの読み取りの分岐",
+          "nodes": [
+            { "id": "s", "text": "Stream" },
+            { "id": "p1", "text": "Pipeline A" },
+            { "id": "p2", "text": "Pipeline B" }
+          ],
+          "edges": [
+            { "from": "s", "to": "p1", "label": "読み取り" },
+            { "from": "s", "to": "p2", "label": "読み取り" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-004",
+      "category": "pipelines",
+      "difficulty": "beginner",
+      "question": "Cloudflare PipelinesのSinksに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "配信の際にデータが重複したり欠落したりすることが仕様上許容されており、下流のシステム側でその重複排除・補完を行う設計になっている",
+          "wrongFeedback": "Sinksはexactly-once(正確に1回)の配信保証を提供し、データの重複や欠落が起きないよう設計されています。"
+        },
+        {
+          "text": "Sinksが配信できる先はWorkers KVのみに限定されており、R2バケットへ直接書き込むことには対応していない",
+          "wrongFeedback": "SinksはR2への書き込みに対応しています(Iceberg形式のR2 Data Catalog、またはJSON/Parquet形式のR2)。KV専用ではありません。"
+        },
+        {
+          "text": "R2 Data CatalogへApache Icebergテーブルとして、またはR2へ生のJSON/Parquetファイルとして書き込むことができ、データが重複・欠落しないexactly-onceの配信を保証する"
+        },
+        {
+          "text": "ファイルを書き出す頻度や粒度はあらかじめ固定されており、利用者側で低レイテンシ寄りかクエリ性能寄りかを調整することはできない",
+          "wrongFeedback": "低レイテンシ向けに頻繁に小さいファイルを書き出すことも、クエリ性能向け大きなファイルを書き出すことも設定で調整できます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Sinksは、R2 Data CatalogへApache Icebergテーブルとして、またはR2へ生のJSON・Parquetファイルとして書き込む、Pipelinesのデータ配信先です。データが重複・欠落しないexactly-onceの配信を保証し、低レイテンシ向けに頻繁にファイルを書き出す設定や、クエリ性能向けに大きなファイルをまとめて書き出す設定を選べます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/sinks/",
+      "hint": "「届いたはずなのに消えていた」「2回届いてしまった」という事故を防ぐには、どんな配信保証が必要か考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Sinksの配信先",
+          "columns": [
+            { "heading": "R2 Data Catalog", "items": ["Apache Icebergテーブル"] },
+            { "heading": "R2(生ファイル)", "items": ["JSON/Parquet"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-005",
+      "category": "pipelines",
+      "difficulty": "beginner",
+      "question": "Cloudflare Pipelinesの現在の提供状況に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "すでに正式リリース(GA)されており、すべての機能について通常の料金が請求される",
+          "wrongFeedback": "現時点ではオープンベータ段階であり、標準的なR2のストレージ・操作料金以外にPipelines自体の課金は発生しません。"
+        },
+        {
+          "text": "オープンベータ段階であり、Workers Paidプランの開発者であれば誰でも利用でき、現時点では標準的なR2のストレージ・操作料金以外は課金されない"
+        },
+        {
+          "text": "オープンベータ段階だが、Workers Freeプランのユーザーであっても追加の申請なしにすぐ利用できる",
+          "wrongFeedback": "Workers Paidプランが必要です。Freeプランでは利用できません。"
+        },
+        {
+          "text": "オープンベータ段階であり、利用するにはCloudflareの営業担当への個別の申し込みが必要である",
+          "wrongFeedback": "個別の営業申し込みは不要です。Workers Paidプランの開発者であれば誰でもすぐに利用を開始できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Pipelinesは現在オープンベータ段階にあり、Workers Paidプランの開発者であれば誰でも利用を開始できます。現時点では、標準的なR2のストレージ・操作料金以外にPipelines自体の利用について課金されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/",
+      "hint": "「まだ正式版ではない」段階の機能に、どのプランの開発者がアクセスできるか考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Pipelinesの提供状況",
+          "columns": [
+            { "heading": "提供状況", "items": ["オープンベータ"] },
+            { "heading": "必要なプラン", "items": ["Workers Paid"] },
+            { "heading": "現在の課金", "items": ["R2のストレージ・操作料金のみ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-006",
+      "category": "pipelines",
+      "difficulty": "beginner",
+      "question": "Cloudflare Pipelinesの「構造化されたStream」と「非構造化のStream」の違いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "構造化されたStreamはスキーマを持たず、非構造化のStreamにはスキーマが必須である",
+          "wrongFeedback": "説明が逆です。構造化されたStreamにスキーマが定義され、非構造化のStreamはスキーマを持ちません。"
+        },
+        {
+          "text": "非構造化のStreamは、送られてきたJSONの各フィールドをそれぞれ`col_1`・`col_2`のような個別のカラムとして自動的に展開して保存する",
+          "wrongFeedback": "非構造化のStreamは、JSON全体を単一の`value`カラムに保存します。フィールドごとにカラムを自動展開するのは構造化されたStreamの役割です。"
+        },
+        {
+          "text": "構造化・非構造化のどちらのStreamでも、スキーマに違反するデータは即座にHTTPエラーとして送信元に返される",
+          "wrongFeedback": "構造化されたStreamでスキーマに違反するイベントは、エラーを返すのではなく、そのイベントが黙って破棄(ドロップ)されます。"
+        },
+        {
+          "text": "構造化されたStreamは定義されたスキーマのフィールド・型に従ってイベントを検証するのに対し、非構造化のStreamは任意の有効なJSON構造を受け入れ、単一の`value`カラムに格納する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "構造化されたStreamは、定義されたスキーマのフィールドと型に従ってイベントを検証します。非構造化のStreamは任意の有効なJSON構造を受け入れ、単一の`value`カラムにデータを格納します。構造化されたStreamでスキーマに違反するイベントは、エラーとして送信元に返されるのではなく、黙って破棄(ドロップ)されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#schema-validation",
+      "hint": "「決まった形にきっちり合わせる」のか「とにかく何でも受け入れる」のか、というStreamの2つのモードを考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "構造化Stream と 非構造化Stream",
+          "columns": [
+            { "heading": "構造化Stream", "items": ["スキーマのフィールド・型を検証"] },
+            { "heading": "非構造化Stream", "items": ["任意のJSONを受け入れ", "単一のvalueカラムに格納"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-007",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "Workerバインディング経由でCloudflare PipelinesのStreamにデータを送信する方法として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "wrangler設定の`pipelines`バインディングでStreamを指定し、Worker内で`env.<BINDING>.send(records)`を呼び出してJSONシリアライズ可能なレコードの配列を送信する"
+        },
+        {
+          "text": "Streamへの送信には専用のバインディングは不要で、通常の`fetch()`を使ってStreamのURLへPOSTリクエストを送るのがWorkerからの唯一の方法である",
+          "wrongFeedback": "Workerバインディングを設定すれば、`fetch()`によるHTTPリクエストを自分で組み立てる必要はなく、`send()`メソッドで直接送信できます。"
+        },
+        {
+          "text": "`send(records)`メソッドは1件のレコードしか受け付けず、複数件をまとめて送るには複数回呼び出す必要がある",
+          "wrongFeedback": "`send(records)`はレコードの配列を受け取り、複数件をまとめて1回の呼び出しで送信できます。"
+        },
+        {
+          "text": "バインディング設定の`pipelines`配列にある`stream`フィールドは、以前`pipeline`という名前だったが、現在は`pipeline`のみがサポートされ`stream`は使えない",
+          "wrongFeedback": "逆です。`pipeline`フィールドは`stream`に名称変更されており、`pipeline`は非推奨として警告付きで動作します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "wrangler設定ファイルの`pipelines`バインディングでStream ID(`stream`フィールド)を指定し、Worker内で`env.<BINDING>.send(records)`を呼び出すことで、JSONシリアライズ可能なレコードの配列をStreamに送信できます。以前は`stream`フィールドの名前が`pipeline`でしたが、現在は`stream`に名称変更されており、`pipeline`は非推奨警告付きで引き続き動作します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#send-via-workers",
+      "hint": "Workerからは、HTTPリクエストを自分で組み立てるのではなく、バインディング経由でまとめてレコードを渡せないか考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "wrangler.jsonc でのバインディング設定",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            { "text": "{" },
+            { "text": "  \"pipelines\": [", "highlight": true },
+            { "text": "    { \"binding\": \"STREAM\", \"stream\": \"<STREAM_ID>\" }", "highlight": true },
+            { "text": "  ]" },
+            { "text": "}" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-008",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "Cloudflare PipelinesのStreamへHTTP経由でデータを送信する場合の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "HTTPエンドポイントのURLは`https://api.cloudflare.com/pipelines/{account-id}`のようにアカウントID単位で1つに固定されており、Streamごとの区別はURLではなくリクエストボディで行う",
+          "wrongFeedback": "HTTPエンドポイントは`https://{stream-id}.ingest.cloudflare.com`のようにStreamごとに異なるURLを持ちます。"
+        },
+        {
+          "text": "認証を有効にしたStreamであっても、送信元のIPアドレスさえ許可リストに登録しておけばリクエストヘッダーに認証情報を含める必要はない",
+          "wrongFeedback": "認証を有効にした場合、IPアドレスの許可リストではなく`Authorization: Bearer`ヘッダーに、必要な権限を持つAPIトークンを含める必要があります。"
+        },
+        {
+          "text": "エンドポイントは`https://{stream-id}.ingest.cloudflare.com`という形式で、認証を有効にしている場合は`Authorization: Bearer`ヘッダーに「Workers Pipeline Send」権限を持つAPIトークンを含める必要がある"
+        },
+        {
+          "text": "HTTP経由の送信では、送信するイベントは`application/json`のJSON配列ではなく、改行区切りのプレーンテキスト(NDJSON以外の独自形式)でなければならない",
+          "wrongFeedback": "送信するイベントはJSON配列としてPOSTする必要があります。改行区切りのプレーンテキストではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare PipelinesのStreamへのHTTPエンドポイントは`https://{stream-id}.ingest.cloudflare.com`という形式です。Streamで認証を有効にしている場合、リクエストの`Authorization: Bearer`ヘッダーに「Workers Pipeline Send」権限を持つAPIトークンを含める必要があります。イベントはJSON配列としてPOSTします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#send-via-http",
+      "hint": "外部システムやブラウザからでも送れるように、どんな「宛先」と「鍵」が必要か考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "HTTP経由でのデータ送信",
+          "actors": ["外部クライアント", "Stream HTTPエンドポイント"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "POST + Authorization: Bearerトークン" },
+            { "from": 1, "to": 0, "text": "受け付け完了" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-009",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "構造化されたStreamに、定義されたスキーマに違反するイベントが送信された場合の挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "スキーマに違反するイベントは自動的にスキーマに合うよう補完・修正されたうえで保存される",
+          "wrongFeedback": "自動的な補完・修正は行われません。スキーマに違反するイベントは黙って破棄されます。"
+        },
+        {
+          "text": "そのイベントはエラーとして送信元には通知されず、黙って破棄(ドロップ)されるため、事前にデータを検証するか、型付きバインディングやエラーメトリクスで監視する必要がある"
+        },
+        {
+          "text": "スキーマに違反するイベントが1件でもあると、Stream全体がロックされ、以降すべてのイベントの受け付けが停止する",
+          "wrongFeedback": "Stream全体が停止するわけではありません。違反したイベントのみが個別に破棄されます。"
+        },
+        {
+          "text": "スキーマに違反するイベントは、送信元に`400 Bad Request`として明示的にエラーが返される",
+          "wrongFeedback": "明示的なエラーは返されません。イベントは黙って破棄されるため、`wrangler types`による型チェックやユーザーエラーメトリクスでの監視が推奨されます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "構造化されたStreamで定義済みスキーマに違反するイベントは、送信元にエラーとして通知されることなく、黙って破棄(ドロップ)されます。そのため、送信前にデータを検証するか、`wrangler types`で生成した型付きバインディングでコンパイル時に検出するか、ユーザーエラーメトリクスを監視してドロップされたイベントを把握する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#schema-validation",
+      "hint": "「拒否された」という通知が来ない場合、どうやって問題に気づけばよいか考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "スキーマ違反イベントの挙動",
+          "steps": [
+            { "text": "スキーマ違反のイベントを送信" },
+            { "text": "エラー通知なしに破棄" },
+            { "text": "型付きバインディング/エラーメトリクスで検出" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-010",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "`wrangler types`によって生成される「型付きpipelineバインディング」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "生成される型の名前は、Wrangler設定で指定したバインディング名(例: `STREAM`)がそのままキャメルケース化されて使われる",
+          "wrongFeedback": "型名はバインディング名ではなく、Stream名を元にPascalCaseへ変換し`Record`を付けたものになります。"
+        },
+        {
+          "text": "Streamにスキーマが定義されていない場合でも、過去に送信された実際のイベント内容を推測して型付きの型が必ず生成される",
+          "wrongFeedback": "スキーマが定義されていない(非構造化の)Streamの場合、型推測は行われず、汎用の`Pipeline<PipelineRecord>`型にフォールバックします。"
+        },
+        {
+          "text": "`wrangler login`を実行していない未認証の状態でも、キャッシュされた認証情報を使って型付きバインディングは問題なく生成される",
+          "wrongFeedback": "未認証の状態では型付きバインディングは生成されず、汎用の`Pipeline<PipelineRecord>`型にフォールバックします。"
+        },
+        {
+          "text": "生成される型名はStream名(バインディング名ではない)を元にPascalCaseに変換し`Record`を付与したものになり、未認証・Stream未検出・非構造化Streamの場合は汎用の`Pipeline<PipelineRecord>`型にフォールバックする"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`wrangler types`は、Streamにスキーマが定義されている場合、Stream名(バインディング名ではない)を元にPascalCaseへ変換し`Record`を付けた名前付き型を生成します。未認証の状態、Wrangler設定のStream IDが実在しない場合、またはスキーマのない非構造化Streamの場合は、汎用の`Pipeline<PipelineRecord>`型にフォールバックします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#typed-pipeline-bindings",
+      "hint": "生成される型の名前の由来が、Wrangler設定の「バインディング名」なのか「Streamそのものの名前」なのか考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "型付きバインディングの生成ルール",
+          "columns": [
+            { "heading": "型名の由来", "items": ["Stream名(PascalCase+Record)"] },
+            { "heading": "フォールバック条件", "items": ["未認証", "Stream未検出", "非構造化Stream"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-011",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "Cloudflare PipelinesのSQL変換で現在サポートされている処理内容として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "フィルタ・リシェイプ・UNNEST・キャスト・計算といったステートレスな変換のみがサポートされており、集約(aggregation)・結合(join)・ウィンドウ処理といったステートフルな操作は今後の対応予定"
+        },
+        {
+          "text": "集約・結合・ウィンドウ処理を含む、一般的なSQLエンジンと同等のあらゆる処理が現時点ですべてサポートされている",
+          "wrongFeedback": "現時点でサポートされているのはステートレスな変換のみです。集約・結合・ウィンドウ処理といったステートフルな操作はまだ対応していません。"
+        },
+        {
+          "text": "SQL変換ではデータの型変換(キャスト)はサポートされておらず、元のデータ型のまま配信するしかない",
+          "wrongFeedback": "キャスト(型変換)はサポートされているステートレスな変換の1つです。"
+        },
+        {
+          "text": "SQL変換は1つのPipelineにつき1つの`SELECT`文しか含めることができない",
+          "wrongFeedback": "1つのPipelineに複数の`INSERT INTO ... SELECT ...`文をセミコロン区切りで含めることができます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare PipelinesのSQL変換は、フィルタ・リシェイプ・UNNEST・キャスト・計算といったステートレスな変換のみをサポートしています。集約(aggregation)・結合(join)・ウィンドウ処理といったステートフルな操作は今後の対応が計画されており、現時点ではまだ利用できません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/pricing/#sql-transforms",
+      "hint": "「1件ずつ独立して処理できる変換」と「複数件をまたいで状態を持つ必要がある処理」の違いを考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "SQL変換のサポート範囲",
+          "columns": [
+            { "heading": "現在サポート(ステートレス)", "items": ["フィルタ・リシェイプ", "UNNEST・キャスト・計算"] },
+            { "heading": "未対応(ステートフル・今後予定)", "items": ["集約(aggregation)", "結合(join)・ウィンドウ処理"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-012",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Pipelines SQLの`UNNEST`演算子に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`UNNEST`は`WHERE`句でのみ使用でき、`SELECT`句では使用できない",
+          "wrongFeedback": "逆です。`UNNEST`は`SELECT`句でのみ使用できます。"
+        },
+        {
+          "text": "1つの`SELECT`文の中で、複数の配列をそれぞれ独立して`UNNEST`することができる",
+          "wrongFeedback": "1つの`SELECT`文で`UNNEST`できる配列は1つだけという制約があります。"
+        },
+        {
+          "text": "配列を複数行に展開する演算子で、`SELECT`句の中でのみ使用でき、1つの`SELECT`文でUNNESTできる配列は1つに制限されている"
+        },
+        {
+          "text": "`UNNEST`は配列の要素数を数える(カウントする)ための集計関数である",
+          "wrongFeedback": "要素数をカウントする集計関数ではありません。配列を複数行に展開する演算子です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`UNNEST`は、配列を複数の行に展開するための演算子です。`SELECT`句の中でのみ使用でき、1つの`SELECT`文でUNNESTできる配列は1つに制限されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/sql-reference/select-statements/#unnest-operator",
+      "hint": "配列の中身を「1行ずつバラす」処理が、どの句でしか使えないか、また同時にいくつまで使えるかを考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "UNNESTの制約",
+          "columns": [
+            { "heading": "使用できる句", "items": ["SELECT句でのみ使用可"] },
+            { "heading": "1文あたりの配列数", "items": ["1つまで"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-013",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "1つのStreamのデータを、条件に応じて複数の異なるSinkに振り分けたい場合の正しい方法はどれですか？",
+      "options": [
+        {
+          "text": "Streamごとに専用のPipelineしか作成できないため、宛先ごとに別々のStreamを用意する必要がある",
+          "wrongFeedback": "同じStreamを参照する複数の`INSERT INTO ... SELECT ...`文を1つのPipeline内に書くことで、宛先ごとにStreamを分ける必要はありません。"
+        },
+        {
+          "text": "同じStreamをFROM句として参照する複数の`INSERT INTO sink SELECT ... FROM stream WHERE ...`文をセミコロンで区切って1つのPipelineに記述し、条件ごとに異なるSinkへ振り分ける"
+        },
+        {
+          "text": "条件による振り分けはPipelinesのSQLでは実現できず、Worker側でロジックを実装してStreamを使い分ける必要がある",
+          "wrongFeedback": "Pipelinesの複数`INSERT`文とWHERE句の組み合わせで、SQLだけで振り分けを実現できます。"
+        },
+        {
+          "text": "複数の`INSERT`文を1つのPipelineに書く場合、カンマで区切って記述する",
+          "wrongFeedback": "複数の`INSERT`文はカンマではなくセミコロンで区切って記述します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "1つのStreamを参照する複数の`INSERT INTO sink SELECT ... FROM stream WHERE ...`文をセミコロンで区切って1つのPipelineに記述することで、条件(`WHERE`句)に応じて同じStreamのデータを異なるSinkへ振り分けることができます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/sql-reference/select-statements/#multiple-statements",
+      "hint": "1つの「流れ」から、条件に応じて複数の「行き先」に分岐させる方法を考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "1つのStreamから複数Sinkへの振り分け",
+          "steps": [
+            { "text": "1つのStream" },
+            { "text": "INSERT INTO purchases_sink SELECT * FROM stream WHERE event_type='purchase'" },
+            { "text": "INSERT INTO signups_sink SELECT * FROM stream WHERE event_type='signup'" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-014",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "2025年9月25日より前に作成された「レガシーパイプライン」と、新しいPipelinesアーキテクチャの違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "レガシーパイプラインは複数の出力フォーマット(Parquet・Iceberg)に対応しており、新しいPipelinesはJSON形式のみをサポートする",
+          "wrongFeedback": "説明が逆です。新しいPipelinesがJSON・Parquet・Apache Icebergに対応し、レガシーパイプラインはJSON形式のみでした。"
+        },
+        {
+          "text": "レガシーパイプラインはStreams・Pipelines・Sinksという3つの独立したリソースに分かれているが、新しいPipelinesは単一のリソースとして統合されている",
+          "wrongFeedback": "逆です。新しいPipelinesがStreams・Pipelines・Sinksという別々のリソースに分離されており、レガシーパイプラインは分離されていませんでした。"
+        },
+        {
+          "text": "レガシーパイプラインは、Pipelinesが正式リリース(GA)された時点で即座に動作を停止する",
+          "wrongFeedback": "Pipelinesが正式リリースされるまでレガシーパイプラインは動作を継続しますが、新機能や改善はレガシーパイプラインには提供されません。"
+        },
+        {
+          "text": "新しいPipelinesではSQLによる変換や複数の出力フォーマット(JSON・Parquet・Apache Iceberg)、構造化スキーマの検証に対応しているが、レガシーパイプラインは廃止(非推奨)の方向にあり、正式リリースまでは動作を継続する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "2025年9月25日より前にレガシーAPIで作成された「レガシーパイプライン」は廃止の方向にあります。新しいPipelinesアーキテクチャでは、SQLによる変換、複数の出力フォーマット(JSON・Parquet・Apache Iceberg)への対応、Streams・Pipelines・Sinksという別々のリソースへの分離、構造化スキーマの検証などが追加されています。レガシーパイプラインはPipelinesが正式リリースされるまで動作を継続しますが、新機能はレガシーパイプラインには提供されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/reference/legacy-pipelines/",
+      "hint": "「新しい方が対応している機能」と「古い方が今後どうなるか」を分けて整理しましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "レガシーパイプライン と 新しいPipelines",
+          "columns": [
+            { "heading": "レガシーパイプライン", "items": ["JSON形式のみ", "廃止の方向"] },
+            { "heading": "新しいPipelines", "items": ["SQL変換対応", "JSON/Parquet/Iceberg", "Streams/Pipelines/Sinksに分離"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-015",
+      "category": "pipelines",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Pipelinesのオープンベータ期間中の制限値に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1アカウントあたりStream・Sink・Pipelineをそれぞれ最大20個まで作成でき、1回の取り込みリクエストのペイロードは最大5MB、1つのStreamあたりの取り込みレートは最大5MB/秒に制限される"
+        },
+        {
+          "text": "1アカウントあたりに作成できるStream・Sink・Pipelineの数に上限はなく、無制限に作成できる",
+          "wrongFeedback": "オープンベータ期間中は、それぞれ1アカウントあたり最大20個までという上限があります。"
+        },
+        {
+          "text": "1回の取り込みリクエストのペイロードサイズに上限はなく、どんなに大きなペイロードでも一度に送信できる",
+          "wrongFeedback": "1回の取り込みリクエストのペイロードサイズは最大5MBに制限されています。"
+        },
+        {
+          "text": "Streamあたりの取り込みレートの上限は1秒あたり50MBである",
+          "wrongFeedback": "取り込みレートの上限は1秒あたり50MBではなく5MBです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "オープンベータ期間中、Cloudflare Pipelinesには、1アカウントあたりStream・Sink・Pipelineをそれぞれ最大20個まで、1回の取り込みリクエストのペイロードは最大5MB、1つのStreamあたりの取り込みレートは最大5MB/秒という制限があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/limits/",
+      "hint": "「個数」「1回あたりのサイズ」「1秒あたりの速度」という3種類の異なる上限があることを整理しましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "オープンベータ期間中の制限",
+          "columns": [
+            { "heading": "個数(Stream/Sink/Pipeline)", "items": ["各最大20個"] },
+            { "heading": "1リクエストのペイロード", "items": ["最大5MB"] },
+            { "heading": "取り込みレート", "items": ["最大5MB/秒"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-016",
+      "category": "pipelines",
+      "difficulty": "advanced",
+      "question": "取り込み・変換・配信という3段階それぞれで異なる無料枠と単価が設定されているCloudflare Pipelinesの料金体系について、正しく説明しているものはどれですか？",
+      "options": [
+        {
+          "text": "Streamへのデータ取り込み(ingress)にも、SQL変換と同じ$0.04/GBという単価でデータ量に応じた課金が発生する",
+          "wrongFeedback": "Streamへのingressは無料で、データ量に関わらず課金されません。"
+        },
+        {
+          "text": "SQL変換とSinkへの配信は、どちらも月間の無料枠が設けられておらず、処理した最初のバイトから課金が始まる",
+          "wrongFeedback": "SQL変換・Sink配信のどちらにも月間の無料枠(それぞれ50GB)があります。"
+        },
+        {
+          "text": "Streamへの取り込みは無料で、SQL変換は月50GBまで無料でその後$0.04/GB、Sinkへの配信は月50GBまで無料でその後出力形式に応じて$0.03/GB(JSON)または$0.06/GB(Parquet/Iceberg)が課金される"
+        },
+        {
+          "text": "Sinkへの配信料金は出力形式に関わらず一律の単価であり、JSON・Parquet・Icebergのどの形式で書き出しても同じ料金になる",
+          "wrongFeedback": "出力形式によって単価が異なります。JSONは$0.03/GB、Parquet/Icebergは$0.06/GBです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare Pipelinesは3つの軸で課金されます。Streamへの取り込み(ingress)は常に無料です。SQL変換は月50GBまで無料で、それを超えると$0.04/GBが課金されます。Sinkへの配信は月50GBまで無料で、それを超えると出力形式に応じて$0.03/GB(JSON)または$0.06/GB(Parquet/Iceberg)が課金されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/pricing/",
+      "hint": "「取り込み」「変換」「配信」という3つの段階それぞれに、別々の料金体系があることを意識しましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Pipelinesの料金体系",
+          "columns": [
+            { "heading": "Streams(取り込み)", "items": ["常に無料"] },
+            { "heading": "SQL変換", "items": ["月50GB無料", "超過分$0.04/GB"] },
+            { "heading": "Sinks(配信)", "items": ["月50GB無料", "JSON $0.03/GB", "Parquet/Iceberg $0.06/GB"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-017",
+      "category": "pipelines",
+      "difficulty": "advanced",
+      "question": "月500GBのイベントデータを取り込み、SQL変換でフィルタ・リシェイプして300GBに削減したうえでR2 Data Catalog(Iceberg)に書き込むパイプラインの、SQL変換とSink配信それぞれの課金対象データ量として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "SQL変換・Sink配信のどちらも、削減後の300GBが課金対象データ量になる",
+          "wrongFeedback": "SQL変換の課金対象は変換前(入力側)のデータ量である500GBです。"
+        },
+        {
+          "text": "SQL変換の課金対象は変換前の入力データ量である500GB、Sink配信の課金対象は変換後にIcebergへ書き込まれる300GBである"
+        },
+        {
+          "text": "SQL変換・Sink配信のどちらも、削減前の500GBが課金対象データ量になる",
+          "wrongFeedback": "Sink配信の課金対象は、実際にSinkへ配信される(変換後の)データ量である300GBです。"
+        },
+        {
+          "text": "課金対象データ量は、取り込み量と出力量の差分(500GB−300GB=200GB)である",
+          "wrongFeedback": "差分ではなく、SQL変換は入力量(500GB)、Sink配信は出力量(300GB)がそれぞれ個別に課金対象になります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "SQL変換の課金は処理する(入力側の)データ量が基準になるため、この例では500GBが対象です。Sinkへの配信課金は実際にSinkへ届く(出力側の)データ量が基準になるため、変換後の300GBが対象になります。それぞれ月50GBの無料枠を差し引いた残りに単価が適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/pricing/#example-filtered-ingest-to-iceberg-with-sql",
+      "hint": "「処理する量」と「届ける量」は、変換でデータが減る場合には同じ数値にならないことを考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "課金対象データ量",
+          "columns": [
+            { "heading": "SQL変換の課金対象", "items": ["入力データ量: 500GB"] },
+            { "heading": "Sink配信の課金対象", "items": ["出力データ量: 300GB"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pl-018",
+      "category": "pipelines",
+      "difficulty": "advanced",
+      "question": "Pipelinesで作成したR2 Data Catalog上のIcebergテーブルを、コマンドラインからR2 SQLでクエリする際の正しい手順はどれですか？",
+      "options": [
+        {
+          "text": "R2 SQLはPipelines専用の別サービスであり、Pipelinesが作成したIcebergテーブルにはアクセスできない",
+          "wrongFeedback": "R2 SQLは、Pipelinesが作成したIcebergテーブルを含め、R2 Data Catalog上のテーブルにアクセスしてクエリできます。"
+        },
+        {
+          "text": "認証情報の設定は不要で、`wrangler r2 sql query`はどんなR2バケットに対しても認証なしでクエリを実行できる",
+          "wrongFeedback": "`WRANGLER_R2_SQL_AUTH_TOKEN`環境変数などでAPIトークンを設定し、認証する必要があります。"
+        },
+        {
+          "text": "クエリに使うAPIトークンには、R2 SQLの読み取り権限ではなくWorkers実行権限が必要である",
+          "wrongFeedback": "必要なのはR2 SQL Read権限です。Pipelines用に作成したカタログ用トークンにはこの権限が含まれています。"
+        },
+        {
+          "text": "`WRANGLER_R2_SQL_AUTH_TOKEN`環境変数にR2 SQL Read権限を含むAPIトークンを設定したうえで、`wrangler r2 sql query \"<warehouse-name>\" \"<SQLクエリ>\"`のようにウェアハウス名とクエリを指定して実行する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "R2 SQLでPipelinesが作成したIcebergテーブルをクエリするには、`WRANGLER_R2_SQL_AUTH_TOKEN`環境変数にR2 SQL Read権限を含むAPIトークンを設定し、`wrangler r2 sql query \"<warehouse-name>\" \"<SQLクエリ>\"`のようにウェアハウス名とSQLクエリを指定して実行します。Pipelinesのセットアップ時に作成したカタログ用APIトークンには、この読み取り権限も含まれています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/pipelines/getting-started/#5-query-your-data-using-r2-sql",
+      "hint": "クエリを実行するには「どこに」「何の権限を持つ資格情報」を渡す必要があるか考えましょう。",
+      "tags": ["pipelines", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "R2 SQLでのクエリ手順",
+          "steps": [
+            { "text": "WRANGLER_R2_SQL_AUTH_TOKENを設定" },
+            { "text": "wrangler r2 sql queryを実行", "sub": "ウェアハウス名+SQL" },
+            { "text": "Icebergテーブルの結果を取得" }
+          ]
+        }
+      ]
     }
   ]
 }

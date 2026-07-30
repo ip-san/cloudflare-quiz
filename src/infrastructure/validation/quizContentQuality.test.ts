@@ -28,7 +28,7 @@ const singleQuizzes = quizzes.filter((q) => q.type !== 'multi')
 const multiQuizzes = quizzes.filter((q) => q.type === 'multi')
 const validCategoryIds = PREDEFINED_CATEGORIES.map((c) => c.id)
 
-/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag-/rt-/vp-/cs- + 3桁連番） */
+/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag-/rt-/vp-/cs-/pl- + 3桁連番） */
 const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wk: 'workers',
   wr: 'wrangler',
@@ -48,6 +48,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   rt: 'realtime',
   vp: 'workers-vpc',
   cs: 'cloudflare-for-saas',
+  pl: 'pipelines',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -154,6 +155,18 @@ const VALID_DOC_PAGES = [
   'kv/get-started/',
   'kv/platform/limits/',
   'logs/logpush/',
+  'pipelines/',
+  'pipelines/getting-started/',
+  'pipelines/pipelines/',
+  'pipelines/streams/',
+  'pipelines/streams/writing-to-streams/',
+  'pipelines/sinks/',
+  'pipelines/reference/legacy-pipelines/',
+  'pipelines/reference/wrangler-commands/',
+  'pipelines/sql-reference/',
+  'pipelines/sql-reference/select-statements/',
+  'pipelines/platform/limits/',
+  'pipelines/platform/pricing/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -578,6 +591,7 @@ describe('Quiz Content Quality', () => {
         'realtime',
         'workers-vpc',
         'cloudflare-for-saas',
+        'pipelines',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])
