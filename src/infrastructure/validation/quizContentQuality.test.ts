@@ -49,6 +49,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   vp: 'workers-vpc',
   cs: 'cloudflare-for-saas',
   pl: 'pipelines',
+  ac: 'zero-trust-access',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -167,6 +168,16 @@ const VALID_DOC_PAGES = [
   'pipelines/sql-reference/select-statements/',
   'pipelines/platform/limits/',
   'pipelines/platform/pricing/',
+  'cloudflare-one/access-controls/policies/',
+  'cloudflare-one/access-controls/policies/common-policies/',
+  'cloudflare-one/access-controls/policies/groups/',
+  'cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/',
+  'cloudflare-one/access-controls/service-credentials/service-tokens/',
+  'cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/',
+  'cloudflare-one/access-controls/applications/http-apps/authorization-cookie/application-token/',
+  'cloudflare-one/access-controls/applications/non-http/infrastructure-apps/',
+  'cloudflare-one/team-and-resources/users/seat-management/',
+  'cloudflare-one/account-limits/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -592,6 +603,7 @@ describe('Quiz Content Quality', () => {
         'workers-vpc',
         'cloudflare-for-saas',
         'pipelines',
+        'zero-trust-access',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

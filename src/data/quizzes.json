@@ -19588,6 +19588,705 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ac-001",
+      "category": "zero-trust-access",
+      "difficulty": "beginner",
+      "question": "Cloudflare Access(Zero Trust)の目的として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Webサイトへの大量アクセスを検知して自動的に遮断する、DDoS対策専用のレイヤー7フィルタリング機能",
+          "wrongFeedback": "DDoS対策のためのレイヤー7フィルタリング機能ではありません。ユーザーの認証・認可を行うアクセス制御レイヤーです。"
+        },
+        {
+          "text": "社内向けアプリの手前にIDベースのアクセス制御を挟み、ポリシーに一致したユーザーだけを通す、デフォルト拒否の認証レイヤーを提供する"
+        },
+        {
+          "text": "静的アセットをエッジにキャッシュして配信速度を高める、CDNのキャッシュ制御機能",
+          "wrongFeedback": "CDNのキャッシュ制御機能ではありません。認証・認可を扱うアクセス制御の仕組みです。"
+        },
+        {
+          "text": "複数のオリジンサーバーにトラフィックを分散させる、ロードバランシング専用の機能",
+          "wrongFeedback": "ロードバランシング機能ではありません。ユーザーがアプリに到達できるかどうかを判定するアクセス制御の仕組みです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Accessは、社内向けアプリの手前にIDベースのアクセス制御レイヤーを挟み、設定したポリシーに一致したユーザーだけを通す仕組みです。Accessはデフォルトで拒否(deny by default)であり、明示的にAllowポリシーに一致しない限りアクセスは許可されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
+      "hint": "「知らない人は全員シャットアウトし、許可された人だけを通す」受付のような役割を考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Cloudflare Accessの役割",
+          "steps": [
+            { "text": "ユーザーがアプリにアクセス" },
+            { "text": "Accessがポリシーを評価", "sub": "デフォルトは拒否" },
+            { "text": "一致すればアプリへ到達" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-002",
+      "category": "zero-trust-access",
+      "difficulty": "beginner",
+      "question": "Cloudflare Accessのポリシーを構成する4つの要素の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "リクエストのメソッド・ヘッダー・ボディ・クエリパラメータという、HTTPリクエストの4要素",
+          "wrongFeedback": "HTTPリクエストの構成要素ではありません。Accessポリシーの構成要素はAction・Rule type・Selector・Valuesです。"
+        },
+        {
+          "text": "オリジン・キャッシュ・WAF・ロードバランサという、リクエスト処理経路上の4つのコンポーネント",
+          "wrongFeedback": "リクエスト処理経路のコンポーネントではありません。Accessポリシーを構成する4要素とは異なります。"
+        },
+        {
+          "text": "何が起きるかを決めるAction、条件の組み合わせ方を決めるRule type、判定に使う属性のSelector、その具体的な値であるValues"
+        },
+        {
+          "text": "アプリ名・ドメイン・ポート・プロトコルという、アプリケーション登録時に指定する4つの識別情報",
+          "wrongFeedback": "アプリケーションの識別情報ではありません。ポリシーの構成要素であるAction・Rule type・Selector・Valuesとは異なります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare Accessのポリシーは、何が起きるかを決めるAction(Allow・Block・Bypass・Service Auth)、条件の組み合わせ方を決めるRule type(Include・Require・Exclude)、判定に使う属性であるSelector(メールアドレス・国・デバイス状態など)、そしてその具体的な値であるValuesという4つの要素で構成されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
+      "hint": "「何をするか」「どう組み合わせるか」「何を見るか」「どんな値か」という4つの問いに答える形を考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Accessポリシーの4要素",
+          "items": [
+            { "text": "Action", "sub": "Allow/Block/Bypass/Svc Auth" },
+            { "text": "Rule type", "sub": "Include/Require/Exclude" },
+            { "text": "Selector", "sub": "判定に使う属性" },
+            { "text": "Values", "sub": "具体的な値" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-003",
+      "category": "zero-trust-access",
+      "difficulty": "intermediate",
+      "question": "Cloudflare AccessのBypassアクションに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Bypassに一致したリクエストはAccessのセキュリティ制御を一切通らず、ログにも記録されないため、本番投入前のテストや代替としてService Authの利用が推奨される"
+        },
+        {
+          "text": "Bypassに一致したリクエストは通常どおりIdPログインが求められ、その結果はログにも記録される",
+          "wrongFeedback": "Bypassに一致したリクエストはAccessの制御を一切受けず、IdPログインもログ記録も行われません。"
+        },
+        {
+          "text": "Bypassポリシーはメールアドレスなどのアイデンティティベースのルールタイプを他のアクションと同様に自由に組み合わせられる",
+          "wrongFeedback": "Bypassはアイデンティティベースの検証を行わないため、アイデンティティベースのセレクター(メールなど)を組み合わせることはできません。"
+        },
+        {
+          "text": "Bypassアクションを持つポリシーは、Allow・Blockポリシーよりも後に評価される",
+          "wrongFeedback": "Bypass・Service Authのポリシーは、Block・Allowポリシーよりも先に評価されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "BypassアクションはAccessのセキュリティ制御を一切適用せず、一致したリクエストはログにも記録されません。内部ツールの特定エンドポイントを公開する用途などに使われますが、ログを残しつつポリシーを適用したい場合はBypassの代わりにService Authの利用が推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#bypass",
+      "hint": "「検問所をまるごと素通りさせる」設定に、記録が残るかどうかを考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "BypassとService Authの違い",
+          "columns": [
+            { "heading": "Bypass", "items": ["制御なし・ログなし"] },
+            { "heading": "Service Auth", "items": ["制御あり・ログあり", "IdPログイン不要"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-004",
+      "category": "zero-trust-access",
+      "difficulty": "beginner",
+      "question": "Cloudflare AccessのRule type(Include・Require・Exclude)の論理演算子としての振る舞いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "IncludeはAND、RequireはOR、ExcludeはNOTのように振る舞う",
+          "wrongFeedback": "逆です。IncludeはOR、RequireはANDのように振る舞います。"
+        },
+        {
+          "text": "Include・Require・Excludeはすべて同じANDの振る舞いをし、名前が違うだけで機能上の違いはない",
+          "wrongFeedback": "3つのRule typeはそれぞれ異なる論理演算子(OR・AND・NOT)として振る舞い、機能上の違いがあります。"
+        },
+        {
+          "text": "IncludeはNOT、RequireはOR、ExcludeはANDのように振る舞う",
+          "wrongFeedback": "いずれも逆です。IncludeはOR、RequireはAND、ExcludeはNOTのように振る舞います。"
+        },
+        {
+          "text": "IncludeはOR、RequireはAND、ExcludeはNOTのように振る舞う"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cloudflare AccessのIncludeルールはOR演算子のように振る舞い、複数指定した場合はいずれか1つを満たせばよいです。RequireルールはAND演算子のように振る舞い、指定したすべての条件を満たす必要があります。ExcludeルールはNOT演算子のように振る舞い、条件に一致したユーザーはアクセスを拒否されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#cloudflare-access-rule-types",
+      "hint": "「どれか1つでOK」「全部満たす必要がある」「これに当てはまったら除外」という3つの考え方を対応させましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Rule typeの論理演算子",
+          "columns": [
+            { "heading": "Include", "items": ["OR(いずれか一致)"] },
+            { "heading": "Require", "items": ["AND(すべて一致)"] },
+            { "heading": "Exclude", "items": ["NOT(一致で除外)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-005",
+      "category": "zero-trust-access",
+      "difficulty": "advanced",
+      "question": "1つのRequireルールに複数の値を指定した場合、それらの値はAND演算子で結合されます。「ポルトガルまたは米国」のように複数の国のいずれかを要求するOR条件をRequireルールとして表現したい場合、Cloudflare Accessではどう実現しますか？",
+      "options": [
+        {
+          "text": "Requireルールの値欄にカンマ区切りで国名を並べれば、自動的にOR条件として評価される",
+          "wrongFeedback": "1つのRequireルール内の複数の値はAND条件として評価されるため、単純にカンマ区切りで並べてもOR条件にはなりません。"
+        },
+        {
+          "text": "対象の国をIncludeルールで束ねたRule groupを作成し、そのRule groupをポリシー内のRequireルールとして指定する"
+        },
+        {
+          "text": "Requireルールを複数の国それぞれについて1つずつ追加すれば、Access側が自動的にOR条件に変換してくれる",
+          "wrongFeedback": "Requireルールを複数追加してもAND条件として評価されるため、自動的にOR条件へ変換されることはありません。"
+        },
+        {
+          "text": "この種のOR条件はAccessのポリシーでは表現できず、IdP側でグループを再設計する以外に方法がない",
+          "wrongFeedback": "Rule groupを使えば、IdP側の再設計なしにAccessのポリシー内でOR条件を表現できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Requireルール内の複数の値はAND演算子で結合されるため、単純に複数の国を並べても「両方の国に同時に存在する」という誰も満たせない条件になってしまいます。この問題を解決するには、対象の国をIncludeルールで束ねたRule group(例:「Country requirements」)を作成し、そのRule groupをポリシーのRequireルールとして指定します。Rule group内のIncludeルールはOR条件として評価されるため、結果的にRequire側でOR条件を実現できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#require-rules-with-or-operators",
+      "hint": "AND条件の中に「OR条件のかたまり」を1つの部品として持ち込む方法を考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "RequireルールでOR条件を実現する手順",
+          "steps": [
+            { "text": "国をIncludeルールで束ねたRule groupを作成" },
+            { "text": "そのRule groupをRequireルールとして指定" },
+            { "text": "実質的にOR条件として機能" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-006",
+      "category": "zero-trust-access",
+      "difficulty": "advanced",
+      "question": "Allow A → Block B → Service Auth C → Bypass D → Allow E という順でポリシーが並んでいる場合、Cloudflare Accessの評価順序として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Service Auth C → Bypass D → Allow A → Block B → Allow E の順に評価される"
+        },
+        {
+          "text": "ダッシュボードに表示された並び順のまま、Allow A → Block B → Service Auth C → Bypass D → Allow E の順に評価される",
+          "wrongFeedback": "見た目の並び順そのままではありません。Service Auth・BypassがBlock・Allowより先に評価されます。"
+        },
+        {
+          "text": "Block B → Allow A → Bypass D → Service Auth C → Allow E の順に評価される",
+          "wrongFeedback": "Service Auth・Bypassのポリシーが先に評価され、その後にBlock・Allowが上から順に評価されます。"
+        },
+        {
+          "text": "最後に配置されたAllow Eが常に最優先で評価され、それ以外のポリシーは評価されない",
+          "wrongFeedback": "配置順が後だからといって最優先にはなりません。Service Auth・Bypassが先、その後Block・Allowが上から順に評価されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare AccessではまずService AuthとBypassのポリシーが、表示されている順に上から評価されます。次にBlockとAllowのポリシーが、それぞれの表示順に上から評価されます。したがってこの例では、Service Auth C → Bypass D → Allow A → Block B → Allow Eの順に評価され、いずれかのAllowまたはBlockに一致した時点で評価が停止します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#cloudflare-access-policy-order-of-execution",
+      "hint": "「ログイン不要組」が先に判定され、その後「許可か拒否か」が判定される2段階の流れを考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ポリシーの評価順序",
+          "steps": [
+            { "text": "Service Auth / Bypassを上から評価" },
+            { "text": "Block / Allowを上から評価" },
+            { "text": "最初に一致した時点で評価終了" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-007",
+      "category": "zero-trust-access",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Accessの「よくある設定ミス」として文書で警告されているものはどれですか？",
+      "options": [
+        {
+          "text": "Excludeルールを1つも設定しないと、ポリシーが正常に保存できずエラーになる",
+          "wrongFeedback": "Excludeルールは必須ではありません。すべてのポリシーに最低1つ必要なのはIncludeルールです。"
+        },
+        {
+          "text": "Service AuthポリシーにIPレンジのSelectorを設定すると、その時点でポリシー全体が無効化される",
+          "wrongFeedback": "そのような無効化の仕様はありません。よくある設定ミスとして警告されているのは、Allowポリシーの「Everyone」や「One-time PIN」の誤指定です。"
+        },
+        {
+          "text": "AllowポリシーにIncludeルールでSelectorを「Everyone」に設定する、またはLogin Methodsで「One-time PIN」を指定してしまい、結果として誰でもアプリに到達できてしまう"
+        },
+        {
+          "text": "Bypassポリシーを1つでも作成すると、アカウント内の他のすべてのポリシーが自動的に無効になる",
+          "wrongFeedback": "そのような仕様はありません。Bypassポリシーは、一致したリクエストにのみ制御なしの状態を適用します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "AccessのドキュメントはAllowポリシーにおける2つのよくある設定ミスを挙げています。1つはIncludeルールのSelectorを「Everyone」に設定してしまうこと、もう1つはLogin Methodsで「One-time PIN」を指定してしまうことです。どちらも結果的に誰でもアプリへ到達できてしまうため注意が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#common-cloudflare-access-misconfigurations",
+      "hint": "「特定の条件を絞ったつもりが、実質的に全員が当てはまってしまう」設定を考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "誰でも通ってしまう誤設定の例",
+          "columns": [
+            { "heading": "誤設定1", "items": ["Selector: Everyone"] },
+            { "heading": "誤設定2", "items": ["Login Methods: One-time PIN"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-008",
+      "category": "zero-trust-access",
+      "difficulty": "beginner",
+      "question": "Cloudflare AccessのRule group(ルールグループ)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Rule groupはOktaやMicrosoft Entra IDなどのIdPが管理するグループそのものを指し、Access側で独自に作成することはできない",
+          "wrongFeedback": "Rule groupはAccess側で作成する独自の概念であり、IdPが管理するグループとは別物です。"
+        },
+        {
+          "text": "Rule groupに含められるのはIPアドレスの範囲のみで、ユーザーやサービストークンを含めることはできない",
+          "wrongFeedback": "Rule groupにはIPアドレスだけでなく、個々のユーザーやIdPグループ、サービストークンなど多様な要素を含められます。"
+        },
+        {
+          "text": "Rule groupを作成すると、既存のすべてのAccessポリシーに自動的に適用される",
+          "wrongFeedback": "自動的にすべてのポリシーへ適用されるわけではなく、各ポリシーで明示的に参照する必要があります。"
+        },
+        {
+          "text": "IPアドレスや個々のユーザー、IdPグループ、サービストークンなどの組み合わせを1か所にまとめ、複数のポリシーで再利用できるようにしたものであり、IdP側のグループ(Oktaグループなど)とは別物である"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Rule groupは、IPアドレスや個々のユーザー、IdPグループ、サービストークンといった要素の組み合わせを1か所にまとめ、複数のAccessポリシーで再利用できるようにしたものです。IdP側のグループ(Oktaグループなど)とは異なる、Access独自の概念です。IPアドレスベースのルールなど、変更が発生しやすい条件をRule groupに集約しておくと、修正箇所を1か所に絞れます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/groups/",
+      "hint": "「複数のポリシーで何度も同じ条件を書くのを避けるため、部品化しておく」という発想を考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Rule groupに含められる要素",
+          "items": [
+            { "text": "IPアドレス範囲" },
+            { "text": "個々のユーザー" },
+            { "text": "IdPグループ" },
+            { "text": "サービストークン" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-009",
+      "category": "zero-trust-access",
+      "difficulty": "beginner",
+      "question": "自己ホスト型のWebアプリケーションをCloudflare Accessの背後で公開する際の基本的な手順として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Accessにアプリケーションとポリシーを追加し、Cloudflare Tunnelでオリジンを接続し、アプリ側でAccessトークンを検証する"
+        },
+        {
+          "text": "オリジンサーバーのIPアドレスを直接インターネットに公開し、Access側では追加の設定を一切行わない",
+          "wrongFeedback": "オリジンIPを直接公開する方法ではありません。Cloudflare Tunnelで接続し、Access側でアプリとポリシーを設定する必要があります。"
+        },
+        {
+          "text": "Access側の設定は不要で、Cloudflare Tunnelを接続するだけで自動的にアクセス制御が有効になる",
+          "wrongFeedback": "Tunnel接続だけでは不十分です。Accessアプリケーションとポリシーを先に用意しておく必要があります。"
+        },
+        {
+          "text": "DNSレコードをA/AAAAレコードからCNAMEレコードに変更するだけで、Access保護が自動的に適用される",
+          "wrongFeedback": "DNSレコード種別の変更だけでは不十分です。Accessアプリケーションの追加とTunnelでの接続、トークン検証が必要です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "自己ホスト型アプリをAccessの背後で公開する基本的な流れは、(1)Accessにアプリケーションとポリシーを追加し、(2)Cloudflare Tunnelでオリジンを接続し、(3)アプリ側でAccessトークンを検証する、という3ステップです。Accessアプリケーションを先に作成しておかないと、Tunnel経由で公開したアプリが誰でもアクセスできる状態になってしまいます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/",
+      "hint": "「先に鍵を用意してから」「配管をつなぎ」「届いた鍵が本物か確認する」という順番を考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "自己ホスト型アプリの公開手順",
+          "steps": [
+            { "text": "Accessにアプリ+ポリシーを追加" },
+            { "text": "Cloudflare Tunnelでオリジンを接続" },
+            { "text": "アプリ側でトークンを検証" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-010",
+      "category": "zero-trust-access",
+      "difficulty": "intermediate",
+      "question": "部分的(CNAME)なDNSセットアップのドメインでCloudflare Tunnelの公開アプリケーションルートを追加する場合の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "部分(CNAME)セットアップであっても、フルセットアップと同様にCloudflareが自動的にDNSレコードを作成してくれる",
+          "wrongFeedback": "部分(CNAME)セットアップではCloudflareがゾーンを管理していないため、DNSレコードの自動作成は行われず手動作成が必要です。"
+        },
+        {
+          "text": "外部のDNSプロバイダー側で、対象ホスト名から`<ホスト名>.cdn.cloudflare.net`を指す先のCNAMEレコードを手動作成する必要があり、ゾーンのルート(apex)ドメインはCNAMEレコードの仕様上使用できない"
+        },
+        {
+          "text": "ルート(apex)ドメインであっても、CNAMEフラット化に対応していないDNSプロバイダーで問題なくCNAMEレコードを作成できる",
+          "wrongFeedback": "CNAMEフラット化に対応していないプロバイダーでは、ルートドメインにCNAMEレコードを作成できません。サブドメインを使う必要があります。"
+        },
+        {
+          "text": "CNAMEレコードの作成先には、常にオリジンサーバーの生のIPアドレス(例: `203.0.113.10`)を直接指定する",
+          "wrongFeedback": "IPアドレスではなく`<ホスト名>.cdn.cloudflare.net`という形式のホスト名を指定します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "部分(CNAME)セットアップではCloudflareがドメインのDNSゾーンを管理していないため、外部のDNSプロバイダー側で手動でCNAMEレコードを作成する必要があります。作成先(ターゲット)は`<ホスト名>.cdn.cloudflare.net`という形式です。DNS仕様上の制約により、ゾーンのルート(apex)ドメインにはCNAMEレコードを使用できず、CNAMEフラット化に対応していないプロバイダーではサブドメインを使う必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/#partial-cname-setup",
+      "hint": "「Cloudflareがゾーンを管理していない」場合に、誰が・どこに・どんな値でDNSレコードを用意する必要があるか考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "部分(CNAME)セットアップでのDNSレコード",
+          "filepath": "DNS設定(外部プロバイダー)",
+          "lines": [
+            { "text": "Name: app.example.com" },
+            { "text": "Type: CNAME", "highlight": true },
+            { "text": "Target: app.example.com.cdn.cloudflare.net", "highlight": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-011",
+      "category": "zero-trust-access",
+      "difficulty": "beginner",
+      "question": "Cloudflare Accessのサービストークンに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "サービストークンは人間のユーザーが自分のメールアドレスとパスワードを使って取得するもので、自動化システム向けの機能ではない",
+          "wrongFeedback": "サービストークンは自動化システムやアプリケーション向けの認証情報であり、メールアドレス・パスワードによる人間向けログインとは異なります。"
+        },
+        {
+          "text": "サービストークンを使う場合、ポリシーのアクションは常に`Allow`に設定しないとAccessが機能しない",
+          "wrongFeedback": "サービストークンを使う場合はService Authアクションを設定する必要があります。`Allow`のままだと、IdPログインが求められてしまいます。"
+        },
+        {
+          "text": "サービストークンには有効期限の概念がなく、一度発行すると失効させない限り永久に有効であり、期間を指定することはできない",
+          "wrongFeedback": "サービストークンには作成時に選択したトークンの有効期間があり、無期限ではありません。"
+        },
+        {
+          "text": "Client IDとClient Secretのペアで構成され、`CF-Access-Client-Id`・`CF-Access-Client-Secret`ヘッダーとしてリクエストに含めることで、IdPログインなしに自動化されたシステムがアプリへ到達できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "サービストークンはClient IDとClient Secretのペアで構成され、自動化されたシステムがこれらを`CF-Access-Client-Id`・`CF-Access-Client-Secret`ヘッダーとしてリクエストに含めることで、IdPログインなしにAccess保護下のアプリへ到達できます。サービストークンを利用するポリシーのアクションは、Allowではなく「Service Auth」に設定する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/",
+      "hint": "「人間のログイン」ではなく「機械同士の認証」に使う、2つの値の組み合わせを考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "サービストークンでの初回認証",
+          "actors": ["自動化システム", "Cloudflare Access"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "CF-Access-Client-Id/Secretヘッダー" },
+            { "from": 1, "to": 0, "text": "CF_Authorizationクッキー(JWT)を発行" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-012",
+      "category": "zero-trust-access",
+      "difficulty": "advanced",
+      "question": "Cloudflare AccessのアプリケーションにService Authポリシーしか設定されていない場合、サービストークンを使い続けるための正しい挙動はどれですか？",
+      "options": [
+        {
+          "text": "初回認証で発行された`CF_Authorization`クッキーを一度取得すれば、JWTの有効期限に関わらず永久に再利用でき、以降サービストークンのヘッダーを送る必要はない",
+          "wrongFeedback": "JWTには有効期限があり、Service Authポリシーのみのアプリではクッキーを再利用できないため、リクエストごとにサービストークンのヘッダーを送る必要があります。"
+        },
+        {
+          "text": "Service Authポリシーしかない場合、サービストークンによる認証自体が拒否され、いかなる方法でもアプリに到達できない",
+          "wrongFeedback": "Service Authポリシーは、まさにサービストークンのような非対話的な認証手段のためのアクションです。認証自体が拒否されるわけではありません。"
+        },
+        {
+          "text": "初回認証で発行された`CF_Authorization`クッキーは以降のリクエストで再利用できないため、有効なJWTを使い続けるには毎回サービストークンのヘッダーを送信し直す必要がある"
+        },
+        {
+          "text": "Service Authポリシーのみのアプリでは、`cf-access-token`という生ヘッダーの送信が禁止されている",
+          "wrongFeedback": "`cf-access-token`ヘッダーでの送信自体は禁止されていません。重要なのは、Allowポリシーがない場合は毎回サービストークンのヘッダーを送る必要があるという点です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Accessアプリケーションに少なくとも1つのAllowポリシーがある場合は、発行された`CF_Authorization`クッキーをJWTの有効期限内であれば再利用できます。しかし、Service Authポリシーしか設定されていない場合は、クッキーを再利用できないため、リクエストのたびにサービストークンのヘッダー(`CF-Access-Client-Id`・`CF-Access-Client-Secret`)を送信し直す必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#subsequent-requests",
+      "hint": "「Allowポリシーがあるかないか」で、発行されたクッキーを使い回せるかどうかが変わることを考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "クッキー再利用の可否",
+          "columns": [
+            { "heading": "Allowポリシーあり", "items": ["CF_Authorizationクッキーを再利用可"] },
+            { "heading": "Service Authのみ", "items": ["毎回サービストークンを送信"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-013",
+      "category": "zero-trust-access",
+      "difficulty": "advanced",
+      "question": "1つのカスタムHTTPヘッダーしか送信できないSaaSサービスから、Cloudflare Accessのサービストークンで認証したい場合の対処として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Access ApplicationのAPIで`read_service_tokens_from_header`にヘッダー名(例:`Authorization`)を設定し、そのヘッダーの値としてClient IDとClient SecretをJSON形式にまとめて送信する"
+        },
+        {
+          "text": "この制約がある場合、Cloudflare Accessのサービストークンによる認証はそもそも利用できない",
+          "wrongFeedback": "`read_service_tokens_from_header`を設定することで、1つのヘッダーしか使えないサービスでもサービストークン認証を利用できます。"
+        },
+        {
+          "text": "Client IDとClient Secretをそれぞれ別の`Set-Cookie`として送信すれば、ヘッダー制約を回避できる",
+          "wrongFeedback": "Cookieでの回避方法ではありません。単一ヘッダーで送る場合は`read_service_tokens_from_header`の設定とJSON形式での送信が必要です。"
+        },
+        {
+          "text": "Client SecretだけをAuthorizationヘッダーに送信すれば、Client IDは省略しても認証できる",
+          "wrongFeedback": "Client IDとClient Secretの両方をJSON形式でまとめてヘッダーに含める必要があり、Client IDの省略はできません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "1つのカスタムヘッダーしか送信できないSaaSサービスの場合、Access Applicationの設定APIで`read_service_tokens_from_header`にヘッダー名(例:`Authorization`)を指定します。これにより、そのヘッダーの値としてClient IDとClient SecretをまとめたJSON(例:`{\"cf-access-client-id\": \"...\", \"cf-access-client-secret\": \"...\"}`)を送信することで、通常の2ヘッダー方式の代わりに単一ヘッダーでの認証が可能になります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#authenticate-with-a-single-header",
+      "hint": "ヘッダーが1つしか使えないなら、2つの値を1つの値の「中」に詰め込む方法を考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "単一ヘッダーでのサービストークン送信",
+          "filepath": "リクエストヘッダー",
+          "lines": [
+            { "text": "Authorization:", "highlight": true },
+            { "text": "  {\"cf-access-client-id\": \"<CLIENT_ID>\",", "highlight": true },
+            { "text": "   \"cf-access-client-secret\": \"<CLIENT_SECRET>\"}", "highlight": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-014",
+      "category": "zero-trust-access",
+      "difficulty": "intermediate",
+      "question": "発行済みのCloudflare Accessサービストークンを完全に無効化(失効)させたい場合の正しい方法はどれですか？",
+      "options": [
+        {
+          "text": "サービストークンそのものを削除する。Accessアプリケーション編集画面の「Revoke existing tokens」はセッションを無効化するだけで、Client ID/Secretが有効な限り次回リクエストで新たなJWTを取得できてしまう"
+        },
+        {
+          "text": "Accessアプリケーション編集画面で「Revoke existing tokens」を選択するだけで、Client ID/Secretを使った以降の認証は不可能になる",
+          "wrongFeedback": "「Revoke existing tokens」は既存セッションを無効化するだけです。Client ID/Secretが有効なままなら、次回リクエストで新しいJWTを取得できてしまいます。"
+        },
+        {
+          "text": "サービストークンの有効期間が経過するまで、管理者はいかなる方法でも無効化できない",
+          "wrongFeedback": "有効期間の満了を待たずに、トークンを削除することでいつでも即座に無効化できます。"
+        },
+        {
+          "text": "サービストークンのClient Secretだけを変更すれば、Client IDは変えずにトークンを無効化できる",
+          "wrongFeedback": "Client Secretだけを個別に変更する機能はありません。無効化するにはトークン自体を削除する必要があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "有効期限を待たずにサービストークンを失効させるには、トークンそのものを削除する必要があります。Accessアプリケーションの編集画面にある「Revoke existing tokens」は、そのトークンで発行済みの既存セッションを無効化するだけであり、Client IDとClient Secretが有効なままであれば、次回のリクエストで新しいJWTを取得できてしまいます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#revoke-service-tokens",
+      "hint": "「今のセッションを切る」のと「鍵そのものを使えなくする」のは別の操作だと考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "セッション無効化 と トークン削除",
+          "columns": [
+            { "heading": "Revoke existing tokens", "items": ["既存セッションのみ無効化"] },
+            { "heading": "トークンを削除", "items": ["Client ID/Secret自体を失効"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-015",
+      "category": "zero-trust-access",
+      "difficulty": "intermediate",
+      "question": "Cloudflare AccessがオリジンへのリクエストにJWTを付与する際の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "JWTは常に`CF_Authorization`クッキーとしてのみ渡され、リクエストヘッダーとして渡されることはない",
+          "wrongFeedback": "JWTは`Cf-Access-Jwt-Assertion`ヘッダーとしても渡されます。ドキュメントでは、クッキーではなくこのヘッダーの検証が推奨されています。"
+        },
+        {
+          "text": "JWTは`Cf-Access-Jwt-Assertion`リクエストヘッダーとして送られ、ブラウザ経由のリクエストでは`CF_Authorization`クッキーとしても渡されるが、クッキーは転送が保証されないため`Cf-Access-Jwt-Assertion`ヘッダーの検証が推奨される"
+        },
+        {
+          "text": "オリジン側でJWTの検証を行う必要はなく、Cloudflareのネットワークを通過した時点で自動的に安全性が保証される",
+          "wrongFeedback": "Cloudflare Tunnel経由でない場合、オリジン側でJWTの署名検証を行う必要があります。ヘッダーの存在だけを確認しても、なりすましを防げません。"
+        },
+        {
+          "text": "JWTの検証には、ヘッダー部分(`alg`・`kid`・`typ`)だけを確認すれば十分で、署名の検証までは不要である",
+          "wrongFeedback": "ヘッダー部分の確認だけでは不十分です。なりすましを防ぐには、署名まで含めてJWT全体を検証する必要があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "AccessがオリジンへのリクエストにJWTを付与する際、JWTは`Cf-Access-Jwt-Assertion`リクエストヘッダーとして送られます。ブラウザ経由のリクエストでは`CF_Authorization`クッキーとしても渡されますが、クッキーは常に転送されるとは限らないため、ドキュメントは`Cf-Access-Jwt-Assertion`ヘッダーの検証を推奨しています。ヘッダーの存在確認だけでなく、署名まで含めて検証しないと、なりすましのリスクが残ります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/",
+      "hint": "「必ず届くとは限らないクッキー」と「常に付与されるヘッダー」のどちらを信頼すべきか考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "JWTの2つの伝達経路",
+          "columns": [
+            { "heading": "Cf-Access-Jwt-Assertionヘッダー", "items": ["常に付与される", "検証にはこちらを推奨"] },
+            { "heading": "CF_Authorizationクッキー", "items": ["ブラウザ経由のみ", "転送は保証されない"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-016",
+      "category": "zero-trust-access",
+      "difficulty": "advanced",
+      "question": "定期的にローテーションされるCloudflare AccessのJWT署名鍵について、ローテーション前後の一定期間はどちらの鍵で署名されたJWTも有効になる仕組みを踏まえたうえで、鍵の検証方法に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "署名鍵は一度発行されると変更されることはなく、アプリ側でハードコードして保持しておくのが公式に推奨されている方法である",
+          "wrongFeedback": "署名鍵は6週間ごとにローテーションされます。ハードコードは推奨されておらず、`https://<team-name>.cloudflareaccess.com/cdn-cgi/access/certs`から都度取得するべきです。"
+        },
+        {
+          "text": "鍵がローテーションされると、古い鍵で署名された既存のJWTは即座にすべて無効になる",
+          "wrongFeedback": "ローテーション後も古い鍵は7日間有効なままなので、即座にすべて無効になるわけではありません。"
+        },
+        {
+          "text": "`public_cert`エンドポイントの値を使えば、鍵のローテーションによるキャッシュの不整合を心配する必要は一切ない",
+          "wrongFeedback": "`public_cert`は最新鍵のみを返すため、キャッシュが古いままだと不整合が起きえます。`kid`を`public_certs`と突き合わせる方法が推奨されます。"
+        },
+        {
+          "text": "署名鍵は6週間ごとにローテーションされ、ローテーション後も古い鍵は7日間有効なままなので、検証時はJWTの`kid`を`public_certs`内の該当する証明書と突き合わせるべきであり、`public_cert`の値をハードコードしてはならない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Accessの署名鍵は既定で6週間ごとにローテーションされ、ローテーション後も古い鍵は7日間有効なまま残ります。検証時にオリジンのキャッシュが古い鍵を参照してしまう事故を避けるため、JWTの`kid`フィールドを`public_certs`(現行・直前の両方の証明書を含む)内の該当する証明書と突き合わせて検証するべきであり、単一の現行鍵を返す`public_cert`の値をハードコードすることは推奨されていません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/#access-signing-keys",
+      "hint": "「今使われている鍵」と「ついさっきまで使われていた鍵」の両方が有効な期間があることを考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "署名鍵のローテーション",
+          "steps": [
+            { "text": "6週間ごとに新しい鍵へローテーション" },
+            { "text": "旧鍵は7日間だけ引き続き有効" },
+            { "text": "kidをpublic_certsと突き合わせて検証" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-017",
+      "category": "zero-trust-access",
+      "difficulty": "advanced",
+      "question": "IdPログインで認証したユーザーのJWTペイロードと、サービストークンで認証したリクエストのJWTペイロードの違いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "IdP認証のペイロードにはメールアドレスや`sub`(ユーザーの一意なID)が含まれるのに対し、サービストークン認証のペイロードでは`sub`が空文字列になり、代わりに`common_name`にサービストークンのClient IDが入る"
+        },
+        {
+          "text": "サービストークン認証のペイロードにも、IdP認証時と全く同じ形式でユーザーのメールアドレスが含まれる",
+          "wrongFeedback": "サービストークン認証では人間のユーザーのログインを伴わないため、メールアドレスは含まれません。"
+        },
+        {
+          "text": "IdP認証のペイロードには`aud`(Application Audienceタグ)が含まれないが、サービストークン認証のペイロードには含まれる",
+          "wrongFeedback": "`aud`はどちらの認証方式でもペイロードに含まれます。両者の違いは`sub`や`common_name`などの他のフィールドです。"
+        },
+        {
+          "text": "サービストークン認証のペイロードには`exp`(有効期限)が含まれず、JWTが無期限に有効になる",
+          "wrongFeedback": "`exp`はサービストークン認証のペイロードにも含まれ、JWTには有効期限があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "IdPログインによる認証のJWTペイロードには、認証されたユーザーのメールアドレスや、ユーザーの一意なIDである`sub`などが含まれます。一方、サービストークンによる認証のJWTペイロードでは`sub`が空文字列になり、代わりに`common_name`にそのサービストークンのClient IDが入ります。どちらの方式でも`aud`(Application Audienceタグ)や`exp`(有効期限)は共通してペイロードに含まれます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/application-token/#service-token-authentication",
+      "hint": "「人間としてログインした」場合と「機械として認証された」場合とで、ユーザーを特定するフィールドがどう変わるか考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "JWTペイロードの違い",
+          "columns": [
+            { "heading": "IdP認証", "items": ["email・subにユーザーID"] },
+            { "heading": "サービストークン認証", "items": ["subは空文字列", "common_nameにClient ID"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ac-018",
+      "category": "zero-trust-access",
+      "difficulty": "intermediate",
+      "question": "Cloudflare One(Zero Trust)のシート(seat)課金に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1人のユーザーがアクセスするアプリケーションの数だけシートが消費され、複数のアプリを使うほどシート消費数が増えていく",
+          "wrongFeedback": "1ユーザーにつき消費されるシートは1つだけです。アクセスするアプリの数やログイン回数に関わらず、シート消費は増えません。"
+        },
+        {
+          "text": "1人のユーザーが認証イベントを起こすとシートを1つ消費し、その後はアクセスするアプリの数やログイン回数に関わらずシートは1つのままで、サービストークンによる認証はシートを消費しない"
+        },
+        {
+          "text": "ユーザーを「Revoke(取り消し)」すると、そのユーザーのシート消費は即座に解放され、他のユーザーが新たにそのシートを使えるようになる",
+          "wrongFeedback": "Revokeはセッションを無効化するだけでシート消費は解放されません。シートを解放するには「Remove(削除)」する必要があります。"
+        },
+        {
+          "text": "サービストークンによる認証も通常のユーザー認証と同様にシートを1つ消費する",
+          "wrongFeedback": "サービストークンによる認証はシートを消費しません。シートを消費するのは、認証イベントを起こした人間のユーザーです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Oneでは、ユーザーが認証イベント(App LauncherやアプリへのログインなどAccessの認証、またはGatewayへのデバイス接続)を起こすとシートを1つ消費します。その後は、いくつのアプリにアクセスしようと、何度ログインしようと消費するシートは1つのままです。サービストークンによる認証はシートを消費しないため、シートを気にせず自動化システムをAccessで保護できます。ユーザーを「Revoke」してもシートは解放されず、解放するには「Remove」する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/users/seat-management/",
+      "hint": "「アプリの数だけ課金される」のか「人単位で1つだけ」なのか、そして機械の認証がその数に含まれるかを考えましょう。",
+      "tags": ["zero-trust-access", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "シート消費の考え方",
+          "columns": [
+            { "heading": "消費する", "items": ["ユーザーの初回認証イベント"] },
+            { "heading": "消費しない", "items": ["同じユーザーの追加ログイン", "サービストークンによる認証"] }
+          ]
+        }
+      ]
     }
   ]
 }

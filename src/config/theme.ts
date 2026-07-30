@@ -333,6 +333,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'ストリーミングデータを取り込み・変換してR2に分析可能な形で保存できる',
     },
     {
+      id: 'zero-trust-access',
+      name: 'Zero Trust Access',
+      icon: '🔐',
+      color: 'gray',
+      weight: 10,
+      description:
+        '自社アプリの手前にIDベースのアクセス制御を挟むZero Trust Access。ポリシーのAction・Rule type・Selector、サービストークンによるM2M認証、JWT検証',
+      skillDescription: 'アプリの手前にIDベースのアクセス制御層を構築できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

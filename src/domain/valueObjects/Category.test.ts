@@ -131,6 +131,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('workers-vpc')
     expect(ids).toContain('cloudflare-for-saas')
     expect(ids).toContain('pipelines')
+    expect(ids).toContain('zero-trust-access')
     expect(ids).toContain('architecture')
   })
 
