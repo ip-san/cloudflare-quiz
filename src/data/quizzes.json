@@ -20287,6 +20287,702 @@
           ]
         }
       ]
+    },
+    {
+      "id": "wf-001",
+      "category": "waf",
+      "difficulty": "beginner",
+      "question": "Cloudflare WAF(Webアプリケーションファイアウォール)が提供する3つの主要機能の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "自分でルールを定義するカスタムルール、リクエスト頻度を制限するレート制限ルール、Cloudflareが事前設定したマネージドルール"
+        },
+        {
+          "text": "DNSレコードの管理・ゾーン設定・SSL証明書の発行という、ドメイン運用に関する3つの機能",
+          "wrongFeedback": "ドメイン運用機能ではありません。WAFの主要機能はカスタムルール・レート制限ルール・マネージドルールです。"
+        },
+        {
+          "text": "ロードバランシング・オリジン選択・ヘルスチェックという、トラフィック分散に関する3つの機能",
+          "wrongFeedback": "トラフィック分散機能ではありません。WAFの主要機能はカスタムルール・レート制限ルール・マネージドルールです。"
+        },
+        {
+          "text": "静的アセットのキャッシュ・画像最適化・圧縮設定という、配信パフォーマンスに関する3つの機能",
+          "wrongFeedback": "配信パフォーマンスの機能ではありません。WAFの主要機能はカスタムルール・レート制限ルール・マネージドルールです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare WAFは、自分でルールを定義するカスタムルール、リクエスト頻度に応じて制限をかけるレート制限ルール、Cloudflareが事前設定・継続更新しているマネージドルールという3つの主要機能で構成されます。すべてのプランでカスタムルールとマネージドルール(Free Managed Rulesetのみ)が利用でき、レート制限ルールはFreeプランでも1ルールまで利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/",
+      "hint": "「自分で決める」「頻度で制限する」「Cloudflareにお任せする」という3つの守り方を考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "WAFの3つの主要機能",
+          "items": [
+            { "text": "カスタムルール", "sub": "自分で定義するルール" },
+            { "text": "レート制限ルール", "sub": "リクエスト頻度を制限" },
+            { "text": "マネージドルール", "sub": "Cloudflare事前設定" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-002",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "Cloudflareのセキュリティ機能が実行される順序として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "マネージドルール → カスタムルール → レート制限ルール → DDoS対策 → Super Bot Fight Modeの順に実行される",
+          "wrongFeedback": "順序が逆です。DDoS対策が最初に実行され、マネージドルールはカスタムルール・レート制限ルールより後に実行されます。"
+        },
+        {
+          "text": "DDoS対策 → カスタムルール → レート制限ルール → マネージドルール → Super Bot Fight Modeの順に実行される"
+        },
+        {
+          "text": "レート制限ルール → マネージドルール → カスタムルール → DDoS対策 → Super Bot Fight Modeの順に実行される",
+          "wrongFeedback": "順序が異なります。DDoS対策が最初、カスタムルールがレート制限ルールより先に実行されます。"
+        },
+        {
+          "text": "Super Bot Fight Mode → DDoS対策 → マネージドルール → カスタムルール → レート制限ルールの順に実行される",
+          "wrongFeedback": "順序が異なります。Super Bot Fight Modeは最後に実行され、DDoS対策が最初に実行されます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflareのセキュリティ機能はRuleset Engineが管理する固定のフェーズ順序で実行されます。具体的には、`ddos_l7`(DDoS対策) → `http_request_firewall_custom`(カスタムルール) → `http_ratelimit`(レート制限ルール) → `http_request_firewall_managed`(マネージドルール) → `http_request_sbfm`(Super Bot Fight Mode)の順です。途中でBlockなどの終端アクションに一致すると、以降のフェーズは評価されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/feature-interoperability/",
+      "hint": "「まず攻撃の大波を防ぎ」「次に自分のルールで絞り」「それから頻度を見て」「最後にCloudflare標準の防御とボット対策」という流れを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "セキュリティ機能の実行順序",
+          "steps": [
+            { "text": "DDoS対策(ddos_l7)" },
+            { "text": "カスタムルール" },
+            { "text": "レート制限ルール" },
+            { "text": "マネージドルール" },
+            { "text": "Super Bot Fight Mode" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-003",
+      "category": "waf",
+      "difficulty": "beginner",
+      "question": "Cloudflareのルールにおける「終端アクション(terminating action)」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "終端アクションはログにのみ記録され、リクエストの処理には一切影響を与えない",
+          "wrongFeedback": "終端アクションはログ記録だけでなく、実際にリクエストの処理(以降の評価)に影響を与えます。"
+        },
+        {
+          "text": "終端アクションに一致したリクエストであっても、同じフェーズ内の他のルールは必ず最後まで評価される",
+          "wrongFeedback": "終端アクションに一致すると、以降のルール・フェーズは評価されず処理が停止します。"
+        },
+        {
+          "text": "Blockのような終端アクションにリクエストが一致すると、そのリクエストに対する以降のルール・フェーズの評価が停止する"
+        },
+        {
+          "text": "終端アクションという概念はカスタムルールにのみ適用され、マネージドルールやレート制限ルールには適用されない",
+          "wrongFeedback": "終端アクションの概念はカスタムルールに限らず、マネージドルールやレート制限ルールなど複数の機能に共通して適用されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "終端アクション(Block・Managed Challengeなど)にリクエストが一致すると、そのリクエストに対する以降のルールおよびフェーズの評価は行われず、そこで処理が停止します。この概念はカスタムルールに限らず、レート制限ルールやマネージドルールなど、Ruleset Engineを使う複数の機能に共通します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/feature-interoperability/",
+      "hint": "「一致した時点で、それ以降の審査を打ち切る」アクションかどうかを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "終端アクションの効果",
+          "steps": [
+            { "text": "ルールに一致(例: Block)" },
+            { "text": "以降のルール・フェーズをスキップ" },
+            { "text": "処理を停止" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-004",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "カスタムルールの最大作成数の数え方に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "カスタムルール本体のみが`http_request_firewall_custom`フェーズの上限のカウント対象であり、カスタムルールセット内のルールはこの上限には一切含まれない",
+          "wrongFeedback": "カスタムルールセット内のルールも上限のカウント対象に含まれます。カスタムルール本体だけではありません。"
+        },
+        {
+          "text": "ゾーンスコープとアカウントスコープの上限は合算され、両方のスコープの利用者が共通の1つの上限を分け合う仕組みになっている",
+          "wrongFeedback": "ゾーンスコープとアカウントスコープはそれぞれ別に上限が設定されており、共通の1つの上限を分け合うわけではありません。"
+        },
+        {
+          "text": "マネージドルールとカスタムルールは同じ`http_request_firewall_managed`フェーズで実行されるため、上限のカウントも合算される",
+          "wrongFeedback": "マネージドルールは`http_request_firewall_managed`という別のフェーズで実行されるため、カスタムルールの上限には含まれません。"
+        },
+        {
+          "text": "`http_request_firewall_custom`フェーズに属するすべてのルール(カスタムルール本体+カスタムルールセット内のルール)を合算して数え、ゾーンスコープとアカウントスコープはそれぞれ別に上限が設定される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "カスタムルールの最大作成数は、カスタムルールが実行される`http_request_firewall_custom`フェーズに属するすべてのルールに適用されます。具体的には、ゾーンレベルではカスタムルール本体とゾーンレベルのカスタムルールセット内のルールを合算し、アカウントレベルではアカウントレベルのカスタムルールセット内のルールを合算します。ゾーンとアカウントはそれぞれ別のスコープとして上限が管理されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/custom-rules/",
+      "hint": "「同じフェーズで動くルールをすべて合算する」という数え方を、ゾーンとアカウントそれぞれで考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "カスタムルールの上限の数え方",
+          "columns": [
+            { "heading": "ゾーンスコープ", "items": ["カスタムルール本体+ゾーンのカスタムルールセット"] },
+            { "heading": "アカウントスコープ", "items": ["アカウントのカスタムルールセット"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-005",
+      "category": "waf",
+      "difficulty": "beginner",
+      "question": "複数のゾーンに適用できる「カスタムルールセット」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "カスタムルールセットはEnterpriseプラン専用の機能であり、他のプランでは一切利用できない",
+          "wrongFeedback": "ゾーンレベルのカスタムルールセットはすべてのプランで利用できます。Enterpriseが必要なのはアカウントレベルのカスタムルールセットです。"
+        },
+        {
+          "text": "ゾーンレベルのカスタムルールセットはすべての顧客が作成・デプロイできるが、アカウントレベルのカスタムルールセットはEnterpriseプランが必要である"
+        },
+        {
+          "text": "ゾーンレベルのカスタムルールセットは、ダッシュボードから直接作成・編集できる",
+          "wrongFeedback": "現時点でダッシュボードはゾーンレベルのカスタムルールセットの操作をサポートしておらず、APIを使う必要があります。"
+        },
+        {
+          "text": "カスタムルールセットは1つのゾーンにのみ適用可能で、複数ゾーンにまたがる適用はできない",
+          "wrongFeedback": "カスタムルールセットはまさに複数ゾーンに適用するための仕組みであり、1ゾーン限定ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "複数のゾーンに適用できるルールセットを定義する「カスタムルールセット」は、ゾーンレベルであればすべての顧客が作成・デプロイできます。一方、アカウントレベルのカスタムルールセットはEnterpriseプランが必要です。現時点ではダッシュボードがゾーンレベルのカスタムルールセットの設定をサポートしていないため、APIを使って設定・デプロイする必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/custom-rules/",
+      "hint": "「1つのゾーンだけの話」ではなく「複数ゾーンにまたがるルールの束」を、誰が使えるか考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "カスタムルールセットの利用可否",
+          "columns": [
+            { "heading": "ゾーンレベル", "items": ["全顧客が利用可(API限定)"] },
+            { "heading": "アカウントレベル", "items": ["Enterpriseプランが必要"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-006",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "Rules language(ルール言語)のアクションに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`skip`アクションは常に終端アクションとして扱われ、一致した時点で以降のすべての評価が完全に停止する",
+          "wrongFeedback": "`skip`は終端アクションではありません。設定に応じて一部のルール・フェーズの評価だけをスキップします。"
+        },
+        {
+          "text": "`log`アクションはすべてのプランで無料で利用でき、Blockなどと同じ終端アクションとしてリクエストの評価を停止させる",
+          "wrongFeedback": "`log`アクションはEnterpriseプラン限定であり、終端アクションでもありません。マッチしたリクエストを記録するだけです。"
+        },
+        {
+          "text": "`js_challenge`・`managed_challenge`・`challenge`・`block`はいずれも終端アクションで、`log`はEnterprise限定の非終端アクションである"
+        },
+        {
+          "text": "`execute`アクションはダッシュボードのアクション選択のドロップダウンに表示され、任意のマネージドルールセットを直接実行できる",
+          "wrongFeedback": "`execute`アクションはダッシュボードのアクション選択ドロップダウンには表示されません。指定したルールセットを実行する内部的な仕組みです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Non-Interactive Challenge(`js_challenge`)・Managed Challenge(`managed_challenge`)・Interactive Challenge(`challenge`)・Block(`block`)はいずれも終端アクションで、一致すると以降のルール評価を停止します。`log`アクションはマッチしたリクエストを記録するだけの非終端アクションで、Enterpriseプランでのみ利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ruleset-engine/rules-language/actions/",
+      "hint": "「チャレンジ系とBlock」がどちらも同じ性質を持ち、「ログだけ残す」アクションがどのプラン限定かを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "主なアクションの性質",
+          "columns": [
+            { "heading": "終端アクション", "items": ["js_challenge・managed_challenge", "challenge・block"] },
+            { "heading": "非終端アクション", "items": ["log(Enterprise限定)", "skip(条件次第)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-007",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "Block(ブロック)アクションが返すHTTPステータスコードに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "どの機能がBlockアクションを実行してもステータスコードは常に`500`固定であり、変更することはできない",
+          "wrongFeedback": "ステータスコードは`500`固定ではありません。多くのセキュリティ機能では`403`、レート制限ルールでは`429`が返されます。"
+        },
+        {
+          "text": "ステータスコードのカスタマイズはすべてのプランで無条件に利用でき、プランによる制限は存在しない",
+          "wrongFeedback": "レスポンスのカスタマイズはProプラン以上の機能です。すべてのプランで無条件に使えるわけではありません。"
+        },
+        {
+          "text": "レート制限ルールによるBlockは他のセキュリティ機能と同じく常に`403`を返し、`429`というステータスコードが使われることはない",
+          "wrongFeedback": "レート制限ルールによるBlockでは`429`(Too Many Requests)が返されるのが一般的です。"
+        },
+        {
+          "text": "多くのセキュリティ機能では`403`が返されるが、レート制限ルールによるBlockでは`429`が返され、Proプラン以上ではカスタムルール・レート制限ルールごとにレスポンス内容やステータスコードを変更できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Blockアクションが返すHTTPステータスコードは、多くのセキュリティ機能では`403`ですが、レート制限ルールによるBlockでは`429`が返されます。Proプラン以上では、カスタムルールやレート制限ルールごとにブロック時のレスポンス(HTML・JSON・XML・プレーンテキストや任意のステータスコード)をカスタマイズできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ruleset-engine/rules-language/actions/",
+      "hint": "「一般的な拒否」と「頻度制限による拒否」とで、返るステータスコードの意味合いが異なることを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Blockのステータスコード",
+          "columns": [
+            { "heading": "多くのセキュリティ機能", "items": ["403"] },
+            { "heading": "レート制限ルール", "items": ["429"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-008",
+      "category": "waf",
+      "difficulty": "advanced",
+      "question": "アカウントレベルとゾーンレベルの両方でルールが設定されている場合、カスタムルールの`skip`(スキップ)アクションに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "設定次第で、現在のルールセット内の残りのルール・現在フェーズの残りのルール(ゾーンレベルのみ)・特定のルールセットやフェーズ・Ruleset Engineに基づかない特定のセキュリティ製品など、複数の対象をスキップできる"
+        },
+        {
+          "text": "`skip`アクションはBlockと同様に常に終端アクションとして扱われ、リクエストへの以降の処理を完全に打ち切る",
+          "wrongFeedback": "`skip`は終端アクションではありません。設定に応じて特定のルール・フェーズ・製品の評価だけをスキップします。"
+        },
+        {
+          "text": "アカウントレベルで設定した`skip`ルールは、ゾーンレベルで設定されたルール・フェーズにも自動的に影響する",
+          "wrongFeedback": "アカウントレベルの`skip`ルールは、アカウントレベルで設定されたルール・フェーズにのみ影響します。ゾーンレベルの分をスキップするにはゾーンレベルで設定する必要があります。"
+        },
+        {
+          "text": "`skip`アクションを使うと、Ruleset Engineを使わないBot Fight Modeも含めてすべてのセキュリティ機能をスキップできる",
+          "wrongFeedback": "Bot Fight ModeはRuleset Engineを使わないため、`skip`アクションでスキップすることはできません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`skip`アクションは、現在のルールセット内の残りのルール、現在のフェーズの残りのルール(ゾーンレベルのみのオプション)、特定のルールセットやルール、特定のフェーズ、さらにRuleset Engineに基づかない特定のセキュリティ製品など、設定に応じて複数の対象をスキップできます。ただし、アカウントレベルで設定した`skip`はアカウントレベルの設定にのみ影響し、Ruleset Engineを使わないBot Fight Modeのようなセキュリティ機能はスキップできません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/ruleset-engine/rules-language/actions/",
+      "hint": "「何もかも打ち切る」のではなく「設定した対象だけを狙って避けて通る」動作だと考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "skipでスキップできる対象",
+          "items": [
+            { "text": "現在のルールセット内の残りのルール" },
+            { "text": "現在フェーズの残りのルール(ゾーンのみ)" },
+            { "text": "特定のルールセット・ルール・フェーズ" },
+            { "text": "Ruleset Engineに基づかない特定製品" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-009",
+      "category": "waf",
+      "difficulty": "beginner",
+      "question": "Cloudflareが提供するマネージドルールセットの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "自分で条件を1から記述するカスタムルールセットと、DNSレコードの設定内容をまとめて監査・管理するためのDNSルールセットという2種類のみが提供されている",
+          "wrongFeedback": "そのような組み合わせではありません。Cloudflareが提供する主なマネージドルールセットはCloudflare Managed Ruleset・OWASP Core Ruleset・Free Managed Ruleset・Sensitive Data Detectionなどです。"
+        },
+        {
+          "text": "OWASP Core Rulesetのみが提供されており、Cloudflare独自のマネージドルールセットは存在しない",
+          "wrongFeedback": "OWASP Core Rulesetだけではありません。Cloudflare Managed RulesetやFree Managed Rulesetなど、Cloudflare独自のルールセットも複数提供されています。"
+        },
+        {
+          "text": "Cloudflare Managed Ruleset・OWASP Core Ruleset・Free Managed Ruleset(全プランで利用可)に加え、レスポンスフェーズで動作するSensitive Data Detection"
+        },
+        {
+          "text": "Sensitive Data Detectionはリクエストフェーズでのみ動作し、レスポンス内容を検査することはできない",
+          "wrongFeedback": "Sensitive Data Detectionはレスポンスフェーズで動作し、ダウンロードされるレスポンスの内容(機密データなど)を監視します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflareは、Cloudflareのセキュリティチームが作成したCloudflare Managed Ruleset、OWASPのModSecurity Core Rule Setを実装したOWASP Core Ruleset、全プランで利用できるFree Managed Rulesetなどのリクエストフェーズ向けマネージドルールセットに加え、レスポンスフェーズで動作するSensitive Data Detection(機密データのダウンロードを監視)を提供しています。なお、旧来のExposed Credentials Checkは非推奨で、現在はLeaked credentials detectionの利用が推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/",
+      "hint": "「リクエストを検査するもの」と「レスポンスの中身を監視するもの」の両方があることを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "主なマネージドルールセット",
+          "columns": [
+            { "heading": "リクエストフェーズ", "items": ["Cloudflare Managed Ruleset", "OWASP Core Ruleset", "Free Managed Ruleset"] },
+            { "heading": "レスポンスフェーズ", "items": ["Sensitive Data Detection"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-010",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "WAFマネージドルールの実行順序に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "マネージドルールはカスタムルールより先に実行されるため、カスタムルールでBlockされたリクエストもマネージドルールの評価対象になる",
+          "wrongFeedback": "順序が逆です。マネージドルールはカスタムルールより後に実行されるため、カスタムルールで終端アクションに一致したリクエストはマネージドルールの評価対象になりません。"
+        },
+        {
+          "text": "マネージドルールはDDoS対策よりも先に実行され、DDoS攻撃と判定されたリクエストにも先に適用される",
+          "wrongFeedback": "DDoS対策(`ddos_l7`)が最初に実行され、マネージドルールはその後に実行されます。"
+        },
+        {
+          "text": "マネージドルールとレート制限ルールは`http_ratelimit`という同じフェーズで並行して評価され、評価順序に前後関係はない",
+          "wrongFeedback": "マネージドルールとレート制限ルールは別々のフェーズ(`http_request_firewall_managed`と`http_ratelimit`)で、順序立てて評価されます。"
+        },
+        {
+          "text": "マネージドルールはDDoS対策・カスタムルール・レート制限ルールのいずれよりも後の`http_request_firewall_managed`フェーズで実行される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "WAFマネージドルールは`http_request_firewall_managed`フェーズで実行され、これはDDoS対策(`ddos_l7`)・カスタムルール(`http_request_firewall_custom`)・レート制限ルール(`http_ratelimit`)のいずれよりも後です。したがって、これらの早いフェーズで終端アクションに一致したリクエストは、マネージドルールによる評価を受けません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/#execution-order",
+      "hint": "「最後の砦」として動くマネージドルールが、他のどの機能より後に評価されるかを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "マネージドルールまでの実行順序",
+          "steps": [
+            { "text": "DDoS対策 → カスタムルール → レート制限ルール" },
+            { "text": "マネージドルール(http_request_firewall_managed)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-011",
+      "category": "waf",
+      "difficulty": "advanced",
+      "question": "契約しているCloudflareのプランによって上限値が変わる、マネージドルールがリクエストボディを検査する際の最大サイズに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Enterpriseプランでは128KB、Freeプランでは1MBが上限であり、上限を超えた部分は`http.request.body.truncated`フィールドで検知できる"
+        },
+        {
+          "text": "検査できるボディサイズに上限はなく、`Content-Length`がどれだけ大きなリクエストでもすべて検査対象になる",
+          "wrongFeedback": "上限があります。Enterpriseプランは128KB、Freeプランは1MBまでという制限があり、それを超える部分は完全には検査されません。"
+        },
+        {
+          "text": "上限を超えた部分は自動的に切り捨てられたうえで元のリクエストに再結合され、検査結果には一切影響しない",
+          "wrongFeedback": "上限を超えた部分が「検査結果に一切影響しない」形で自動補完されるわけではありません。超過した内容は完全には分析されず、誤検知などの原因になり得ます。"
+        },
+        {
+          "text": "ボディサイズの上限に達すると、Cloudflareはそのリクエストを自動的にすべてBlockする",
+          "wrongFeedback": "上限に達したリクエストが自動的にBlockされるわけではありません。上限を超えた部分の内容が完全には分析されないだけです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "マネージドルールがリクエストボディを検査する最大サイズは、Enterpriseプランで128KB、Freeプランで1MB、それ以外の有料プランではデフォルトでより低い値です(サポートへの問い合わせで引き上げ可能)。上限を超えた部分の内容は完全には分析されない可能性があり、`http.request.body.truncated`フィールドでボディが切り詰められたかどうかを検知できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/#maximum-body-size",
+      "hint": "プランによって「どこまで読んでもらえるか」が違い、読み切れなかった場合を検知するフィールドがあることを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "マネージドルールの最大ボディサイズ",
+          "columns": [
+            { "heading": "Enterprise", "items": ["128KB"] },
+            { "heading": "Free", "items": ["1MB"] },
+            { "heading": "その他有料プラン", "items": ["デフォルトはより低い値"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-012",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "OWASP Core Rulesetのパラノイアレベル(PL1〜PL4)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "パラノイアレベルはPL1〜PL4のいずれか1つだけを個別に有効化する仕組みで、レベル同士に包含関係はない",
+          "wrongFeedback": "包含関係があります。あるパラノイアレベルを選択すると、それ以下のすべてのレベルのルールも有効になります。"
+        },
+        {
+          "text": "PL4は最も厳格なレベルで、PL4を選択するとPL1〜PL3までのルールも含めてすべて有効になる"
+        },
+        {
+          "text": "PL1が最も厳格なレベルであり、PL4はほとんどのルールが無効化された最も緩やかなレベルである",
+          "wrongFeedback": "逆です。PL1が最も緩やかなデフォルトレベルで、PL4が最も厳格なレベルです。"
+        },
+        {
+          "text": "パラノイアレベルを引き上げても誤検知(false positive)の可能性に変化はなく、常に一定である",
+          "wrongFeedback": "パラノイアレベルを引き上げるほど保護は強化されますが、複雑な正当な入力を誤検知としてブロックする可能性も高くなります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "OWASP Core Rulesetのパラノイアレベルは、PL1(デフォルト)からPL4(最も厳格)まであり、あるレベルを選択するとそれ以下のすべてのレベルに属するルールも有効になります。例えばPL3を選ぶとPL1・PL2・PL3のルールがすべて有効になります。レベルを引き上げるほど保護は強化されますが、複雑な入力を送るアプリケーションでは誤検知が増える可能性があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/reference/owasp-core-ruleset/concepts/",
+      "hint": "レベルを上げるほど「その下のレベルのルールも全部まとめて有効になる」という積み上げ式の仕組みを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "パラノイアレベルの積み上げ",
+          "items": [
+            { "text": "PL1(デフォルト)", "sub": "最も緩やか" },
+            { "text": "PL2", "sub": "PL1を含む" },
+            { "text": "PL3", "sub": "PL1・PL2を含む" },
+            { "text": "PL4", "sub": "PL1〜PL3を含む最も厳格" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-013",
+      "category": "waf",
+      "difficulty": "advanced",
+      "question": "OWASP Core Rulesetのスコア閾値(Low・Medium・High)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Lowの閾値は25以上、Medium(デフォルト)は40以上、Highは60以上であり、数値が大きいほど閾値の名前も「High」になる",
+          "wrongFeedback": "閾値の数値と名前の対応が逆です。Lowが60以上、Mediumが40以上(デフォルト)、Highが25以上です。"
+        },
+        {
+          "text": "スコア閾値の設定に関わらず、個々のOWASPルールのスコアは合算されず、1つでもルールに一致すればアクションが実行される",
+          "wrongFeedback": "個々のルールのスコアはリクエストごとに合算され、その累積スコア(リクエスト脅威スコア)が閾値を超えたときにアクションが実行されます。"
+        },
+        {
+          "text": "Highの閾値を選ぶと、Lowの閾値のときよりも多くのルールが一致しないとアクションが実行されなくなる",
+          "wrongFeedback": "逆です。Highは閾値の数値(25)が小さいため、より少ないルールの一致でアクションが実行されやすくなります。"
+        },
+        {
+          "text": "Lowの閾値は60以上、Medium(デフォルト)は40以上、Highは25以上であり、Lowを選ぶと「より多くのルールが一致すること」が要求されるためアクションが実行されにくくなる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "OWASP Core Rulesetのスコア閾値は、Lowが60以上、Medium(デフォルト)が40以上、Highが25以上です。個々のルールが一致するたびにスコアが加算され、その累積であるリクエスト脅威スコアが選択した閾値を超えるとアクションが実行されます。Lowを選ぶと必要な累積スコアが高くなるため、より多くのルールが一致しないとアクションが実行されにくくなります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/reference/owasp-core-ruleset/concepts/",
+      "hint": "「Low」「Medium」「High」というラベルと、実際に設定される数値の大小は必ずしも同じ向きに並ぶとは限らないと考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "スコア閾値と必要な一致数",
+          "columns": [
+            { "heading": "Low(60以上)", "items": ["より多くの一致が必要"] },
+            { "heading": "Medium(40以上・既定)", "items": ["中間"] },
+            { "heading": "High(25以上)", "items": ["少ない一致で発動"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-014",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "レート制限ルールの「特性(characteristics)」における`IP`と`IP with NAT support`に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`IP`は`ip.src`、`IP with NAT support`はCookieベースの識別を使う`cf.unique_visitor_id`に対応し、この2つの特性は同じルール内で同時に使用できない"
+        },
+        {
+          "text": "`IP`と`IP with NAT support`はどちらも同じフィールド(`ip.src`)に対応しており、名前が違うだけで機能上の違いはない",
+          "wrongFeedback": "対応するフィールドが異なります。`IP with NAT support`はCookieベースの`cf.unique_visitor_id`を使い、`ip.src`とは別の識別方法です。"
+        },
+        {
+          "text": "`IP with NAT support`はNAT環境の識別精度を高めるためのCookieを一切使わず、純粋にネットワーク層の情報だけで識別する",
+          "wrongFeedback": "`IP with NAT support`は`_cfuvid`というCookieベースの識別メカニズムに依存しています。"
+        },
+        {
+          "text": "`IP`と`IP with NAT support`は同じルール内で同時に指定でき、両方を組み合わせることでより高精度な識別ができる",
+          "wrongFeedback": "この2つの特性は同じルール内で同時に使用することはできません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "レート制限ルールの特性のうち、`IP`はAPIフィールド`ip.src`に対応し、`IP with NAT support`はCookie(`_cfuvid`)ベースの識別を使う`cf.unique_visitor_id`に対応します。NAT配下で同じIPアドレスを共有する環境などに有用ですが、この2つの特性は互いに非互換であり、同じルール内で同時に使用することはできません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/parameters/",
+      "hint": "似た目的を持つ2つの特性が、識別の仕組みや併用可否の面でどう違うか整理しましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "IP と IP with NAT support",
+          "columns": [
+            { "heading": "IP", "items": ["ip.src"] },
+            { "heading": "IP with NAT support", "items": ["cf.unique_visitor_id(Cookieベース)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-015",
+      "category": "waf",
+      "difficulty": "advanced",
+      "question": "レート制限ルールのカウント式(`counting_expression`)をカスタマイズする際の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "カウント式を空文字列に設定すると、カウント自体が無効化され、そのレート制限ルールは常に発動しなくなる",
+          "wrongFeedback": "カウント式を空文字列にした場合、カウントが無効化されるのではなく、マッチ式(`expression`)と同じ内容がカウント式として使われます。"
+        },
+        {
+          "text": "カスタムカウント式を設定すると、それはマッチ式を自動的に拡張したものにはならないため、必要であれば元のマッチ式の条件を自分でカウント式に含める必要がある"
+        },
+        {
+          "text": "カウント式には常にHTTPレスポンスのフィールドを含めることができ、いかなる設定制限も存在しない",
+          "wrongFeedback": "設定によってはカウント式にHTTPレスポンスフィールドを含められない制限があります(例:カスタムリストと併用する場合)。"
+        },
+        {
+          "text": "カウント式にHTTPレスポンスのフィールドを含めると、レスポンスが返る前の時点でカウントが行われる",
+          "wrongFeedback": "レスポンスフィールドを含めた場合、カウントはレスポンスが返された後に行われます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "レート制限ルールでカスタムカウント式(`counting_expression`)を設定すると、それはマッチ式(`expression`)を自動的に拡張したものにはなりません。そのため、例えば「`/api/`宛てで、かつオリジンから`403`が返ったリクエスト」を数えたい場合、カウント式に`/api/`へのパス条件も含めて記述する必要があります。含めないと、意図せず他のパスへの`403`レスポンスまでカウントしてしまいます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/parameters/#increment-counter-when",
+      "hint": "カウント式とマッチ式は別々の設定項目であり、片方を変えたときにもう片方がどうなるかを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "マッチ式とカウント式の関係",
+          "columns": [
+            { "heading": "マッチ式(expression)", "items": ["どのリクエストにルールを適用するか"] },
+            { "heading": "カウント式(counting_expression)", "items": ["自動継承されない", "必要な条件は自分で含める"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-016",
+      "category": "waf",
+      "difficulty": "advanced",
+      "question": "レート制限ルールの`mitigation_timeout`(継続時間)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Free・Pro・Businessプランでも、チャレンジ系アクションと組み合わせて任意の継続時間(例:1時間)を自由に設定できる",
+          "wrongFeedback": "Free・Pro・Businessプランでチャレンジ系アクションを使う場合、継続時間は選択できず、常にリクエストスロットリング(`mitigation_timeout=0`)になります。"
+        },
+        {
+          "text": "Enterpriseプランであっても、Blockアクションと継続時間を組み合わせて使うことはできない",
+          "wrongFeedback": "Enterpriseプランでは、Blockアクションであっても任意の`mitigation_timeout`値を設定できます。"
+        },
+        {
+          "text": "Free・Pro・Businessプランでチャレンジ系アクションを使う場合、APIでは`mitigation_timeout`を`0`に設定する必要があり、これはリクエストスロットリングのみを意味する"
+        },
+        {
+          "text": "`mitigation_timeout`に指定できる値は秒数ではなく、常に「短い」「中程度」「長い」という3段階の抽象的なラベルのみである",
+          "wrongFeedback": "`mitigation_timeout`は`0`・`10`・`60`・`3600`・`86400`など具体的な秒数で指定します。抽象的なラベルではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Free・Pro・Businessプランでチャレンジ系アクション(`managed_challenge`・`js_challenge`・`challenge`)を使う場合、APIでは`mitigation_timeout`を`0`に設定する必要があります。これはリクエストスロットリング(制限を超えた分だけアクションを適用し、チャレンジを通過すればカウンターがリセットされる挙動)のみを意味し、固定の継続時間を選ぶことはできません。Enterpriseプランは、Blockアクションを含め、`0`以上の任意の値を継続時間として設定できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/parameters/#for-duration",
+      "hint": "「決まった時間だけ制限し続ける」のか「制限を超えている間だけ都度スロットリングする」のか、プランによる違いを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "mitigation_timeoutのプラン差",
+          "columns": [
+            { "heading": "Free/Pro/Business + チャレンジ系", "items": ["timeout=0固定(スロットリングのみ)"] },
+            { "heading": "Enterprise", "items": ["任意の値を設定可(Blockも含む)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-017",
+      "category": "waf",
+      "difficulty": "intermediate",
+      "question": "漏洩認証情報検知(Leaked credentials detection)が追加する`Exposed-Credential-Check`リクエストヘッダーに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "ユーザー名とパスワードのペアが漏洩していた場合は`1`、ユーザー名のみが漏洩していた場合は`2`、パスワードのみが漏洩していた場合は`4`という値が設定される"
+        },
+        {
+          "text": "ヘッダーの値は常に固定の`1`のみであり、漏洩の種類(ユーザー名・パスワード・両方)を区別する情報は含まれない",
+          "wrongFeedback": "値は固定ではありません。ユーザー名とパスワードのペアが漏洩していた場合は`1`、ユーザー名のみは`2`、パスワードのみは`4`のように区別されます。"
+        },
+        {
+          "text": "このヘッダーはEnterpriseプラン限定の機能であり、Free・Pro・Businessプランでは一切利用できない",
+          "wrongFeedback": "パスワード漏洩の検知(`cf.waf.credential_check.password_leaked`)は全プランで利用でき、このヘッダー自体もEnterprise限定ではありません。"
+        },
+        {
+          "text": "このヘッダーが付与された時点で、Cloudflareが自動的にそのリクエストをBlockする",
+          "wrongFeedback": "ヘッダーの付与自体は情報提供のためのものであり、自動的にBlockされるわけではありません。Blockするかどうかはカスタムルール等で自分で設定します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "漏洩認証情報検知は、一致したリクエストに`Exposed-Credential-Check`ヘッダーを追加します。値はユーザー名とパスワードのペアが漏洩していた場合は`1`、ユーザー名のみ漏洩していた場合は`2`、パスワードのみ漏洩していた場合は`4`です。オリジン側でこのヘッダーを見て、ユーザーにパスワード変更を促すといった対応ができます。パスワード漏洩の検知自体は全プランで利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/detections/leaked-credentials/",
+      "hint": "「両方漏洩」「ユーザー名だけ」「パスワードだけ」という3パターンを、それぞれ異なる数値で区別すると考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Exposed-Credential-Checkの値",
+          "columns": [
+            { "heading": "値=1", "items": ["ユーザー名+パスワードのペア漏洩"] },
+            { "heading": "値=2", "items": ["ユーザー名のみ漏洩"] },
+            { "heading": "値=4", "items": ["パスワードのみ漏洩"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wf-018",
+      "category": "waf",
+      "difficulty": "advanced",
+      "question": "Bot Fight ModeとSuper Bot Fight Mode(SBFM)の違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Bot Fight ModeもSBFMも同じくRuleset Engineの`http_request_sbfm`フェーズで動作し、どちらもカスタムルールでスキップできる",
+          "wrongFeedback": "Bot Fight ModeはRuleset Engineを使わないため、`http_request_sbfm`フェーズの対象外であり、カスタムルールでスキップすることもできません。"
+        },
+        {
+          "text": "Bot Fight ModeはRuleset Engineを使わず単純なオン/オフの切り替えでありカスタムルールでスキップできないが、SBFMは`http_request_sbfm`フェーズで動作しカスタムルールのSkipアクションでバイパスできる"
+        },
+        {
+          "text": "SBFMはFreeプラン専用の機能であり、Pro・Business・Enterpriseプランでは利用できない",
+          "wrongFeedback": "SBFMはPro・Business・Enterpriseプランで利用できる機能です。Bot Fight ModeがFreeプランで利用できる機能です。"
+        },
+        {
+          "text": "Bot Fight Modeは「Definitely automated」「Likely automated」「Verified bots」ごとに個別のアクションを設定できるが、SBFMにはそのような細かい設定はない",
+          "wrongFeedback": "説明が逆です。「Definitely automated」等ごとに個別アクションを設定できるのはSBFMであり、Bot Fight Modeは単純なオン/オフの切り替えです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Bot Fight ModeはRuleset Engineを使わない単純なオン/オフの切り替えで、Freeプランで利用でき、カスタムルールでスキップすることはできません。一方、Super Bot Fight Mode(SBFM)はPro・Business・Enterpriseプランで利用でき、`http_request_sbfm`フェーズで動作し、「Definitely automated」「Likely automated」「Verified bots」ごとに個別のアクションを設定できるほか、カスタムルールのSkipアクションでバイパスできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waf/feature-interoperability/",
+      "hint": "「単純なオン/オフでRuleset Engineの外にある仕組み」と「フェーズとして組み込まれ、細かく制御・回避もできる仕組み」の違いを考えましょう。",
+      "tags": ["waf", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Bot Fight Mode と Super Bot Fight Mode",
+          "columns": [
+            { "heading": "Bot Fight Mode", "items": ["Ruleset Engine外", "スキップ不可・Free"] },
+            { "heading": "Super Bot Fight Mode", "items": ["http_request_sbfmフェーズ", "Skip可・Pro以上"] }
+          ]
+        }
+      ]
     }
   ]
 }

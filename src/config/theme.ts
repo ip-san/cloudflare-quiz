@@ -343,6 +343,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'アプリの手前にIDベースのアクセス制御層を構築できる',
     },
     {
+      id: 'waf',
+      name: 'WAF(Webアプリケーションファイアウォール)',
+      icon: '🛡️',
+      color: 'maroon',
+      weight: 10,
+      description:
+        'カスタムルール・レート制限ルール・マネージドルールで構成されるWAF。Ruleset Engineのフェーズ順序、OWASP Core Rulesetのパラノイアレベル、漏洩認証情報検知',
+      skillDescription: 'アプリ・APIをエッジのWAFでリクエスト単位に保護できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

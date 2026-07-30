@@ -20,6 +20,7 @@ export const COLOR_MAP: Record<string, string> = {
   slate: '#64748b',
   stone: '#78716c',
   gray: '#6b7280',
+  maroon: '#7f1d1d',
 }
 
 export function getColorHex(colorName: string): string {

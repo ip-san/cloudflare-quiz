@@ -50,6 +50,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   cs: 'cloudflare-for-saas',
   pl: 'pipelines',
   ac: 'zero-trust-access',
+  wf: 'waf',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -178,6 +179,20 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/access-controls/applications/non-http/infrastructure-apps/',
   'cloudflare-one/team-and-resources/users/seat-management/',
   'cloudflare-one/account-limits/',
+  'waf/',
+  'waf/feature-interoperability/',
+  'waf/custom-rules/',
+  'ruleset-engine/rules-language/actions/',
+  'ruleset-engine/rules-language/expressions/',
+  'ruleset-engine/about/phases/',
+  'ruleset-engine/reference/phases-list/',
+  'waf/managed-rules/',
+  'waf/managed-rules/reference/owasp-core-ruleset/concepts/',
+  'waf/managed-rules/reference/owasp-core-ruleset/',
+  'waf/managed-rules/reference/cloudflare-managed-ruleset/',
+  'waf/rate-limiting-rules/',
+  'waf/rate-limiting-rules/parameters/',
+  'waf/detections/leaked-credentials/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -604,6 +619,7 @@ describe('Quiz Content Quality', () => {
         'cloudflare-for-saas',
         'pipelines',
         'zero-trust-access',
+        'waf',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])
