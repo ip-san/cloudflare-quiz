@@ -55,6 +55,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   as: 'api-shield',
   lb: 'load-balancing',
   ch: 'cache',
+  ru: 'rules',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -244,6 +245,20 @@ const VALID_DOC_PAGES = [
   'cache/advanced-configuration/cache-reserve/',
   'cache/how-to/set-caching-levels/',
   'cache/concepts/cache-responses/',
+  'rules/',
+  'rules/transform/',
+  'rules/transform/url-rewrite/',
+  'rules/transform/request-header-modification/',
+  'rules/transform/response-header-modification/',
+  'rules/url-forwarding/',
+  'rules/url-forwarding/single-redirects/',
+  'rules/url-forwarding/bulk-redirects/',
+  'rules/origin-rules/',
+  'rules/origin-rules/features/',
+  'rules/configuration-rules/',
+  'rules/configuration-rules/settings/',
+  'rules/snippets/',
+  'rules/snippets/when-to-use/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -675,6 +690,7 @@ describe('Quiz Content Quality', () => {
         'api-shield',
         'load-balancing',
         'cache',
+        'rules',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

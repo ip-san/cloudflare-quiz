@@ -393,6 +393,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'ゾーンレベルのキャッシュ戦略を設計し、オリジン負荷と配信速度を最適化できる',
     },
     {
+      id: 'rules',
+      name: 'Rules',
+      icon: '🔀',
+      color: 'denim',
+      weight: 10,
+      description:
+        'Transform Rules・Redirect Rules・Origin Rules・Configuration Rules・SnippetsによるリクエストとレスポンスのURL書き換え・ヘッダー操作・振り分け設定',
+      skillDescription: 'リクエスト/レスポンスの書き換えやオリジンの振り分けをコードを書かずに設計できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',
