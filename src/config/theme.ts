@@ -363,6 +363,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'ボットトラフィックを検知し、段階に応じた対策を選択できる',
     },
     {
+      id: 'api-shield',
+      name: 'API Shield',
+      icon: '🛡️',
+      color: 'cerulean',
+      weight: 10,
+      description:
+        'スキーマ検証・mTLS・JWT検証・API DiscoveryでAPIを保護するAPI Shield。Sequence Analytics・Sequence MitigationによるAPI呼び出し順序の監視・制御',
+      skillDescription: 'API固有の脅威(ゾンビエンドポイント・シーケンス攻撃)からAPIを保護できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

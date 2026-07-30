@@ -52,6 +52,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   ac: 'zero-trust-access',
   wf: 'waf',
   bt: 'bots',
+  as: 'api-shield',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -205,6 +206,16 @@ const VALID_DOC_PAGES = [
   'bots/additional-configurations/static-resources/',
   'bots/additional-configurations/ja3-ja4-fingerprint/',
   'bots/bot-analytics/',
+  'api-shield/',
+  'api-shield/security/schema-validation/',
+  'api-shield/security/mtls/',
+  'api-shield/security/jwt-validation/',
+  'api-shield/security/api-discovery/',
+  'api-shield/security/sequence-analytics/',
+  'api-shield/security/sequence-mitigation/',
+  'api-shield/security/volumetric-abuse-detection/',
+  'api-shield/plans/',
+  'api-shield/get-started/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -633,6 +644,7 @@ describe('Quiz Content Quality', () => {
         'zero-trust-access',
         'waf',
         'bots',
+        'api-shield',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

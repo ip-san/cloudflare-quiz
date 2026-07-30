@@ -21680,6 +21680,700 @@
           ]
         }
       ]
+    },
+    {
+      "id": "as-001",
+      "category": "api-shield",
+      "difficulty": "beginner",
+      "question": "Cloudflare API Shieldの提供形態に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "API Shieldのフルセキュリティスイートは、Enterpriseプラン向けの有料アドオンだが、Endpoint ManagementとSchema validationは全プランの顧客が利用でき、Cloudflare管理CAによるmTLSも全プランで設定できる"
+        },
+        {
+          "text": "API Shieldはすべての機能がFreeプランを含む全プランで無料かつ無制限に利用できる",
+          "wrongFeedback": "フルセキュリティスイートはEnterprise向けの有料アドオンです。全プランで無料・無制限に使えるわけではありません。"
+        },
+        {
+          "text": "API Shieldの機能はすべてEnterpriseプランの顧客専用であり、Free・Pro・Businessプランでは一切利用できない",
+          "wrongFeedback": "Endpoint ManagementやSchema validation、Cloudflare管理CAによるmTLSは全プランで利用できます。Enterprise専用というのは誤りです。"
+        },
+        {
+          "text": "API ShieldはJDCloudを含むすべてのクラウド事業者環境で同様に動作することが保証されている",
+          "wrongFeedback": "API ShieldはJDCloudの顧客には現在対応していません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "API Shieldのフルセキュリティスイート(API Discovery・JWT検証・Sequence Analytics・Sequence Mitigation・Volumetric Abuse Detectionなど)は、Enterpriseプラン向けの有料アドオンです。一方、Endpoint ManagementとSchema validation、Cloudflare管理CAによるmTLSは全プランの顧客が利用できます。なお、API ShieldはJDCloudの顧客には現在対応していません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/",
+      "hint": "「全プランに開放されている入口部分の機能」と「Enterprise限定の高度な機能群」の2段階があると考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "API Shieldの提供範囲",
+          "columns": [
+            { "heading": "全プラン利用可", "items": ["Endpoint Management", "Schema validation", "mTLS(Cloudflare管理CA)"] },
+            { "heading": "Enterpriseアドオン", "items": ["API Discovery・JWT検証など", "フルセキュリティスイート"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-002",
+      "category": "api-shield",
+      "difficulty": "beginner",
+      "question": "API ShieldのドキュメントがAPIセキュリティの課題として挙げているものはどれですか？",
+      "options": [
+        {
+          "text": "APIはHTMLページと違って必ずキャッシュされないため、CDNのキャッシュヒット率が下がることが最大の課題である",
+          "wrongFeedback": "キャッシュヒット率の低下が課題として挙げられているわけではありません。ゾンビエンドポイントや高度な攻撃パターンの見逃しが課題として挙げられています。"
+        },
+        {
+          "text": "多くの企業が把握していないエンドポイントを含む大量のAPIを抱えており、負のセキュリティモデルによる保護はクレデンシャルスタッフィング攻撃に弱く、高度な多段階攻撃は使用パターンの把握が難しいため見逃されやすい"
+        },
+        {
+          "text": "APIのレスポンスは常にJSON形式でなければならず、それ以外の形式を返すAPIはCloudflareの保護対象外になってしまう",
+          "wrongFeedback": "レスポンス形式に関するそのような制約が課題として挙げられているわけではありません。"
+        },
+        {
+          "text": "APIのバージョニングを行うとURLパスの数が増えすぎるため、Cloudflareのルール上限にすぐ到達してしまうことが最大の課題である",
+          "wrongFeedback": "バージョニングによるルール上限到達が課題として挙げられているわけではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "API Shieldのドキュメントは、多くの企業が自社でも把握していないエンドポイント(ゾンビエンドポイント)を含む大量のAPIを抱えていること、多くのAPIがユーザー基盤を支えるために負のセキュリティモデルで保護されておりクレデンシャルスタッフィング攻撃や自動スキャンに弱いこと、エンドポイントやユーザーが多いためブルートフォース攻撃に気づきにくいこと、開発チーム自身も一般的でない使用パターンを把握していないため高度な攻撃はさらに気づきにくいことを課題として挙げています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/",
+      "hint": "「自分たちでも全容を把握しきれていない」規模のAPI群が抱える、発見しづらい種類のリスクを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "APIセキュリティの主な課題",
+          "items": [
+            { "text": "把握していないエンドポイント" },
+            { "text": "負のセキュリティモデルの脆弱性" },
+            { "text": "ブルートフォース攻撃の見逃し" },
+            { "text": "高度な多段階攻撃の見逃し" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-003",
+      "category": "api-shield",
+      "difficulty": "intermediate",
+      "question": "APIやTerraform経由でSchema validationのスキーマをアップロードする場合の正しい手順はどれですか？",
+      "options": [
+        {
+          "text": "ダッシュボード経由のアップロードと同様に、エンドポイントは常に自動的にEndpoint Managementへ追加される",
+          "wrongFeedback": "自動追加されるのはダッシュボード経由でアップロードした場合です。APIやTerraform経由の場合は自動追加されません。"
+        },
+        {
+          "text": "APIやTerraform経由でスキーマをアップロードする場合、Cloudflareが自動でスキーマを解析するため、事前にEndpoint Managementへエンドポイントを登録する必要はない",
+          "wrongFeedback": "APIやTerraform経由の場合、Schema validationで保護するにはスキーマを自分で解析し、エンドポイントを手動でEndpoint Managementに追加する必要があります。"
+        },
+        {
+          "text": "スキーマを自分で解析し、含まれるエンドポイントを手動でEndpoint Managementに追加する必要がある"
+        },
+        {
+          "text": "APIやTerraform経由でのアップロードはSchema validation 2.0では一切サポートされておらず、ダッシュボードからのみアップロードできる",
+          "wrongFeedback": "APIやTerraform経由でのアップロード自体はサポートされています。ただしエンドポイントの登録は手動で行う必要があります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "エンドポイントはSchema validationによる保護を受けるために、事前にEndpoint Managementへ登録されている必要があります。Cloudflareダッシュボード経由でスキーマをアップロードした場合はエンドポイントが自動的に追加されますが、APIやTerraform経由でアップロードする場合は、スキーマを自分で解析し、含まれるエンドポイントを手動でEndpoint Managementに追加する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#process",
+      "hint": "「ダッシュボードがやってくれる自動処理」を、API経由の場合は自分で肩代わりする必要があると考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "エンドポイント登録の自動/手動",
+          "columns": [
+            { "heading": "ダッシュボードアップロード", "items": ["自動的にEndpoint Managementへ追加"] },
+            { "heading": "API/Terraformアップロード", "items": ["手動でEndpoint Managementへ追加"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-004",
+      "category": "api-shield",
+      "difficulty": "beginner",
+      "question": "Schema validationのアクション(`Log`・`Block`・`None`)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`Log`は違反リクエストを記録もブロックもしない設定であり、`Block`は記録のみを行い実際にはブロックしない設定である",
+          "wrongFeedback": "説明が逆です。`Log`は記録のみでブロックはせず、`Block`は記録に加えて実際にブロックまで行います。"
+        },
+        {
+          "text": "`None`は違反リクエストを検知した場合に常に一度だけ警告メールを管理者に送信する設定である",
+          "wrongFeedback": "`None`のリクエストに対しては記録もブロックも行われません。警告メールの送信という機能はありません。"
+        },
+        {
+          "text": "`Log`・`Block`・`None`はすべて同じ動作をし、UI上の表示ラベルが異なるだけである",
+          "wrongFeedback": "3つのアクションは異なる動作をします。`Log`は記録のみ、`Block`は記録とブロック、`None`はどちらも行いません。"
+        },
+        {
+          "text": "`Log`はFirewall Eventsに記録するだけで実際のブロックは行わず、`Block`はスキーマに違反するリクエストをブロックしつつFirewall Eventsにも記録し、`None`は違反リクエストに対して記録もブロックも行わない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Schema validationのアクションのうち、`Log`は違反リクエストをFirewall Eventsに記録するだけでブロックは行いません。`Block`はスキーマに違反するリクエストを実際にブロックし、同時にFirewall Eventsにも記録します。`None`は違反リクエストに対して記録もブロックも行いません。デフォルトアクションはエンドポイントごとに個別のアクションで上書きできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#change-the-global-default-action-of-schema-validation",
+      "hint": "「記録するだけ」「実際に止める」「何もしない」という3段階の強さの違いを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Schema validationの3アクション",
+          "columns": [
+            { "heading": "Log", "items": ["記録のみ"] },
+            { "heading": "Block", "items": ["記録+ブロック"] },
+            { "heading": "None", "items": ["記録もブロックもなし"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-005",
+      "category": "api-shield",
+      "difficulty": "intermediate",
+      "question": "Schema validationがサポートするOpenAPIスキーマの仕様バージョンに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "OpenAPI v3.0.x(すべてのパッチバージョンを含む)のみがサポートされ、v3.1やOpenAPI 2.0はサポートされておらず、対応を拡張する予定もない"
+        },
+        {
+          "text": "OpenAPI v3.1が最新の推奨バージョンであり、v3.0.xは非推奨として今後サポートが打ち切られる予定である",
+          "wrongFeedback": "サポートされているのはv3.0.xであり、v3.1はサポート対象外です。今後拡張する計画もありません。"
+        },
+        {
+          "text": "OpenAPI 2.0(旧Swagger)とOpenAPI v3.0.xの両方が同等にサポートされている",
+          "wrongFeedback": "OpenAPI 2.0はサポート対象外です。サポートされているのはOpenAPI v3.0.xのみです。"
+        },
+        {
+          "text": "スキーマのバージョンに関する制約は一切なく、OpenAPIのすべてのバージョンをそのままアップロードできる",
+          "wrongFeedback": "バージョンの制約はあります。サポートされているのはOpenAPI v3.0.xのみで、v3.1や2.0はサポートされていません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Schema validationは、パッチバージョンを含むOpenAPI v3.0.xのみをサポートしています。OpenAPI v3.1はサポートされておらず、OpenAPI 2.0(旧Swagger)への対応を拡張する計画もありません。ファイル形式はYAML(`.yml`・`.yaml`)またはJSON(`.json`)が受け付けられます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#specifications",
+      "hint": "「v3系の中でもどのマイナーバージョンまでか」「古いSwagger形式は含まれるか」という2点を考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "サポートされるOpenAPIバージョン",
+          "columns": [
+            { "heading": "サポート対象", "items": ["OpenAPI v3.0.x(全パッチ)"] },
+            { "heading": "非対応", "items": ["OpenAPI v3.1", "OpenAPI 2.0(Swagger)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-006",
+      "category": "api-shield",
+      "difficulty": "advanced",
+      "question": "Schema validationがリクエストボディを検証する際のボディサイズ上限に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "この上限はWAFマネージドルールの最大ボディ検査サイズと共通の1つの設定値であり、どちらかを変更すればもう片方も連動して変わる",
+          "wrongFeedback": "Schema validationのボディサイズ上限は、WAFマネージドルールの最大ボディ検査サイズとは別の独立した設定であり、片方を変更してももう片方には影響しません。"
+        },
+        {
+          "text": "デフォルトの上限はFreeプランで1KB、Pro・Businessプランで8KB、Enterpriseプランで128KBであり、上限を超えたボディは検証されず、設定された`Log`や`Block`アクションも適用されない"
+        },
+        {
+          "text": "デフォルトの上限はFreeプランで1KB、Pro・Businessプランで8KB、Enterpriseプランで128KBであり、上限を超えたボディはスキーマ違反として自動的にブロックされる",
+          "wrongFeedback": "プランごとの数値は正しいですが、上限を超えたボディは「スキーマ違反として自動ブロック」されるのではなく、検証自体が行われず、設定されたアクションも適用されません。"
+        },
+        {
+          "text": "ボディサイズの上限は`Content-Length`ヘッダーの値に関わらずすべてのプランで共通の固定値であり、プランによる違いは存在しない",
+          "wrongFeedback": "ボディサイズの上限はプランによって異なり、Free 1KB・Pro/Business 8KB・Enterprise 128KBという違いがあります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Schema validationのボディサイズ検証の上限は、Freeプランで1KB、Pro・Businessプランで8KB、Enterpriseプランで128KBです。この上限を超えるリクエストボディはスキーマとの照合が行われず、設定された`Log`や`Block`といったアクションも適用されません。この上限は、WAFマネージドルールの最大ボディ検査サイズとは別の独立した設定であり、一方を変更してももう一方には影響しません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#body-size-for-validation",
+      "hint": "「上限を超えたら自動的に危険とみなされる」のか、「そもそも検証の対象外になる」のか、どちらが実際の挙動か考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Schema validationのボディサイズ上限",
+          "columns": [
+            { "heading": "Free", "items": ["1KB"] },
+            { "heading": "Pro/Business", "items": ["8KB"] },
+            { "heading": "Enterprise", "items": ["128KB"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-007",
+      "category": "api-shield",
+      "difficulty": "intermediate",
+      "question": "有効化されたスキーマに含まれる操作(operation)の総数の上限に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "操作数に上限はなく、契約プランに関わらずスキーマに含められる操作の数は無制限である",
+          "wrongFeedback": "上限は存在します。API Shieldを契約するEnterprise顧客には10,000操作という上限があります。"
+        },
+        {
+          "text": "この上限はFreeプランにのみ適用され、有料プランでは操作数の制限が撤廃される",
+          "wrongFeedback": "上限が適用されるのはFreeプランではなく、API Shieldを契約しているEnterprise顧客です。上限は10,000操作で、引き上げには営業担当への相談が必要です。"
+        },
+        {
+          "text": "API Shieldを契約しているEnterprise顧客には、有効化されたスキーマ全体で10,000操作という上限があり、引き上げには account team への相談が必要である"
+        },
+        {
+          "text": "操作数の上限はスキーマファイル単位ではなくエンドポイント1つあたりに適用され、1エンドポイントにつき10,000操作まで許容される",
+          "wrongFeedback": "上限は1エンドポイントあたりではなく、有効化されたスキーマ全体の合計操作数に対して適用されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "API Shieldを契約しているEnterprise顧客には、有効化されたスキーマに含まれる操作の総数について10,000操作という上限があります。この上限を引き上げたい場合は、account teamに問い合わせる必要があります。この上限はエンドポイント単位ではなく、有効化されたスキーマ全体の合計に対して適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#limitations",
+      "hint": "この上限は1つのエンドポイント単位なのか、それとも複数エンドポイントをまたいだ集計値なのかを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "操作数上限の適用範囲",
+          "steps": [
+            { "text": "有効化されたスキーマ全体を合算" },
+            { "text": "合計10,000操作まで(API Shield契約Enterprise)" },
+            { "text": "超過時はaccount teamへ相談" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-008",
+      "category": "api-shield",
+      "difficulty": "advanced",
+      "question": "Schema validationの「フォールスルー(fallthrough)ルール」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "フォールスルールールはEndpoint Managementに登録済みのエンドポイントに対してのみ発動し、未登録のエンドポイントへのリクエストには一切反応しない",
+          "wrongFeedback": "逆です。フォールスルールールは、Endpoint Managementに登録された既知のエンドポイントに一致「しない」リクエストに対して発動する仕組みです。"
+        },
+        {
+          "text": "フォールスルールールは有効化した瞬間に、すべてのAPIエンドポイントへのリクエストを無条件にブロックしてしまう",
+          "wrongFeedback": "フォールスルールールが対象とするのは、Endpoint Managementに登録されたエンドポイントに一致しないリクエストだけです。登録済みのエンドポイントへの正規リクエストは対象外です。"
+        },
+        {
+          "text": "フォールスルールールはEnterpriseプラン限定の機能であり、`Security rules`ページ自体がFree・Pro・Businessプランでは一切表示されない",
+          "wrongFeedback": "フォールスルールールはEnterprise限定という記載はなく、Schema validation自体は全プランで利用できる機能の一部として設定できます。"
+        },
+        {
+          "text": "`cf.api_gateway.fallthrough_detected`フィールドを使えば、Endpoint Managementに一致しないリクエストに対してカスタムルールで独自のロジックを組める"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "フォールスルールールは、Endpoint Managementに登録された既知のエンドポイントに一致しないリクエストに対するキャッチオール(受け皿)ルールです。すべてのエンドポイントをEndpoint Managementに登録しておくことで、開発チームが把握していないレガシー・ゾンビエンドポイントへの攻撃を防げます。`cf.api_gateway.fallthrough_detected`フィールドを使えば、このロジックをカスタムルールに組み込み、独自の条件と組み合わせることもできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#add-validation-by-adding-a-fallthrough-rule",
+      "hint": "「登録されているものに一致した場合」ではなく「一致しなかった場合」に発動するルールだと考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "フォールスルールールの動作",
+          "steps": [
+            { "text": "リクエストを受信" },
+            { "text": "Endpoint Managementの登録済みエンドポイントと照合" },
+            { "text": "一致しなければfallthrough_detected=true" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-009",
+      "category": "api-shield",
+      "difficulty": "beginner",
+      "question": "API ShieldのmTLS(相互TLS)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "mTLSはJSON形式のAPIにのみ対応しており、gRPCのようなバイナリ形式を使うAPIには対応していない",
+          "wrongFeedback": "mTLSはgRPCベースのAPIにも対応しています。JSON形式に限定されているわけではありません。"
+        },
+        {
+          "text": "モバイルアプリ・IoTデバイス・サービス間通信などのAPIクライアントの身元を検証するために使われ、全プランがCloudflare管理のCAでmTLSを利用でき、Enterpriseは最大5つの独自CAをアップロードできる"
+        },
+        {
+          "text": "mTLSはEnterpriseプラン専用の機能であり、Cloudflare管理CAを含めFree・Pro・Businessプランでは一切設定できない",
+          "wrongFeedback": "Cloudflare管理CAによるmTLSは全プランで設定できます。Enterprise専用というのは誤りです。"
+        },
+        {
+          "text": "独自CAのアップロードはすべてのプランで無制限に行うことができ、Enterpriseに限らずいくつでもCAを登録できる",
+          "wrongFeedback": "独自CAのアップロードはEnterprise限定で、標準では最大5つまでという上限があります。無制限ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "mTLSは、モバイルアプリ・IoTデバイス・サービス間通信といったAPIクライアントの身元を検証するために使われます。gRPCベースのAPIにも対応しています。全プランでCloudflare管理のCA(認証局)を使ったmTLSを設定でき、Enterpriseプランではさらに最大5つの独自(非Cloudflare)CAをアップロードできます。上限を引き上げたい場合はaccount teamに問い合わせます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/mtls/",
+      "hint": "「証明書の発行元」を、Cloudflareに任せるか自前で用意するかという2つの選択肢を考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "mTLSのCA",
+          "columns": [
+            { "heading": "Cloudflare管理CA", "items": ["全プランで利用可"] },
+            { "heading": "独自CA(BYO)", "items": ["Enterprise限定・最大5つ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-010",
+      "category": "api-shield",
+      "difficulty": "intermediate",
+      "question": "API ShieldのJWT検証設定を構成する2つの要素に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "JWTの署名アルゴリズムを指定する設定と、JWTの有効期限の秒数を指定する設定の2つのみで構成される",
+          "wrongFeedback": "アルゴリズムや有効期限の指定という単位ではなく、JWKSを含む「トークン検証設定」と、対象ホスト名・エンドポイントを指定する「JWT検証ルール」という2つの要素で構成されます。"
+        },
+        {
+          "text": "JWTを検証するCloudflareのリージョンを指定する設定と、検証結果を通知するWebhook URLを指定する設定の2つで構成される",
+          "wrongFeedback": "リージョン指定やWebhook URLの設定というものはありません。JWT検証設定は「トークン検証設定」と「JWT検証ルール」の2つで構成されます。"
+        },
+        {
+          "text": "JWT発行者の公開鍵セット(JWKS)を含む「トークン検証設定」と、どのホスト名・エンドポイントを検証するかを指定する「JWT検証ルール」という2つの要素で構成される"
+        },
+        {
+          "text": "検証対象のCookie名を指定する設定と、検証対象のヘッダー名を指定する設定という、送信元の種類ごとに完全に独立した2つの設定で構成される",
+          "wrongFeedback": "ヘッダーかCookieかの指定は「トークン検証設定」の中の1項目であり、独立した2つの設定という説明は誤りです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "API ShieldのJWT検証は、JWT発行者の公開鍵セット(JWKS)とJWTの所在場所(ヘッダーまたはCookieとその名前)を含む「トークン検証設定」と、どのホスト名・エンドポイントにルールを適用するか、どのトークン検証設定を使うか、トークン不在時の扱い(Ignore・Mark as non-compliant)、非準拠リクエストへのアクションを指定する「JWT検証ルール」という2つの要素で構成されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/#process",
+      "hint": "「鍵をどこから持ってくるか」を決める設定と、「どこに適用するか」を決める設定の2つに分かれていると考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "JWT検証の2要素",
+          "items": [
+            { "text": "トークン検証設定", "sub": "JWKS・所在場所(ヘッダー/Cookie)" },
+            { "text": "JWT検証ルール", "sub": "対象ホスト名・エンドポイント・アクション" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-011",
+      "category": "api-shield",
+      "difficulty": "advanced",
+      "question": "クライアントがJWTを様々な場所に格納して送信してくる可能性を踏まえると、API ShieldのJWT検証における既知の制限事項として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "JWT検証はEndpoint Managementへの登録に関わらず、ゾーン内のすべてのエンドポイントに対して自動的に適用される",
+          "wrongFeedback": "JWT検証はEndpoint Managementに登録された(host・method・pathが揃った)エンドポイントに対してのみ機能します。自動的にすべてに適用されるわけではありません。"
+        },
+        {
+          "text": "JWT検証は`Bearer`プレフィックス付きのJWTにのみ対応しており、プレフィックスなしのJWTは検証対象外になる",
+          "wrongFeedback": "API Shieldは`Bearer`プレフィックスの有無に関わらずJWTを検証します。プレフィックスなしが対象外になるわけではありません。"
+        },
+        {
+          "text": "JWT検証を有効にすると、`OPTIONS`のプリフライトリクエストも他のメソッドと全く同じ基準でJWTの有無を厳格にチェックされる",
+          "wrongFeedback": "`OPTIONS`のプリフライトリクエストは認証情報を含まないのが通常のため、ブロックを避けたい場合はルールに`or http.request.method eq \"OPTIONS\"`を追加することが推奨されています。"
+        },
+        {
+          "text": "JWT検証はクライアントのリクエストヘッダーまたはCookieに含まれるJWTのみを対象とし、`POST`ボディに含まれるJWTは検証できない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "API ShieldのJWT検証は、クライアントのリクエストヘッダーまたはCookieに含まれるJWTのみを検証対象とし、`POST`ボディに含まれるJWTは現時点で検証できません(この制限の緩和を希望する場合はaccount teamにフィードバックするよう案内されています)。また、JWT検証はEndpoint Managementに登録された(host・method・pathの揃った)エンドポイントに対してのみ機能します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/#limitations",
+      "hint": "JWTが「どこに載っているか」という点で、対応している場所と対応していない場所があることを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "JWT検証が対応する場所",
+          "columns": [
+            { "heading": "対応", "items": ["リクエストヘッダー", "Cookie"] },
+            { "heading": "非対応", "items": ["POSTボディ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-012",
+      "category": "api-shield",
+      "difficulty": "advanced",
+      "question": "1つのリクエストに、異なる発行者(Identity Provider)の2つのJWTが含まれることを期待し、両方を検証したい場合の正しい設定方法はどれですか？",
+      "options": [
+        {
+          "text": "2つの異なるトークン検証設定を作成し、検証ルールでその両方を選択したうえで、複数設定の検証挙動として「Validate all configurations」を選択する"
+        },
+        {
+          "text": "1つのトークン検証設定に、2つの発行者のJWKSをカンマ区切りでまとめて貼り付ければよく、ルールは1つのままでよい",
+          "wrongFeedback": "JWKSをカンマ区切りでまとめる方法ではありません。発行者ごとに別々のトークン検証設定を作成する必要があります。"
+        },
+        {
+          "text": "この構成はAPI Shieldでは実現できず、アプリケーション側(オリジン)で2つ目のJWTを個別に検証する必要がある",
+          "wrongFeedback": "API Shield側で実現できます。2つのトークン検証設定を作成し、「Validate all configurations」を選択することで両方を検証できます。"
+        },
+        {
+          "text": "2つ目のJWTは検証ルールの対象外として自動的に無視されるため、特別な設定は不要である",
+          "wrongFeedback": "自動的に無視されるわけではありません。両方を検証したい場合は、2つのトークン検証設定と「Validate all configurations」の選択が必要です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "異なる発行者の2つのJWTを1つのリクエストで検証したい場合は、まず2つの異なるトークン検証設定を作成します。次に、検証ルールでその両方の設定を選択し、「複数設定の検証挙動(Validation behavior for multiple configurations)」として「Validate all configurations」を選ぶことで、両方のJWTを検証できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/#validate-two-jwts-with-different-identity-providers-on-a-single-request",
+      "hint": "1つのルールで「どちらか一方」ではなく「両方とも」検証させるための、専用の選択肢があると考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "2つのJWTを検証する手順",
+          "steps": [
+            { "text": "発行者ごとに2つのトークン検証設定を作成" },
+            { "text": "検証ルールで両方の設定を選択" },
+            { "text": "Validate all configurationsを選択" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-013",
+      "category": "api-shield",
+      "difficulty": "intermediate",
+      "question": "API Discoveryが`api.example.com/profile/238`と`api.example.com/profile/392`のようなリクエストパスをどのように扱うかに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "これらは完全に別々のエンドポイントとして永久に個別管理され、まとめて扱う仕組みは提供されない",
+          "wrongFeedback": "API Discoveryはパスの正規化によって、これらを`api.example.com/profile/*`のような1つのエンドポイントにまとめます。"
+        },
+        {
+          "text": "パスの正規化(path normalization)によって、これらを`api.example.com/profile/*`のような1つのエンドポイントとしてまとめる"
+        },
+        {
+          "text": "`{var1}`のような数字のパスパラメータを含むエンドポイントはすべて自動的にAPI Discoveryの対象から除外される",
+          "wrongFeedback": "数字のパスパラメータを含むエンドポイントが除外されるわけではありません。むしろパス正規化によって`{customer_identifier}`のような変数として扱われ、マップに含まれます。"
+        },
+        {
+          "text": "これらのパスは、末尾の数字部分をそのままハッシュ化した新しいIDに置き換えて記録される",
+          "wrongFeedback": "末尾をハッシュ化するわけではなく、`*`のようなワイルドカードとして正規化してまとめます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "API Discoveryは、似たようなリクエストパスをパス正規化によってグルーピングします。例えば`api.example.com/profile/238`と`api.example.com/profile/392`は、どちらもユーザープロフィールの取得という同じ目的を持つため、`api.example.com/profile/*`のような1つのエンドポイントとしてまとめられます。同様に、同じエンドポイント群を持つ複数のサブドメインも1つにまとめられます。API Discoveryはセッション識別子ベースと機械学習ベースの2つの手法を組み合わせており、Enterpriseプラン限定の機能です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/api-discovery/",
+      "hint": "似た目的を持つ複数のパスを、1つの「型」にまとめる仕組みを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "パス正規化の例",
+          "steps": [
+            { "text": "/profile/238 と /profile/392" },
+            { "text": "パス正規化" },
+            { "text": "/profile/* として1つに集約" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-014",
+      "category": "api-shield",
+      "difficulty": "advanced",
+      "question": "Sequence Analyticsの「precedence score(優先順位スコア)」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "このスコアはリクエストのHTTPステータスコードをそのまま平均した値であり、確率とは無関係な単純な集計値である",
+          "wrongFeedback": "HTTPステータスコードの平均ではありません。precedence scoreは直近24時間のデータを使って推定される確率的なスコアです。"
+        },
+        {
+          "text": "このスコアは過去1年間の全トラフィックを対象に、月次バッチ処理で1回だけ計算される固定値である",
+          "wrongFeedback": "過去1年間の月次バッチではなく、直近24時間のデータを使って継続的に推定される確率的なスコアです。"
+        },
+        {
+          "text": "このスコアはある操作が、シーケンス内の他の操作より先行して発生する可能性の高さを、直近24時間のデータをもとに確率として推定したものである"
+        },
+        {
+          "text": "このスコアはCloudflareの顧客が手動で入力する「信頼できるシーケンス」の登録数をそのままカウントしたものである",
+          "wrongFeedback": "手動登録数のカウントではありません。precedence scoreは自動的に推定される確率的なスコアです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "precedence scoreは、シーケンス内のある操作が他の操作より先行して発生する可能性の高さを表す確率的なスコアで、直近24時間のデータをもとに推定されます。スコアが高いシーケンスほど、そこに含まれるAPIリクエストが一緒に、かつその順序で発生する可能性が高いことを意味します。シーケンスは最大9つの操作の長さに制限されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/sequence-analytics/#sequence-scoring",
+      "hint": "「固定的に決められた値」なのか、「直近のトラフィックから継続的に推定される確率」なのかを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "precedence scoreの算出",
+          "steps": [
+            { "text": "直近24時間のリクエストシーケンスを収集" },
+            { "text": "操作の先行発生確率を推定" },
+            { "text": "高スコアのシーケンスを提示" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-015",
+      "category": "api-shield",
+      "difficulty": "intermediate",
+      "question": "Sequence Mitigationの「positive security model」と「negative security model」の違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "positive security modelはすべてのリクエストを常に許可するモデルであり、negative security modelはすべてのリクエストを常に拒否するモデルである",
+          "wrongFeedback": "「常に許可」「常に拒否」という単純な二択ではありません。positiveは期待するパターン以外を拒否し、negativeは既知の悪性パターンだけを拒否します。"
+        },
+        {
+          "text": "positive security modelとnegative security modelはどちらもEnterprise Sequence Mitigationの正式リリース後にのみ利用可能で、現在はまだ選択できない",
+          "wrongFeedback": "Sequence Mitigationは現在Betaですが、positive・negativeいずれのモデルも現時点で利用できます。"
+        },
+        {
+          "text": "positive security modelはネットワークレイヤーの攻撃を、negative security modelはアプリケーションレイヤーの攻撃を、それぞれ別々に対象とする仕組みである",
+          "wrongFeedback": "レイヤー別の区分ではありません。両者ともAPIリクエストの「順序パターン」に着目したモデルで、期待パターン以外を拒否するか、既知の悪性パターンを拒否するかで区別されます。"
+        },
+        {
+          "text": "positive security modelは期待する順序パターン以外のリクエストを行うユーザーをブロックし、negative security modelは既知の悪性なAPI呼び出しシーケンスを行うユーザーをブロックする"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "positive security modelは、期待する順序パターンの外にあるAPIリクエストを行うユーザーをブロックするモデルです。negative security modelは、既知の悪性なAPI呼び出しシーケンスを行うユーザーをブロックするモデルで、正しいpositiveモデルを設計している間の暫定的な対処として使われることもあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/sequence-mitigation/#process",
+      "hint": "「期待する動きから外れたら止める」のか「知っている悪い動きをしたら止める」のか、着眼点の違いを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "positive と negative security model",
+          "columns": [
+            { "heading": "Positive", "items": ["期待パターン以外を拒否"] },
+            { "heading": "Negative", "items": ["既知の悪性パターンを拒否"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-016",
+      "category": "api-shield",
+      "difficulty": "advanced",
+      "question": "Cloudflareダッシュボードで作成したSequence Mitigationルールのデフォルトのルックバック(振り返り)条件に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "同一セッション識別子による2つのリクエストが、10リクエスト以内かつ10分以内の間隔であれば、シーケンスとして一致すると判定される"
+        },
+        {
+          "text": "ルックバック条件はリクエスト数のみで判定され、時間経過による制限は一切存在しない",
+          "wrongFeedback": "時間による制限も存在します。同一セッション識別子による2つのリクエストは10分以内でなければシーケンスとして一致しません。"
+        },
+        {
+          "text": "ルックバック条件は時間経過のみで判定され、リクエスト数による制限は一切存在しない",
+          "wrongFeedback": "リクエスト数による制限も存在します。エンドポイントは互いに10リクエスト以内に含まれている必要があります。"
+        },
+        {
+          "text": "ルックバックの上限値はすべての顧客に対して固定であり、account teamに相談しても変更することはできない",
+          "wrongFeedback": "デフォルト値が十分でない場合は、account teamに相談することでルックバック条件の調整を依頼できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflareダッシュボードで作成したSequence Mitigationルールは、Endpoint Management内のエンドポイントに対する同一セッション識別子のリクエストが、互いに10リクエスト以内、かつ10分以内の間隔であれば、シーケンスの一致と判定するルックバックウィンドウを使用します。このデフォルト値が不十分な場合は、account teamに相談することで調整を依頼できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/sequence-mitigation/#process",
+      "hint": "「何回前まで」と「何分前まで」という2つの軸で振り返り範囲が制限されていることを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "デフォルトのルックバック条件",
+          "columns": [
+            { "heading": "リクエスト数", "items": ["10リクエスト以内"] },
+            { "heading": "時間", "items": ["10分以内"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-017",
+      "category": "api-shield",
+      "difficulty": "advanced",
+      "question": "Volumetric Abuse Detection(大量アクセス検出)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "すべての顧客のトラフィックを1つの共通モデルで学習し、業界共通の固定しきい値をレート制限として提示する機能である",
+          "wrongFeedback": "共通の固定しきい値ではなく、顧客ごと・セッションやエンドポイントごとに適応的な推奨値を算出する仕組みです。"
+        },
+        {
+          "text": "セッション・エンドポイントごとに教師なし学習で適応的なレート制限の推奨値を算出する機能で、統計的に十分なデータを得るために直近7日間のいずれかの24時間で少なくとも50件の異なるセッションが必要であり、Enterprise限定の機能である"
+        },
+        {
+          "text": "この機能はFreeプランを含むすべてのプランで利用でき、追加の契約なしにすぐに使い始められる",
+          "wrongFeedback": "Volumetric Abuse DetectionはEnterprise限定の機能です。すべてのプランで利用できるわけではありません。"
+        },
+        {
+          "text": "推奨値の算出には教師あり学習が使われ、Cloudflareが事前にラベル付けした攻撃データセットとの一致度でスコアを出す",
+          "wrongFeedback": "教師あり学習・事前ラベル付けデータセットとの一致度ではなく、教師なし学習によって顧客ごとのトラフィックから適応的に推奨値を算出します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Volumetric Abuse Detectionは、セッション・エンドポイントごとに教師なし学習を使って適応的なレート制限の推奨値(p50・p90・p99などのパーセンタイル)を算出する機能です。統計的に意味のある推奨を行うため、直近7日間のいずれかの24時間の期間で少なくとも50件の異なるセッションが必要とされており、Enterpriseプラン限定の機能です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/volumetric-abuse-detection/",
+      "hint": "「全顧客共通のルール」ではなく、「その顧客・そのエンドポイントの実際のトラフィックから学ぶ」仕組みだと考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Volumetric Abuse Detectionの仕組み",
+          "steps": [
+            { "text": "セッション・エンドポイントごとのトラフィックを収集", "sub": "24時間で50セッション以上必要" },
+            { "text": "教師なし学習で分析" },
+            { "text": "適応的なレート制限推奨値を提示" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as-018",
+      "category": "api-shield",
+      "difficulty": "intermediate",
+      "question": "API Shieldのプランごとの制限に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Freeプランは保存済みエンドポイント数・アップロード可能なスキーマ数のいずれにも上限がなく、上限が課されるのはEnterpriseプランのみという逆転した仕様になっている",
+          "wrongFeedback": "Freeプランにも保存済みエンドポイント100・スキーマ5・合計スキーマサイズ200kBという制限があります。制限がないわけではありません。"
+        },
+        {
+          "text": "API Shieldを契約していないEnterpriseプランのルールアクションは`Log`のみが選択可能で、より強い`Block`アクションは追加契約なしには選択できない",
+          "wrongFeedback": "API Shieldを契約していないEnterpriseプランでも`Log`と`Block`の両方を選択できます。`Block`のみに制限されているのはFree・Pro・Businessプランです。"
+        },
+        {
+          "text": "Free・Pro・Businessプランのルールアクションは`Block`のみに限られるが、API Shieldを契約したEnterpriseプランでは保存済みエンドポイント数が10,000まで拡大される"
+        },
+        {
+          "text": "保存済みエンドポイント数の上限はFree・Pro・Business・Enterpriseのどのプランでも一律で同じ500であり、プランによる差はまったく存在しない",
+          "wrongFeedback": "プランによって上限は異なります。Free 100・Pro 250・Business 500・Enterprise(API Shieldなし)500・Enterprise(API Shieldあり)10,000です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Free・Pro・Businessプランのルールアクションは`Block`のみに限られますが、API Shieldを契約していないEnterpriseプランでは`Log`または`Block`を選択できます。保存済みエンドポイント数は、Free 100・Pro 250・Business 500・API Shieldなしのenterprise 500ですが、API Shieldを契約したEnterpriseプランでは10,000まで拡大されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/plans/",
+      "hint": "「アクションの選択肢の広さ」と「保存できるエンドポイント数」の両方が、プランに応じて段階的に広がっていくことを考えましょう。",
+      "tags": ["api-shield", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プラン別の主な制限",
+          "columns": [
+            { "heading": "Free/Pro/Business", "items": ["Blockのみ", "100〜500エンドポイント"] },
+            { "heading": "Enterprise(API Shieldあり)", "items": ["Log/Block選択可", "10,000エンドポイント"] }
+          ]
+        }
+      ]
     }
   ]
 }
