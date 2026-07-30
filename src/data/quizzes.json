@@ -23075,6 +23075,705 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ch-001",
+      "category": "cache",
+      "difficulty": "beginner",
+      "question": "CloudflareのCDNがデフォルトでキャッシュするコンテンツに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "CSS・JS・画像などの約56種類の拡張子を持つファイルやrobots.txtはデフォルトでキャッシュされるが、HTMLやJSONはデフォルトではキャッシュされない"
+        },
+        {
+          "text": "HTMLを含め、Content-Typeが`text/`で始まるレスポンスはすべてデフォルトでキャッシュされる",
+          "wrongFeedback": "HTMLはデフォルトではキャッシュされません。CloudflareはMIMEタイプではなく拡張子ベースでキャッシュ可否を判定します。"
+        },
+        {
+          "text": "デフォルトでキャッシュされるかどうかはMIMEタイプのみで判定され、URLの拡張子は一切考慮されない",
+          "wrongFeedback": "逆です。Cloudflareは拡張子ベースでキャッシュ可否を判定し、MIMEタイプでは判定しません。"
+        },
+        {
+          "text": "robots.txtはセキュリティ上の理由から、Cache Rulesで明示的に許可しない限り絶対にキャッシュされない",
+          "wrongFeedback": "robots.txtはデフォルトでキャッシュされる対象に含まれています。明示的な許可は不要です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflareは拡張子ベースでキャッシュ可否を判定しており、CSS・JS・画像・動画など約56種類の拡張子を持つファイルと、サイトのrobots.txtはデフォルトでキャッシュされます。一方、HTMLやJSONはデフォルトではキャッシュされず、キャッシュしたい場合はCache Rulesで明示的に設定する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/concepts/default-cache-behavior/",
+      "hint": "「静的なアセットファイル」と「動的になりがちなページ本体」とで、デフォルトの扱いが分かれていると考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "デフォルトのキャッシュ対象",
+          "columns": [
+            { "heading": "デフォルトでキャッシュ", "items": ["約56種類の拡張子", "robots.txt"] },
+            { "heading": "デフォルトで非キャッシュ", "items": ["HTML", "JSON"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-002",
+      "category": "cache",
+      "difficulty": "beginner",
+      "question": "Cloudflareがレスポンスをキャッシュしない条件として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "レスポンスのボディサイズが1MBを超えている場合は、他の条件に関わらず常にキャッシュされない",
+          "wrongFeedback": "1MBというサイズ自体を理由にキャッシュされないという仕様はありません。キャッシュされない主な条件は、Cache-Controlヘッダーの指定・Set-Cookieヘッダーの存在・GET以外のメソッドです。"
+        },
+        {
+          "text": "`Cache-Control`が`private`・`no-store`・`no-cache`・`max-age=0`のいずれかである場合、`Set-Cookie`ヘッダーが存在する場合、またはリクエストメソッドが`GET`以外の場合はキャッシュされない"
+        },
+        {
+          "text": "リクエストのUser-Agentがボットだと判定された場合、コンテンツは一律でキャッシュされない",
+          "wrongFeedback": "User-Agentがボットかどうかは、レスポンスをキャッシュするかどうかの判定基準ではありません。"
+        },
+        {
+          "text": "オリジンのレスポンスに`Cache-Control`ヘッダーが一切含まれていない場合、Cloudflareは常にキャッシュを完全にスキップする",
+          "wrongFeedback": "`Cache-Control`ヘッダーがなくても、ステータスコードに基づいてキャッシュされることがあります。常にスキップされるわけではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflareは、`Cache-Control`ヘッダーが`private`・`no-store`・`no-cache`・`max-age=0`のいずれかに設定されている場合、`Set-Cookie`ヘッダーが存在する場合、またはHTTPリクエストメソッドが`GET`以外の場合、レスポンスをキャッシュしません。逆に`Cache-Control`ヘッダーがなくても、ステータスコードに基づいてデフォルトでキャッシュされることがあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/concepts/default-cache-behavior/",
+      "hint": "「明示的にキャッシュ禁止と言われた場合」「個人情報が含まれそうな場合」「安全に繰り返せない操作の場合」という3つの観点を考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "キャッシュされない主な条件",
+          "items": [
+            { "text": "Cache-Control: private/no-store/no-cache/max-age=0" },
+            { "text": "Set-Cookieヘッダーが存在" },
+            { "text": "GET以外のリクエストメソッド" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-003",
+      "category": "cache",
+      "difficulty": "intermediate",
+      "question": "Cloudflareのキャッシュ可能なファイルサイズの上限に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Free・Pro・Businessプランでは上限がなく、Enterpriseプランのみ512MBという上限が課される",
+          "wrongFeedback": "説明が逆です。Free・Pro・Businessプランには512MBという上限があり、Enterpriseプランの方がより大きい5GBという上限になります。"
+        },
+        {
+          "text": "すべてのプランで共通して1GBという上限が設定されており、プランによる違いは存在しない",
+          "wrongFeedback": "プランによって上限は異なります。Free・Pro・Businessは512MB、Enterpriseはデフォルト5GBです。"
+        },
+        {
+          "text": "Free・Pro・Businessプランでは512MB、Enterpriseプランではデフォルトで5GBという上限があり、Enterpriseはaccount teamに相談すれば引き上げ可能である"
+        },
+        {
+          "text": "キャッシュ可能なファイルサイズの上限は、Free・Pro・Businessでは無制限だが、Enterpriseでは逆に100MBに制限される",
+          "wrongFeedback": "そのような逆転した仕様はありません。Free・Pro・Businessは512MB、Enterpriseはデフォルト5GBという上限です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflareがキャッシュできるファイルサイズの上限は、Free・Pro・Businessプランで512MB、Enterpriseプランではデフォルトで5GBです。Enterpriseプランでこの上限をさらに引き上げたい場合は、account teamに問い合わせる必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/concepts/default-cache-behavior/#cacheable-size-limits",
+      "hint": "有料プランが上がるほど、キャッシュに許容されるファイルの大きさも段階的に大きくなると考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "キャッシュ可能なファイルサイズ上限",
+          "columns": [
+            { "heading": "Free/Pro/Business", "items": ["512MB"] },
+            { "heading": "Enterprise(デフォルト)", "items": ["5GB"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-004",
+      "category": "cache",
+      "difficulty": "beginner",
+      "question": "Cache Rulesの「Cache Eligibility(キャッシュ適格性)」設定に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "設定できる選択肢は`Bypass cache`のみで、`Eligible for cache`という選択肢は存在しない",
+          "wrongFeedback": "`Eligible for cache`という選択肢も存在します。`Bypass cache`のみではありません。"
+        },
+        {
+          "text": "`Bypass cache`を選ぶとキャッシュが完全に無効化されるだけでなく、そのリクエストにマッチする以降のすべてのRules製品の処理も停止する",
+          "wrongFeedback": "`Bypass cache`はキャッシュを無効化するだけであり、他のRules製品の処理を停止させる効果はありません。"
+        },
+        {
+          "text": "`Eligible for cache`を選択すると、Edge TTLやBrowser TTLなどの詳細設定は一切変更できなくなる",
+          "wrongFeedback": "`Eligible for cache`を選択すると、むしろEdge TTL・Browser TTL・Cache Keyなどの詳細設定が変更可能になります。"
+        },
+        {
+          "text": "`Bypass cache`はマッチしたリクエストをキャッシュしない設定で、`Eligible for cache`はマッチしたリクエストをCloudflareがキャッシュしようと試みる設定である"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cache Rulesの「Cache Eligibility」には`Bypass cache`と`Eligible for cache`の2つの選択肢があります。`Bypass cache`はマッチしたリクエストをキャッシュしない設定、`Eligible for cache`はマッチしたリクエストをCloudflareがキャッシュしようと試みる設定で、これを選ぶとEdge TTL・Browser TTL・Cache Keyなどの詳細設定が可能になります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#cache-eligibility",
+      "hint": "「キャッシュしない」と「キャッシュを試みる(そして詳細設定できる)」の2択だと考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Cache Eligibilityの2つの選択肢",
+          "columns": [
+            { "heading": "Bypass cache", "items": ["キャッシュしない"] },
+            { "heading": "Eligible for cache", "items": ["キャッシュを試みる", "詳細設定が可能に"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-005",
+      "category": "cache",
+      "difficulty": "intermediate",
+      "question": "Cache RulesのEdge TTL設定における3つのモードの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Cache-Controlヘッダーがあればそれに従い、なければキャッシュをバイパスするモード、Cache-Controlヘッダーがあればそれに従い、なければCloudflareのデフォルト挙動を使うモード、Cache-Controlヘッダーを無視して指定したTTLを使うモードの3つ"
+        },
+        {
+          "text": "常にCache-Controlヘッダーを完全に無視するモード、常にCache-Controlヘッダーに絶対服従するモード、両者を50%ずつランダムに切り替えるモードの3つ",
+          "wrongFeedback": "そのようなモードはありません。実際の3モードはCache-Controlヘッダーの有無で挙動を分岐させる仕組みになっています。"
+        },
+        {
+          "text": "TTLを秒単位で指定するモード、分単位で指定するモード、時間単位で指定するモードという、単位の違いだけの3つ",
+          "wrongFeedback": "単位の違いではありません。Cache-Controlヘッダーの扱い方(従う・バイパス・無視)によって区別される3つのモードです。"
+        },
+        {
+          "text": "オリジンが応答するまで待つモード、応答を待たずにキャッシュ済みコンテンツを返すモード、両方を同時に返すモードの3つ",
+          "wrongFeedback": "そのようなモードはありません。Edge TTLの3モードはCache-Controlヘッダーの扱い方によって区別されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cache RulesのEdge TTLには、Cache-Controlヘッダーがあればそれに従い、なければキャッシュをバイパスする`bypass_by_default`、Cache-Controlヘッダーがあればそれに従い、なければCloudflareのデフォルトのキャッシュ挙動を使う`respect_origin`、Cache-Controlヘッダーを無視して指定したTTLを使う`override_origin`という3つのモードがあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#edge-ttl",
+      "hint": "「ヘッダーに従う」「ヘッダーがなければどうするか」「ヘッダーを完全に無視する」という3段階を考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Edge TTLの3モード",
+          "columns": [
+            { "heading": "bypass_by_default", "items": ["なければバイパス"] },
+            { "heading": "respect_origin", "items": ["なければデフォルト挙動"] },
+            { "heading": "override_origin", "items": ["常に指定TTLを使用"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-006",
+      "category": "cache",
+      "difficulty": "beginner",
+      "question": "Cache RulesのBrowser TTL設定に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Browser TTLはCloudflareのエッジキャッシュにおける保持期間を制御する設定であり、訪問者のブラウザキャッシュとは無関係である",
+          "wrongFeedback": "Browser TTLはブラウザキャッシュの保持期間を制御する設定です。エッジキャッシュの保持期間を制御するのはEdge TTLです。"
+        },
+        {
+          "text": "設定できる選択肢は`Bypass cache`・`Respect origin`・`Override origin`の3つで、`Override origin`を選ぶとブラウザにキャッシュさせる期間を上書きできる"
+        },
+        {
+          "text": "Browser TTLの値をどれだけ長く設定しても、Cloudflare側のキャッシュをパージすれば訪問者のブラウザキャッシュも同時に消去される",
+          "wrongFeedback": "Cloudflare側のキャッシュをパージしても、訪問者のブラウザキャッシュは消去されません。Browser TTLで指定した期間、ブラウザは独自にキャッシュを保持し続けます。"
+        },
+        {
+          "text": "Browser TTLは常にオリジンの`Cache-Control`ヘッダーの値をそのまま使い、Cache Rulesで上書きすることは一切できない",
+          "wrongFeedback": "Cache Rulesの`Override origin`を選べば、オリジンの値を無視してBrowser TTLを上書きできます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Browser TTLは、訪問者のブラウザがコンテンツをどれだけの期間キャッシュとして利用可能とみなすかを制御する設定です。選択肢は`Bypass cache`(キャッシュしない)・`Respect origin`(オリジンの値に従う)・`Override origin`(オリジンの値を上書きして指定した期間を使う)の3つです。Cloudflare側のキャッシュをパージしても、訪問者のブラウザキャッシュは消去されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#browser-ttl",
+      "hint": "「Cloudflareのエッジ」ではなく「訪問者のブラウザ自身」が保持する期間を指す設定だと考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Browser TTLの3選択肢",
+          "columns": [
+            { "heading": "Bypass cache", "items": ["ブラウザにキャッシュさせない"] },
+            { "heading": "Respect origin", "items": ["オリジンの値に従う"] },
+            { "heading": "Override origin", "items": ["指定期間で上書き"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-007",
+      "category": "cache",
+      "difficulty": "intermediate",
+      "question": "複数のCache Ruleが同じリクエストにマッチした場合の挙動に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Cache Rulesは最初にマッチした1つのルールのみが適用され、それ以降のルールは一切評価されない",
+          "wrongFeedback": "最初のルールだけが適用されるわけではありません。Cache Rulesはスタック可能で、複数のマッチするルールが組み合わさって適用されます。"
+        },
+        {
+          "text": "同じ設定項目について複数のルールが異なる値を設定していた場合、数値が小さい方の値が常に優先される",
+          "wrongFeedback": "数値の大小による優先ではありません。同じ設定項目が競合する場合は、最後にマッチしたルールの値が優先されます。"
+        },
+        {
+          "text": "Cache Rulesはスタック可能で、複数のマッチするルールの設定が組み合わさって適用され、同じ設定項目が競合する場合は最後にマッチしたルールの値が優先される"
+        },
+        {
+          "text": "複数のルールがマッチした場合、その時点でエラーとなりどのルールも適用されない",
+          "wrongFeedback": "エラーにはなりません。複数のルールがマッチした場合は、それぞれの設定が組み合わさって適用されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cache Rulesはスタック可能で、同じリクエストに複数のルールがマッチした場合、それぞれのルールで設定された機能がすべて組み合わさって適用されます。ただし、同じ設定項目(例えばBypass cacheかEligible for cacheか)について複数のルールが競合する値を設定していた場合は、最後にマッチしたルールの値が優先されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/order/",
+      "hint": "「1つだけ選ばれる」のではなく「複数が積み重なる、ただし矛盾する部分は最後の指示が勝つ」という仕組みを考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "複数Cache Ruleのマッチ",
+          "steps": [
+            { "text": "マッチする複数のルールの設定を組み合わせ" },
+            { "text": "同じ項目が競合する場合" },
+            { "text": "最後にマッチしたルールの値が優先" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-008",
+      "category": "cache",
+      "difficulty": "intermediate",
+      "question": "Cache Rulesと、レガシーのPage Rulesおよびゾーン全体のキャッシュ設定との優先順位に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "同じパスに対してキャッシュ用のPage Rulesが設定されている場合、常にPage Rulesの設定が優先され、Cache Rulesの設定は無視される",
+          "wrongFeedback": "優先順位が逆です。同じパスに対してPage Rulesが実装されていても、設計上Cache Rulesの方が優先されます。"
+        },
+        {
+          "text": "ゾーン全体で設定したBrowser Cache TTLの値は、個別のCache Ruleで異なる値を設定していても、常にゾーン全体の設定が優先される",
+          "wrongFeedback": "優先順位が逆です。Cache Ruleの方がゾーン全体の設定よりも具体的であるため、マッチするリクエストに対してはCache Ruleの設定が優先されます。"
+        },
+        {
+          "text": "Page RulesとCache Rulesは完全に独立した別々の処理パイプラインで動作するため、互いに優先順位という概念自体が存在しない",
+          "wrongFeedback": "優先順位という概念は存在します。設計上、同じパスに対してはCache RulesがPage Rulesより優先されます。"
+        },
+        {
+          "text": "同じパスに対してキャッシュ用のPage Rulesが設定されていても、設計上Cache Rulesが優先され、またCache Ruleはゾーン全体のキャッシュ設定よりも具体的であるためマッチするリクエストに対して優先される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "同じパスに対してキャッシュ用のPage Rulesが実装されている場合でも、設計上Cache Rulesが優先されます。また、Cache Ruleはゾーン全体のキャッシュ設定タブよりも具体的な設定であるため、マッチするリクエストに対してはCache Ruleの設定がゾーン全体の設定を上書きします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/order/",
+      "hint": "「より具体的な設定」が「より広い範囲の設定」より優先される、という一般的な原則を考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "キャッシュ設定の優先順位",
+          "items": [
+            { "text": "Cache Rules(最優先)" },
+            { "text": "レガシーのPage Rules" },
+            { "text": "ゾーン全体のキャッシュ設定" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-009",
+      "category": "cache",
+      "difficulty": "advanced",
+      "question": "Page RulesからCache Rulesへ移行する際の重要な挙動の違いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Cache RulesはPage Rulesと完全に同じ挙動を持つため、移行の際に特別な追加設定は一切不要である",
+          "wrongFeedback": "完全に同じ挙動ではありません。`Eligible for cache`を選択すると、Page Rulesでは手動有効化が必要だったCache Everything相当の挙動が自動的に有効になるという違いがあります。"
+        },
+        {
+          "text": "Cache Ruleで`Eligible for cache`を選択すると、Page Rulesとは異なり自動的にCache Everything相当の挙動が有効になるため、Page Rules時代と同じ挙動を再現するには「Bypass everything」ルールと「デフォルト拡張子のみキャッシュ」ルールを、この順番で作成する必要がある"
+        },
+        {
+          "text": "Page Rules時代と同じ挙動を再現するための2つのルールは、「デフォルト拡張子のみキャッシュ」ルールを先に、「Bypass everything」ルールを後に作成しなければならない",
+          "wrongFeedback": "順番が逆です。「Bypass everything」ルールを先に、「デフォルト拡張子のみキャッシュ」ルールを後に作成する必要があります。"
+        },
+        {
+          "text": "Cache Ruleで`Eligible for cache`を選択しても、Cache Everything相当の挙動を有効にするには別途明示的なチェックボックスを追加でオンにする必要がある",
+          "wrongFeedback": "追加のチェックボックス操作は不要です。`Eligible for cache`を選択した時点でCache Everything相当の挙動が自動的に有効になります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cache Ruleで`Eligible for cache`を選択すると、Page Rulesとは異なり、Cache Everythingに相当する挙動が自動的に有効になります(Page Rulesでは手動で有効化する必要がありました)。Page Rules時代と同じ挙動(デフォルトの拡張子のみキャッシュ)を再現したい場合は、「Bypass everything」ルールを先に、「デフォルト拡張子のみキャッシュ対象とする」ルールを後に、この順番で作成する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/page-rules-migration/",
+      "hint": "「デフォルトで何が有効になるか」という前提が、Page RulesとCache Rulesで変わっていることに注目しましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Page Rules相当の挙動を再現する手順",
+          "steps": [
+            { "text": "1. Bypass everythingルールを作成" },
+            { "text": "2. デフォルト拡張子のみキャッシュ対象のルールを作成" },
+            { "text": "Page Rules時代と同じ挙動を再現" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-010",
+      "category": "cache",
+      "difficulty": "advanced",
+      "question": "カスタマイズしていない場合のデフォルトのキャッシュキーを構成する要素として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`http.request.uri.path`が示すURLのパス部分のみで構成され、スキームやホスト名、クエリ文字列は一切含まれない",
+          "wrongFeedback": "パス部分のみではありません。スキーム・ホスト・URI・クエリ文字列を含むフルURLに加え、`Origin`ヘッダーや一部のルーティングヘッダーも含まれます。"
+        },
+        {
+          "text": "リクエストの`Cookie`ヘッダーを含むすべてのヘッダーが無条件にキャッシュキーへ含まれる",
+          "wrongFeedback": "すべてのヘッダーとCookieが無条件に含まれるわけではありません。デフォルトではフルURLと一部の特定のヘッダーのみが含まれます。"
+        },
+        {
+          "text": "スキーム・ホスト・URI・クエリ文字列を含むフルURLに加えて、`Origin`リクエストヘッダーや`x-forwarded-host`などのルーティング関連ヘッダーも含まれる"
+        },
+        {
+          "text": "訪問者のIPアドレスがデフォルトのキャッシュキーに常に含まれ、訪問者ごとに個別のキャッシュエントリが作られる",
+          "wrongFeedback": "訪問者のIPアドレスはデフォルトのキャッシュキーには含まれません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "デフォルトのキャッシュキーは、スキーム・ホスト・URI・クエリ文字列を含むフルURLに加えて、`Origin`リクエストヘッダー、メソッドオーバーライド関連のヘッダー、`x-forwarded-host`のようなルーティング関連ヘッダーで構成されます。すべてのヘッダーやCookie、訪問者のIPアドレスがデフォルトで含まれるわけではありません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-keys/",
+      "hint": "「URL全体」に加えて、「ごく一部の特定のヘッダー」だけがデフォルトで対象になっていると考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "デフォルトのキャッシュキーの構成要素",
+          "items": [
+            { "text": "フルURL(スキーム+ホスト+URI+クエリ文字列)" },
+            { "text": "Originヘッダー" },
+            { "text": "一部のルーティング関連ヘッダー" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-011",
+      "category": "cache",
+      "difficulty": "advanced",
+      "question": "細かい粒度でキャッシュエントリを制御したい場合、カスタムキャッシュキーのクエリ文字列に関する設定として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "設定できるのは「クエリ文字列を完全に無視する」の1択のみで、特定のパラメータだけを含める・除外するといった細かい制御はできない",
+          "wrongFeedback": "1択のみではありません。「すべて含める」「すべて含める(特定を除く)」「特定のみ含める」「無視する」など複数の選択肢があります。"
+        },
+        {
+          "text": "カスタムキャッシュキーに含められるクエリ文字列パラメータの数に上限はなく、いくつでも指定できる",
+          "wrongFeedback": "上限があります。カスタムキャッシュキー設定に含められるクエリ文字列パラメータの最大数は100個です。"
+        },
+        {
+          "text": "クエリ文字列に関する設定は、Enterpriseプランを含むすべてのプランで完全に同一の選択肢が提供されている",
+          "wrongFeedback": "選択肢の一部(特定パラメータの除外や指定など)はEnterprise限定であり、すべてのプランで完全に同一ではありません。"
+        },
+        {
+          "text": "「すべてのクエリ文字列パラメータを含める」「特定のパラメータを除いてすべて含める」「特定のパラメータのみ含める」「クエリ文字列を無視する」といった選択肢があり、カスタムキャッシュキーにおけるクエリ文字列パラメータの最大数は100個である"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "カスタムキャッシュキーのクエリ文字列設定には、「すべてのクエリ文字列パラメータを含める」「特定のパラメータを除いてすべて含める」「特定のパラメータのみ含める」「クエリ文字列を無視する」といった選択肢があります(一部はEnterprise限定)。カスタムキャッシュキー設定に含められるクエリ文字列パラメータの最大数は100個です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#cache-key",
+      "hint": "「全部」「全部だけど一部除く」「一部だけ」「無視」という4通りの選択肢と、それに伴う個数の上限を考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "クエリ文字列の設定選択肢",
+          "items": [
+            { "text": "すべて含める" },
+            { "text": "特定を除いてすべて含める(Enterprise)" },
+            { "text": "特定のみ含める(Enterprise)" },
+            { "text": "クエリ文字列を無視する" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-012",
+      "category": "cache",
+      "difficulty": "advanced",
+      "question": "カスタムキャッシュキーに`user-agent`のような「制限付きヘッダー」を含める場合の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`accept`・`accept-encoding`・`referer`・`user-agent`などの制限付きヘッダーは、値を指定せずにヘッダー名だけを登録することはできず、1〜3個の具体的な値を指定する必要がある"
+        },
+        {
+          "text": "制限付きヘッダーであっても、カスタムヘッダーと全く同様に値の指定は完全に任意であり、指定しなくても問題なく登録できる",
+          "wrongFeedback": "制限付きヘッダーは、カスタムヘッダーとは異なり1〜3個の具体的な値の指定が必須です。"
+        },
+        {
+          "text": "制限付きヘッダーは`user-agent`の1種類のみであり、`accept`や`referer`などは制限付きヘッダーには含まれない",
+          "wrongFeedback": "制限付きヘッダーは`user-agent`だけでなく、`accept`・`accept-charset`・`accept-encoding`・`accept-datetime`・`accept-language`・`referer`も含まれます。"
+        },
+        {
+          "text": "制限付きヘッダーをキャッシュキーに含める場合、値の指定数に上限はなく、無制限に値を列挙できる",
+          "wrongFeedback": "無制限ではありません。指定できる値の数は1〜3個までという制限があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`accept`・`accept-charset`・`accept-encoding`・`accept-datetime`・`accept-language`・`referer`・`user-agent`という「制限付きヘッダー」をカスタムキャッシュキーに含める場合、値を指定せずヘッダー名だけを登録することはできず、1〜3個の具体的な値を指定する必要があります。値を指定せずヘッダーの存在有無だけを見たい場合は、別途「Check presence of」オプションを使います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#cache-key",
+      "hint": "「どんなカスタムヘッダーでも自由に登録できる」わけではなく、特定のヘッダーだけ値の指定が必須になっていると考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "通常のヘッダーと制限付きヘッダー",
+          "columns": [
+            { "heading": "通常のカスタムヘッダー", "items": ["値の指定は任意"] },
+            { "heading": "制限付きヘッダー", "items": ["accept・user-agentなど", "1〜3個の値の指定が必須"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-013",
+      "category": "cache",
+      "difficulty": "beginner",
+      "question": "Tiered Cacheの「Tiered Cache Topology(階層のトポロジー)」で選択できる主な種類の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "上位層を1つの固定データセンターに常に指定するSingle Tierと、上位層を持たず常に直接オリジンへ問い合わせるNo Tierという、2種類のトポロジーのみが用意されている",
+          "wrongFeedback": "そのような2種類ではありません。実際にはSmart・Generic Global・Regional・Customといったトポロジーの種類があります。"
+        },
+        {
+          "text": "最適な上位層をCloudflareが自動選択するSmart、全データセンターを上位層として使えるGeneric Global、1〜2リージョンに上位層を絞るRegional、独自構成のCustomがある"
+        },
+        {
+          "text": "無料プラン向けのFree Tiered Cacheと、有料プラン向けのPaid Tiered Cacheという、料金プランに応じた2種類のトポロジーのみが用意されている",
+          "wrongFeedback": "そのような料金別の2種類ではありません。実際にはSmart・Generic Global・Regional・Customといったトポロジーの種類があります。"
+        },
+        {
+          "text": "画像専用のImage Tier、動画専用のVideo Tier、その他すべてのファイル向けのGeneral Tierという、コンテンツ種別ごとの3種類",
+          "wrongFeedback": "コンテンツ種別ごとのトポロジーではありません。実際にはSmart・Generic Global・Regional・Customといったトポロジーの種類があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Tiered Cache Topologyには、Cloudflareが最適な上位層を自動選択するSmart Tiered Cache、全世界のCloudflareデータセンターを上位層として使えるGeneric Global Tiered Cache、上位層が1〜2リージョンに集中している場合に有効なRegional Tiered Cache、Enterprise顧客がaccount teamと連携して独自のトポロジーを組めるCustom Tiered Cacheという種類があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/",
+      "hint": "「自動で最適化」「世界中すべて」「一部リージョンに絞る」「完全にオーダーメイド」という4つの異なるアプローチを考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Tiered Cache Topologyの種類",
+          "items": [
+            { "text": "Smart Tiered Cache", "sub": "自動で最適な上位層を選択" },
+            { "text": "Generic Global Tiered Cache", "sub": "全データセンターが上位層" },
+            { "text": "Regional Tiered Cache", "sub": "1〜2リージョンに集中" },
+            { "text": "Custom Tiered Cache", "sub": "Enterprise専用の独自構成" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-014",
+      "category": "cache",
+      "difficulty": "intermediate",
+      "question": "Smart Tiered Cacheの「クラウドリージョンヒント」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "クラウドリージョンヒントはEnterpriseプラン専用の有料機能であり、他のプランでは一切利用できない",
+          "wrongFeedback": "クラウドリージョンヒントはFree・Pro・Business・Enterpriseのすべてのプランで追加費用なしに利用できます。"
+        },
+        {
+          "text": "対応しているのはAWSのみであり、他のクラウド事業者(GCP・Azure・Oracle Cloud)には対応していない",
+          "wrongFeedback": "AWSのみではありません。GCP・Azure・Oracle Cloudにも対応しています。"
+        },
+        {
+          "text": "AWS・GCP・Azure・Oracle Cloudといった主要クラウド事業者に対応しており、Free・Pro・Business・Enterpriseのすべてのプランで追加費用なしに利用できる"
+        },
+        {
+          "text": "クラウドリージョンヒントを設定すると、Custom Tiered Cacheの設定よりも常に優先して適用される",
+          "wrongFeedback": "優先順位が逆です。Custom Tiered Cacheの設定がある場合、クラウドリージョンヒントによるマッピングはそちらに優先されません(上書きされません)。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "クラウドリージョンヒントは、オリジンがAWS・GCP・Azure・Oracle Cloudといったパブリッククラウド上にホストされている場合に、Smart Tiered Cacheが最適な上位層を選択できるよう手助けする機能です。Free・Pro・Business・Enterpriseのすべてのプランで追加費用なしに利用できます。ただし、Custom Tiered Cacheの設定がある場合はそちらが優先され、クラウドリージョンヒントによるマッピングでは上書きされません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/#set-a-cloud-region-hint",
+      "hint": "「特定の高額プラン限定の機能」ではなく、「全プランに無料で開放されている」機能だと考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "クラウドリージョンヒントの対応範囲",
+          "columns": [
+            { "heading": "対応クラウド", "items": ["AWS・GCP・Azure・Oracle Cloud"] },
+            { "heading": "対応プラン", "items": ["Free/Pro/Business/Enterprise(全プラン無料)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-015",
+      "category": "cache",
+      "difficulty": "advanced",
+      "question": "Cache Ruleで設定する「Cache Reserve Eligibility(Cache Reserve適格性)」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Cache Reserve EligibilityはCache Ruleではなくゾーン全体の設定でのみ有効化でき、URLパターンごとに個別の条件を変えることはできない",
+          "wrongFeedback": "Cache Reserve EligibilityはCache Ruleの設定項目の1つであり、マッチするリクエストの条件(URLパターンなど)ごとに個別に設定できます。"
+        },
+        {
+          "text": "Cache Reserve Eligibilityを有効にすると、Free・Pro・Businessプランの512MBのようなプランごとのキャッシュ可能ファイルサイズ上限は無視され、無制限のサイズがキャッシュ対象になる",
+          "wrongFeedback": "Cache Reserve Eligibilityを設定していても、プランに基づくキャッシュ可能ファイルサイズの上限は引き続き適用されます。"
+        },
+        {
+          "text": "Cache Reserveは`tiered_cache`と排他的な機能であり、Tiered Cacheを有効にしている状態ではCache Reserve Eligibilityを設定できない",
+          "wrongFeedback": "排他的ではありません。むしろCache ReserveはTiered Cache(オリジンシールディング)と併用することが推奨されています。"
+        },
+        {
+          "text": "対象を最小ファイルサイズ(`minimum_file_size`)で絞り込むことができ、`eligible`をtrueにしつつこの値を省略した場合はデフォルトで0バイトとして扱われる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cache Ruleの「Cache Reserve Eligibility」は、マッチしたリクエストのうちどのリソースをCache Reserve(R2ベースの永続キャッシュ)へ書き込むかを、最小ファイルサイズ(`minimum_file_size`)で絞り込める設定です。例えば100MB以上のアセットだけを対象にするといった指定ができます。`eligible`をtrueにしつつこの値を省略した場合は、デフォルトで0バイトとして扱われます。この設定を使う場合も、プランに基づくキャッシュ可能ファイルサイズの上限は引き続き適用され、Tiered Cacheとの併用が推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#cache-reserve-eligibility",
+      "hint": "「対象にするかしないか」の二択だけでなく、「どのくらいの大きさから対象にするか」という数値の指定もできると考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Cache Reserve Eligibilityの設定",
+          "steps": [
+            { "text": "Cache Ruleでeligibleをtrueに設定" },
+            { "text": "minimum_file_sizeで対象サイズを絞り込み", "sub": "省略時は0バイト扱い" },
+            { "text": "条件を満たすリソースのみR2へ書き込み" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-016",
+      "category": "cache",
+      "difficulty": "intermediate",
+      "question": "クエリ文字列の扱いを制御する「Caching Level(キャッシュレベル)」の3段階の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "クエリ文字列なしのURLのみキャッシュする`No Query String`、内容に関わらず同一リソース扱いにする`Ignore Query String`、クエリ文字列ごとに別エントリを作る標準の`Standard`の3段階"
+        },
+        {
+          "text": "APIレスポンスヘッダーの`cache-level`が常にすべてのクエリ文字列を無視する段階、常にすべて考慮する段階、ランダムに無視するかどうかを決める段階の3つ",
+          "wrongFeedback": "ランダムに決める段階というものはありません。実際の3段階は`No Query String`・`Ignore Query String`・`Standard`です。"
+        },
+        {
+          "text": "`GET`リクエストのみを対象とする段階、`POST`リクエストのみを対象とする段階、すべてのHTTPメソッドを対象とする段階の3つ",
+          "wrongFeedback": "HTTPメソッドによる区分ではありません。キャッシュレベルはクエリ文字列の扱い方によって区分されます。"
+        },
+        {
+          "text": "画像のみキャッシュする段階、`.css`/`.js`のみキャッシュする段階、すべての静的ファイルをキャッシュする段階の3つ",
+          "wrongFeedback": "ファイル種別による区分ではありません。キャッシュレベルはクエリ文字列の扱い方によって区分されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Caching Levelには、クエリ文字列を含まないURLのみキャッシュする`No Query String`(API値:Basic)、クエリ文字列の内容に関わらず同じリソースとして扱う`Ignore Query String`(API値:Simplified)、クエリ文字列ごとに個別のキャッシュエントリを作る標準の`Standard`(API値:Aggressive)という3段階があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/how-to/set-caching-levels/",
+      "hint": "「クエリ文字列があるURLをそもそも配信するか」「配信するとして、その内容をキャッシュエントリの区別にどう使うか」という段階を考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Caching Levelの3段階",
+          "columns": [
+            { "heading": "No Query String", "items": ["クエリ文字列なしのみ"] },
+            { "heading": "Ignore Query String", "items": ["常に同一リソース扱い"] },
+            { "heading": "Standard", "items": ["クエリ文字列ごとに別エントリ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-017",
+      "category": "cache",
+      "difficulty": "intermediate",
+      "question": "`cf-cache-status`レスポンスヘッダーの値`BYPASS`が示す意味として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "リクエストされたコンテンツがキャッシュに存在せず、`MISS`と同様にオリジンから新規に取得されたことを示す",
+          "wrongFeedback": "これは`MISS`が示す意味です。`BYPASS`は、キャッシュ可能だったはずが何らかの理由でバイパスされたことを示します。"
+        },
+        {
+          "text": "レスポンスがキャッシュ可能であったにも関わらず、オリジンが`no-store`や`Set-Cookie`を送信していたなどの理由でバイパスされたことを示す"
+        },
+        {
+          "text": "キャッシュされたコンテンツの有効期限が切れており、`REVALIDATED`のようにオリジンで再検証が行われ、内容に変更がなかったことを示す",
+          "wrongFeedback": "これは`REVALIDATED`が示す意味です。`BYPASS`はキャッシュがバイパスされたことを示します。"
+        },
+        {
+          "text": "リクエストされたコンテンツが`HIT`のようにキャッシュにヒットし、そのままキャッシュから配信されたことを示す",
+          "wrongFeedback": "これは`HIT`が示す意味です。`BYPASS`はキャッシュがバイパスされたことを示します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`cf-cache-status`ヘッダーの値`BYPASS`は、レスポンス自体はキャッシュ可能であったにも関わらず、オリジンが`no-store`ディレクティブや`Set-Cookie`ヘッダーを送信していたなどの理由で、実際にはキャッシュがバイパスされたことを示します。これは`HIT`(キャッシュから配信)、`MISS`(キャッシュに存在せず新規取得)、`REVALIDATED`(再検証の結果、変更なし)とは異なる状態です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/concepts/cache-responses/",
+      "hint": "「本来ならキャッシュできたはずなのに、何らかの理由で今回は迂回された」という状態を表す値だと考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "cf-cache-statusの主な値",
+          "columns": [
+            { "heading": "HIT", "items": ["キャッシュから配信"] },
+            { "heading": "MISS", "items": ["キャッシュになく新規取得"] },
+            { "heading": "BYPASS", "items": ["キャッシュ可能だが迂回"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ch-018",
+      "category": "cache",
+      "difficulty": "advanced",
+      "question": "同じキャッシュミスのアセットに対して複数のリクエストが同時に到着した場合の「リクエストの折りたたみ(request collapsing)」に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "到着したリクエストの数だけオリジンへのリクエストが並行して送信され、最初に返ってきたレスポンスがすべてのリクエストに使い回される",
+          "wrongFeedback": "並行して複数送信されるわけではありません。キャッシュロックにより、最初の1件のみがオリジンへ転送されます。"
+        },
+        {
+          "text": "2件目以降に到着したリクエストは、オリジンへ問い合わせることなく即座にエラーレスポンスを返される",
+          "wrongFeedback": "即座にエラーが返されるわけではありません。2件目以降のリクエストは、最初のリクエストが完了するのを待ってから、同じレスポンスを受け取ります。"
+        },
+        {
+          "text": "同じデータセンターの同じアセットに対しては、最初の1件のみがオリジンへ転送され、残りのリクエストは最初のリクエストの完了を待ってから同じレスポンスをストリーミングで受け取る"
+        },
+        {
+          "text": "リクエストの折りたたみは、Cloudflareネットワーク全体のすべてのデータセンターを横断して1件のみに集約される",
+          "wrongFeedback": "全データセンター横断ではなく、単一のデータセンター内での話です。キャッシュロックは「1つのデータセンターから」オリジンへ送るリクエストを1つに絞ります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "複数のリクエストが同じデータセンターに、キャッシュされていない同じアセットに対して同時に到着した場合、Cloudflareはキャッシュロックの仕組みを使い、最初の1件のみをオリジンへ転送します。残りのリクエストは最初のリクエストの完了を待ち、その後同じレスポンスがストリーミングで配信されます。これにより、1つのデータセンターからオリジンへ送られる重複リクエストを防ぎます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cache/concepts/default-cache-behavior/#request-collapsing",
+      "hint": "「みんなが一斉にオリジンに問い合わせる」のではなく、「1人が代表して問い合わせ、他は結果を待つ」仕組みだと考えましょう。",
+      "tags": ["cache", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "リクエストの折りたたみ",
+          "steps": [
+            { "text": "同じアセットへ複数リクエストが同時到着" },
+            { "text": "最初の1件のみオリジンへ転送" },
+            { "text": "残りは完了を待ちストリーミングで受信" }
+          ]
+        }
+      ]
     }
   ]
 }

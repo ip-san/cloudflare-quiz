@@ -383,6 +383,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '複数オリジン間でトラフィックを健全性に応じて分散・フェイルオーバーできる',
     },
     {
+      id: 'cache',
+      name: 'Cache',
+      icon: '🗃️',
+      color: 'copper',
+      weight: 10,
+      description:
+        'Cache RulesによるEdge TTL・Browser TTL・キャッシュキーのカスタマイズ、Tiered Cacheによるオリジン負荷軽減、Cache Reserve。デフォルトのキャッシュ挙動とファイル拡張子',
+      skillDescription: 'ゾーンレベルのキャッシュ戦略を設計し、オリジン負荷と配信速度を最適化できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

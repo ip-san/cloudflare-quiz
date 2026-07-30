@@ -136,6 +136,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('bots')
     expect(ids).toContain('api-shield')
     expect(ids).toContain('load-balancing')
+    expect(ids).toContain('cache')
     expect(ids).toContain('architecture')
   })
 
