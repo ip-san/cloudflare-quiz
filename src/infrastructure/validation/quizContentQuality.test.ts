@@ -28,7 +28,7 @@ const singleQuizzes = quizzes.filter((q) => q.type !== 'multi')
 const multiQuizzes = quizzes.filter((q) => q.type === 'multi')
 const validCategoryIds = PREDEFINED_CATEGORIES.map((c) => c.id)
 
-/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag- + 3桁連番） */
+/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag-/rt- + 3桁連番） */
 const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wk: 'workers',
   wr: 'wrangler',
@@ -45,6 +45,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   ct: 'containers',
   wp: 'workers-for-platforms',
   ag: 'ai-gateway',
+  rt: 'realtime',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -160,6 +161,19 @@ const VALID_DOC_PAGES = [
   'queues/configuration/dead-letter-queues/',
   'queues/configuration/pull-consumers/',
   'queues/reference/how-queues-works/',
+  'realtime/sfu/',
+  'realtime/sfu/introduction/',
+  'realtime/sfu/get-started/',
+  'realtime/sfu/calls-vs-sfus/',
+  'realtime/sfu/sessions-tracks/',
+  'realtime/sfu/datachannels/',
+  'realtime/sfu/simulcast/',
+  'realtime/sfu/limits/',
+  'realtime/sfu/pricing/',
+  'realtime/turn/',
+  'realtime/turn/what-is-turn/',
+  'realtime/turn/generate-credentials/',
+  'realtime/turn/custom-domains/',
   'r2/',
   'r2/api/s3/presigned-urls/',
   'r2/api/tokens/',
@@ -537,6 +551,7 @@ describe('Quiz Content Quality', () => {
         'containers',
         'workers-for-platforms',
         'ai-gateway',
+        'realtime',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

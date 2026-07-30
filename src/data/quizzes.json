@@ -16793,6 +16793,713 @@
           ]
         }
       ]
+    },
+    {
+      "id": "rt-001",
+      "category": "realtime",
+      "difficulty": "beginner",
+      "question": "Cloudflare Realtime SFUの特徴として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "専用のSDKを提供しており、開発者は生のWebRTC APIを直接扱う必要がない",
+          "wrongFeedback": "Cloudflare Realtimeは意図的にSDKを提供せず、生のWebRTC APIへのアクセスを前提としています。"
+        },
+        {
+          "text": "特定のリージョンを意識することなく、WebRTCによる音声・映像・データのリアルタイム通信をスケーラブルに実現できるインフラである"
+        },
+        {
+          "text": "TCP接続のみをサポートし、UDPベースの通信には対応していない",
+          "wrongFeedback": "WebRTCは通常UDPをベースにしており、Cloudflare RealtimeもUDPベースの通信を前提としています。"
+        },
+        {
+          "text": "利用するには必ず特定のリージョンのサーバーを指定してデプロイする必要がある",
+          "wrongFeedback": "Cloudflareのグローバルネットワーク上で動作し、特定のリージョンを指定する必要はありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Realtime SFUは、特定のリージョンやスケーリングを意識することなく、WebRTCによるリアルタイムの音声・映像・データ通信を実現できるインフラです。SDKを提供せず、生のWebRTC APIへのアクセスを前提とした、意図的にシンプルなAPI設計になっています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/introduction/",
+      "hint": "「どこに、どれだけのユーザーがいても」通信できるようにするには何が必要か考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "Cloudflare Realtime SFUの構成",
+          "layers": [
+            { "text": "クライアント(ブラウザ/モバイル/ネイティブ)", "sub": "WebRTC" },
+            { "text": "Cloudflareのグローバルネットワーク", "sub": "リージョン意識不要" },
+            { "text": "Realtime SFU", "sub": "音声・映像・データを中継" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-002",
+      "category": "realtime",
+      "difficulty": "beginner",
+      "question": "Cloudflare Realtimeにおける「room(部屋)」の扱いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Realtime自体がroomという概念を持ち、参加者の入退室をAPIで直接管理できる",
+          "wrongFeedback": "Realtimeは`room`という概念自体を持ちません。roomの概念はアプリケーション側で実装する必要があります。"
+        },
+        {
+          "text": "1つのroomにつき同時に接続できる参加者数は自動的に無制限になるよう保証されている",
+          "wrongFeedback": "そもそもRealtimeにroomという概念がないため、そのような保証も存在しません。"
+        },
+        {
+          "text": "roomを作成するには専用の`rooms/new`というAPIエンドポイントを呼び出す必要がある",
+          "wrongFeedback": "そのようなAPIエンドポイントは存在しません。RealtimeはSessionとTrackという概念のみを扱います。"
+        },
+        {
+          "text": "RealtimeはSessionとTrackというより粒度の細かい概念のみを扱い、「room」のような参加者管理の抽象化は提供しないため、誰がどのTrackを持っているかの管理はアプリケーション側の責任になる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cloudflare Realtimeは「room」という概念を持たず、SessionとTrackというより粒度の細かい概念だけを扱います。各参加者がどのTrackを公開・購読しているかを管理し、room相当の仕組みを実装するのはアプリケーション側の責任です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/introduction/",
+      "hint": "「誰が今この会話に参加しているか」を覚えておくのは、サービス側なのかアプリ側なのか考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "roomの抽象化の有無",
+          "columns": [
+            { "heading": "他の多くのSFU", "items": ["roomという抽象化を提供"] },
+            { "heading": "Cloudflare Realtime", "items": ["Session/Trackのみ提供", "room相当はアプリ側で実装"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-003",
+      "category": "realtime",
+      "difficulty": "beginner",
+      "question": "Cloudflare Realtimeにおける「Session」の説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "1つのWebRTC PeerConnectionに直接対応し、クライアントと最寄りのCloudflareデータセンター間の通信チャネルを表す"
+        },
+        {
+          "text": "複数のPeerConnectionをまとめて管理する上位の概念であり、1つのSessionが複数のPeerConnectionに同時に対応する",
+          "wrongFeedback": "1つのSessionは1つのPeerConnectionに1対1で対応します。複数のPeerConnectionをまとめる概念ではありません。"
+        },
+        {
+          "text": "音声・映像・データそれぞれの種類ごとに個別に作成する必要がある管理単位",
+          "wrongFeedback": "音声・映像・データの種類ごとの管理単位はTrackです。Sessionは1つのPeerConnection全体を表します。"
+        },
+        {
+          "text": "Sessionはアプリケーション全体で1つだけ作成でき、すべてのユーザーが同じSessionを共有する",
+          "wrongFeedback": "通常、各クライアントはそれぞれ自分のSessionを1つ持ちます。全ユーザーで1つを共有するものではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "SessionはWebRTCのPeerConnectionに1対1で対応し、クライアントとCloudflareのAnycastルーティングによって決まる最寄りのデータセンターとの間の通信チャネルを表します。通常、1つのクライアントは1つのSessionを維持し、そのSession内で複数のTrackを扱います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/sessions-tracks/",
+      "hint": "WebRTCの接続そのものと、その中でやり取りされる個々のメディアの違いを意識しましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "SessionとTrackの関係",
+          "items": [
+            { "text": "Session", "sub": "PeerConnectionに1対1で対応" },
+            { "text": "Track(複数)", "sub": "音声/映像/データそれぞれ" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-004",
+      "category": "realtime",
+      "difficulty": "beginner",
+      "question": "Cloudflare Realtimeにおける「Track」の説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "TrackはSession内でのみ有効なIDを持ち、他のSessionから参照することはできない",
+          "wrongFeedback": "Trackにはグローバルに一意なIDが割り当てられ、そのIDを使えば別のSessionからでもpull(取得)できます。"
+        },
+        {
+          "text": "1つのSessionには最大1つのTrackしか含めることができない",
+          "wrongFeedback": "1つのSessionには複数のTrackを含めることができます。"
+        },
+        {
+          "text": "MediaStreamTrackに対応する概念で、Cloudflareにpushすると世界中のどこからでもpullできるグローバルに一意なIDが割り当てられる"
+        },
+        {
+          "text": "TrackはSFUに音声・映像を送る場合にのみ使われ、任意のデータ(DataChannel)の送信には使われない",
+          "wrongFeedback": "Trackの概念は音声・映像だけでなく、DataChannelを使った任意のデータ送信にも関係します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "TrackはWebRTCのMediaStreamTrackに対応する概念です。あるSessionからCloudflareにTrackをpush(公開)すると、グローバルに一意なIDが割り当てられ、そのIDを使って別のSession(別の場所にいる別のクライアント)からでもそのTrackをpull(購読)できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/sessions-tracks/",
+      "hint": "1つの「放送」を、世界中のどこからでも受信できるようにするには何が必要か考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Trackのpush/pull",
+          "steps": [
+            { "text": "クライアントAがTrackをpush" },
+            { "text": "グローバルに一意なIDが割り当てられる" },
+            { "text": "別のSessionからそのIDでpull可能" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-005",
+      "category": "realtime",
+      "difficulty": "beginner",
+      "question": "TURN(Traversal Using Relays around NAT)の役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "WebRTCの映像コーデックを自動的に変換し、送信側と受信側で異なるコーデックを使えるようにするトランスコード機能",
+          "wrongFeedback": "コーデック変換の機能ではありません。TURNはNATやファイアウォールを越えた通信を可能にするリレーの仕組みです。"
+        },
+        {
+          "text": "NATやファイアウォールを越えてピア間の通信を可能にするため、通信を中継(リレー)するプロトコル"
+        },
+        {
+          "text": "WebRTCの映像品質を自動的に最適化し、帯域に応じて解像度を調整する機能",
+          "wrongFeedback": "映像品質の最適化はSimulcastなど別の仕組みの役割です。TURNはNAT越えのための通信の中継が目的です。"
+        },
+        {
+          "text": "複数のSFUサーバー間で負荷分散を行うためのロードバランサー",
+          "wrongFeedback": "SFU間の負荷分散の仕組みではありません。TURNはクライアント間の通信を中継するリレーサーバーです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "TURN(Traversal Using Relays around NAT)は、NATやファイアウォールを越えてピア間のリアルタイム通信を可能にするために、通信を中継(リレー)するプロトコルです。STUNプロトコルの拡張として、RFC 8656で定義されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/turn/what-is-turn/",
+      "hint": "直接つながれない2者の間に立って、荷物を運んでくれる「仲介役」を考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "TURNによる通信の中継",
+          "actors": ["クライアントA(NAT配下)", "TURNサーバー", "クライアントB(NAT配下)"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "Allocateリクエスト" },
+            { "from": 1, "to": 0, "text": "リレー用アドレスを払い出し" },
+            { "from": 0, "to": 1, "text": "データ送信" },
+            { "from": 1, "to": 2, "text": "データを中継" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-006",
+      "category": "realtime",
+      "difficulty": "beginner",
+      "question": "TURNとVPNの違いに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "TURNもVPNも、デバイスのすべてのインターネット通信を暗号化してVPNサーバー経由にルーティングする点で同じ仕組みである",
+          "wrongFeedback": "VPNはデバイスの全通信をルーティングしますが、TURNはそれを使うよう明示的に設定されたアプリケーションの通信にのみ影響します。"
+        },
+        {
+          "text": "VPNはアプリケーション層でのみ動作し、TURNはネットワーク層で全トラフィックに影響する",
+          "wrongFeedback": "説明が逆です。VPNはネットワーク層で全トラフィックに影響し、TURNはアプリケーション層で特定のアプリの通信にのみ影響します。"
+        },
+        {
+          "text": "TURNは匿名性やプライバシー保護を目的とした汎用ツールであり、リアルタイム通信専用ではない",
+          "wrongFeedback": "汎用的な匿名化・プライバシー保護ツールはVPNの特徴です。TURNはリアルタイム通信アプリケーションがNAT越えのために使う専用の仕組みです。"
+        },
+        {
+          "text": "VPNはデバイスの全インターネット通信を暗号化してルーティングする汎用ツールであるのに対し、TURNはNAT越えを必要とする特定のアプリケーションの通信にのみ影響する、リアルタイム通信向けの専用の仕組みである"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "VPNはデバイスの全インターネット通信を暗号化し、VPNサーバー経由にルーティングする汎用的なツールで、ネットワーク層で動作し全体の通信速度にも影響します。一方TURNは、それを使うよう設定された特定のアプリケーション(WebRTCを使うリアルタイム通信アプリなど)の通信にのみ影響する、アプリケーション層の専用の仕組みです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/turn/what-is-turn/#turn-vs-vpn",
+      "hint": "「すべての通信に影響するか」「特定のアプリの通信にだけ影響するか」という範囲の違いを考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "VPN と TURN",
+          "columns": [
+            { "heading": "VPN", "items": ["全インターネット通信に影響", "ネットワーク層", "汎用的なプライバシー保護"] },
+            { "heading": "TURN", "items": ["特定アプリの通信のみ", "アプリケーション層", "リアルタイム通信のNAT越え専用"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-007",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtimeの無料枠に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "アカウントごとに月1,000GBまでのCloudflareからクライアントへのデータ転送(egress)が無料で、クライアントからCloudflareへのデータ転送(ingress)は常に無料"
+        },
+        {
+          "text": "無料枠はSFUとTURNでそれぞれ独立して月1,000GBずつ、合計2,000GBが無料になる",
+          "wrongFeedback": "SFUとTURNの無料枠は独立しておらず、合算で月1,000GBが無料枠です。"
+        },
+        {
+          "text": "無料枠の対象は常にクライアントからCloudflareへのデータ転送(ingress)のみに限定されており、Cloudflareからクライアントへの転送(egress)はすべて無料枠の対象外となる",
+          "wrongFeedback": "無料枠の対象はCloudflareからクライアントへのegressです。ingressはそもそも常に無料です。"
+        },
+        {
+          "text": "無料枠を使い切ると、それ以降はサービスが完全に利用停止され、追加の従量課金は発生しない",
+          "wrongFeedback": "無料枠を超えた分は利用停止されるのではなく、従量課金(1GBあたり$0.05)が発生します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Realtimeでは、アカウントごとに月1,000GBまでのCloudflareからクライアントへのデータ転送(egress)が無料です。クライアントからCloudflareへのデータ転送(ingress)は常に無料です。この無料枠はSFUとTURNの両方の利用を合算したものです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/",
+      "hint": "「送る方向」によって無料かどうかが変わることを意識しましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ingressとegressの無料枠",
+          "columns": [
+            { "heading": "ingress(クライアント→Cloudflare)", "items": ["常に無料"] },
+            { "heading": "egress(Cloudflare→クライアント)", "items": ["月1,000GBまで無料", "SFU/TURN合算"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-008",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime SFUのAPI呼び出しレート制限に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "レート制限はApp単位でのみ設定されており、個々のSessionには制限がない",
+          "wrongFeedback": "逆です。レート制限はSession単位で適用され、App単位のレート制限はありません。"
+        },
+        {
+          "text": "1つのSessionにつき1分間に50回までしかAPIを呼び出せない",
+          "wrongFeedback": "制限の単位は1分間ではなく1秒間です。1つのSessionにつき1秒あたり最大50回です。"
+        },
+        {
+          "text": "1つのSessionにつき1秒あたり最大50回までAPIを呼び出すことができ、App単位でのレート制限は存在しない"
+        },
+        {
+          "text": "APIのレート制限はSessionが持つTrackの数に応じて動的に変化し、Trackが増えるほど呼び出し可能な回数も増えていく",
+          "wrongFeedback": "レート制限はTrack数に応じて動的に変わるものではなく、Session単位で固定の上限(1秒あたり50回)です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare Realtime SFUでは、1つのSessionにつき1秒あたり最大50回までAPIを呼び出せます。App単位でのレート制限はなく、あくまでSessionごとの制限です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/",
+      "hint": "制限がかかる単位が「アプリ全体」なのか「個々の接続」なのか、そして時間の単位が「秒」か「分」かを確認しましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "formula",
+          "label": "APIレート制限の考え方",
+          "result": "APIコール成功/失敗",
+          "components": [
+            { "text": "1秒あたりのAPI呼び出し数(Sessionごと)" },
+            { "text": "上限50回", "highlight": true }
+          ],
+          "operator": "≤"
+        }
+      ]
+    },
+    {
+      "id": "rt-009",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime SFUのTrackの非アクティブタイムアウトに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Trackはメディアパケットの受信が10秒間なくても、明示的に削除するまでずっと保持され続ける",
+          "wrongFeedback": "Trackはメディアパケットの受信がない状態が30秒続くと自動的にタイムアウトし、ガベージコレクションされます。明示的な削除は不要です。"
+        },
+        {
+          "text": "Cloudflareがメディアパケットを受信しない状態が30秒間続くと、そのTrackは自動的にタイムアウトしてガベージコレクションされる"
+        },
+        {
+          "text": "Trackのタイムアウトは映像Trackにのみ適用され、音声Trackには適用されない",
+          "wrongFeedback": "映像・音声を問わず、メディアパケットの受信がなければ同じ30秒のタイムアウトが適用されます。"
+        },
+        {
+          "text": "Trackがタイムアウトすると、そのSession全体も同時に強制的に切断される",
+          "wrongFeedback": "TrackのタイムアウトによってガベージコレクションされるのはそのTrackのみで、Session自体が強制切断されるわけではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflareがメディアパケットを受信しない(非アクティブな)状態が30秒間続くと、そのTrackは自動的にタイムアウトしてガベージコレクションされます。これはリソースの効率的な利用とセッションの健全性を保つための仕組みです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/#inactivity-timeout",
+      "hint": "「何も届かない状態」がどれくらい続いたら、リソースを片付けるべきか考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Trackタイムアウトの流れ",
+          "steps": [
+            { "text": "メディアパケットの受信が途絶える" },
+            { "text": "30秒間非アクティブが継続" },
+            { "text": "Trackが自動的にタイムアウト・GC" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-010",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime SFUで、1回のAPI呼び出しで追加できるTrack数の上限に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1回のAPI呼び出しで追加できるTrack数に上限はなく、いくつでも同時に追加できる",
+          "wrongFeedback": "1回のAPI呼び出しで追加できるTrackは最大64個までという上限があります。"
+        },
+        {
+          "text": "1回のAPI呼び出しで追加できるTrackは最大10個までで、それ以上は複数回に分けても追加できない",
+          "wrongFeedback": "上限は64個です。また複数回のAPI呼び出しに分けることで、より多くのTrackを追加できます。"
+        },
+        {
+          "text": "1つのSessionが持てるTrackの総数にも、API呼び出し回数とは別に厳密な上限が設定されている",
+          "wrongFeedback": "1つのSessionが持てるTrackの総数に明確な上限はなく、実質的な制約は接続の帯域幅によって決まります。"
+        },
+        {
+          "text": "1回のAPI呼び出しで追加できるTrackは最大64個までで、それ以上追加したい場合は複数回のAPI呼び出しに分ける必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "1回のAPI呼び出しで追加できるTrackは最大64個までです。それ以上のTrackをSessionに追加したい場合は、複数回のAPI呼び出しに分けて追加する必要があります。一方、1つのSessionが持てるTrackの総数自体には明確な上限がなく、実質的には接続の帯域幅が制約になります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/",
+      "hint": "「1回のリクエストで運べる荷物の数」と「最終的に持てる荷物の総数」は別の話だと考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "1回のAPI呼び出しとSession全体の上限",
+          "columns": [
+            { "heading": "1回のAPI呼び出し", "items": ["最大64Trackまで"] },
+            { "heading": "Session全体のTrack数", "items": ["明確な上限なし", "帯域幅が実質的な制約"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-011",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime SFUのDataChannelsに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "SFU経由のDataChannelは一方向のみで、パブリッシャーからサブスクライバーへの送信専用であり、サブスクライバーからパブリッシャーへ送り返すことはできない"
+        },
+        {
+          "text": "通常のWebRTC DataChannelと同様に、SFU経由でも常に双方向の通信が可能である",
+          "wrongFeedback": "通常のMediaStream WebRTC DataChannelは双方向ですが、Cloudflare Realtime SFU経由のDataChannelは一方向(パブリッシャーからサブスクライバーへ)のみです。"
+        },
+        {
+          "text": "DataChannelは1人のパブリッシャーにつき最大10人までのサブスクライバーしか持てない",
+          "wrongFeedback": "パブリッシャーあたりのサブスクライバー数に上限はなく、多数のサブスクライバーにスケールできます。"
+        },
+        {
+          "text": "双方向の通信をしたい場合は、SFU側で自動的に双方向モードに切り替える設定が用意されている",
+          "wrongFeedback": "自動的な双方向モードへの切り替え設定はありません。双方向にしたい場合は、送信方向ごとに2つのDataChannelを別々に用意する必要があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Realtime SFU経由のDataChannelは一方向のみで、パブリッシャーからサブスクライバーへの送信専用です。これは、SFUが複数のサブスクライバーに対してどのSessionへデータを送り返すべきかを判断できないためです。双方向の通信が必要な場合は、送信方向ごとに2つの別々のDataChannelを用意します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/datachannels/#unidirectional-datachannels",
+      "hint": "大勢に向けて一斉送信する仕組みで、送り返す先を1つに絞れない場合はどうなるか考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "DataChannelの一方向性",
+          "nodes": [
+            { "id": "p", "text": "Publisher" },
+            { "id": "s", "text": "SFU" },
+            { "id": "a", "text": "Subscriber A" },
+            { "id": "b", "text": "Subscriber B" }
+          ],
+          "edges": [
+            { "from": "p", "to": "s", "label": "データ送信" },
+            { "from": "s", "to": "a", "label": "転送" },
+            { "from": "s", "to": "b", "label": "転送" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-012",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime SFUのDataChannelにおける`waitForAck`(確認応答ゲート)の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`waitForAck`はデフォルトで有効になっており、明示的に無効化しない限りすべてのDataChannelに適用される",
+          "wrongFeedback": "`waitForAck`はデフォルトで`false`であり、明示的に`true`を指定した場合のみ有効になります。"
+        },
+        {
+          "text": "サブスクライバー側のリモートDataChannel作成時に`waitForAck: true`を指定すると、サブスクライバーが最初のメッセージ(確認応答)を送るまでSFUはそのDataChannelにメッセージを転送しない"
+        },
+        {
+          "text": "確認応答はパブリッシャーにも転送され、パブリッシャー側でどのサブスクライバーが準備完了したかを直接確認できる",
+          "wrongFeedback": "確認応答はSFUによって消費され、パブリッシャーや他のサブスクライバーには転送されません。"
+        },
+        {
+          "text": "確認応答がSFUに届くまでの制限時間は無制限で、いつでも好きなタイミングで確認応答を送ってゲートを開けられる",
+          "wrongFeedback": "確認応答はDataChannel作成から15秒以内にSFUへ届く必要があり、届かない場合はそのDataChannelが破棄されます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`waitForAck`を`true`に設定してリモートDataChannelを作成すると、そのゲートが閉じている間、SFUはそのサブスクライバーへメッセージを転送しません。サブスクライバーが最初のメッセージ(確認応答)を送るとゲートが開き、以降のメッセージが転送されるようになります。確認応答はSFUに消費され、他には転送されません。この確認応答はDataChannel作成から15秒以内に届く必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/datachannels/#subscriber-acknowledgment-gate-waitforack",
+      "hint": "サブスクライバーの準備が整う前にメッセージが届いて「取りこぼす」ことを防ぐ仕組みを考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "waitForAckによる確認応答ゲート",
+          "actors": ["Publisher", "SFU", "Subscriber"],
+          "messages": [
+            { "from": 2, "to": 1, "text": "waitForAck:trueでDataChannel作成" },
+            { "from": 2, "to": 1, "text": "最初のメッセージ(ack)を送信" },
+            { "from": 0, "to": 1, "text": "データ送信" },
+            { "from": 1, "to": 2, "text": "ack以降のデータを転送" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-013",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime SFUのSimulcast設定における`priorityOrdering`と`ridNotAvailable`の役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`priorityOrdering`は映像の解像度そのものを指定し、`ridNotAvailable`は音声コーデックを指定する",
+          "wrongFeedback": "どちらも解像度やコーデックを直接指定するものではありません。帯域制約時の挙動や、優先RIDが利用不可になったときの挙動を制御します。"
+        },
+        {
+          "text": "`priorityOrdering`はパブリッシャー側の設定であり、サブスクライバー側からは一切変更できない",
+          "wrongFeedback": "`priorityOrdering`はリモートTrackをpullする側(サブスクライバー)のAPI呼び出しで指定する設定です。"
+        },
+        {
+          "text": "`ridNotAvailable`は常に最高品質のRIDへ強制的に切り替える設定であり、他の選択肢はない",
+          "wrongFeedback": "`ridNotAvailable`は`none`(何もしない)か`asciibetical`(優先順位に基づき次点のRIDへ切り替え)のいずれかを選べます。"
+        },
+        {
+          "text": "`priorityOrdering`は帯域が制約された際にどのRID(品質レベル)を優先するかを制御し、`ridNotAvailable`は優先していたRIDが利用できなくなった場合の挙動(何もしないか、次点のRIDへ切り替えるか)を制御する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Simulcastの`priorityOrdering`は、帯域が制約されたときにどの品質レベル(RID)を優先するかを制御する設定で、`none`(常に`preferredRid`を維持)または`asciibetical`(アルファベット順で優先度を決定)を指定できます。`ridNotAvailable`は、優先していたRIDが利用できなくなった場合(パブリッシャーがそのRIDの送信を止めた場合など)の挙動を制御し、`none`(何もしない)または`asciibetical`(次点のRIDへ切り替え)を選べます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/simulcast/#quality-control",
+      "hint": "「普段の優先順位」と「いざその選択肢が消えたときの対応」は、別々の設定項目になっていると考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Simulcastの品質制御パラメータ",
+          "items": [
+            { "text": "preferredRid", "sub": "希望する品質レベル" },
+            { "text": "priorityOrdering", "sub": "帯域制約時にどれを優先するか" },
+            { "text": "ridNotAvailable", "sub": "優先RIDが使えなくなったときの挙動" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-014",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime SFUがサポートするコーデックの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "映像はH264・H265・VP8・VP9・AV1、音声はOpus・G.711 PCM(A-law/µ-law)をサポートする"
+        },
+        {
+          "text": "映像・音声ともにOpusコーデックのみをサポートし、他のコーデックは一切利用できない",
+          "wrongFeedback": "Opusは音声コーデックの1つに過ぎません。映像にはH264・H265・VP8・VP9・AV1など複数のコーデックがサポートされています。"
+        },
+        {
+          "text": "映像はAV1のみをサポートし、H264やVP8などの古いコーデックは非対応である",
+          "wrongFeedback": "AV1だけでなく、H264・H265・VP8・VP9もサポートされています。"
+        },
+        {
+          "text": "音声コーデックはG.711のみをサポートし、Opusはサポートされていない",
+          "wrongFeedback": "Opusも音声コーデックとしてサポートされています。G.711だけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Realtime SFUは、映像コーデックとしてH264・H265・VP8・VP9・AV1を、音声コーデックとしてOpus・G.711 PCM(A-law)・G.711 PCM(µ-law)をサポートしています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/#supported-codecs",
+      "hint": "映像用と音声用、それぞれ複数の選択肢が用意されていることを意識しましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "サポートされるコーデック",
+          "columns": [
+            { "heading": "映像コーデック", "items": ["H264/H265", "VP8/VP9", "AV1"] },
+            { "heading": "音声コーデック", "items": ["Opus", "G.711(A-law/µ-law)"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-015",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime TURNの認証情報(credentials)の正しい発行フローはどれですか？",
+      "options": [
+        {
+          "text": "発行されたTURNキーそのものを`turn.cloudflare.com`への認証情報としてフロントエンドのWebRTCクライアントに直接渡す",
+          "wrongFeedback": "TURNキーはサーバー側で秘密に保持すべき長期的なシークレットであり、`turn.cloudflare.com`への認証情報としてそのまま使うことはできません。"
+        },
+        {
+          "text": "TURNキーには有効期限が設定できず、一度発行した認証情報は永久に無効化できない",
+          "wrongFeedback": "TURNキーを使って生成する短期的な認証情報にはTTL(有効期限)を設定でき、失効前でも明示的に無効化(revoke)することもできます。"
+        },
+        {
+          "text": "サーバー側で長期シークレットであるTURNキーを保持し、そのキーを使ってTTL付きの短期的な認証情報をリクエストごとに生成し、フロントエンドにはその短期的な認証情報だけを渡す"
+        },
+        {
+          "text": "短期的な認証情報のTTLは固定値であり、アプリケーションごとにTTLの長さをカスタマイズすることはできない",
+          "wrongFeedback": "TTLの値はリクエスト時に指定でき、想定する通話の長さなどに応じてカスタマイズできます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "TURNの利用にあたっては、まずサーバー側で長期的なシークレットであるTURNキーを作成し、保管します。フロントエンドに渡す認証情報は、このTURNキーを使ってAPIリクエストごとに生成する、TTL(有効期限)付きの短期的な認証情報(username/credential)です。短期的な認証情報は失効前でも明示的に無効化(revoke)できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/turn/generate-credentials/",
+      "hint": "「ずっと使う秘密の鍵」と「毎回配る使い捨ての鍵」を、それぞれ誰が持つべきか考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "TURN認証情報の発行フロー",
+          "steps": [
+            { "text": "サーバー側でTURNキーを保管", "sub": "長期シークレット" },
+            { "text": "APIでTTL付き短期認証情報を生成" },
+            { "text": "フロントエンドには短期認証情報のみ渡す" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-016",
+      "category": "realtime",
+      "difficulty": "advanced",
+      "question": "Cloudflare Realtime(SFU・TURN)の料金体系に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "SFUとTURNはそれぞれ独立した無料枠(合計2,000GB)を持ち、料金体系も別々にCloudflareの請求書に記載される",
+          "wrongFeedback": "SFUとTURNの無料枠は合算で月1,000GBであり、請求も1つの明細項目としてまとめて表示されます。"
+        },
+        {
+          "text": "課金対象はCloudflareのエッジからアプリケーションへ送信されるデータ(egress)のみで、SFUとTURNを同時に使っても同じトラフィックが二重に課金されることはない"
+        },
+        {
+          "text": "SFUではクライアントからCloudflareへ送られたデータ(ingress)にも課金が発生する",
+          "wrongFeedback": "SFUで課金対象となるのはCloudflareからクライアントへのegressのみで、ingressには課金されません。"
+        },
+        {
+          "text": "TURNとSFUを同時に使った場合、それぞれの経路で別々に課金されるため、実質的に2倍の料金がかかる",
+          "wrongFeedback": "TURNとSFU(またはStreamのWHIP/WHEP)の間のトラフィックは二重課金されず、いずれか一方の料金のみが発生します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Realtimeの課金は、Cloudflareのエッジからアプリケーションへ送信されるデータ(egress)のみを対象としています。SFUとTURNの無料枠(月1,000GB)は合算で、請求もまとめて1つの明細項目として表示されます。TURNとSFU(またはCloudflare StreamのWHIP/WHEP)の間のトラフィックは二重に課金されることはありません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/pricing/",
+      "hint": "「送信する方向」と「複数のサービスをまたぐ場合に二重に数えられないか」という2つの観点を意識しましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Realtimeの料金体系",
+          "columns": [
+            { "heading": "課金対象", "items": ["Cloudflare→クライアントのegressのみ"] },
+            { "heading": "無料枠", "items": ["月1,000GB", "SFU/TURN合算"] },
+            { "heading": "SFU+TURN併用時", "items": ["二重課金なし"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-017",
+      "category": "realtime",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Realtime TURNのカスタムドメインに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "STUN/TURN over UDP、TURN over TCPに加えて、TURN over TLSでもカスタムドメインが利用できる",
+          "wrongFeedback": "TURN over TLSではカスタムドメインは利用できません。カスタムドメインが使えるのはUDPとTCPのプロトコルのみです。"
+        },
+        {
+          "text": "`turn.cloudflare.com`を指すCNAMEレコードを設定するだけで利用でき、UDP・TCPのプロトコルには使えるが、TLSプロトコルには使えない"
+        },
+        {
+          "text": "カスタムドメインを設定すると`turn.cloudflare.com`より低いレイテンシで通信できるようパフォーマンスが向上する",
+          "wrongFeedback": "カスタムドメインはパフォーマンスに影響しません。あくまでドメイン名を独自のものに変更できるだけの機能です。"
+        },
+        {
+          "text": "カスタムドメインの利用には追加料金が発生する",
+          "wrongFeedback": "カスタムホスト名の利用に追加料金は発生しません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Realtime TURNのカスタムドメインは、`turn.cloudflare.com`を指すCNAMEレコードを設定するだけで利用できます。STUN over UDP・TURN over UDP・TURN over TCPのプロトコルで利用できますが、TURN over TLSではカスタムドメインを利用できません。パフォーマンスへの影響はなく、追加料金もかかりません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/turn/custom-domains/",
+      "hint": "対応しているプロトコルと対応していないプロトコルが分かれていることを意識しましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "カスタムドメインの対応プロトコル",
+          "columns": [
+            { "heading": "カスタムドメイン対応", "items": ["STUN/TURN over UDP", "TURN over TCP"] },
+            { "heading": "非対応", "items": ["TURN over TLS"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rt-018",
+      "category": "realtime",
+      "difficulty": "advanced",
+      "question": "Cloudflare Realtime SFUで、SessionのTrackをpush/pullするAPI操作を行う際の前提条件として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "PeerConnectionの状態に関わらず、いつでも即座にTrackのpush/pull操作を行うことができる",
+          "wrongFeedback": "PeerConnectionの状態が`connected`であることが前提条件です。状態に関わらずいつでもというわけではありません。"
+        },
+        {
+          "text": "PeerConnectionが`connecting`状態でありさえすれば、`connected`になるのを待たずに即座に操作が実行される",
+          "wrongFeedback": "操作にはPeerConnectionが`connected`状態であることが必要です。`connecting`状態のままでは実行されません。"
+        },
+        {
+          "text": "PeerConnectionの状態確認には上限時間が一切設けられておらず、`connected`になるまでいつまでも無制限に待ち続けてしまう",
+          "wrongFeedback": "待機時間には上限があり、最大5秒待っても`connected`にならなければタイムアウトします。"
+        },
+        {
+          "text": "PeerConnectionの状態が`connected`であることが必要で、操作はその状態になるまで最大5秒間ブロックされたうえでタイムアウトする"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Sessionに対してTrackのpush/pullなどの操作を行うには、PeerConnectionの状態が`connected`である必要があります。操作はその状態になるまで最大5秒間ブロックされ、それでも`connected`にならない場合はタイムアウトします。これにより、実際に有効なSessionのみがメディア送受信に関与することが保証されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/#peerconnection-requirements",
+      "hint": "接続がまだ確立し切っていない状態で操作を許可してしまうと何が起きるか考えましょう。",
+      "tags": ["realtime", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "PeerConnection状態の確認",
+          "steps": [
+            { "text": "API操作をリクエスト" },
+            { "text": "PeerConnectionの状態を確認" },
+            { "text": "connectedになるまで最大5秒待機" },
+            { "text": "connectedなら実行、それ以外はタイムアウト" }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -293,6 +293,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '複数のAIプロバイダーを一元的なゲートウェイ経由で安全・低コストに運用できる',
     },
     {
+      id: 'realtime',
+      name: 'Realtime(音声・映像通信)',
+      icon: '📡',
+      color: 'lime',
+      weight: 10,
+      description:
+        'WebRTCによる低遅延の音声・映像・データ通信を提供するRealtime SFUと、NAT越えを実現するTURN。SessionとTrackという概念、料金・制限',
+      skillDescription: 'WebRTCを使ったリアルタイム音声・映像・データ通信アプリを構築できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',
