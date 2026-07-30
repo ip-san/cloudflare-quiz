@@ -13680,6 +13680,986 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ob-001",
+      "category": "observability",
+      "difficulty": "beginner",
+      "question": "Cloudflare Workers の「Workers Logs」(observability設定)が提供する機能として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "デプロイ前にコードの脆弱性を自動スキャンして警告する機能",
+          "wrongFeedback": "脆弱性スキャンはWorkers Logsの機能ではありません。Workers Logsはあくまでログの収集・分析に特化しています。"
+        },
+        {
+          "text": "`wrangler dev`実行時のローカルコンソール出力を、本番環境からは完全に切り離して隠す機能",
+          "wrongFeedback": "Workers Logsはローカル専用ではなく、本番デプロイ後のWorkerからのログをダッシュボードに集約する機能です。"
+        },
+        {
+          "text": "Workerから出力されるログ(リクエスト情報や`console.log`、例外)を自動的に収集・保存し、ダッシュボードでフィルタ・分析できるようにする機能"
+        },
+        {
+          "text": "KVやD1に保存されたデータを自動的に別リージョンへバックアップする機能",
+          "wrongFeedback": "データのバックアップ/レプリケーションはWorkers Logsの役割ではありません。ログの収集・分析が目的です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers Logsは、Cloudflare WorkerのHTTPリクエスト情報や`console.log`の出力、例外情報などを自動的に収集し、ダッシュボード上でフィルタ・分析できるようにする観測性(observability)機能です。\n{{diagram:0}}\n新規に作成したWorkerにはデフォルトでこの設定が有効になっています。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/",
+      "hint": "デプロイ後に「本番で何が起きているか」を知りたいとき、Cloudflareのダッシュボードで確認できる仕組みを考えてみましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Workers Logsの流れ",
+          "steps": [
+            {
+              "text": "Workerが実行される",
+              "sub": "リクエスト受信"
+            },
+            {
+              "text": "ログを生成",
+              "sub": "console.log/例外/メタデータ"
+            },
+            {
+              "text": "自動収集",
+              "sub": "Workers Logsが取り込み"
+            },
+            {
+              "text": "ダッシュボードで確認",
+              "sub": "フィルタ・分析"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-002",
+      "category": "observability",
+      "difficulty": "beginner",
+      "question": "本番Workerで Workers Logs を有効化するための正しい設定方法はどれですか？",
+      "options": [
+        {
+          "text": "Wranglerの設定ファイルに `\"observability\": { \"enabled\": true }` を追加してデプロイする"
+        },
+        {
+          "text": "Cloudflareダッシュボードでアカウント全体の「ログ収集」を1回オンにするだけで、すべてのWorkerに自動適用される(個別のWorker設定は不要)",
+          "wrongFeedback": "observability設定は各Workerのwrangler設定ファイル単位で行います。アカウント全体の一括スイッチではありません。"
+        },
+        {
+          "text": "`package.json`に`\"logs\": true`という依存関係フラグを追加する",
+          "wrongFeedback": "`package.json`ではなく、Workerの設定ファイル(`wrangler.jsonc`等)の`observability`フィールドで制御します。"
+        },
+        {
+          "text": "Worker本体のコードに`enableLogs()`という関数呼び出しを1行追加する",
+          "wrongFeedback": "ランタイムAPIの関数呼び出しではなく、設定ファイルの`observability`フィールドで有効化します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workers Logsは、wrangler設定ファイルの`observability`フィールドに`enabled: true`を指定し、再デプロイすることで有効になります。新規作成したWorkerにはこの設定がデフォルトで有効です。\n{{diagram:0}}\n`head_sampling_rate`を併せて指定すると、記録する割合も調整できます。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs",
+      "hint": "コードを書き換えるのではなく、いつもの「設定ファイル」側で何を切り替えればよいか考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "wrangler.jsonc での有効化",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            {
+              "text": "{"
+            },
+            {
+              "text": "  \"observability\": {",
+              "highlight": true
+            },
+            {
+              "text": "    \"enabled\": true,",
+              "highlight": true
+            },
+            {
+              "text": "    \"head_sampling_rate\": 1"
+            },
+            {
+              "text": "  }"
+            },
+            {
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-003",
+      "category": "observability",
+      "difficulty": "beginner",
+      "question": "Tail Workerの動作について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "本番Workerへのリクエストを受信する前に実行され、リクエスト内容を書き換えるミドルウェアとして機能する",
+          "wrongFeedback": "Tail Workerはリクエストの「前」ではなく、対象Worker(producer)の実行が完了した後に呼び出されます。"
+        },
+        {
+          "text": "対象Workerと同じ実行コンテキストの中でリクエストとレスポンスを直接改変する",
+          "wrongFeedback": "Tail Workerは別のWorkerとして、対象Workerの実行完了後に呼ばれる独立した仕組みです。実行コンテキストを共有して改変するものではありません。"
+        },
+        {
+          "text": "`env.DB`などのバインディング経由でKVやD1のデータをリアルタイムに同期するためのバックグラウンドジョブ専用の仕組み",
+          "wrongFeedback": "Tail Workerはデータ同期の仕組みではなく、他のWorker(producer)の実行情報(ログ・例外・ステータス)を受け取るものです。"
+        },
+        {
+          "text": "対象となるWorker(producer)の実行が完了した後に自動的に呼び出され、そのリクエスト/レスポンスの状況や`console.log`出力、例外情報を受け取れる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Tail Workerは、`tail_consumers`で紐づけられたproducer Workerの実行が完了した後に自動的に呼び出され、HTTPステータスや`console.log`の出力、例外情報などを受け取れます。\n{{diagram:0}}\nアラート通知やデバッグ、集計処理などに活用できます。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/tail-workers/",
+      "hint": "「実行を追いかける」役割だとすれば、対象の処理が終わった後と前のどちらで動くべきか考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Producer Worker と Tail Worker",
+          "actors": [
+            "クライアント",
+            "Producer Worker",
+            "Tail Worker"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "リクエスト送信"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "レスポンス返却"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "実行完了後にイベント通知",
+              "dashed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-004",
+      "category": "observability",
+      "difficulty": "beginner",
+      "question": "Workers Analytics Engineが解決する課題として最も適切なものはどれですか？",
+      "options": [
+        {
+          "text": "`env.KV`の結果整合性による読み取り遅延を完全になくす",
+          "wrongFeedback": "KVの結果整合性の問題はAnalytics Engineの対象ではありません。Analytics Engineはカスタム分析データの記録・集計のための仕組みです。"
+        },
+        {
+          "text": "顧客ごと・エンドポイントごとの値の種類が非常に多い(高カーディナリティな)分析データを`writeDataPoint()`で記録しSQLで集計できるようにする"
+        },
+        {
+          "text": "`tsc`を使ってWorkerのソースコードを静的解析し、型エラーを検出する",
+          "wrongFeedback": "型チェックはTypeScriptコンパイラなどの役割であり、Analytics Engineの機能ではありません。"
+        },
+        {
+          "text": "`wrangler d1 migrations apply`のようにD1データベースのスキーマを自動的にマイグレーションする",
+          "wrongFeedback": "スキーママイグレーションはD1の役割であり、Analytics Engineとは別の仕組みです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Workers Analytics Engineは、Workerから`writeDataPoint()`でデータポイントを書き込み、SQL APIで集計・分析できる仕組みです。ユーザーIDやエンドポイントなど値の種類が非常に多い指標でも、性能を落とさず記録・分析できます。\n{{diagram:0}}\n従量課金ベースの利用状況分析やSaaSの顧客別ダッシュボード構築などに使われます。",
+      "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/",
+      "hint": "「種類が非常に多い値」を、性能を落とさず記録して後からSQLで調べたい場面を思い浮かべましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "Analytics Engineの構成",
+          "layers": [
+            {
+              "text": "Worker",
+              "sub": "writeDataPoint()"
+            },
+            {
+              "text": "Analytics Engineデータセット",
+              "sub": "自動作成"
+            },
+            {
+              "text": "SQL API",
+              "sub": "集計・可視化"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-005",
+      "category": "observability",
+      "difficulty": "beginner",
+      "question": "Workers Logsで`console.log({ user_id: 123 })`のように構造化されたオブジェクトをログ出力する利点として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "文字列を連結してログを出力するより実行速度が常に速くなる",
+          "wrongFeedback": "構造化ログの主な利点は速度ではなく、フィールド単位でのフィルタ・検索のしやすさです。"
+        },
+        {
+          "text": "ログのサイズ上限(256KB)が自動的に拡張される",
+          "wrongFeedback": "ログサイズの上限は出力形式に関わらず一定です。構造化しても上限が拡張されるわけではありません。"
+        },
+        {
+          "text": "`user_id`などのキーがフィールドとして自動的に抽出・インデックスされ、そのキーで絞り込み検索がしやすくなる"
+        },
+        {
+          "text": "`console.log`の呼び出し回数の上限が撤廃される",
+          "wrongFeedback": "呼び出し回数の上限が撤廃されるわけではありません。構造化ログの利点はフィールド単位の検索性向上です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers Logsに`console.log(\"user_id: \" + 123)`のような文字列ではなく`console.log({ user_id: 123 })`のようなオブジェクトを渡すと、`user_id`などのキーがフィールドとして自動的に抽出・インデックスされます。これにより、そのキーに対する絞り込み検索が容易になります。\n{{diagram:0}}\n文字列に埋め込んだ場合はテキスト一致検索しかできません。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#logging-structured-json-objects",
+      "hint": "後から「このユーザーのログだけ見たい」と思ったとき、検索しやすいのはどちらの書き方でしょうか。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "文字列ログ と 構造化ログ",
+          "columns": [
+            {
+              "heading": "文字列埋め込み",
+              "items": [
+                "`user_id: 123`という1本の文字列",
+                "テキスト一致でしか検索できない"
+              ]
+            },
+            {
+              "heading": "構造化オブジェクト",
+              "items": [
+                "`{ user_id: 123 }`",
+                "キー単位でフィルタできる"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-006",
+      "category": "observability",
+      "difficulty": "beginner",
+      "question": "Workers Logsの「head-based sampling」(`head_sampling_rate`)の主な目的はどれですか？",
+      "options": [
+        {
+          "text": "高トラフィックなWorkerで記録するリクエストの割合を絞り、ログ量とコストを抑えつつ傾向を把握できるようにする"
+        },
+        {
+          "text": "特定の国・地域からのリクエストだけをログに残すために地理的フィルタをかける",
+          "wrongFeedback": "地理的フィルタリングの仕組みではありません。head-based samplingはリクエストの記録割合を制御するものです。"
+        },
+        {
+          "text": "エラーが発生したリクエストのログだけを自動的に抽出する",
+          "wrongFeedback": "エラーのみを抽出する仕組みではなく、リクエスト全体からランダムに一定割合を記録する仕組みです。"
+        },
+        {
+          "text": "ログの保存先をR2からKVへ自動的に切り替える",
+          "wrongFeedback": "保存先の切り替えとは無関係です。記録するリクエストの割合(サンプリング率)を制御する設定です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "head-based samplingは、高トラフィックなWorkerにおいて記録するリクエストの割合を制御し、ログ量とコストを抑えながらもアプリケーションの傾向を把握できるようにする仕組みです。`head_sampling_rate`で0〜1の割合を指定します。\n{{diagram:0}}\n記録対象になったリクエストは、そのコンテキスト内のログがまとめて記録されます。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#head-based-sampling",
+      "hint": "膨大な量のログをすべて残すとコストがかさむとき、「一部だけ抜き取る」という発想を考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "formula",
+          "label": "記録されるログ量の考え方",
+          "result": "記録されるログ量",
+          "components": [
+            {
+              "text": "総リクエスト数"
+            },
+            {
+              "text": "head_sampling_rate",
+              "sub": "0〜1の割合",
+              "highlight": true
+            }
+          ],
+          "operator": "×"
+        }
+      ]
+    },
+    {
+      "id": "ob-007",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "wrangler設定で`\"head_sampling_rate\": 0.01`と指定した場合の動作として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "全リクエストの100%がまず記録され、そのうち1%だけがダッシュボード上部に優先的にピン留め表示される",
+          "wrongFeedback": "表示順の話ではありません。`head_sampling_rate`は記録するリクエストの割合そのものを制御します。"
+        },
+        {
+          "text": "100件のリクエストのうちおよそ1件だけが記録対象となり、残りはログとして記録されない"
+        },
+        {
+          "text": "ログの記録は行われるが、記録までの遅延(レイテンシ)が1%増加する",
+          "wrongFeedback": "遅延の増加ではなく、記録されるリクエストの「割合」を制御する設定です。"
+        },
+        {
+          "text": "1リクエストあたり最大0.01KBまでしかログを記録できなくなる",
+          "wrongFeedback": "ログサイズの制限ではなく、記録対象とするリクエストの割合(1%)を指定する設定です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`head_sampling_rate`は0〜1の値で、記録するリクエストの割合を指定します。デフォルトは1(100%)で、0.01を指定すると約100件に1件のリクエストが記録対象になります。記録対象になったリクエストは、そのコンテキスト内のログがまとめて記録されます。\n{{diagram:0}}\n高トラフィックなWorkerでログ量とコストを抑えるのに有効です。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#head-based-sampling",
+      "hint": "指定した割合の数字を、記録するかどうかの確率だと考えてみましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "サンプリング率による違い",
+          "columns": [
+            {
+              "heading": "rate = 1",
+              "items": [
+                "全リクエストを記録"
+              ]
+            },
+            {
+              "heading": "rate = 0.01",
+              "items": [
+                "約100件に1件を記録"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-008",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Workers Logsの制限に関する説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "ログの保存期間は無期限で、過去すべてのログをダッシュボードから遡って確認できる",
+          "wrongFeedback": "保存期間は無期限ではなく、最大7日間です。"
+        },
+        {
+          "text": "1件のログのサイズに上限はなく、どれだけ大きなオブジェクトでもそのまま記録される",
+          "wrongFeedback": "1件のログサイズには256KBの上限があり、それを超えると切り詰められます。"
+        },
+        {
+          "text": "1アカウントあたりの記録可能なログ件数に上限はなく、`head_sampling_rate`を`1`にしておけばトラフィックがどれだけ増えても課金額以外の制約はない",
+          "wrongFeedback": "1日あたり50億件という上限があり、超過分には自動的に1%のサンプリングが適用されます。"
+        },
+        {
+          "text": "ログの保存期間は最大7日間で、1件あたりのログサイズは256KBまで、超過分は切り詰められて`$cloudflare.truncated`フラグが立つ"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Workers Logsの保存期間は最大7日間、1件あたりのログサイズ上限は256KBです。上限を超えたログは切り詰められ、`$cloudflare.truncated`フィールドが`true`になります。また1アカウントあたり1日50億件の上限があり、超過後は1%のhead-based samplingが自動適用されます。\n{{diagram:0}}\n本番運用では、この制限を踏まえてサンプリング率を調整する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#limits",
+      "hint": "ログは「ずっと残る」わけではなく、期間にもサイズにも上限があることを思い出しましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Workers Logsの制限値",
+          "columns": [
+            {
+              "heading": "保存期間",
+              "items": [
+                "最大7日間"
+              ]
+            },
+            {
+              "heading": "1件のサイズ",
+              "items": [
+                "最大256KB",
+                "超過分は切り詰め"
+              ]
+            },
+            {
+              "heading": "1日あたり件数",
+              "items": [
+                "50億件",
+                "超過後は1%サンプリング"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-009",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "あるProducer Workerの実行情報をTail Workerに送るための正しい設定はどれですか？",
+      "options": [
+        {
+          "text": "Tail Worker側のwrangler設定に`\"producers\": [{ \"service\": \"<PRODUCER_NAME>\" }]`を追加する",
+          "wrongFeedback": "設定を追加するのはTail Worker側ではなく、Producer Worker側の`tail_consumers`です。"
+        },
+        {
+          "text": "Producer WorkerのコードにTail WorkerのURLを直接`fetch()`で呼び出す処理を書く",
+          "wrongFeedback": "Tail Workerの呼び出しはCloudflareのランタイムが自動的に行うため、`fetch()`を手動で書く必要はありません。"
+        },
+        {
+          "text": "Producer Worker側のwrangler設定に`\"tail_consumers\": [{ \"service\": \"<TAIL_WORKER_NAME>\" }]`を追加し、Tail Worker側には`tail()`ハンドラを実装する"
+        },
+        {
+          "text": "Cloudflareダッシュボードでアカウント全体の「デフォルトTail Worker」を1つ指定するだけで、すべてのWorkerに自動適用される",
+          "wrongFeedback": "Tail Workerの紐づけはWorkerごとの設定(`tail_consumers`)で行い、アカウント全体への一括適用ではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Producer Worker側のwrangler設定ファイルに`tail_consumers`でTail Workerのサービス名を指定し、Tail Worker側には`tail()`ハンドラを実装します。これにより、Producer Workerの実行完了後にTail Workerが自動的に呼び出されます。\n{{diagram:0}}\n`tail_consumers`に指定されるWorkerには`tail()`ハンドラの実装が必須です。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/tail-workers/#configure-tail-workers",
+      "hint": "「誰が誰を見張るか」の向きを、設定ファイルのどちら側に書くべきか考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "wrangler.jsonc (Producer Worker)",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            {
+              "text": "{"
+            },
+            {
+              "text": "  \"tail_consumers\": [",
+              "highlight": true
+            },
+            {
+              "text": "    { \"service\": \"my-tail-worker\" }",
+              "highlight": true
+            },
+            {
+              "text": "  ]"
+            },
+            {
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-010",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Tail Workerの課金・提供条件について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Workers PaidプランおよびEnterpriseプランで利用可能で、リクエスト数ではなくCPU時間に応じて課金される"
+        },
+        {
+          "text": "Freeプランを含む全プランで無制限に無料で利用できる",
+          "wrongFeedback": "Tail WorkerはPaid/Enterpriseプランで利用可能な機能であり、Freeプランでは利用できません。"
+        },
+        {
+          "text": "課金はTail Workerが処理したイベント件数に応じて発生し、CPU時間は関係ない",
+          "wrongFeedback": "Tail Workerの課金はイベント件数ではなくCPU時間に基づきます。"
+        },
+        {
+          "text": "Producer Workerのリクエスト数に比例する形で、常にProducer側の料金プランへ自動的にまとめて上乗せ請求される",
+          "wrongFeedback": "Tail Worker自体のCPU時間に応じて別途課金される仕組みであり、Producer側のリクエスト数に連動するものではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Tail WorkerはWorkers PaidプランおよびEnterpriseプランで利用でき、リクエスト数ではなくCPU時間に基づいて課金されます。\n{{diagram:0}}\nProducer Workerとは独立した課金対象として扱われます。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/tail-workers/",
+      "hint": "「何回呼ばれたか」ではなく「どれだけ処理にかかったか」で料金が決まる課金方式を考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Tail Workerの提供条件",
+          "columns": [
+            {
+              "heading": "提供プラン",
+              "items": [
+                "Paid / Enterprise",
+                "Freeは対象外"
+              ]
+            },
+            {
+              "heading": "課金基準",
+              "items": [
+                "CPU時間",
+                "リクエスト数ではない"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-011",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Workers Analytics Engineの`writeDataPoint()`に渡すデータの構造について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`blobs`は数値専用のフィールドで、`doubles`は文字列専用のフィールドである",
+          "wrongFeedback": "逆です。`blobs`は文字列(グルーピング・フィルタ用の次元)、`doubles`は数値です。"
+        },
+        {
+          "text": "`blobs`はグルーピング・フィルタ用の文字列、`doubles`は記録したい数値、`indexes`はサンプリングのキーとなる文字列で実質1件のみ指定できる"
+        },
+        {
+          "text": "`indexes`には複数の値を配列で渡すことができ、渡した数だけ別々のインデックスとして扱われる",
+          "wrongFeedback": "`indexes`は配列で渡せますが、複数指定するとそのデータポイントは記録されません。実質1件のみです。"
+        },
+        {
+          "text": "`writeDataPoint()`は呼び出し後にPromiseの完了を`await`しないと、データが記録されない",
+          "wrongFeedback": "`writeDataPoint()`は`await`しなくても即座に処理が返り、書き込みはランタイムがバックグラウンドで行います。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`writeDataPoint()`に渡すデータポイントは、グルーピング・フィルタ用の文字列である`blobs`、記録したい数値である`doubles`、サンプリングのキーとなる文字列`indexes`(配列で渡すが実質1件のみ有効)から構成されます。`await`は不要で、書き込みはランタイムがバックグラウンドで処理します。\n{{diagram:0}}\n例えば都市・国・センサー種別を`blobs`、気温・湿度を`doubles`、顧客IDを`indexes`に入れる、といった使い方をします。",
+      "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/get-started/",
+      "hint": "「分類のための文字列」「測定した数値」「サンプリングの単位」という3つの役割を整理してみましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "writeDataPoint()のフィールド",
+          "items": [
+            {
+              "text": "blobs",
+              "sub": "文字列・次元(最大20件)"
+            },
+            {
+              "text": "doubles",
+              "sub": "数値(最大20件)"
+            },
+            {
+              "text": "indexes",
+              "sub": "サンプリングキー・実質1件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-012",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Workers Analytics Engineでデータセットを使い始める手順について正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Cloudflareダッシュボードで事前にデータセット名とスキーマ(列の型)を手動で定義してからでないと書き込めない",
+          "wrongFeedback": "ダッシュボードで事前にデータセットを作成する必要はありません。バインディングを定義して書き込めば自動的に作成されます。"
+        },
+        {
+          "text": "D1のように`wrangler d1 migrations apply`でマイグレーションSQLを実行してテーブルを作成する必要がある",
+          "wrongFeedback": "マイグレーションSQLは不要です。バインディング定義後、最初の書き込み時に自動でデータセットが作成されます。"
+        },
+        {
+          "text": "既存のKVネームスペースをそのままAnalytics Engineのデータセットとして転用する",
+          "wrongFeedback": "KVネームスペースの転用ではなく、`analytics_engine_datasets`という専用のバインディング種別を使います。"
+        },
+        {
+          "text": "wrangler設定に`analytics_engine_datasets`バインディングを追加すると、そのバインディングに最初にデータを書き込んだ時点でデータセットが自動的に作成される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "wrangler設定ファイルに`analytics_engine_datasets`バインディングを追加してWorkerをデプロイし、`writeDataPoint()`で最初にデータを書き込むと、そのタイミングでデータセットが自動的に作成されます。事前にダッシュボードでデータセットを作る必要はありません。\n{{diagram:0}}\nデータセットはSQLのテーブルのようにふるまい、行・列の意味は一貫させておく必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/get-started/",
+      "hint": "KVのネームスペースやD1のテーブルと違い、「先に何かを作っておく」手順が必要かどうかを考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "データセットの自動作成",
+          "steps": [
+            {
+              "text": "バインディングを設定",
+              "sub": "analytics_engine_datasets"
+            },
+            {
+              "text": "writeDataPoint()を呼び出す"
+            },
+            {
+              "text": "初回書き込み時に自動作成",
+              "sub": "データセット"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-013",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Workers Analytics EngineのSQL APIにクエリを送信する方法として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Workerのシークレットに直接SQLクエリ文字列を保存し、`env`経由でダッシュボードへ自動転送する",
+          "wrongFeedback": "SQL APIはHTTPエンドポイントへの直接リクエストで利用します。シークレット経由の自動転送という仕組みはありません。"
+        },
+        {
+          "text": "`Account Analytics Read`権限を持つAPIトークンではなく、Workerのデプロイに使うAPIトークンをそのまま流用する",
+          "wrongFeedback": "SQL API用には`Account Analytics Read`権限を持つ専用のAPIトークンを作成して使う必要があります。"
+        },
+        {
+          "text": "`Account Analytics Read`権限を持つAPIトークンを作成し、`Authorization: Bearer <token>`ヘッダーを付けてSQL APIのエンドポイントにクエリ本文をPOSTする"
+        },
+        {
+          "text": "GraphQL Analytics APIのエンドポイントに対して、SQL構文をそのまま送信する",
+          "wrongFeedback": "SQL構文を受け付けるのはSQL APIの専用エンドポイントであり、GraphQL Analytics APIとは別のAPIです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "SQL APIは`https://api.cloudflare.com/client/v4/accounts/<account_id>/analytics_engine/sql`というエンドポイントに対し、`Account Analytics Read`権限を持つAPIトークンで`Authorization: Bearer <token>`ヘッダーを付けてクエリ本文をPOSTすることで利用できます。\n{{diagram:0}}\nダッシュボードと同じデータを、GraphQL Analytics APIを介さず直接SQLで取得できます。",
+      "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/sql-api/#authentication",
+      "hint": "APIを叩くときにいつも必要な、「誰がアクセスしていいかを証明するもの」が何かを考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "SQL APIへのクエリ実行",
+          "actors": [
+            "開発者",
+            "APIトークン",
+            "SQL APIエンドポイント"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "Account Analytics Read権限で発行"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "text": "Bearerトークン付きでクエリPOST"
+            },
+            {
+              "from": 2,
+              "to": 0,
+              "text": "結果を返却",
+              "dashed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-014",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Workers Analytics Engineの高ボリューム時のサンプリングに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "サンプリングは`indexes`の値ごとに行われるため、あるインデックス値のイベント数が多いほどその値のデータがサンプリングされやすくなる"
+        },
+        {
+          "text": "サンプリングは常に全データに対して一律の割合で適用され、`indexes`の値によって差は生まれない",
+          "wrongFeedback": "サンプリングは`indexes`の値(インデックス)単位で行われるため、一律ではなくインデックスごとに偏りが生じます。"
+        },
+        {
+          "text": "サンプリングされたデータは`_sample_interval`列に記録されず、集計時に区別する方法がない",
+          "wrongFeedback": "サンプリング倍率は`_sample_interval`列に記録され、`SUM(_sample_interval * ...)`のように集計時に利用できます。"
+        },
+        {
+          "text": "サンプリングはクエリ実行時にのみ発生し、書き込み時には一切発生しない",
+          "wrongFeedback": "サンプリングは書き込み時・読み取り時の両方で発生し得ます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Analytics Engineのサンプリングは`indexes`の値ごとに行われるため、特定のインデックス値(例: 顧客ID)のイベント数が多い場合、その値のデータがサンプリングされやすくなります。サンプリング倍率は`_sample_interval`列に記録され、`SUM(_sample_interval * double1)`のように集計時に考慮する必要があります。\n{{diagram:0}}\n顧客IDをインデックスにしておけば、他の顧客のデータは非サンプリングのまま保たれます。",
+      "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/sql-api/#sampling",
+      "hint": "大量アクセスのある「特定の値」だけが間引かれる仕組みだと考えると、何を基準に間引かれるか見えてきます。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "indexの頻度とサンプリング",
+          "columns": [
+            {
+              "heading": "低頻度なindex値",
+              "items": [
+                "サンプリングされにくい"
+              ]
+            },
+            {
+              "heading": "高頻度なindex値",
+              "items": [
+                "サンプリングされやすい",
+                "_sample_intervalで補正"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-015",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Workers Logpush(Workers Trace Events Logpush)を有効にする条件として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Freeプランでも、wrangler設定に`\"logpush\": true`を追加するだけで即座に利用できる",
+          "wrongFeedback": "Workers Trace Events LogpushはWorkers Paidプラン以上で利用可能な機能であり、Freeプランでは有効にできません。"
+        },
+        {
+          "text": "Workers Paidプラン以上を契約したうえで、Logpushジョブをダッシュボードまたはcurlで作成し、Workerのwrangler設定に`\"logpush\": true`を追加してデプロイする"
+        },
+        {
+          "text": "Logpushジョブの作成は不要で、`\"logpush\": true`を設定するだけで宛先の指定なしに自動的にログが送られ始める",
+          "wrongFeedback": "`\"logpush\": true`を設定するだけでは不十分で、事前にLogpushジョブを作成し送信先を設定しておく必要があります。"
+        },
+        {
+          "text": "Enterpriseプラン専用の機能であり、Workers Paidプランでは一切利用できない",
+          "wrongFeedback": "Workers Trace Events LogpushはWorkers Paidプランでも利用できる機能です。一般のLogpushとは異なり、Enterprise限定ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Workers Trace Events LogpushはWorkers Paidプランで利用可能です。ダッシュボードまたはAPIでLogpushジョブ(送信先・データセット`workers_trace_events`)を作成したうえで、Workerのwrangler設定ファイルに`\"logpush\": true`を追加してデプロイすると、そのWorkerのログが送信され始めます。\n{{diagram:0}}\n一般のLogpushはEnterprise限定ですが、Workers向けはPaidプランからアクセスできます。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/logpush/",
+      "hint": "「送信先の準備」と「Worker側のフラグ」、両方がそろって初めて動く2段階の仕組みだと考えましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Workers Logpush の有効化手順",
+          "steps": [
+            {
+              "text": "Logpushジョブを作成",
+              "sub": "送信先・データセット設定"
+            },
+            {
+              "text": "wranglerに logpush: true",
+              "sub": "Worker側の設定"
+            },
+            {
+              "text": "デプロイ後にログ送信開始"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-016",
+      "category": "observability",
+      "difficulty": "advanced",
+      "question": "Workers Logsにおける「invocation log」と「custom log」の違い、および無効化方法について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "custom logはWorkerが自動生成するリクエスト/レスポンス情報を指し、invocation logは`console.log`による任意の出力を指す",
+          "wrongFeedback": "呼び方が逆です。自動生成されるリクエスト/レスポンス情報は`invocation log`、`console.log`による任意の出力は`custom log`です。"
+        },
+        {
+          "text": "invocation logとcustom logはどちらも無効化できず、Workers Logsを有効にすると常に両方が記録される",
+          "wrongFeedback": "invocation logは`observability.logs.invocation_logs`を`false`にすることで無効化できます。"
+        },
+        {
+          "text": "custom logは`$cloudflare.$metadata.type = \"cf-worker-event\"`というフィールドで識別できる",
+          "wrongFeedback": "そのフィールドで識別できるのはinvocation logです。custom logは`console.log`の出力であり、この識別子は付与されません。"
+        },
+        {
+          "text": "invocation logは自動生成されるリクエスト/レスポンスのメタデータで`$cloudflare.$metadata.type = \"cf-worker-event\"`として識別でき、`observability.logs.invocation_logs`を`false`にすると無効化できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "invocation logはWorkerの各実行ごとに自動生成される、リクエスト・レスポンス・関連メタデータを含むログで、`$cloudflare.$metadata.type = \"cf-worker-event\"`というフィールドで識別できます。wrangler設定の`observability.logs.invocation_logs`を`false`にすることで無効化できます。一方custom logは、コード内の`console.log`呼び出しによる任意の出力です。\n{{diagram:0}}\n両者を区別して理解しておくと、ログ量の調整(invocation logだけ止めてcustom logは残す等)がしやすくなります。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#invocation-logs",
+      "hint": "「Cloudflareが自動で作るログ」と「自分のコードが明示的に出すログ」を分けて考えてみましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "invocation log と custom log",
+          "columns": [
+            {
+              "heading": "invocation log",
+              "items": [
+                "自動生成",
+                "リクエスト/レスポンス情報",
+                "invocation_logs=falseで無効化可"
+              ]
+            },
+            {
+              "heading": "custom log",
+              "items": [
+                "console.log由来",
+                "任意の出力内容"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-017",
+      "category": "observability",
+      "difficulty": "intermediate",
+      "question": "Workers Analytics Engineの上限値に関する説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "1回の`writeDataPoint`呼び出しで指定できる`blobs`と`doubles`はそれぞれ最大100件まで、`indexes`は最大10件まで",
+          "wrongFeedback": "実際の上限は`blobs`・`doubles`がそれぞれ最大20件、`indexes`は実質1件です。"
+        },
+        {
+          "text": "1つのWorker呼び出し(HTTPリクエスト)につき、`writeDataPoint`は何回呼んでもデータポイント数に上限はない",
+          "wrongFeedback": "1回のWorker呼び出しあたり最大250件のデータポイントという上限があります。"
+        },
+        {
+          "text": "`blobs`・`doubles`はそれぞれ最大20件、`indexes`は実質1件のみ有効で、1件のデータポイント内の`blobs`合計サイズは16KBまで、1回のWorker呼び出しにつき最大250件のデータポイントを書き込める"
+        },
+        {
+          "text": "書き込んだデータは1年間保存され、それ以降は自動的に削除される",
+          "wrongFeedback": "データの保存期間は3か月です。1年間ではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers Analytics Engineでは、1回の`writeDataPoint`呼び出しにつき`blobs`・`doubles`はそれぞれ最大20件、`indexes`は実質1件のみ有効です。1件のデータポイント内の`blobs`合計サイズは16KBまで、1回のWorker呼び出し(クライアントのHTTPリクエスト)につき最大250件のデータポイントを書き込めます。書き込んだデータは3か月間保存されます。\n{{diagram:0}}\nこれらの上限を踏まえて、記録する指標の粒度を設計する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/limits/",
+      "hint": "「何個まで」「何バイトまで」「何か月保存されるか」という3種類の数字を整理してみましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Analytics Engineの主な上限",
+          "columns": [
+            {
+              "heading": "blobs/doubles",
+              "items": [
+                "各最大20件"
+              ]
+            },
+            {
+              "heading": "indexes",
+              "items": [
+                "実質1件のみ"
+              ]
+            },
+            {
+              "heading": "blobs合計サイズ",
+              "items": [
+                "16KBまで"
+              ]
+            },
+            {
+              "heading": "データポイント数",
+              "items": [
+                "1呼び出しあたり最大250件"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ob-018",
+      "category": "observability",
+      "difficulty": "advanced",
+      "question": "Workers Logpushで、1件のログイベントにおける`logs`と`exceptions`フィールドの合計文字数が上限(16,384文字)を超えた場合の挙動として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`exception.name`→`exception.message`→`log.message`の順にカウントし、上限に達した項目をLogpushの切り詰め用メッセージに置き換えて以降は記録しない"
+        },
+        {
+          "text": "超過した分だけそのログイベント全体が完全に破棄され、Logpushジョブ自体が停止する",
+          "wrongFeedback": "イベント全体が破棄されるのではなく、上限に達した箇所から個別のフィールドが切り詰められる(truncateされる)動作です。ジョブが停止するわけでもありません。"
+        },
+        {
+          "text": "上限に達すると自動的に文字列が圧縮(gzip等)され、サイズが縮小された状態でそのまま送信される",
+          "wrongFeedback": "圧縮によるサイズ縮小ではなく、切り詰め(truncate)によって文字列自体を短くする挙動です。"
+        },
+        {
+          "text": "`logs`と`exceptions`は別々に16,384文字までカウントされ、互いの文字数は影響し合わない",
+          "wrongFeedback": "`logs`と`exceptions`は合算されて1つの16,384文字上限としてカウントされます。別々の上限ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workers Logpushでは、`exception.name`・`exception.message`・`log.message`の順に文字数を合算でカウントし、合計16,384文字の上限に達した時点でそのフィールドを`\"<<<Logpush: *field* truncated>>>\"`という文字列に置き換えます。それ以降のログ・例外メッセージは記録されずに切り詰められます。\n{{diagram:0}}\n大量のログや長いスタックトレースを出力するWorkerでは、この上限を意識しておく必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/logpush/#limits",
+      "hint": "上限に達した後、そのフィールドの中身自体はどう扱われるか考えてみましょう。",
+      "tags": [
+        "observability",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "文字数上限超過時の挙動",
+          "steps": [
+            {
+              "text": "exception.nameを集計"
+            },
+            {
+              "text": "exception.messageを集計"
+            },
+            {
+              "text": "log.messageを集計",
+              "sub": "合計16,384文字で打ち切り"
+            },
+            {
+              "text": "超過分は切り詰め用メッセージに置換"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

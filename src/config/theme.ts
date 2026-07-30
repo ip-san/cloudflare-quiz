@@ -254,6 +254,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'Bot対策・画像/動画・メール・ブラウザ自動化を組み込める',
     },
     {
+      id: 'observability',
+      name: 'ログ・可観測性',
+      icon: '📊',
+      color: 'sky',
+      weight: 10,
+      description:
+        'Workers Logs によるログ収集・フィルタ、Tail Workers によるカスタム処理、Workers Analytics Engine による集計分析',
+      skillDescription: '本番Workerの挙動を可視化し、障害調査・利用状況分析ができる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

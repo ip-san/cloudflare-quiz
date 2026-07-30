@@ -11,6 +11,7 @@ export const COLOR_MAP: Record<string, string> = {
   indigo: '#6366f1',
   teal: '#14b8a6',
   rose: '#f43f5e',
+  sky: '#0ea5e9',
   gray: '#6b7280',
 }
 
