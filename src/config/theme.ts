@@ -373,6 +373,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'API固有の脅威(ゾンビエンドポイント・シーケンス攻撃)からAPIを保護できる',
     },
     {
+      id: 'load-balancing',
+      name: 'Load Balancing',
+      icon: '⚖️',
+      color: 'gold',
+      weight: 10,
+      description:
+        'Pools・Monitors・Steering PolicyでオリジンにトラフィックをルーティングするLoad Balancing。ヘルスチェック・セッションアフィニティ・フェイルオーバー',
+      skillDescription: '複数オリジン間でトラフィックを健全性に応じて分散・フェイルオーバーできる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

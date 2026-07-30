@@ -23,6 +23,7 @@ export const COLOR_MAP: Record<string, string> = {
   maroon: '#7f1d1d',
   navy: '#1e3a8a',
   cerulean: '#0284c7',
+  gold: '#ca8a04',
 }
 
 export function getColorHex(colorName: string): string {

@@ -22374,6 +22374,707 @@
           ]
         }
       ]
+    },
+    {
+      "id": "lb-001",
+      "category": "load-balancing",
+      "difficulty": "beginner",
+      "question": "Cloudflare Load Balancingを構成する3つの主要な要素の階層関係として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Load Balancer(ホスト名に紐づく)が複数のPool(エンドポイントの集まり)を持ち、各Poolが1つ以上のEndpoint(実際のオリジン)を持つ"
+        },
+        {
+          "text": "Endpointがトラフィックの入り口となり、その配下にPoolがぶら下がり、さらにその配下にLoad Balancerが位置する",
+          "wrongFeedback": "階層が逆です。Load Balancerがホスト名に紐づく最上位で、その下にPool、さらにその下にEndpointという構造です。"
+        },
+        {
+          "text": "Load Balancer・Pool・Endpointはすべて同列の独立した設定項目であり、階層関係は存在しない",
+          "wrongFeedback": "階層関係が存在します。Load Balancer配下にPool、Pool配下にEndpointという入れ子構造になっています。"
+        },
+        {
+          "text": "1つのPoolにつき必ず複数のLoad Balancerが対応し、1つのLoad Balancerには1つのEndpointしか設定できない",
+          "wrongFeedback": "そのような対応関係ではありません。1つのLoad Balancerが複数のPoolを持ち、1つのPoolが複数のEndpointを持てます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Load Balancingは、ホスト名に紐づくLoad Balancerを最上位とし、その配下にエンドポイントの集まりであるPoolを、さらにPoolの配下に実際のオリジンを表すEndpointを持つという階層構造になっています。公開Load Balancerを設定すると、Cloudflareは指定したホスト名に対してLB DNSレコードを自動的に作成します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/load-balancing-components/",
+      "hint": "「ホスト名」「オリジンのグループ」「個々のオリジン」という3段階の入れ子構造を考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Load Balancingの階層構造",
+          "items": [
+            { "text": "Load Balancer", "sub": "ホスト名に紐づく" },
+            { "text": "Pool", "sub": "エンドポイントの集まり" },
+            { "text": "Endpoint", "sub": "実際のオリジン" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-002",
+      "category": "load-balancing",
+      "difficulty": "beginner",
+      "question": "Load BalancingのMonitor(モニター)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "MonitorはCloudflareのCDNキャッシュヒット率を監視する機能であり、オリジンの健全性とは無関係である",
+          "wrongFeedback": "キャッシュヒット率の監視機能ではありません。Monitorはエンドポイントに対して定期的にヘルスチェックリクエストを送り、健全性を判定する仕組みです。"
+        },
+        {
+          "text": "Monitorをエンドポイントに設定すると、定期的にヘルスチェックリクエストが送られ、その結果に基づいてLoad Balancerがどのエンドポイントが利用可能かを判断できるようになる"
+        },
+        {
+          "text": "Load Balancingに付随するMonitorと、独立した製品であるスタンドアロンのHealth Checksは、内部的に全く同じ実装を共有する同一の機能である",
+          "wrongFeedback": "Load Balancingに付随するMonitorと、スタンドアロン製品のHealth Checksは別物として明示的に区別されています。"
+        },
+        {
+          "text": "Monitorを設定しなくても、Load Balancerは自動的にすべてのエンドポイントの健全性をデフォルトで把握できる",
+          "wrongFeedback": "Monitorを設定しない場合、健全性は考慮されず、Load Balancerは常にプライマリのPoolにのみトラフィックを送ります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Monitorは、エンドポイントに対して定期的にヘルスチェックリクエストを送信し、その応答結果からエンドポイントの健全性を判定する仕組みです。これにより、Load Balancerは実際に利用可能なエンドポイントを考慮したうえでインテリジェントにトラフィックを振り分けられます。Load Balancingに付随するMonitorは、独立した製品であるスタンドアロンのHealth Checksとは別物です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/",
+      "hint": "「定期的に様子を見に行って、元気かどうかを確認する」役割の機能だと考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Monitorの役割",
+          "steps": [
+            { "text": "Monitorがエンドポイントへ定期的にリクエスト" },
+            { "text": "応答結果から健全性を判定" },
+            { "text": "Load Balancerが振り分け先を決定" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-003",
+      "category": "load-balancing",
+      "difficulty": "intermediate",
+      "question": "有料の「Traffic Steering」を購入していない非Enterprise顧客が利用できるSteering Policyに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Off - FailoverとGeo steeringの2つのみが利用できる",
+          "wrongFeedback": "Geo steeringではありません。利用できるのはOff - FailoverとRandomの2つです。"
+        },
+        {
+          "text": "Dynamic steeringとLeast Outstanding Requestsの2つのみが利用できる",
+          "wrongFeedback": "これらは有料のTraffic Steeringを購入した場合に利用できるポリシーです。非Enterprise・非購入の顧客が利用できるのはOff - FailoverとRandomです。"
+        },
+        {
+          "text": "Off - FailoverとRandomの2つのみが利用できる"
+        },
+        {
+          "text": "すべてのSteering Policyが制限なく無料で利用できる",
+          "wrongFeedback": "制限なく無料で利用できるわけではありません。有料のTraffic Steeringを購入していない非Enterprise顧客は、Off - FailoverとRandomのみに限られます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "有料の「Traffic Steering」を購入していない非Enterprise顧客が利用できるSteering Policyは、標準ポリシーであるOff - FailoverとRandomの2つのみです。Dynamic steering・Geo steering・Least Outstanding Requestsなどの高度なポリシーを使うには、Traffic Steeringの購入が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/",
+      "hint": "「標準」として無料で使える2つのポリシーと、「追加購入が必要」な高度なポリシー群を区別しましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Steering Policyの利用可否",
+          "columns": [
+            { "heading": "標準(無料)", "items": ["Off - Failover", "Random"] },
+            { "heading": "Traffic Steering購入が必要", "items": ["Dynamic・Geo・LORなど"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-004",
+      "category": "load-balancing",
+      "difficulty": "beginner",
+      "question": "Off - Failoverステアリングの「フェイルバック(failback)」動作に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "プライマリPool(Pool 1)が一度でも不健全になると、その後Pool 1が健全に復帰しても、トラフィックは永久にスタンバイのPool 2へ送られ続ける",
+          "wrongFeedback": "永久にPool 2へ送られ続けるわけではありません。Pool 1が健全に復帰すれば、セッションアフィニティなどの制約がない限り、トラフィックは自動的にPool 1へ戻ります。"
+        },
+        {
+          "text": "フェイルバックはPool順序とは無関係で、常にランダムに選ばれたPoolへトラフィックが送られる",
+          "wrongFeedback": "ランダムな選択ではありません。フェイルバックはPoolの順序に基づいてプライマリPoolへの復帰を行う挙動です。"
+        },
+        {
+          "text": "Pool 1が不健全になった場合、フェイルバックは管理者が手動でトラフィックを切り替えるまでPool 1へのルーティングを続ける",
+          "wrongFeedback": "手動での切り替えは不要です。Off - Failoverでは不健全なPoolから次の健全なPoolへ自動的に切り替わります。"
+        },
+        {
+          "text": "Pool 1が健全な間は常にPool 1へトラフィックが送られ、Pool 1が不健全になるとPool 2へ切り替わり、Pool 1が健全に復帰すると自動的にPool 1へ戻る"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Off - Failoverステアリングは、Pool順序をフェイルオーバーの優先順位として使います。Pool 1(プライマリ)が健全な間は常にPool 1へトラフィックが送られ、Pool 1が不健全になるとPool 2(スタンバイ)へ切り替わります。その後Pool 1が健全な状態に復帰すると、セッションアフィニティなど他の設定が個別のリクエストを引き続きPool 2に留める必要がない限り、トラフィックは自動的にPool 1へ戻ります。この挙動をフェイルバックと呼びます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/#failback-behavior",
+      "hint": "「壊れたら避難する」だけでなく、「直ったら元に戻る」という双方向の挙動を考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "フェイルオーバーとフェイルバック",
+          "steps": [
+            { "text": "Pool 1が健全 → Pool 1へルーティング" },
+            { "text": "Pool 1が不健全 → Pool 2へ切り替え" },
+            { "text": "Pool 1が復帰 → 自動的にPool 1へ戻る" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-005",
+      "category": "load-balancing",
+      "difficulty": "intermediate",
+      "question": "Randomステアリングを使ってアクティブ-アクティブ構成(いわゆるラウンドロビン)を実現する方法として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Randomステアリングを選択すると、健全なPoolの中からランダムに1つが選ばれてトラフィックが送られ、APIの`random_steering`オブジェクトでPoolごとにWeightを設定すれば、各Poolへ送られるトラフィックの割合を調整できる"
+        },
+        {
+          "text": "Randomステアリングでは、各リクエストごとに毎回すべてのPoolへ同時にトラフィックが複製されて送信される",
+          "wrongFeedback": "トラフィックが複製されて全Poolに同時送信されるわけではありません。ランダムに選ばれた1つの健全なPoolへ送られます。"
+        },
+        {
+          "text": "Weightの設定は`endpoint_steering`という別のオブジェクトを使い、個々のエンドポイント単位でのみ可能で、Poolレベルでは一切設定できない",
+          "wrongFeedback": "Poolレベルでも`random_steering`オブジェクトを使ってWeightを設定できます。エンドポイント単位に限定されているわけではありません。"
+        },
+        {
+          "text": "Randomステアリングは名前の通り常に完全に均等な確率でPoolを選ぶ仕様であり、Weightによる比率の調整はできない",
+          "wrongFeedback": "Weightによる比率調整が可能です。`random_steering`オブジェクトでPoolごとの重みを設定すれば、均等でない比率でのトラフィック分配ができます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Randomステアリングは、健全なPoolの中からランダムに1つを選んでトラフィックを送ります。複数Poolへ均等にトラフィックを振り分けたい場合(いわゆるラウンドロビン、アクティブ-アクティブ構成)に使われます。さらにAPIの`random_steering`オブジェクトを使ってPoolごとにWeightを設定すれば、それぞれのPoolへ送られるトラフィックの割合を調整できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/#random-steering",
+      "hint": "「ランダムに選ぶ」ことと「比率を偏らせる」ことは両立できる、という点を考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Randomステアリングの仕組み",
+          "steps": [
+            { "text": "健全なPoolの中からランダムに選択" },
+            { "text": "random_steeringのWeightで比率を調整" },
+            { "text": "選ばれたPoolへトラフィックを送信" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-006",
+      "category": "load-balancing",
+      "difficulty": "advanced",
+      "question": "ヘルスモニターが継続的に収集するデータをもとに最速のPoolを動的に選び続けるDynamic Steeringについて、正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Dynamic Steeringは各地域の訪問者数を単純にカウントし、最も訪問者数が多い地域に近いPoolへ優先的にトラフィックを送る仕組みである",
+          "wrongFeedback": "訪問者数のカウントによる仕組みではありません。ヘルスモニターのRTT(往復時間)データに基づいて最も高速なPoolを選ぶ仕組みです。"
+        },
+        {
+          "text": "ヘルスモニターのRTT(往復時間)データをもとにした指数加重移動平均(EWMA)を使って各地域・データセンターで最も高速なPoolを判定し、あるPoolを初めて有効化した際はRTTプロファイルの構築に約10分かかる"
+        },
+        {
+          "text": "Dynamic Steeringを有効化すると、RTTデータの有無に関わらず即座に最適なPoolへの切り替えが完了し、待機時間は一切発生しない",
+          "wrongFeedback": "即座に切り替わるわけではありません。Poolを初めて有効化した際は、RTTプロファイルの構築に約10分かかります。"
+        },
+        {
+          "text": "Dynamic Steeringが正しく機能するためには、Health Monitor RegionをEnterprise限定の`All Data Centers`にする以外の方法はない",
+          "wrongFeedback": "`All Data Centers`はEnterprise限定の選択肢の1つですが、非Enterpriseでも選べる`All Regions`でもDynamic Steeringは正しく機能します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Dynamic Steeringは、ヘルスモニターのRTT(往復時間)データをもとにした指数加重移動平均(EWMA)を使って、各Cloudflareリージョンやデータセンターごとに最も高速なPoolを判定します。あるPoolでDynamic Steeringを初めて有効化した際は、RTTプロファイルの構築のために約10分の猶予が必要です。この機能が正しく機能するには、Health Monitor Regionを`All Regions`(または Enterprise限定の`All Data Centers`)に設定する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/dynamic-steering/",
+      "hint": "「過去の応答速度の実測データ」を平均化して、最速のPoolを継続的に選び直す仕組みだと考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Dynamic Steeringの仕組み",
+          "steps": [
+            { "text": "ヘルスプローブごとにRTTを収集" },
+            { "text": "EWMAで各Poolの速度を評価" },
+            { "text": "最も高速なPoolへルーティング" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-007",
+      "category": "load-balancing",
+      "difficulty": "advanced",
+      "question": "Geo Steeringにおいて、あるリクエストの発信元データセンター(PoP)に対応するPool設定が見つからない場合のフォールバック順序として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "PoPに対応する設定がなければ即座にデフォルトPoolへフォールバックし、国・リージョンの設定は一切参照されない",
+          "wrongFeedback": "即座にデフォルトPoolへ飛ぶわけではありません。PoP→国→リージョン→デフォルトPoolという段階的なフォールバックが行われます。"
+        },
+        {
+          "text": "PoPに対応する設定がなければ、リージョン(region_pool)の設定を優先的に参照し、国(country_pool)の設定はリージョンに設定がない場合のみ参照される",
+          "wrongFeedback": "順序が逆です。国(country_pool)の設定がリージョン(region_pool)の設定より先に参照されます。"
+        },
+        {
+          "text": "PoPに対応する設定がなければ、対応する国(country_pool)の設定、それもなければ対応するリージョン(region_pool)の設定、それもなければデフォルトPoolの順にフォールバックする"
+        },
+        {
+          "text": "PoP・国・リージョンのいずれの設定も、優先順位に関わらず同時にすべて参照され、最も新しく更新された設定が採用される",
+          "wrongFeedback": "同時参照や更新日時による採用ではありません。PoP→国→リージョン→デフォルトPoolという明確な優先順位でフォールバックします。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Geo Steeringでは、リクエストの発信元データセンター(PoP)に対応する`pop_pools`の設定がない場合、対応する国の`country_pools`設定を参照します。それもなければ対応するリージョンの`region_pools`設定を参照し、それも定義されていなければデフォルトPool(`default_pools`)にフォールバックします。なお、PoPステアリングはEnterprise顧客限定で、APIからのみ設定できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/geo-steering/#pop-steering",
+      "hint": "「一番細かい単位から、だんだん大きな単位へ」とフォールバックしていく順序を考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Geo Steeringのフォールバック順序",
+          "steps": [
+            { "text": "PoP(データセンター)単位の設定" },
+            { "text": "国(country_pools)単位の設定" },
+            { "text": "リージョン(region_pools)単位の設定" },
+            { "text": "デフォルトPool" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-008",
+      "category": "load-balancing",
+      "difficulty": "beginner",
+      "question": "Geo Steeringと他のLoad Balancing機能の互換性に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Geo Steeringはカスタムルールと完全に互換性があり、Geo Steeringが有効なLoad Balancerに適用したカスタムルールも常に期待通りに動作する",
+          "wrongFeedback": "互換性はありません。Geo Steeringが有効なLoad Balancerにカスタムルールを適用しても、期待通りには機能しません。"
+        },
+        {
+          "text": "Geo SteeringのPool設定は、Traffic Steeringの方式を別の方式に変更すると自動的に削除される",
+          "wrongFeedback": "Traffic Steeringの方式を変更しても、Geo Steeringの設定は自動的には削除されません。明示的に設定から削除する必要があります。"
+        },
+        {
+          "text": "Geo Steeringで一度あるリージョンにPoolを追加すると、そのPoolはGeo Steeringの設定から削除しなくても自由に削除できる",
+          "wrongFeedback": "リージョンに追加したPoolは、Geo Steeringの設定から削除するまで、そのPool自体を削除することはできません。"
+        },
+        {
+          "text": "カスタムLoad Balancingルールは、Geo Steeringと互換性がなく、Geo Steeringが設定されたLoad Balancerに適用したカスタムルールは期待通りに機能しない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "カスタムLoad Balancingルールは、Geo Steeringと互換性がありません。そのため、Geo Steeringが設定されたLoad Balancerに適用したカスタムルールは期待通りに機能しません。また、あるリージョンに追加したPoolは、Geo Steering設定から明示的に削除するまで削除できず、この設定はTraffic Steering方式を変更しても自動的には削除されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/geo-steering/",
+      "hint": "地理的な振り分けロジックと、任意の条件を書けるカスタムルールが、うまく共存できるかどうかを考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Geo Steeringとの互換性",
+          "columns": [
+            { "heading": "互換", "items": ["Pool・地域単位のルーティング"] },
+            { "heading": "非互換", "items": ["カスタムLoad Balancingルール"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-009",
+      "category": "load-balancing",
+      "difficulty": "intermediate",
+      "question": "Least Outstanding Requestsステアリングに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "このステアリングは、Poolに割り当てた緯度・経度の`latitude`/`longitude`のような地理的な近さのみを基準に選び、リクエストの処理状況は一切考慮しない",
+          "wrongFeedback": "地理的な近さではなく、各Poolの処理中(未完了)のリクエスト数と`random_steering`のWeightを考慮してPoolを選びます。"
+        },
+        {
+          "text": "各Poolの未完了(outstanding)のリクエスト数と`random_steering`のWeightを考慮してPoolを選び、保留中のリクエストが多いPoolほど選ばれる重みが相対的に小さくなる"
+        },
+        {
+          "text": "このステアリングを使うと、Poolの健全性ステータスやセッションアフィニティの設定は完全に無視される",
+          "wrongFeedback": "Poolの健全性ステータスやセッションアフィニティ、アダプティブルーティングも考慮に入れられます。完全に無視されるわけではありません。"
+        },
+        {
+          "text": "DNS-onlyのLoad BalancerではLeast Outstanding Requestsは完全にフル機能で動作し、他のSteering Policyと全く同じ精度で処理される",
+          "wrongFeedback": "DNS-onlyのLoad Balancerでは未完了リクエスト数を把握できないため常に0とみなされ、実質的に`random_steering`のWeightのみに基づく動作になります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Least Outstanding Requestsステアリングは、各Poolの未完了(outstanding)のリクエスト数と`random_steering`のWeightを考慮してPoolを選びます。保留中のリクエストが多いPoolほど、相対的に選ばれる重みが小さくなります。Poolの健全性ステータス・アダプティブルーティング・セッションアフィニティも考慮されますが、DNS-onlyのLoad Balancerでは未完了リクエスト数を把握できないため、実質的にWeightのみに基づく動作になります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/least-outstanding-requests/",
+      "hint": "「今どれだけ仕事を抱えているか」という観点でPoolを選ぶ仕組みだと考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Least Outstanding Requestsの考慮要素",
+          "columns": [
+            { "heading": "考慮する", "items": ["未完了リクエスト数", "random_steeringのWeight", "健全性・セッションアフィニティ"] },
+            { "heading": "考慮しない", "items": ["地理的な近さのみ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-010",
+      "category": "load-balancing",
+      "difficulty": "beginner",
+      "question": "Cloudflare Load Balancingがサポートするモニタータイプの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "DNSクエリの応答時間のみを測定するDNSモニターと、CDNキャッシュのヒット率を測定するCacheモニターの2種類のみ",
+          "wrongFeedback": "そのようなモニタータイプはありません。サポートされているのはHTTP/HTTPS・TCP・ICMP Ping・UDP-ICMP・SMTPです。"
+        },
+        {
+          "text": "gRPC専用モニターとGraphQL専用モニターの2種類のみがサポートされている",
+          "wrongFeedback": "gRPC専用・GraphQL専用というモニタータイプはありません。サポートされているのはHTTP/HTTPS・TCP・ICMP Ping・UDP-ICMP・SMTPです。"
+        },
+        {
+          "text": "HTTP/HTTPS・TCP・ICMP Ping・UDP-ICMP・SMTPの5種類のプロトコルに対応するモニター"
+        },
+        {
+          "text": "サポートされるモニタータイプはHTTP/HTTPSの1種類のみであり、それ以外のプロトコルには対応していない",
+          "wrongFeedback": "HTTP/HTTPSだけではありません。TCP・ICMP Ping・UDP-ICMP・SMTPにも対応しています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare Load Balancingは、HTTP/HTTPS・TCP・ICMP Ping・UDP-ICMP・SMTPという5種類のプロトコルに対応するモニターをサポートしています。それぞれ成功基準や健全性の判定方法が異なり、例えばTCPはSYN/ACKの受信、SMTPはHELO・QUITコマンドへの正しい応答コードの受信を基準とします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/#supported-protocols",
+      "hint": "「アプリケーション層のプロトコルから、ネットワーク層の疎通確認まで」複数の種類があると考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "サポートされるモニタータイプ",
+          "items": [
+            { "text": "HTTP/HTTPS" },
+            { "text": "TCP" },
+            { "text": "ICMP Ping" },
+            { "text": "UDP-ICMP" },
+            { "text": "SMTP" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-011",
+      "category": "load-balancing",
+      "difficulty": "intermediate",
+      "question": "ヘルスモニターリクエストで使われるHostヘッダーの優先順位に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Monitor自体とEndpointの両方でHostヘッダーが指定されている場合、常にMonitor側の設定がEndpoint側の設定より優先される",
+          "wrongFeedback": "優先順位が逆です。Endpoint側で設定されたHostヘッダーが、Monitor側の設定より優先されます。"
+        },
+        {
+          "text": "MonitorとEndpointのどちらにもHostヘッダーが指定されていない場合、ヘルスチェック自体が実行不可能になりエラーとなる",
+          "wrongFeedback": "エラーにはなりません。Hostヘッダーが指定されていない場合は、Endpointに設定されたEndpoint Addressがそのまま使われます。"
+        },
+        {
+          "text": "MonitorとEndpointの両方にHostヘッダーが指定されている場合は、両方の値がカンマ区切りで結合されて1つのヘッダーとして送信される",
+          "wrongFeedback": "値が結合されるわけではありません。Endpoint側の設定がMonitor側の設定より優先され、Endpoint側の値のみが使われます。"
+        },
+        {
+          "text": "MonitorとEndpointの両方でHostヘッダーが指定されている場合はEndpoint側の設定が優先され、どちらにも指定がない場合はEndpoint Addressがそのまま使われる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "ヘルスモニターリクエストのHostヘッダーは、Monitor自体とEndpointの両方に指定できます。両方に指定がある場合はEndpoint側の設定がMonitor側の設定より優先されます。どちらにも指定がない場合は、Endpointに設定されたEndpoint Addressがそのままヘルスモニターリクエストのホストヘッダーとして使われます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/#host-header-prioritization",
+      "hint": "「より具体的な設定(個々のEndpoint)」と「より広い設定(Monitor全体)」のどちらが勝つかを考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Hostヘッダーの優先順位",
+          "columns": [
+            { "heading": "優先度1", "items": ["Endpoint側の設定"] },
+            { "heading": "優先度2", "items": ["Monitor側の設定"] },
+            { "heading": "どちらもなければ", "items": ["Endpoint Address"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-012",
+      "category": "load-balancing",
+      "difficulty": "advanced",
+      "question": "エンドポイントアドレスに設定されたDNSレコードの種類によって挙動が変わる、ヘルスモニターのプローブがIPv4とIPv6のどちらを使うかに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "プローブは既定でIPv4を使用し、エンドポイントアドレスに`A`レコードがなく`AAAA`レコードのみが存在する場合にのみIPv6プローブが送られる"
+        },
+        {
+          "text": "プローブは常にIPv4とIPv6の両方を同時に、`AAAA`レコードの有無に関わらず1インターバルにつき2回送信して健全性を判定する",
+          "wrongFeedback": "同時に2回送信されるわけではありません。1インターバルにつき1回のプローブのみが送られ、IPv4かIPv6のいずれか一方が使われます。"
+        },
+        {
+          "text": "プローブは既定でIPv6を使用し、IPv4プローブを使うには明示的な追加設定が必要である",
+          "wrongFeedback": "既定はIPv4です。IPv6プローブが使われるのは、エンドポイントアドレスに`AAAA`レコードのみが存在する場合です。"
+        },
+        {
+          "text": "IPv4とIPv6のどちらを使うかはCloudflareのデータセンターごとにランダムに決定され、利用者が制御する方法は存在しない",
+          "wrongFeedback": "ランダムな決定ではありません。エンドポイントアドレスを生のIPv6アドレスにするか、`AAAA`レコードのみのホスト名にすることでIPv6での疎通を強制できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "ヘルスモニターのプローブは既定でIPv4を使用します。エンドポイントアドレスに`A`レコードがなく`AAAA`レコードのみが存在する場合にのみ、IPv6プローブが送られます。各エンドポイントは1インターバルにつき1回のプローブのみを受け取り、CloudflareはIPv4とIPv6の両方を同じエンドポイントに対して同時にプローブすることはありません。IPv6での疎通を強制したい場合は、エンドポイントアドレスを生のIPv6アドレスまたは`AAAA`レコードのみのホスト名にします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/#ipv4-and-ipv6-probe-behavior",
+      "hint": "「両方使う」のではなく「片方だけ、しかもデフォルトはどちらか」という2択の優先順位を考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "プローブのIPバージョン選択",
+          "steps": [
+            { "text": "既定はIPv4プローブ" },
+            { "text": "Aレコードがなく AAAAのみの場合" },
+            { "text": "IPv6プローブに切り替え" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-013",
+      "category": "load-balancing",
+      "difficulty": "intermediate",
+      "question": "Poolの健全性ステータス(Healthy・Degraded・Critical)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Degradedは、1つでもエンドポイントが不健全になった時点でそのPoolが即座にトラフィックを受け取れなくなる状態を指す",
+          "wrongFeedback": "Degradedの時点ではまだトラフィックを受け取れます。トラフィックを受け取れなくなるのはHealth Thresholdを下回るCriticalの状態です。"
+        },
+        {
+          "text": "Degradedは、一部のエンドポイントが不健全でもHealth Thresholdを下回っていない状態を指し、Poolはまだトラフィックを受け取ることができる"
+        },
+        {
+          "text": "Criticalは、Poolのすべてのエンドポイントが健全な状態を指す、最も望ましいステータスである",
+          "wrongFeedback": "説明が逆です。すべてのエンドポイントが健全なのはHealthyです。CriticalはHealth Thresholdを下回り、トラフィックを受け取れなくなる状態です。"
+        },
+        {
+          "text": "Healthy・Degraded・Criticalの判定にはMonitorの設定が一切不要で、Monitorを設定していないPoolでも自動的にこれらのステータスが計算される",
+          "wrongFeedback": "Monitorが設定されていないPoolでは健全性ステータスは考慮されず、ステアリングの判断材料にはなりません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Poolの健全性ステータスのうち、Degradedは1つ以上のエンドポイントが不健全であるものの、Health Thresholdはまだ下回っていない状態を指し、この状態ではまだPoolがトラフィックを受け取れます。Health Thresholdを下回るとCriticalとなり、他のPoolも不健全でそのPoolがFallback Poolに指定されていない限り、トラフィックを受け取らなくなります。すべてのエンドポイントが健全な状態はHealthyです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/health-details/#how-a-pool-becomes-unhealthy",
+      "hint": "「一部が壊れている」状態と「壊れすぎて使えない」状態を分ける、しきい値の存在を考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Poolの健全性ステータス",
+          "columns": [
+            { "heading": "Healthy", "items": ["全エンドポイント健全"] },
+            { "heading": "Degraded", "items": ["一部不健全だが閾値以上"] },
+            { "heading": "Critical", "items": ["閾値未満・トラフィック停止"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-014",
+      "category": "load-balancing",
+      "difficulty": "advanced",
+      "question": "エンドポイントの健全性ステータスを切り替える際の`consecutive_down`・`consecutive_up`パラメータに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "これらのパラメータは、ヘルスチェックの成否ではなく、リクエストのレイテンシの平均値をもとに健全性を切り替えるための設定である",
+          "wrongFeedback": "レイテンシの平均値ではなく、ヘルスチェックの結果が連続して同じ判定になった回数をもとに健全性を切り替えるための設定です。"
+        },
+        {
+          "text": "`consecutive_down`と`consecutive_up`は同じ意味を持つ1つのパラメータのAPIとダッシュボードでの呼び方の違いにすぎない",
+          "wrongFeedback": "2つは別のパラメータです。`consecutive_down`は健全→不健全への切り替え、`consecutive_up`は不健全→健全への切り替えに使われます。"
+        },
+        {
+          "text": "エンドポイントを健全から不健全に切り替えるには`consecutive_down`で指定した回数だけ連続して不健全と判定される必要があり、不健全から健全への切り替えには`consecutive_up`で指定した回数の連続した健全判定が必要である"
+        },
+        {
+          "text": "これらのパラメータはダッシュボードのみで設定可能で、APIから`Create Monitor`エンドポイントを使って設定することはできない",
+          "wrongFeedback": "APIの`Create Monitor`エンドポイントからも`consecutive_up`・`consecutive_down`を設定できます。ダッシュボード限定ではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`consecutive_down`は、エンドポイントを健全から不健全に切り替えるために必要な、連続した不健全判定の回数を指定するパラメータです。同様に`consecutive_up`は、不健全から健全に切り替えるために必要な、連続した健全判定の回数を指定します。これらはAPIの`Create Monitor`エンドポイントから設定でき、健全性判定の精度と一貫性を高めるために使われます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/health-details/",
+      "hint": "「1回の判定だけで即切り替える」のではなく、「何回連続で同じ結果が出たら切り替える」という仕組みを考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "consecutive_downとconsecutive_up",
+          "columns": [
+            { "heading": "consecutive_down", "items": ["健全→不健全への切替回数"] },
+            { "heading": "consecutive_up", "items": ["不健全→健全への切替回数"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-015",
+      "category": "load-balancing",
+      "difficulty": "intermediate",
+      "question": "Session Affinity(セッションアフィニティ)の3つのタイプの組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "IPアドレスの上位2オクテットのみで判定するタイプ、地理的リージョンで判定するタイプ、常にランダムに再割り当てするタイプの3つ",
+          "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
+        },
+        {
+          "text": "TCPコネクションのポート番号で判定するタイプ、TLSセッションIDで判定するタイプ、DNSクエリの送信元で判定するタイプの3つ",
+          "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
+        },
+        {
+          "text": "User-Agent文字列で判定するタイプ、Refererヘッダーで判定するタイプ、Acceptヘッダーで判定するタイプの3つ",
+          "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
+        },
+        {
+          "text": "Cloudflare Cookieのみで判定するタイプ、Cloudflare Cookieに加えクライアントIPをフォールバックとして使うタイプ、HTTPヘッダーで判定するタイプの3つ"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Session Affinityには、Cloudflare Cookie(`__cflb`)のみで判定するタイプ、Cloudflare Cookieに加えCookieが存在しない場合にクライアントIPアドレスをフォールバックとして使うタイプ、指定したHTTPヘッダーで判定するタイプの3つがあります。いずれもDNS-onlyモード(グレークラウド)ではサポートされていません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/session-affinity/#types",
+      "hint": "そのまま使う識別子と、フォールバックを伴う識別子、リクエスト側が指定する識別子という3つの異なる手がかりの取り方を考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Session Affinityの3タイプ",
+          "items": [
+            { "text": "Cloudflare Cookieのみ" },
+            { "text": "Cloudflare Cookie + IPフォールバック" },
+            { "text": "HTTPヘッダー" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-016",
+      "category": "load-balancing",
+      "difficulty": "advanced",
+      "question": "Zero-Downtime Failoverの3つのモード(None・Temporary・Sticky)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Noneはフェイルオーバーを行わずエラーが表示されうる状態、Temporaryは元のエンドポイントが復旧するまで一時的に他のエンドポイントへ送るが復旧後は元に戻る、StickyはSession Affinity Cookieを更新して以降のリクエストを新しいエンドポイントへ送り続ける"
+        },
+        {
+          "text": "Noneは常に自動的に別のエンドポイントへ切り替わる最も積極的なモードであり、Stickyはフェイルオーバーを一切行わない最も消極的なモードである",
+          "wrongFeedback": "説明が逆です。Noneはフェイルオーバーを行わない最も消極的なモードで、Stickyは積極的にセッションを新しいエンドポイントへ切り替えるモードです。"
+        },
+        {
+          "text": "Sticky Zero-Downtime FailoverはHTTPヘッダーによるSession Affinityと組み合わせて問題なく利用できる",
+          "wrongFeedback": "Sticky Zero-Downtime Failoverは、HTTPヘッダーによるSession Affinityとの組み合わせはサポートされていません。"
+        },
+        {
+          "text": "TemporaryモードとStickyモードは、内部的な処理は同一でありダッシュボード上の表示名が異なるだけである",
+          "wrongFeedback": "処理は異なります。Temporaryは元のエンドポイントが復旧するまでの一時的な切り替えで、Stickyはセッションアフィニティクッキー自体を新しいエンドポイントに更新します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Zero-Downtime Failoverには3つのモードがあります。Noneはフェイルオーバーを行わず、問題発生時にユーザーへエラーが表示される可能性があります。Temporaryは、元々割り当てられていたエンドポイントが利用可能になるまで、一時的に他のエンドポイントへトラフィックを送ります。Stickyは、Session Affinity Cookie自体を更新し、以降のリクエストを新しいエンドポイントへ送り続けます。ただし、StickyモードはHTTPヘッダーによるSession Affinityとの組み合わせはサポートされていません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/session-affinity/#zero-downtime-failover",
+      "hint": "「一時しのぎ」と「もっと踏み込んだ切り替え」という2つの積極度の違いを考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Zero-Downtime Failoverの3モード",
+          "columns": [
+            { "heading": "None", "items": ["フェイルオーバーなし"] },
+            { "heading": "Temporary", "items": ["復旧まで一時的に切替"] },
+            { "heading": "Sticky", "items": ["Cookieを更新し恒久的に切替"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-017",
+      "category": "load-balancing",
+      "difficulty": "intermediate",
+      "question": "非Enterpriseプランにおける Load Balancing の主な上限値の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Load Balancer・Pool・Endpointの上限はすべて100個までで、Monitorの間隔は最小1秒〜最大60秒",
+          "wrongFeedback": "数値が異なります。非Enterpriseの上限はLoad Balancer・Pool・Endpointがそれぞれ20個までで、Monitorの間隔は最小15秒〜最大3600秒です。"
+        },
+        {
+          "text": "Load Balancer・Pool・Endpointはそれぞれ最大20個まで、Monitorの上限はPool数の1.5倍、Monitorの間隔は最小15秒〜最大3600秒"
+        },
+        {
+          "text": "Load Balancer・Pool・Endpointの上限には差があるが、Monitorの上限はPool数に関わらず常に固定で10個までである",
+          "wrongFeedback": "Monitorの上限は固定10個ではなく、Pool数の1.5倍という変動する計算式です。"
+        },
+        {
+          "text": "非Enterpriseプランでは、これらの項目に一切の上限が設定されておらず、Enterpriseプランと全く同じ「custom」扱いになる",
+          "wrongFeedback": "非Enterpriseプランには具体的な数値の上限(各20個など)が設定されています。Enterpriseのような「custom」扱いではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "非Enterpriseプランでは、Load Balancer・Pool・Endpointはそれぞれ最大20個までという上限があります。Monitorの上限はPool数の1.5倍という計算式で決まり、Monitorの間隔(interval)は最小15秒〜最大3600秒です。Enterpriseプランでは、Load Balancer・Pool・Endpointの上限が「custom」(要相談)になり、Monitor間隔の最小値も10秒まで短縮できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/reference/limitations/",
+      "hint": "「固定された個数の上限」と「Pool数に連動して変わる上限」の2種類が混在していることを考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "非Enterpriseの主な上限",
+          "columns": [
+            { "heading": "LB/Pool/Endpoint", "items": ["各20個まで"] },
+            { "heading": "Monitor数", "items": ["Pool数の1.5倍"] },
+            { "heading": "Monitor間隔", "items": ["15秒〜3600秒"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lb-018",
+      "category": "load-balancing",
+      "difficulty": "advanced",
+      "question": "Adaptive Routingの「Failover across pools」とGeo Steeringを組み合わせて使う場合の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "「Failover across pools」を有効にすれば、Geo Steeringの地理的なグルーピングを越えて、世界中のどのPoolへも自動的にフェイルオーバーするようになる",
+          "wrongFeedback": "地理的なグルーピングを越えた自動フェイルオーバーは行われません。Geo Steering使用時は、同じ地理的グループ内のPoolのみが対象になります。"
+        },
+        {
+          "text": "Geo Steeringを使っている場合、「Failover across pools」を有効化しても何の効果もなく、常に単一のPoolに固定されたまま動作する",
+          "wrongFeedback": "何の効果もないわけではありません。同じ地理的グループ内であれば、健全な別のPoolへのフェイルオーバーが機能します。"
+        },
+        {
+          "text": "Geo Steering使用時、「Failover across pools」は同じ地理的グループ内のPoolのみを対象とし、例えば北米(NA)のPoolがすべて不健全になっても、それだけでは自動的に欧州(EU)のPoolへはフェイルオーバーせず、グローバルなFallback Poolへ向かう"
+        },
+        {
+          "text": "クロスリージョンのフェイルオーバーを実現する唯一の方法は、Cloudflareサポートに連絡して手動で設定を変更してもらうことである",
+          "wrongFeedback": "サポートへの連絡は不要です。各リージョンのPoolリストに、フォールバック先として使いたいPoolを追加のPoolとして含めることでクロスリージョンのフェイルオーバーを実現できます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Geo Steeringを使っている場合、「Failover across pools」は同じ地理的グループ内のPoolのみを対象とします。例えば北米(NA)のPoolがすべて不健全になっても、それだけでは自動的に欧州(EU)のPoolへはフェイルオーバーせず、グローバルなFallback Poolへトラフィックが向かいます。クロスリージョンのフェイルオーバーを実現したい場合は、各リージョンのPoolリストに、フォールバック先として使いたいPoolを追加のPoolとして明示的に含める必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/adaptive-routing/#failover-across-pools",
+      "hint": "「地理的なグループの壁」を越えたフェイルオーバーが自動的に起きるかどうかを考えましょう。",
+      "tags": ["load-balancing", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Geo Steering下でのフェイルオーバー範囲",
+          "steps": [
+            { "text": "NAの全Poolが不健全に" },
+            { "text": "同じ地理グループ内のPoolのみ対象" },
+            { "text": "グループ内に代替がなければFallback Poolへ" }
+          ]
+        }
+      ]
     }
   ]
 }

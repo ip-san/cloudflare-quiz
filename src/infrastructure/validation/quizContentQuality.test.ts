@@ -53,6 +53,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wf: 'waf',
   bt: 'bots',
   as: 'api-shield',
+  lb: 'load-balancing',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -216,6 +217,20 @@ const VALID_DOC_PAGES = [
   'api-shield/security/volumetric-abuse-detection/',
   'api-shield/plans/',
   'api-shield/get-started/',
+  'load-balancing/',
+  'load-balancing/understand-basics/load-balancing-components/',
+  'load-balancing/understand-basics/traffic-steering/',
+  'load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/',
+  'load-balancing/understand-basics/traffic-steering/steering-policies/dynamic-steering/',
+  'load-balancing/understand-basics/traffic-steering/steering-policies/geo-steering/',
+  'load-balancing/understand-basics/traffic-steering/steering-policies/least-outstanding-requests/',
+  'load-balancing/understand-basics/traffic-steering/steering-policies/proximity-steering/',
+  'load-balancing/monitors/',
+  'load-balancing/understand-basics/health-details/',
+  'load-balancing/understand-basics/session-affinity/',
+  'load-balancing/understand-basics/adaptive-routing/',
+  'load-balancing/reference/limitations/',
+  'load-balancing/reference/load-balancing-analytics/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -645,6 +660,7 @@ describe('Quiz Content Quality', () => {
         'waf',
         'bots',
         'api-shield',
+        'load-balancing',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])
