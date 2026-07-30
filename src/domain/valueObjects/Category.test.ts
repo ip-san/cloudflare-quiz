@@ -124,6 +124,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('hyperdrive-workflows')
     expect(ids).toContain('platform-services')
     expect(ids).toContain('observability')
+    expect(ids).toContain('containers')
     expect(ids).toContain('architecture')
   })
 

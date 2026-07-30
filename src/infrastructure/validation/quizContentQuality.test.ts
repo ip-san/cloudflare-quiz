@@ -28,7 +28,7 @@ const singleQuizzes = quizzes.filter((q) => q.type !== 'multi')
 const multiQuizzes = quizzes.filter((q) => q.type === 'multi')
 const validCategoryIds = PREDEFINED_CATEGORIES.map((c) => c.id)
 
-/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob- + 3桁連番） */
+/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct- + 3桁連番） */
 const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wk: 'workers',
   wr: 'wrangler',
@@ -42,6 +42,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   hw: 'hyperdrive-workflows',
   px: 'platform-services',
   ob: 'observability',
+  ct: 'containers',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -58,6 +59,14 @@ const VALID_DOC_PAGES = [
   'cache/how-to/tiered-cache/',
   'cloudflare-for-platforms/workers-for-platforms/',
   'cloudflare-one/access-controls/policies/',
+  'containers/',
+  'containers/get-started/',
+  'containers/container-class/',
+  'containers/pricing/',
+  'containers/local-dev/',
+  'containers/platform-details/limits/',
+  'containers/platform-details/scaling-and-routing/',
+  'containers/platform-details/rollouts/',
   'd1/',
   'd1/best-practices/local-development/',
   'd1/best-practices/read-replication/',
@@ -182,6 +191,7 @@ const VALID_DOC_PAGES = [
   'workers/versions-and-deployments/gradual-deployments/',
   'workers/versions-and-deployments/rollbacks/',
   'workers/wrangler/commands/',
+  'workers/wrangler/commands/containers/',
   'workers/wrangler/commands/general/',
   'workers/wrangler/commands/workers/',
   'workers/wrangler/configuration/',
@@ -494,7 +504,13 @@ describe('Quiz Content Quality', () => {
 
     it('全カテゴリが含まれていること（中上級向けの architecture / hyperdrive-workflows は除外）', () => {
       const categories = new Set(overviewQuizzes.map((q) => q.category))
-      const OVERVIEW_EXCLUDED = new Set(['architecture', 'hyperdrive-workflows', 'platform-services', 'observability'])
+      const OVERVIEW_EXCLUDED = new Set([
+        'architecture',
+        'hyperdrive-workflows',
+        'platform-services',
+        'observability',
+        'containers',
+      ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])
     })

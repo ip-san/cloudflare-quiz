@@ -264,6 +264,15 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '本番Workerの挙動を可視化し、障害調査・利用状況分析ができる',
     },
     {
+      id: 'containers',
+      name: 'Containers',
+      icon: '🐳',
+      color: 'amber',
+      weight: 10,
+      description: 'Dockerイメージをそのまま動かすContainers。Workerからの起動・ルーティング、スケーリング、料金モデル',
+      skillDescription: '既存のコンテナ資産をWorkersと組み合わせて動かせる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

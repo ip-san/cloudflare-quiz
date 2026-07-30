@@ -14660,6 +14660,719 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ct-001",
+      "category": "containers",
+      "difficulty": "beginner",
+      "question": "Cloudflare Containersの役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Workersのコールドスタートを完全になくすための専用キャッシュ機構で、実行するコードやランタイムには一切関与しない",
+          "wrongFeedback": "コールドスタート対策の仕組みではありません。Containersは任意の言語・ランタイムで書かれたコードをWorkerと組み合わせて実行するための仕組みです。"
+        },
+        {
+          "text": "任意の言語・ランタイムで書かれたコードやDockerイメージとして配布された既存アプリケーションを、Workerと連携させてCloudflareのネットワーク上で実行できるようにする"
+        },
+        {
+          "text": "KVやD1に保存済みのデータを丸ごとコンテナ化して、別リージョンへ定期的に複製するためのバックアップ専用の仕組み",
+          "wrongFeedback": "データのレプリケーションの仕組みではありません。Containersはコードの実行環境を提供するものです。"
+        },
+        {
+          "text": "静的アセットをCDNキャッシュするための`Docker`専用ストレージ",
+          "wrongFeedback": "静的アセット配信はWorkers Static Assetsなどの役割であり、Containersはコンテナプロセスの実行が目的です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Containersは、任意のプログラミング言語・ランタイムで書かれたコードや、既存のDockerイメージとして配布されているアプリケーションを、Workerと連携させてCloudflareのネットワーク上で実行できるようにする仕組みです。CPUコアの並列利用や大きなメモリ・ディスクを必要とする処理、フルのファイルシステムやLinux的な環境が必要な処理に向いています。\n{{diagram:0}}\nWorkers Paidプランで利用できます。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/",
+      "hint": "Workersだけでは実行しにくい「特定の言語ランタイムやファイルシステムが必要な処理」を、どう実行するかを考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "Containersの構成",
+          "layers": [
+            { "text": "Worker", "sub": "リクエストを受けてルーティング" },
+            { "text": "Container", "sub": "任意の言語・ランタイム" },
+            { "text": "Linux VM上のプロセス", "sub": "Dockerイメージから起動" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-002",
+      "category": "containers",
+      "difficulty": "beginner",
+      "question": "WorkerからContainerを使うためのwrangler設定に最低限必要な要素の組み合わせとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`containers`配列(`image`/`class_name`)、対応する`durable_objects`バインディング、`migrations`での`new_sqlite_classes`指定"
+        },
+        {
+          "text": "`containers`配列のみで完結し、Durable Objectsの設定は一切不要",
+          "wrongFeedback": "ContainerはDurable Objectと1対1で結びつくため、`durable_objects`バインディングと`migrations`の設定も必須です。"
+        },
+        {
+          "text": "`kv_namespaces`バインディングで、Containerの状態をKVに保存する設定",
+          "wrongFeedback": "KVではなくDurable Objectがコンテナの状態管理・ルーティングを担います。"
+        },
+        {
+          "text": "`vars`にDockerイメージのURLを直接書き込むだけの設定",
+          "wrongFeedback": "`vars`ではなく専用の`containers`フィールドで`image`などを指定します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "WorkerからContainerを使うには、wrangler設定ファイルに`containers`配列(`image`と`class_name`を含む)を定義し、対応する`durable_objects`バインディングを設定し、`migrations`で`new_sqlite_classes`にそのクラス名を指定する必要があります。`class_name`はDurable Objectのクラス名と一致させます。\n{{diagram:0}}\n`new_classes`ではなく`new_sqlite_classes`を使う点に注意が必要です。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/get-started/",
+      "hint": "Containerが誰と1対1で結びついて状態やルーティングを管理しているかを思い出しましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "wrangler.jsonc の最小構成",
+          "filepath": "wrangler.jsonc",
+          "lines": [
+            { "text": "{" },
+            { "text": "  \"containers\": [", "highlight": true },
+            { "text": "    { \"class_name\": \"MyContainer\", \"image\": \"./Dockerfile\" }", "highlight": true },
+            { "text": "  ]," },
+            { "text": "  \"durable_objects\": {" },
+            { "text": "    \"bindings\": [{ \"name\": \"MY_CONTAINER\", \"class_name\": \"MyContainer\" }]" },
+            { "text": "  }," },
+            { "text": "  \"migrations\": [{ \"tag\": \"v1\", \"new_sqlite_classes\": [\"MyContainer\"] }]" },
+            { "text": "}" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-003",
+      "category": "containers",
+      "difficulty": "beginner",
+      "question": "`@cloudflare/containers`が提供する`Container`クラスとDurable Objectの関係について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`Container`クラスと`DurableObject`は無関係で、それぞれ独立したAPIを持つ",
+          "wrongFeedback": "`Container`クラスは`DurableObject`を継承しているため無関係ではありません。"
+        },
+        {
+          "text": "`Container`クラスを使うと、Durable Objectのストレージ機能(`this.ctx.storage`)は使えなくなる",
+          "wrongFeedback": "`Container`は`DurableObject`を継承しているため、`this.ctx.storage`などDurable Objectの機能はそのまま使えます。"
+        },
+        {
+          "text": "`Container`クラスは`DurableObject`を継承しており、Durable Objectがルーティング・永続状態・ライフサイクルを管理する一方、コンテナプロセス自体はLinux VM内で実行される"
+        },
+        {
+          "text": "コンテナのディスクは自動的にDurable Objectのストレージと同期され、再起動後もコンテナのディスク内容がそのまま復元される",
+          "wrongFeedback": "コンテナのディスクはデフォルトで一時的(ephemeral)です。再起動をまたいで永続化したいデータは明示的に`this.ctx.storage`に保存する必要があります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`Container`クラスは`DurableObject`を継承しています。Durable Objectがルーティング・永続的な状態・ライフサイクルを管理し、コンテナプロセス自体はLinux VM内でイメージを実行します。そのため`this.ctx.storage`や`this.ctx.id`などDurable Object APIがそのまま使えます。\n{{diagram:0}}\nコンテナのディスクはデフォルトで一時的なので、再起動をまたいで残したいデータはDurable Objectのストレージに保存します。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/",
+      "hint": "「誰が状態を覚えていて、誰が実際のプロセスを動かしているか」という役割分担を考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Container クラスの構造",
+          "items": [
+            { "text": "Containerクラス", "sub": "DurableObjectを継承" },
+            { "text": "Durable Object", "sub": "ルーティング・永続状態・ライフサイクル" },
+            { "text": "コンテナプロセス", "sub": "Linux VM内で実行、ディスクは一時的" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-004",
+      "category": "containers",
+      "difficulty": "beginner",
+      "question": "`getContainer()`と`getRandom()`の使い分けとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`getContainer()`は毎回ランダムなインスタンスを選び、`getRandom()`は名前で固定のインスタンスを取得する",
+          "wrongFeedback": "説明が逆です。名前で固定インスタンスを取得するのは`getContainer()`、ランダム選択するのは`getRandom()`です。"
+        },
+        {
+          "text": "`getContainer()`と`getRandom()`はどちらも同じ動作をする別名のエイリアスに過ぎない",
+          "wrongFeedback": "動作は異なります。`getContainer()`は名前指定、`getRandom()`はランダム選択です。"
+        },
+        {
+          "text": "`getRandom()`はステートフルなセッション管理専用で、ユーザーごとに同じインスタンスを返し続ける",
+          "wrongFeedback": "ユーザーごとに同じインスタンスを返し続けたい場合は`getContainer()`を名前付きで使います。`getRandom()`はステートレスな負荷分散向けです。"
+        },
+        {
+          "text": "ユーザーセッションやドキュメントのように特定の実体に紐づけたい場合は名前を指定して`getContainer()`を使い、どのインスタンスが処理しても構わないステートレスな負荷分散には`getRandom()`を使う"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`getContainer(binding, name)`は指定した名前に対応する1つのコンテナインスタンスのスタブを返し、同じ名前を指定すれば常に同じインスタンスにルーティングされます。ユーザーセッションやドキュメント単位の処理に向いています。一方`getRandom(binding, instances)`は指定した台数の中からランダムに1つを選ぶため、どのインスタンスが処理しても構わないステートレスな負荷分散に向いています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#getcontainer",
+      "hint": "「特定の相手と話し続けたい」のか「誰でもいいから空いている相手と話したい」のか、という違いを考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "getContainer と getRandom",
+          "columns": [
+            { "heading": "getContainer(name)", "items": ["名前で固定インスタンス", "セッション/ドキュメント向き"] },
+            { "heading": "getRandom(n)", "items": ["ランダムに1台選択", "ステートレスな負荷分散向き"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-005",
+      "category": "containers",
+      "difficulty": "beginner",
+      "question": "`Container`クラスの`defaultPort`と`sleepAfter`プロパティの役割として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`defaultPort`はコンテナに割り当てるCPUコア数、`sleepAfter`はディスク容量を指定する",
+          "wrongFeedback": "どちらもリソース量の指定ではありません。`defaultPort`は通信ポート、`sleepAfter`はアイドル時間の指定です。"
+        },
+        {
+          "text": "`defaultPort`は`fetch()`/`containerFetch()`がコンテナと通信するポート番号、`sleepAfter`はアクティビティがない状態が続いた場合にコンテナを停止するまでの時間"
+        },
+        {
+          "text": "`defaultPort`はコンテナ起動時の初期ヘルスチェック回数、`sleepAfter`はログの保持期間",
+          "wrongFeedback": "ヘルスチェック回数やログ保持期間の設定ではありません。通信ポートとアイドルタイムアウトの設定です。"
+        },
+        {
+          "text": "`defaultPort`はDockerイメージのタグ名、`sleepAfter`は次回起動までの待機時間",
+          "wrongFeedback": "イメージタグ名は`image`プロパティで指定します。`defaultPort`は通信用のポート番号です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`defaultPort`は、`fetch()`や`containerFetch()`がコンテナプロセスと通信する際に使うポート番号です。コンテナがこのポートで待ち受けを始めるまでリクエストはブロックされます。`sleepAfter`は、アクティビティがない状態が一定時間続いた場合にコンテナを停止するまでの時間(デフォルト`\"10m\"`)です。\n{{diagram:0}}\nリクエストのたびにこのタイマーはリセットされます。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#properties",
+      "hint": "「どのポートで会話するか」と「どれくらい放置したら休ませるか」という2つの設定だと考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "主なプロパティ",
+          "items": [
+            { "text": "defaultPort", "sub": "通信ポート番号" },
+            { "text": "sleepAfter", "sub": "アイドル時のスリープまでの時間" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-006",
+      "category": "containers",
+      "difficulty": "beginner",
+      "question": "Container対応Workerで`wrangler deploy`を実行したときの流れとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "Dockerでコンテナイメージをビルドし、Cloudflareのコンテナイメージレジストリにプッシュしたうえで、Workerをデプロイしてネットワーク側にインスタンス起動の準備をする"
+        },
+        {
+          "text": "コンテナイメージのビルドは行わず、事前にDocker Hubへ手動でプッシュしておいたイメージを参照するだけでよい",
+          "wrongFeedback": "`image`にDockerfileへのパスを指定していれば、`wrangler deploy`が自動でビルド・プッシュを行います。手動プッシュが必須ではありません。"
+        },
+        {
+          "text": "Worker本体のデプロイとコンテナイメージのビルドは完全に無関係で、別々のコマンドを毎回実行する必要がある",
+          "wrongFeedback": "`wrangler deploy`一つでビルド・プッシュ・Workerデプロイまでまとめて行われます。"
+        },
+        {
+          "text": "コンテナは初回デプロイの時点から即座にリクエストを処理できる状態になる",
+          "wrongFeedback": "初回デプロイ後、コンテナの準備が完了するまで数分待つ必要があります。その間コンテナ呼び出しはエラーになります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`wrangler deploy`を実行すると、Dockerを使ってコンテナイメージがビルドされ、Cloudflareのコンテナイメージレジストリへプッシュされたうえで、Workerがデプロイされ、コンテナインスタンスを起動できる状態にネットワーク側が準備されます。初回デプロイ後は準備が完了するまで数分かかり、その間コンテナへの呼び出しはエラーになります。\n{{diagram:0}}\n2回目以降のデプロイはDockerのキャッシュ済みレイヤーを再利用するため高速です。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/get-started/",
+      "hint": "普段のWorkerデプロイと違い、イメージという「もう1つの成果物」をどこかに送る手順が挟まることを考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "wrangler deploy の流れ",
+          "steps": [
+            { "text": "Dockerでイメージをビルド" },
+            { "text": "レジストリへプッシュ", "sub": "Cloudflareのコンテナレジストリ" },
+            { "text": "Workerをデプロイ" },
+            { "text": "起動準備完了まで数分待機" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-007",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "`Container`クラスの`fetch()`をオーバーライドして独自のルーティング処理を追加する場合の正しい実装方針はどれですか？",
+      "options": [
+        {
+          "text": "オーバーライドした`fetch()`の中から`this.fetch()`を再度呼び出して、コンテナへ処理を委譲する",
+          "wrongFeedback": "オーバーライドした`fetch()`の中で`this.fetch()`を呼ぶと無限再帰になります。コンテナへ委譲するには`this.containerFetch()`を使います。"
+        },
+        {
+          "text": "`fetch()`はDurable Objectの予約済みメソッドでありオーバーライドできないため、ルーティングを追加したい場合は`containerFetch()`という名前の新しいハンドラを別途定義する",
+          "wrongFeedback": "`fetch()`はオーバーライド可能です。ルーティングや認証などのミドルウェア処理を追加してから`this.containerFetch()`でコンテナへ委譲するのが正しい方法です。"
+        },
+        {
+          "text": "`fetch()`をオーバーライドしてルーティングや認証などの処理を追加し、コンテナへ処理を委譲する部分では`this.containerFetch()`を呼び出す"
+        },
+        {
+          "text": "`fetch()`をオーバーライドすると、WebSocketのプロキシは以降一切サポートされなくなる",
+          "wrongFeedback": "WebSocketのプロキシをサポートするのは`fetch()`だけです。オーバーライドしても、正しく実装すればWebSocketのプロキシは引き続き可能です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`fetch()`をオーバーライドすることで、認証やパスによるルーティングなどのミドルウェア処理を追加できます。コンテナへ処理を委譲する箇所では、無限再帰を避けるために`this.fetch()`ではなく`this.containerFetch()`を呼び出します。WebSocketのプロキシをサポートするのは`fetch()`のみです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#fetch",
+      "hint": "同じ名前のメソッドを自分自身から呼び出すと何が起きるか、それを避けるための「内部委譲用」の別メソッドを考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "fetch のオーバーライドと委譲",
+          "actors": ["クライアント", "Worker(fetch override)", "コンテナプロセス"],
+          "messages": [
+            { "from": 0, "to": 1, "text": "リクエスト" },
+            { "from": 1, "to": 1, "text": "認証・ルーティング判定" },
+            { "from": 1, "to": 2, "text": "containerFetch()で委譲" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-008",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "Containerのカスタムインスタンスタイプ(`vcpu`/`memory_mib`/`disk_mb`を個別指定)の制約として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "vCPUは最大16コアまで自由に指定でき、メモリやディスクの量には一切上限が設けられていない",
+          "wrongFeedback": "vCPUの上限は4です。メモリにも最大12GiBという上限があります。"
+        },
+        {
+          "text": "メモリとvCPUの比率に下限は設けられておらず、1vCPUに対して極端に少ないメモリを割り当てる構成も許可される",
+          "wrongFeedback": "1vCPUあたり最低3GiBのメモリが必要という比率の下限があります。"
+        },
+        {
+          "text": "ディスクはメモリの割り当て量に関わらず、常に上限いっぱいの20GBまで自由に設定できる",
+          "wrongFeedback": "ディスクは最大20GBですが、メモリ1GiBあたり最大2GBという比率の上限もあります。"
+        },
+        {
+          "text": "vCPUは1〜4、メモリは最大12GiB、ディスクは最大20GBで、メモリはvCPU1つあたり最低3GiB、ディスクはメモリ1GiBあたり最大2GBの比率制約もある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "カスタムインスタンスタイプでは、vCPUは1〜4、メモリは最大12GiB、ディスクは最大20GBという上限に加えて、メモリはvCPU1つあたり最低3GiB、ディスクはメモリ1GiBあたり最大2GBという比率の制約もあります。1vCPU未満の小さなワークロードには`lite`や`basic`などの定義済みインスタンスタイプを使います。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/limits/#custom-instance-types",
+      "hint": "「何個まで」という上限だけでなく、「比率としての下限・上限」もセットで存在することを意識しましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "カスタムインスタンスタイプの制約",
+          "columns": [
+            { "heading": "vCPU", "items": ["1〜4"] },
+            { "heading": "メモリ", "items": ["最大12GiB", "vCPU1つあたり最低3GiB"] },
+            { "heading": "ディスク", "items": ["最大20GB", "メモリ1GiBあたり最大2GB"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-009",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "Containerの課金の考え方として正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "コンテナをデプロイした時点で、実際にリクエストが来なくても常に課金が発生し続ける",
+          "wrongFeedback": "課金はリクエストが送られたか手動で起動したときに開始され、コンテナがスリープすると停止します。デプロイしただけでは課金は発生しません。"
+        },
+        {
+          "text": "コンテナが実際に稼働している10ms単位で課金され、リクエストが来た時や手動起動時に課金が始まり、スリープすると停止するため、使った分だけの支払いになる"
+        },
+        {
+          "text": "メモリ・ディスクの課金は実際の使用量ベースだが、CPUの課金は確保した容量に応じて常に一定額発生する",
+          "wrongFeedback": "逆です。メモリ・ディスクはプロビジョニングされた容量ベース、CPUは実際にアクティブに使われた分だけ課金されます。"
+        },
+        {
+          "text": "ネットワークegressの料金は世界中どこでも同一で、リージョンによる違いはない",
+          "wrongFeedback": "egressの料金は北米・欧州、オセアニア/韓国/台湾、その他の地域でそれぞれ異なる単価が設定されています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Containerは実際に稼働している10ms単位で課金されます。リクエストが送られるか手動で起動したときに課金が始まり、コンテナがスリープ(停止)すると課金も止まるため、使った分だけの支払いで済みます。メモリ・ディスクはプロビジョニングされた容量ベース、CPUは実際のアクティブ使用量ベースで課金される点も特徴です。\n{{diagram:0}}\nこれによりバーストするトラフィックでもゼロスケールと高い利用効率を両立できます。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/pricing/",
+      "hint": "「契約した瞬間から」ではなく「実際に動いている時間」に紐づく課金の仕組みを考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "formula",
+          "label": "課金額の考え方",
+          "result": "課金額",
+          "components": [
+            { "text": "稼働時間", "sub": "10ms単位" },
+            { "text": "リソース使用量", "sub": "メモリ/ディスクは容量ベース、CPUはアクティブ使用ベース", "highlight": true }
+          ],
+          "operator": "×"
+        }
+      ]
+    },
+    {
+      "id": "ct-010",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "Containerのアカウントレベルの上限に関する説明として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "1アカウントあたり同時に使える合計メモリ・vCPU・ディスクの上限があり、コンテナイメージの総ストレージ容量にも上限(50GB)がある"
+        },
+        {
+          "text": "アカウント単位の上限は一切なく、契約したインスタンスタイプの範囲内であればコンテナの台数や規模に関わらず無制限に同時実行できてしまう",
+          "wrongFeedback": "同時メモリ6TiB、同時vCPU 1,500、同時ディスク30TBなど、アカウント単位の上限が存在します。"
+        },
+        {
+          "text": "コンテナイメージの保存容量に上限はなく、過去にプッシュした全イメージを無制限に保持できる",
+          "wrongFeedback": "1アカウントあたりのイメージ総ストレージには50GBという上限があり、`wrangler containers images delete`などで空き容量を確保する必要があります。"
+        },
+        {
+          "text": "同時実行数の上限は各Workerごとの`max_instances`の設定値の合計と常に一致する",
+          "wrongFeedback": "`max_instances`はWorkerごとの上限であり、それとは別にアカウント全体の同時メモリ・vCPU・ディスクの上限が存在します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Containerには、1アカウントあたりの同時メモリ(6TiB)・同時vCPU(1,500)・同時ディスク(30TB)といった上限に加え、コンテナイメージの総ストレージ容量にも50GBという上限があります。イメージストレージが上限に近づいた場合は`wrangler containers images delete`で不要なイメージを削除できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/limits/#account-limits",
+      "hint": "個々のWorkerの設定とは別に、アカウント全体としての「総量」の上限があることを意識しましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "アカウントレベルの主な上限",
+          "columns": [
+            { "heading": "同時メモリ", "items": ["6TiB"] },
+            { "heading": "同時vCPU", "items": ["1,500"] },
+            { "heading": "同時ディスク", "items": ["30TB"] },
+            { "heading": "イメージ総容量", "items": ["50GB"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-011",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "Container対応Workerのデフォルトのロールアウト(rollout)動作について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "全てのコンテナインスタンスが一斉に停止され、新しいコードのインスタンスに一括で置き換わる",
+          "wrongFeedback": "デフォルトは一括ではなく、2段階(10%→90%)の段階的なロールアウトです。"
+        },
+        {
+          "text": "Worker本体のコード更新とコンテナインスタンスの更新は常に同時に完了する",
+          "wrongFeedback": "Workerのコードは即座に更新されますが、コンテナインスタンスは段階的にロールアウトされるため、更新完了までにはタイムラグがあります。"
+        },
+        {
+          "text": "Worker本体のコードは即座に更新される一方、コンテナインスタンスはデフォルトで2段階(まず10%、その後残り90%)のローリングデプロイで更新される"
+        },
+        {
+          "text": "ロールアウト中のインスタンスは即座に強制終了(`SIGKILL`)され、猶予期間は一切与えられない",
+          "wrongFeedback": "更新対象になったインスタンスにはまず`SIGTERM`が送られ、15分間は正常終了のための猶予が与えられます。それでも停止しない場合に`SIGKILL`が送られます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`wrangler deploy`を実行すると、Worker本体のコードは即座に更新されますが、コンテナインスタンスはデフォルトで2段階(最初のステップで10%、次のステップで残り90%)のローリングデプロイで更新されます。更新対象になったインスタンスにはまず`SIGTERM`が送られ、15分間の猶予の後もまだ停止していなければ`SIGKILL`で強制停止されます。\n{{diagram:0}}\n`rollout_step_percentage`でこの段階配分をカスタマイズできます。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/rollouts/",
+      "hint": "Worker本体とコンテナ、2つの更新スピードが同じとは限らないことを考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "デフォルトのロールアウト手順",
+          "steps": [
+            { "text": "Workerコードは即座に更新" },
+            { "text": "1段階目: 10%のインスタンスを更新" },
+            { "text": "SIGTERM送信", "sub": "15分の猶予" },
+            { "text": "2段階目: 残り90%を更新" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-012",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "`wrangler dev`でContainer対応Workerをローカル開発する際の正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "ローカル開発ではDockerは不要で、Cloudflareのリモートコンテナ環境に自動的に接続される",
+          "wrongFeedback": "ローカル開発でもDocker互換のCLIツールとエンジン(Docker DesktopやColimaなど)が必要です。"
+        },
+        {
+          "text": "設定した`max_instances`は、ローカル開発でも本番と同じ上限として適用される",
+          "wrongFeedback": "`max_instances`はローカル開発には適用されません。"
+        },
+        {
+          "text": "コンテナのコードを変更すると、Workerのコードと同様に保存するたびに自動的に再ビルド・再起動される",
+          "wrongFeedback": "Workerのコードは自動リロードされますが、コンテナ内のコードは自動では再ビルドされません。キーボードの`[r]`で手動リビルドをトリガーする必要があります。"
+        },
+        {
+          "text": "Dockerが必要で、`image`がローカルパスならDockerfileからビルドされ、イメージ参照ならレジストリから取得され、コンテナのコード変更は`[r]`キーで手動リビルドする必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "ローカル開発ではDocker互換のCLIツールとエンジンが必要です。`image`にローカルパスが指定されていればDockerfileからビルドされ、イメージ参照が指定されていればレジストリから取得されます。Workerのコードは保存のたびに自動リロードされますが、コンテナ内のコードは自動リビルドされないため、`[r]`キーで手動リビルドをトリガーします。また`max_instances`はローカル開発には適用されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/local-dev/",
+      "hint": "Workerのコードとコンテナのコードとで、保存時の挙動が同じかどうかを考えてみましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "保存時の挙動の違い",
+          "columns": [
+            { "heading": "Workerコード", "items": ["保存で自動リロード"] },
+            { "heading": "コンテナコード", "items": ["自動リビルドされない", "[r]キーで手動リビルド"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-013",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "`Container`クラスの`onActivityExpired()`をオーバーライドする際の正しい注意点はどれですか？",
+      "options": [
+        {
+          "text": "`onActivityExpired()`をオーバーライドすると、`sleepAfter`の設定は完全に無視されるようになる",
+          "wrongFeedback": "`sleepAfter`のタイマー自体は引き続き機能します。オーバーライド時に注意すべきなのはコンテナを停止する処理を自分で呼ぶ必要がある点です。"
+        },
+        {
+          "text": "オーバーライドした処理の中で`await this.stop()`または`await this.destroy()`を呼ばないと、コンテナがスリープ(停止)しないままタイマーが再度延長されてしまう"
+        },
+        {
+          "text": "`onActivityExpired()`はリクエストを受け取るたびに毎回呼ばれるフックであり、アイドル時間とは無関係",
+          "wrongFeedback": "`onActivityExpired()`は`sleepAfter`で設定したアイドルタイムアウトが経過したときに呼ばれるフックです。リクエストのたびに呼ばれるものではありません。"
+        },
+        {
+          "text": "`onActivityExpired()`のデフォルト実装は何もしない空の処理になっているため、必ず自分で`stop()`を呼び出すコードを最初から追加で書き足しておかないとコンテナは永遠に動き続けてしまう",
+          "wrongFeedback": "デフォルト実装は`stop()`を呼び出します。何もしないわけではなく、オーバーライドした場合にのみ自分で停止処理を呼ぶ必要が生じます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`onActivityExpired()`は`sleepAfter`で設定したアイドルタイムアウトが経過したときに呼ばれるフックで、デフォルト実装は`stop()`を呼び出します。このフックをオーバーライドする場合、自分で`await this.stop()`または`await this.destroy()`を呼ばないと、コンテナが停止しないままタイマーが延長されてしまい、フックが繰り返し呼ばれ続けます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#onactivityexpired",
+      "hint": "デフォルトの挙動を上書きしたとき、「もともと自動でやってくれていたこと」を自分で呼び直す必要がないか考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "onActivityExpired の呼び出し",
+          "steps": [
+            { "text": "sleepAfterのタイマーが経過" },
+            { "text": "onActivityExpired()が呼ばれる" },
+            { "text": "stop()/destroy()を呼ぶ", "sub": "呼ばないと停止しない" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-014",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "`Container`クラスで、一定時間後に特定のメソッドを実行したい場合の正しい実装方法はどれですか？",
+      "options": [
+        {
+          "text": "Durable Objectの`alarm()`を直接オーバーライドするのではなく、`this.schedule(when, callbackName, payload)`を使ってメソッドをスケジュールする"
+        },
+        {
+          "text": "`Container`クラスには時間指定の実行機能がないため、Workerの`scheduled`ハンドラ(Cron Triggers)を使うしかない",
+          "wrongFeedback": "`Container`クラスには`schedule()`メソッドがあり、クラス内から直接スケジューリングできます。"
+        },
+        {
+          "text": "Durable Objectの`alarm()`をオーバーライドするのが公式に推奨されている唯一の方法である",
+          "wrongFeedback": "`Container`クラスは内部で`alarm()`ハンドラをコンテナのライフサイクル管理に使っているため、`alarm()`を直接オーバーライドするのではなく`schedule()`を使うべきとされています。"
+        },
+        {
+          "text": "`schedule()`は絶対時刻の指定のみをサポートし、相対的な遅延時間(秒数)は指定できない",
+          "wrongFeedback": "`schedule()`は`Date`による絶対時刻指定だけでなく、秒数による相対的な遅延指定もサポートしています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`Container`クラスは内部で`alarm()`ハンドラをコンテナのライフサイクル管理に使っているため、`alarm()`を直接オーバーライドしてはいけません。代わりに`this.schedule(when, callbackName, payload)`を使うことで、絶対時刻(`Date`)または相対的な遅延秒数を指定して、クラス内のメソッドを後から呼び出せます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#schedule",
+      "hint": "コンテナ自身のライフサイクル管理にすでに使われている仕組みと、あなたが使いたい仕組みが衝突しないか考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "alarm() と schedule()",
+          "columns": [
+            { "heading": "alarm()を直接使う", "items": ["Containerクラス内部が使用中", "直接オーバーライド不可"] },
+            { "heading": "schedule()を使う", "items": ["絶対時刻/相対秒数を指定可能", "安全にメソッドを予約できる"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-015",
+      "category": "containers",
+      "difficulty": "intermediate",
+      "question": "Containerのネットワークegress(送信)料金について正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "リージョンに関わらず1GBあたりの単価は世界中どこでも同一である",
+          "wrongFeedback": "北米・欧州、オセアニア/韓国/台湾、その他の地域でそれぞれ異なる単価が設定されています。"
+        },
+        {
+          "text": "無料の含まれる転送量(allotment)は存在せず、egressは1バイト目から常に課金される",
+          "wrongFeedback": "月間の無料allotment(北米・欧州は1TB、その他の地域は500GB)が含まれています。"
+        },
+        {
+          "text": "北米・欧州は1GBあたり$0.025(月1TBまで無料)、オセアニア/韓国/台湾は$0.05(月500GBまで無料)、それ以外の地域は$0.04(月500GBまで無料)という地域別の料金体系になっている"
+        },
+        {
+          "text": "egressの料金はコンテナのインスタンスタイプ(vCPU/メモリ量)によって単価が変動する",
+          "wrongFeedback": "egressの単価はインスタンスタイプではなく、送信元のリージョンによって変動します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Containerのネットワークegressは地域別に料金が異なります。北米・欧州は1GBあたり$0.025(月1TBまで無料)、オセアニア/韓国/台湾は$0.05(月500GBまで無料)、それ以外の地域は$0.04(月500GBまで無料)です。\n{{diagram:0}}\nリージョンをまたぐトラフィックが多い構成では、この地域差を踏まえたコスト試算が必要です。",
+      "referenceUrl": "https://developers.cloudflare.com/containers/pricing/#network-egress",
+      "hint": "世界中の通信インフラのコストが本当にどこでも同じかどうか、地理的な観点で考えてみましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "地域別のegress料金",
+          "columns": [
+            { "heading": "北米・欧州", "items": ["$0.025/GB", "月1TBまで無料"] },
+            { "heading": "オセアニア/韓国/台湾", "items": ["$0.05/GB", "月500GBまで無料"] },
+            { "heading": "その他", "items": ["$0.04/GB", "月500GBまで無料"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-016",
+      "category": "containers",
+      "difficulty": "advanced",
+      "question": "Containerからの外向き(outbound)HTTP通信を、Worker側でインターセプト・制御する仕組みについて正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`enableInternet`を`true`に設定した場合のみアウトバウンド通信のインターセプトが可能で、`false`の場合は設定自体が無効になる",
+          "wrongFeedback": "`enableInternet`が`false`の場合、そもそもコンテナの外向き通信自体がブロックされます。インターセプトの設定はどちらの値でも定義できます。"
+        },
+        {
+          "text": "アウトバウンド通信のインターセプトは、コンテナ内のDockerfileに専用のプロキシ設定を書くことでのみ実現できる",
+          "wrongFeedback": "Dockerfile側の設定ではなく、`Container`クラスの`static outbound`/`static outboundByHost`をWorker側のコードで定義することでインターセプトします。"
+        },
+        {
+          "text": "`static outboundByHost`はホスト名に関わらず全てのアウトバウンドリクエストに同じ処理を適用するためのものである",
+          "wrongFeedback": "`static outboundByHost`はホスト名ごとに個別のハンドラを割り当てる仕組みです。全リクエスト共通の処理には`static outbound`を使います。"
+        },
+        {
+          "text": "`Container`サブクラスに`static outbound`や`static outboundByHost`を定義することで、コンテナが行う外向きリクエストをWorker側のコードでインターセプト・モック・ブロックでき、サンドボックス化やテスト、プロキシに応用できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`Container`サブクラスに`static outbound`(全リクエスト共通)や`static outboundByHost`(ホスト名ごと)を定義すると、コンテナが行う外向きのHTTPリクエストをWorker側のコードでインターセプト・モック・ブロックできます。AI生成コードの実行サンドボックスや、外部通信のテスト・プロキシに応用できます。`enableInternet`が`false`の場合はそもそも外向き通信自体がブロックされます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#outbound-interception",
+      "hint": "コンテナが外の世界へ話しかけようとする通信を、間に立って制御する仕組みを想像してみましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "アウトバウンドのインターセプト",
+          "nodes": [
+            { "id": "c", "text": "Container" },
+            { "id": "w", "text": "Worker", "sub": "outbound handler" },
+            { "id": "e", "text": "外部ホスト" }
+          ],
+          "edges": [
+            { "from": "c", "to": "w", "label": "outbound request" },
+            { "from": "w", "to": "e", "label": "許可時のみ転送", "dashed": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-017",
+      "category": "containers",
+      "difficulty": "advanced",
+      "question": "コンテナレジストリ内の不要なイメージを削除し、アカウントのイメージストレージ容量を空けるためのwranglerコマンドはどれですか？",
+      "options": [
+        {
+          "text": "`wrangler containers build --push`",
+          "wrongFeedback": "これはイメージをビルドしてレジストリにプッシュするコマンドであり、削除する操作ではありません。"
+        },
+        {
+          "text": "`wrangler containers images delete <IMAGE:TAG>`"
+        },
+        {
+          "text": "`wrangler containers delete <CONTAINER_ID>`(コンテナというアプリケーション自体を削除するコマンド)",
+          "wrongFeedback": "これはコンテナ(アプリケーション)自体を削除するコマンドであり、レジストリ内の個別イメージを削除するコマンドではありません。"
+        },
+        {
+          "text": "`wrangler containers registries list`",
+          "wrongFeedback": "これは利用可能なレジストリの一覧を表示するコマンドであり、イメージの削除は行いません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "レジストリ内の不要なイメージを削除するには`wrangler containers images delete <IMAGE:TAG>`を使います。似た名前の`wrangler containers delete <CONTAINER_ID>`はコンテナ(アプリケーション)自体を削除するコマンドで、対象が異なります。\n{{diagram:0}}\nアカウントのイメージ総ストレージには50GBの上限があるため、不要なイメージの削除は容量管理の面でも重要です。",
+      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/containers/#containers-images-delete",
+      "hint": "「コンテナというアプリケーション自体」を消すのか、「レジストリの中の1枚のイメージ」を消すのか、対象の粒度を区別しましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "削除コマンドの対象範囲",
+          "columns": [
+            { "heading": "containers delete", "items": ["コンテナ(アプリ)自体を削除"] },
+            { "heading": "containers images delete", "items": ["レジストリ内の個別イメージを削除"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-018",
+      "category": "containers",
+      "difficulty": "advanced",
+      "question": "`wrangler deploy --containers-rollout=immediate`を実行した場合の動作として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "コンテナインスタンスを段階的にではなく1ステップで100%まとめて更新するが、`rollout_active_grace_period`が設定されていればその猶予期間は引き続き適用される"
+        },
+        {
+          "text": "`rollout_active_grace_period`の設定を含め、既存インスタンスに与えられていたあらゆる猶予期間の設定を完全に無視して即座に全インスタンスを`SIGKILL`で強制終了する",
+          "wrongFeedback": "`rollout_active_grace_period`が設定されている場合、そのグレースピリオドは`--containers-rollout=immediate`でも引き続き適用されます。"
+        },
+        {
+          "text": "Worker本体のコードの反映を後回しにし、先にコンテナイメージの更新だけを完了させる",
+          "wrongFeedback": "Worker本体のコードは通常どおり即座に更新されます。このフラグが変えるのはコンテナインスタンスの更新ステップ数です。"
+        },
+        {
+          "text": "`rollout_step_percentage`で指定した段階配分をより細かく分割し、より安全に慎重にロールアウトする",
+          "wrongFeedback": "逆です。このフラグは段階を増やすのではなく、1ステップで100%へ一括更新するためのものです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`wrangler deploy --containers-rollout=immediate`を使うと、通常は複数ステップに分かれるコンテナインスタンスの更新を1ステップで100%まとめて行います。ただし`rollout_active_grace_period`が設定されている場合、そのグレースピリオド(既存インスタンスへの`SIGTERM`送信から強制停止までの猶予)は引き続き適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/rollouts/#immediate-rollouts",
+      "hint": "「ステップを一気に減らす」ことと「安全装置(猶予期間)をなくす」ことは同じではない、という点を考えましょう。",
+      "tags": ["containers", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "immediate rollout の挙動",
+          "steps": [
+            { "text": "--containers-rollout=immediate指定" },
+            { "text": "1ステップで100%を更新対象に" },
+            { "text": "rollout_active_grace_periodは適用される", "sub": "設定していれば" }
+          ]
+        }
+      ]
     }
   ]
 }

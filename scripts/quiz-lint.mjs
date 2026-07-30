@@ -28,6 +28,7 @@ import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import {
   ADDITIONAL_DOC_PREFIXES,
+  ANCHOR_HEADING_TAG_SOURCE,
   BACKTICK_TERMS,
   DOC_URL_PREFIX,
   filenameToDocPage,
@@ -252,6 +253,15 @@ function extractDocAnchors() {
     // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex exec loop
     while ((match = wranglerCmdRegex.exec(content)) !== null) {
       headingAnchors.add(slugify(match[1]))
+    }
+
+    // Same rationale, for `<AnchorHeading ... slug="X" />` components (see
+    // ANCHOR_HEADING_TAG_SOURCE) — the slug is already a valid anchor as-is,
+    // no further slugify() needed.
+    const anchorHeadingRegex = new RegExp(ANCHOR_HEADING_TAG_SOURCE, 'g')
+    // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex exec loop
+    while ((match = anchorHeadingRegex.exec(content)) !== null) {
+      headingAnchors.add(match[1])
     }
 
     // Some pages generate all headings at build time (no markdown or

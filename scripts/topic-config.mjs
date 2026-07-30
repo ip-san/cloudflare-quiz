@@ -30,6 +30,15 @@ export const DOC_PAGES = [
   { name: 'cache/how-to/tiered-cache' },
   { name: 'cloudflare-for-platforms/workers-for-platforms' },
   { name: 'cloudflare-one/access-controls/policies' },
+  { name: 'containers' },
+  { name: 'containers/get-started' },
+  { name: 'containers/container-class' },
+  { name: 'containers/pricing' },
+  { name: 'containers/local-dev' },
+  { name: 'containers/platform-details/limits' },
+  { name: 'containers/platform-details/scaling-and-routing' },
+  { name: 'containers/platform-details/rollouts' },
+  { name: 'workers/wrangler/commands/containers' },
   { name: 'd1' },
   { name: 'd1/best-practices/local-development' },
   { name: 'd1/best-practices/read-replication' },
@@ -196,6 +205,7 @@ export const DOC_PAGES = [
  */
 export const DOC_PAGE_OVERRIDES = {
   'r2/reference/wrangler-commands': 'partials/workers/wrangler-commands/r2.mdx',
+  'workers/wrangler/commands/containers': 'partials/workers/wrangler-commands/containers.mdx',
   // d1/wrangler-commands renders <WranglerNamespace namespace="d1" />, which
   // has no static source text at all (subcommands are generated from
   // Wrangler's own CLI schema at build time) — no override target exists.
@@ -270,6 +280,14 @@ export function filenameToDocPage(filename) {
  * regexes with the `g` flag carry mutable `lastIndex` state across callers).
  */
 export const WRANGLER_COMMAND_TAG_SOURCE = '<WranglerCommand\\s+command="([^"]+)"'
+
+/**
+ * Matches Cloudflare's `<AnchorHeading title="..." slug="X" ... />` MDX
+ * component (seen in partials such as wrangler-commands/containers.mdx),
+ * which renders a heading with `id="X"` at build time without a literal
+ * `#` markdown heading in source. Same rationale as WRANGLER_COMMAND_TAG_SOURCE.
+ */
+export const ANCHOR_HEADING_TAG_SOURCE = '<AnchorHeading\\s+[^>]*slug="([^"]+)"'
 
 // ============================================================
 // Backtick Lint Terms
