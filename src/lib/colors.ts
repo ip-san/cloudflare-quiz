@@ -16,6 +16,7 @@ export const COLOR_MAP: Record<string, string> = {
   violet: '#8b5cf6',
   fuchsia: '#d946ef',
   lime: '#84cc16',
+  red: '#ef4444',
   gray: '#6b7280',
 }
 

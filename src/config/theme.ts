@@ -303,6 +303,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'WebRTCを使ったリアルタイム音声・映像・データ通信アプリを構築できる',
     },
     {
+      id: 'workers-vpc',
+      name: 'Workers VPC',
+      icon: '🔌',
+      color: 'red',
+      weight: 10,
+      description:
+        'Cloudflare Tunnelを介してWorkerからAWS・Azure・GCP・オンプレミスのプライベートAPI・データベースへ安全に接続する。VPC ServicesとVPC Networksの使い分け',
+      skillDescription: 'プライベートネットワーク内のリソースにWorkerから安全に接続できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

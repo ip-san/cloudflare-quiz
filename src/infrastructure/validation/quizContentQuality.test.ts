@@ -28,7 +28,7 @@ const singleQuizzes = quizzes.filter((q) => q.type !== 'multi')
 const multiQuizzes = quizzes.filter((q) => q.type === 'multi')
 const validCategoryIds = PREDEFINED_CATEGORIES.map((c) => c.id)
 
-/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag-/rt- + 3桁連番） */
+/** ID prefix → category の対応表（quiz-data.md の ID 規約: wk-/wr-/kv-/d1-/r2-/dq-/pg-/ai-/ar-/hw-/px-/ob-/ct-/wp-/ag-/rt-/vp- + 3桁連番） */
 const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wk: 'workers',
   wr: 'wrangler',
@@ -46,6 +46,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   wp: 'workers-for-platforms',
   ag: 'ai-gateway',
   rt: 'realtime',
+  vp: 'workers-vpc',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -196,6 +197,16 @@ const VALID_DOC_PAGES = [
   'vectorize/reference/metadata-filtering/',
   'vectorize/reference/what-is-a-vector-database/',
   'waf/rate-limiting-rules/',
+  'workers-vpc/',
+  'workers-vpc/get-started/',
+  'workers-vpc/configuration/',
+  'workers-vpc/configuration/vpc-networks/',
+  'workers-vpc/configuration/vpc-services/',
+  'workers-vpc/configuration/tunnel/',
+  'workers-vpc/reference/limits/',
+  'workers-vpc/reference/pricing/',
+  'workers-vpc/reference/wrangler-commands/',
+  'workers-vpc/reference/troubleshooting/',
   'workers-ai/',
   'workers-ai/configuration/bindings/',
   'workers-ai/guides/tutorials/build-a-retrieval-augmented-generation-ai/',
@@ -552,6 +563,7 @@ describe('Quiz Content Quality', () => {
         'workers-for-platforms',
         'ai-gateway',
         'realtime',
+        'workers-vpc',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

@@ -17500,6 +17500,697 @@
           ]
         }
       ]
+    },
+    {
+      "id": "vp-001",
+      "category": "workers-vpc",
+      "difficulty": "beginner",
+      "question": "Cloudflare Workers VPCの目的として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "AWS・Azure・GCPなど外部クラウド上の、パブリックインターネットからアクセスできないプライベートなAPI・サービス・DBに安全に接続する"
+        },
+        {
+          "text": "Workerのデプロイ先リージョンをあらかじめ固定しておき、特定の国・地域のデータセンターだけで必ず実行されるように制約するためだけの専用の仕組み",
+          "wrongFeedback": "リージョン固定の機能ではありません。プライベートネットワーク内のリソースへの接続を可能にする仕組みです。"
+        },
+        {
+          "text": "複数のWorker間でグローバルな共有状態を提供し、Durable Objectsの代替として使う",
+          "wrongFeedback": "共有状態管理の仕組みではありません。Workers VPCはプライベートネットワークへの接続を可能にするものです。"
+        },
+        {
+          "text": "Workerのソースコードを暗号化し、デプロイ後は誰にも読み取れないようにする",
+          "wrongFeedback": "ソースコードの暗号化機能ではありません。プライベートネットワークへの接続を提供する仕組みです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workers VPCは、AWS・Azure・GCP・オンプレミスなど外部クラウド上にあり、パブリックインターネットからは到達できないプライベートなAPI・サービス・データベースに、Workerから安全に接続できるようにする仕組みです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/",
+      "hint": "「外には出せないけど、Workerからはアクセスしたい」システムをどう繋ぐか考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "Workers VPCの構成",
+          "layers": [
+            { "text": "Worker", "sub": "パブリックインターネット上で実行" },
+            { "text": "Workers VPC", "sub": "安全な接続" },
+            { "text": "プライベートネットワーク", "sub": "AWS/Azure/GCP/オンプレミス" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-002",
+      "category": "workers-vpc",
+      "difficulty": "beginner",
+      "question": "VPC ServicesとVPC Networksの基本的な違いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "VPC Servicesはネットワーク全体への広いアクセスを提供し、VPC Networksは特定のホスト・ポートに限定されたアクセスを提供する",
+          "wrongFeedback": "説明が逆です。特定のホスト・ポートに限定されるのがVPC Services、ネットワーク全体への広いアクセスを提供するのがVPC Networksです。"
+        },
+        {
+          "text": "VPC ServicesとVPC Networksはどちらも同じ設定方法で、名前が違うだけで実質的な違いはない",
+          "wrongFeedback": "実質的な違いがあります。事前登録が必要かどうか、アクセス範囲の広さが異なります。"
+        },
+        {
+          "text": "VPC NetworksはHTTPのみをサポートし、TCPのraw接続はサポートしない",
+          "wrongFeedback": "VPC Networksは`fetch()`によるHTTPだけでなく、`connect()`によるraw TCP接続もサポートします。"
+        },
+        {
+          "text": "VPC Servicesは特定のホストとポートの組み合わせごとに個別のバインディングを事前登録する必要があるのに対し、VPC Networksはトンネルやメッシュ全体にバインドし、実行時に指定するURL/アドレスで接続先が決まる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "VPC Servicesは、特定のホストとポートの組み合わせを対象にした個別のバインディングを事前に登録して使います。一方VPC Networksは、Cloudflare Tunnel全体やCloudflare Meshといったネットワーク全体にバインドし、実行時に`fetch()`や`connect()`へ渡すURL・アドレスによって接続先が決まります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-networks/#vpc-networks-vs-vpc-services",
+      "hint": "「あらかじめ決まった行き先だけに絞る」のか「行き先を実行時に自由に選べるようにする」のか、という違いを考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "VPC Services と VPC Networks",
+          "columns": [
+            { "heading": "VPC Services", "items": ["特定のホスト+ポートを事前登録", "service_idでバインド"] },
+            { "heading": "VPC Networks", "items": ["トンネル/メッシュ全体にバインド", "接続先は実行時のURL/アドレスで決定"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-003",
+      "category": "workers-vpc",
+      "difficulty": "beginner",
+      "question": "Workers VPCでプライベートネットワークに接続するために必要な仕組みとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "プライベートネットワーク側でインバウンドのファイアウォールルールを開放し、パブリックIPアドレスを割り当てる必要がある",
+          "wrongFeedback": "Cloudflare Tunnelを使うことで、インバウンドのファイアウォールルールの開放やパブリックIPアドレスの割り当ては不要になります。"
+        },
+        {
+          "text": "プライベートネットワーク側からCloudflareへの永続的な接続を確立するCloudflare Tunnelを使い、インバウンドのファイアウォールルールやパブリックIPアドレスなしにWorkerからの接続を受けられるようにする"
+        },
+        {
+          "text": "WorkerとプライベートネットワークをVPNで直接ピアリングし、両者のネットワークを完全に統合する",
+          "wrongFeedback": "VPNによるネットワーク統合の仕組みではありません。Cloudflare Tunnelを使ったアウトバウンド接続の仕組みです。"
+        },
+        {
+          "text": "プライベートネットワーク内のすべてのポートをインターネットに公開し、Cloudflareからの接続を待ち受ける",
+          "wrongFeedback": "ポートを公開する必要はありません。Cloudflare Tunnelはプライベートネットワーク側からの永続的なアウトバウンド接続によって成立します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Workers VPCでは、Cloudflare Tunnelを使ってプライベートネットワーク側からCloudflareへの永続的な接続を確立します。これにより、インバウンドのファイアウォールルールの開放やパブリックIPアドレスの割り当てなしに、Workerからプライベートネットワーク内のリソースへ安全に接続できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/",
+      "hint": "接続を「外から中へ開ける」のではなく、「中から外へつなぎに行く」方式のメリットを考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Cloudflare Tunnelの接続",
+          "actors": ["Worker", "Cloudflare", "cloudflared(プライベート網内)"],
+          "messages": [
+            { "from": 2, "to": 1, "text": "永続的なアウトバウンド接続を確立" },
+            { "from": 0, "to": 1, "text": "リクエスト" },
+            { "from": 1, "to": 2, "text": "トンネル経由で転送" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-004",
+      "category": "workers-vpc",
+      "difficulty": "beginner",
+      "question": "TCPタイプのVPC ServiceとHyperdriveの関係として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "HyperdriveはTCPのVPC Serviceを置き換える機能であり、両者は同時に使えない",
+          "wrongFeedback": "置き換えではなく、組み合わせて使います。TCPのVPC ServiceがプライベートなDB(PostgreSQL/MySQL)への経路を提供し、Hyperdriveが接続プーリングやキャッシュを担います。"
+        },
+        {
+          "text": "TCPのVPC Serviceは音声・映像などのメディアストリーミング専用であり、データベース接続には使えない",
+          "wrongFeedback": "TCPのVPC Serviceはメディア専用ではなく、PostgreSQLやMySQLなどのTCPベースのデータベース接続に使われます。"
+        },
+        {
+          "text": "TCPのVPC Serviceでプライベートネットワーク内のPostgreSQLやMySQLなどのデータベースへの経路を用意し、Hyperdriveと組み合わせることでWorkerから接続プーリング・キャッシュ付きでそのデータベースに接続できる"
+        },
+        {
+          "text": "Hyperdriveはこのバインディングの`app_protocol`設定を自動生成するため、手動での指定は一切不要である",
+          "wrongFeedback": "`app_protocol`(postgresql/mysqlなど)はVPC Service作成時に手動で指定するものです。Hyperdriveが自動生成するわけではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "TCPのVPC Serviceは、プライベートネットワーク内のPostgreSQLやMySQLなどのデータベースへの経路を用意します。`app_protocol`にpostgresqlやmysqlを指定しておくと、Hyperdriveがそのワイヤープロトコルを認識できるようになり、Hyperdriveと組み合わせることで接続プーリングやクエリキャッシュ付きでWorkerからプライベートデータベースに接続できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#tcp-services",
+      "hint": "「プライベート網への経路」を用意する仕組みと、「接続を効率化する」仕組みは別の役割分担だと考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "TCP VPC ServiceとHyperdriveの連携",
+          "steps": [
+            { "text": "TCPのVPC Serviceでプライベートネットワークへの経路を用意" },
+            { "text": "app_protocolにpostgresql/mysqlを指定" },
+            { "text": "Hyperdriveが接続プーリング・キャッシュを提供" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-005",
+      "category": "workers-vpc",
+      "difficulty": "beginner",
+      "question": "Workers VPCで必要な権限(ロール)に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "既存のVPC Serviceにバインドするだけなら「Connectivity Directory Bind」ロールで十分だが、新しくVPC Serviceを作成するには「Connectivity Directory Admin」ロールが必要"
+        },
+        {
+          "text": "VPC Serviceの作成にもバインドにも、常に同じ「Connectivity Directory Admin」ロールが必要で、権限の使い分けはない",
+          "wrongFeedback": "バインドのみなら「Connectivity Directory Bind」ロールで十分です。作成には「Connectivity Directory Admin」が必要という使い分けがあります。"
+        },
+        {
+          "text": "VPC ServiceへのバインドにはSuper Administrator権限が必須で、それ以外のロールでは一切バインドできない",
+          "wrongFeedback": "Super Administrator権限は必須ではありません。「Connectivity Directory Bind」ロールでバインドできます。"
+        },
+        {
+          "text": "ロールの区別はダッシュボード操作にのみ適用され、Wrangler CLIからの操作にはロールの制約が一切ない",
+          "wrongFeedback": "Wrangler CLIからの操作にも同じロールベースの権限が適用されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workers VPCでは、既存のVPC Serviceにバインドする(Workerから利用する)だけなら「Connectivity Directory Bind」ロールで十分です。新しくVPC Serviceを作成したり、VPC Networkバインディングで直接トンネルにバインドしたりするには「Connectivity Directory Admin」ロールが必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#required-roles",
+      "hint": "「使うだけの人」と「作る・管理する人」とで、必要な権限のレベルが違うことを意識しましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "必要なロール",
+          "columns": [
+            { "heading": "Connectivity Directory Bind", "items": ["既存VPC Serviceへのバインドのみ"] },
+            { "heading": "Connectivity Directory Admin", "items": ["VPC Serviceの作成", "トンネルへの直接バインド"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-006",
+      "category": "workers-vpc",
+      "difficulty": "beginner",
+      "question": "Workers VPCの現在の提供状況と料金に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "すでに正式リリース(GA)されており、ベータ期間は終了している",
+          "wrongFeedback": "現時点ではベータ(Beta)段階であり、機能やAPIが変更される可能性があります。"
+        },
+        {
+          "text": "ベータ期間中はEnterpriseプランの顧客のみが利用でき、他のプランでは利用できない",
+          "wrongFeedback": "ベータ期間中は、すべてのWorkersプランで無料に利用できます。"
+        },
+        {
+          "text": "ベータ期間中であっても、VPC Service経由の通信量に対して別途課金が発生する",
+          "wrongFeedback": "ベータ期間中はWorkers VPC自体は無料です。通常のWorkersの料金(コンピュート時間・リクエスト数)は別途適用されます。"
+        },
+        {
+          "text": "現在ベータ(Beta)段階であり、ベータ期間中はすべてのWorkersプランで無料に利用でき、通常のWorkersの料金(コンピュート時間・リクエスト数)のみが適用される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Workers VPCは現在ベータ段階にあり、機能やAPIは正式リリースまでに変更される可能性があります。ベータ期間中は、すべてのWorkersプランで無料に利用でき、通常のWorkersの料金(コンピュート時間・リクエスト数)のみが適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/reference/pricing/",
+      "hint": "「まだ正式版ではない」段階の機能によくある料金の扱いを考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ベータ期間の料金",
+          "columns": [
+            { "heading": "Workers VPC自体", "items": ["ベータ期間中は無料"] },
+            { "heading": "通常のWorkers利用", "items": ["コンピュート時間・リクエスト数は通常料金"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-007",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "HTTPタイプのVPC Serviceを使う場合、`fetch()`に渡すURLのホスト名・ポートと、VPC Service設定側のホスト・ポートの関係として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`fetch()`に渡したURLのホスト名・ポートが常に優先され、VPC Service設定側の値は無視される",
+          "wrongFeedback": "逆です。実際の接続先(ルーティング)にはVPC Service設定側のホスト・ポートが常に使われます。"
+        },
+        {
+          "text": "実際の接続先(ルーティング)には常にVPC Service設定側のホスト・ポートが使われ、`fetch()`に渡したURLのホスト名は`Host`ヘッダー(またはHTTPSの場合SNI)を決めるだけで、ポートは無視される"
+        },
+        {
+          "text": "`fetch()`に渡したURLとVPC Service設定の両方が一致していないと、リクエストは失敗しエラーになる",
+          "wrongFeedback": "一致している必要はありません。ルーティングは常にVPC Service設定側の値で行われます。"
+        },
+        {
+          "text": "VPC Service設定側にはホストのみを指定でき、ポートは常に`fetch()`側のURLで指定する必要がある",
+          "wrongFeedback": "ポートもVPC Service設定側で指定します。`fetch()`側のポート指定は無視されます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "HTTPタイプのVPC Serviceでは、実際の接続先(ルーティング)には常にVPC Service設定側のホスト・ポートが使われます。`fetch()`に渡したURLのホスト名は、リクエストの`Host`ヘッダー(HTTPSの場合はSNIの値)を決めるためだけに使われ、URLのポート指定は無視されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#tcp-services",
+      "hint": "「実際にどこへ届けるか」を決める設定と、「届け先に何と名乗るか」を決める設定は別だと考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ルーティング先とHost/SNIの決定",
+          "columns": [
+            { "heading": "VPC Service設定側", "items": ["実際のルーティング先(ホスト・ポート)"] },
+            { "heading": "fetch()側のURL", "items": ["Hostヘッダー/SNIの値のみ", "ポートは無視される"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-008",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "HTTPSスキームでVPC Serviceに接続する際、信頼されるTLS証明書として正しいものはどれですか？",
+      "options": [
+        {
+          "text": "自己署名証明書であれば、どのようなものでも常に信頼される",
+          "wrongFeedback": "自己署名証明書は信頼されません。公的に信頼された認証局の証明書か、Cloudflare Origin CA証明書のいずれかが必要です。"
+        },
+        {
+          "text": "Cloudflare Origin CA証明書は、ブラウザだけでなくWorkers VPCからも信頼されない",
+          "wrongFeedback": "Cloudflare Origin CA証明書は、ブラウザには信頼されませんが、Workers VPCからの接続では信頼されます。"
+        },
+        {
+          "text": "Let's EncryptやDigiCertなど公的に信頼された認証局(CA)が発行した証明書、またはCloudflare Origin CA証明書のいずれかが必要で、それ以外の証明書ではTLSハンドシェイクが失敗する"
+        },
+        {
+          "text": "TLS証明書の種類に関わらず、`cert-verification-mode`を`disabled`に設定しない限りすべての接続が失敗する",
+          "wrongFeedback": "`disabled`にしなくても、公的に信頼されたCAの証明書やCloudflare Origin CA証明書であれば接続は成功します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "HTTPSスキームでVPC Serviceに接続する場合、トンネルはオリジンが提示するTLS証明書を検証します。信頼されるのは、Let's EncryptやDigiCertなど公的に信頼された認証局(CA)が発行した証明書、またはCloudflare Origin CA証明書のいずれかです。それ以外の証明書(自己署名証明書など)ではTLSハンドシェイクが失敗し、`fetch()`が例外を投げます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#supported-tls-certificates",
+      "hint": "ブラウザには信頼されない証明書でも、Workers VPCでは特別に信頼される種類があることを思い出しましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "信頼されるTLS証明書",
+          "columns": [
+            { "heading": "信頼される", "items": ["公的CAの証明書(Let's Encrypt等)", "Cloudflare Origin CA証明書"] },
+            { "heading": "信頼されない", "items": ["自己署名証明書など"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-009",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "VPC Serviceの`cert-verification-mode`設定に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`verify_full`はチェーンとホスト名の両方を検証するデフォルトで、`verify_ca`はチェーンのみ検証しホスト名検証を省略する"
+        },
+        {
+          "text": "`verify_ca`はホスト名のみを検証するモードであり、証明書チェーンそのものの検証についてはあえて一切行わないような簡易的な位置づけのモードである",
+          "wrongFeedback": "説明が逆です。`verify_ca`は証明書チェーンを検証し、ホスト名の検証を省略するモードです。"
+        },
+        {
+          "text": "`disabled`を指定すると接続自体が拒否され、常にエラーになる",
+          "wrongFeedback": "`disabled`は証明書の検証を行わずに接続することを意味し、接続自体を拒否するものではありません。"
+        },
+        {
+          "text": "3つのモードのうち、デフォルトで有効なのは`disabled`である",
+          "wrongFeedback": "デフォルトは`verify_full`です。`disabled`がデフォルトではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`cert-verification-mode`には3つのモードがあります。デフォルトの`verify_full`は証明書チェーンとホスト名の両方を検証します。`verify_ca`は証明書チェーンのみを検証し、ホスト名検証は省略します。`disabled`はサーバー証明書の検証を一切行いません。この設定はHTTP・TCPの両方のサービスタイプに適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#tls-certificate-verification-mode",
+      "hint": "検証の「厳しさ」が3段階に分かれていることを意識しましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "cert-verification-modeの3段階",
+          "columns": [
+            { "heading": "verify_full", "items": ["チェーン+ホスト名検証", "デフォルト"] },
+            { "heading": "verify_ca", "items": ["チェーンのみ検証"] },
+            { "heading": "disabled", "items": ["検証なし"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-010",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "VPC Networksバインディングにおける`tunnel_id`指定と`network_id: \"cf1:network\"`指定の違いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "`tunnel_id`はCloudflare Mesh全体にバインドし、`network_id: \"cf1:network\"`は特定の1つのトンネルだけにバインドする",
+          "wrongFeedback": "説明が逆です。`tunnel_id`は特定の1つのトンネルへのバインド、`network_id: \"cf1:network\"`はアカウント全体のMesh/トンネルへのバインドです。"
+        },
+        {
+          "text": "`tunnel_id`と`network_id: \"cf1:network\"`はどちらを指定しても全く同じ範囲にアクセスできる",
+          "wrongFeedback": "アクセスできる範囲が異なります。`tunnel_id`は指定した1つのトンネル配下のみ、`cf1:network`はアカウント全体のMesh/トンネル/WAN経路です。"
+        },
+        {
+          "text": "`network_id: \"cf1:network\"`を使うと、新しいトンネルやルートが追加されるたびにWorkerのバインディング設定を都度更新する必要がある",
+          "wrongFeedback": "`cf1:network`を使う利点は、ネットワークトポロジが変わってもWorkerの設定を更新する必要がない点です。"
+        },
+        {
+          "text": "`tunnel_id`は特定の1つのCloudflare Tunnelを直接指定してバインドするのに対し、`network_id: \"cf1:network\"`はアカウント全体のCloudflare MeshノードやTunnel/WAN経由の経路へアクセスできるようにする"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`tunnel_id`を指定すると、そのUUIDで特定される1つのCloudflare Tunnelに直接バインドします。一方`network_id: \"cf1:network\"`を指定すると、アカウント内のCloudflare Meshノードや、Cloudflare Tunnel・Cloudflare WAN経由で到達可能な経路全体にアクセスできるようになります。ネットワークトポロジが変化してもWorker側の設定を都度更新する必要がないという利点があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-networks/#bind-to-cloudflare-mesh",
+      "hint": "「特定の1本の道を直接指定する」のか「アカウント全体の道路網につなぐ」のか、という範囲の違いを考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "tunnel_id と network_id: cf1:network",
+          "columns": [
+            { "heading": "tunnel_id", "items": ["特定の1つのTunnelを直接指定"] },
+            { "heading": "network_id: cf1:network", "items": ["アカウント全体のMesh/Tunnel/WAN経路"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-011",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "VPC Networksバインディングの実行時の使い方に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "HTTP・TCPのどちらの通信も`fetch()`メソッドだけで行い、`connect()`は使用しない",
+          "wrongFeedback": "HTTP通信には`fetch()`を使いますが、Redis・MQTTなどの非HTTPプロトコルにはraw TCP接続を開く`connect()`を使います。"
+        },
+        {
+          "text": "HTTP通信には`fetch()`を使い、Redis・MQTT・独自バイナリプロトコルなどの非HTTPサービスには`connect()`でraw TCP接続を開く。ただし`connect()`は現在プレーンテキストのTCPのみをサポートする"
+        },
+        {
+          "text": "`connect()`はTLSで暗号化されたTCP接続のみをサポートし、プレーンテキストのTCP接続はサポートしない",
+          "wrongFeedback": "現時点でVPC Networks経由の`connect()`はプレーンテキストのTCPのみをサポートしています。"
+        },
+        {
+          "text": "接続先に到達できない場合、`fetch()`や`connect()`は例外を投げずに空のレスポンスを返す",
+          "wrongFeedback": "接続を確立できない場合、`fetch()`や`connect()`は例外を投げます。空のレスポンスを返すわけではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "VPC Networksでは、HTTP通信に`fetch()`を、Redis・MQTT・独自バイナリプロトコルなど非HTTPのサービスにはraw TCP接続を開く`connect()`を使います。現時点で`connect()`はプレーンテキストのTCPのみをサポートしています。接続先に到達できない場合、`fetch()`・`connect()`のどちらも例外を投げます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-networks/#runtime-usage",
+      "hint": "HTTPと、それ以外の生のプロトコルとで、呼び出すメソッドが分かれていることを意識しましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "fetch() と connect()",
+          "columns": [
+            { "heading": "fetch()", "items": ["HTTP通信"] },
+            { "heading": "connect()", "items": ["Redis/MQTT等の非HTTP", "現状プレーンテキストTCPのみ"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-012",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "VPC Networksを`cf1:network`(Cloudflare Mesh)にバインドした場合の、パブリックインターネット宛のトラフィックの扱いとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "パブリックインターネット宛のトラフィックは自動的にすべてブロックされ、プライベートネットワーク宛のみ通信できる",
+          "wrongFeedback": "パブリックインターネット宛のトラフィックがブロックされるわけではありません。Cloudflare Gateway経由でポリシーが適用されつつ到達できます。"
+        },
+        {
+          "text": "パブリックインターネット宛のトラフィックは、Zero Trustのポリシーやログの対象外として素通りする",
+          "wrongFeedback": "Cloudflare Gatewayを経由することで、既存のZero Trustトラフィックポリシーが適用され、DNS・HTTP・Networkのログにも記録されます。"
+        },
+        {
+          "text": "パブリックインターネット宛のトラフィックもCloudflare Gatewayを経由でき、既存のZero Trustトラフィックポリシーが適用されたうえで、DNS・HTTP・Networkのログに記録される"
+        },
+        {
+          "text": "パブリックインターネット宛の通信を行うには、VPC Networksとは別に専用のバインディングを新たに追加する必要がある",
+          "wrongFeedback": "別のバインディングを追加する必要はありません。同じVPC Networksバインディングでプライベート・パブリックの両方の宛先にアクセスできます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "VPC Networksを`cf1:network`(Cloudflare Mesh)にバインドすると、プライベートネットワーク宛だけでなく、パブリックインターネット宛のトラフィックもCloudflare Gatewayを経由させることができます。これにより、既存のZero Trustトラフィックポリシーが適用され、DNS・HTTP・Networkのログにも記録されるようになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-networks/#bind-to-cloudflare-mesh",
+      "hint": "「社内向けの通信」だけでなく「外向けの通信」にも同じポリシーの傘をかけられるかどうか考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Cloudflare Gateway経由の公開インターネット宛通信",
+          "steps": [
+            { "text": "Workerがパブリックインターネット宛にリクエスト" },
+            { "text": "Cloudflare Gatewayを経由" },
+            { "text": "Zero Trustポリシー適用・ログ記録" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-013",
+      "category": "workers-vpc",
+      "difficulty": "advanced",
+      "question": "Workers VPCで使うCloudflare Tunnelのトランスポートプロトコルに関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "Workers VPCでは`auto`または`quic`を使ってQUICトランスポートプロトコルで接続するトンネルが必要で、`http2`プロトコルで設定されているとDNS解決などに問題が生じる"
+        },
+        {
+          "text": "Workers VPCでは`http2`プロトコルのトンネルが必須で、QUICトランスポートはサポートされていない",
+          "wrongFeedback": "逆です。Workers VPCにはQUICトランスポート(`auto`または`quic`)が必要で、`http2`ではDNS解決などに問題が生じます。"
+        },
+        {
+          "text": "トランスポートプロトコルの選択はWorkers VPCの動作に一切影響しない",
+          "wrongFeedback": "影響します。`http2`で設定されたトンネルはWorkers VPCからのDNS解決を妨げることがあります。"
+        },
+        {
+          "text": "QUICトランスポートを使う場合、アウトバウンドのTCPポート7844を開放する必要がある",
+          "wrongFeedback": "QUICはUDPベースのプロトコルであり、開放が必要なのはアウトバウンドのUDPポート7844です。TCPではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workers VPCでは、Cloudflare TunnelがQUICトランスポートプロトコル(`auto`または`quic`)で接続している必要があります。Cloudflare Zero Trust向けによく使われる`http2`プロトコルで設定されていると、Workers VPCからのDNS解決などに問題が生じます。QUICはUDPベースのため、アウトバウンドのUDPポート7844を許可しておく必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/#create-and-run-tunnel-cloudflared",
+      "hint": "Zero Trust向けの設定とWorkers VPC向けの設定で、要求されるトランスポートが違うことを意識しましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "トランスポートプロトコルの要件",
+          "columns": [
+            { "heading": "QUIC(auto/quic)", "items": ["Workers VPCで必要", "UDP 7844を許可"] },
+            { "heading": "http2", "items": ["Zero Trust向け", "Workers VPCではDNS解決に問題"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-014",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "Workers VPC向けにCloudflare Tunnelを作成する方法として推奨されるものはどれですか？",
+      "options": [
+        {
+          "text": "ローカルで`cloudflared tunnel create <NAME>`を実行し、設定をローカルのcloudflaredディレクトリに保存するローカル管理型トンネル",
+          "wrongFeedback": "ローカル管理型トンネルも作成可能ですが、Workers VPCではダッシュボード経由のリモート管理型トンネルの作成が推奨されています。"
+        },
+        {
+          "text": "トンネルの管理方法による推奨の違いはなく、どちらの方式でも全く同じ手順で管理できる",
+          "wrongFeedback": "推奨される方式があります。リモート管理型トンネルは、ダッシュボード・API・Terraformからどのマシンからでも管理できる利点があります。"
+        },
+        {
+          "text": "リモート管理型トンネルは設定をローカルマシンにのみ保存し、他のマシンからは参照できない",
+          "wrongFeedback": "逆です。リモート管理型トンネルの設定はCloudflare側に保存され、どのマシンからでもダッシュボード・API・Terraformで管理できます。"
+        },
+        {
+          "text": "設定がCloudflare側に保存され、ダッシュボード・API・Terraformからどのマシンでも管理できるリモート管理型トンネルの作成が推奨される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Workers VPCでは、ダッシュボードを通じてリモート管理型トンネルを作成することが推奨されています。リモート管理型トンネルの設定はCloudflare側に保存されるため、ダッシュボード・API・Terraformを使ってどのマシンからでも管理できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/#create-and-run-tunnel-cloudflared",
+      "hint": "設定を「どこか1台のマシンだけに置く」のと「クラウド側で一元管理する」のとで、どちらが運用しやすいか考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "トンネルの管理方式",
+          "columns": [
+            { "heading": "リモート管理型(推奨)", "items": ["設定はCloudflare側に保存", "どのマシンからでも管理可能"] },
+            { "heading": "ローカル管理型", "items": ["設定はローカルディレクトリに保存"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-015",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "`cloudflared`のオートスケーリング環境での運用に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "`cloudflared`はレプリカ間で自動的に負荷分散を行うため、オートスケーリング環境での利用が公式に推奨されている",
+          "wrongFeedback": "`cloudflared`はレプリカ間の負荷分散を行いません。オートスケーリング環境での利用は推奨されていません。"
+        },
+        {
+          "text": "`cloudflared`はレプリカ間の負荷分散を行わず、レプリカはあくまで高可用性のためのものであるため、ダウンスケール(レプリカ削除)時に既存の接続が切断される可能性がありオートスケーリング環境での利用は推奨されない"
+        },
+        {
+          "text": "オートスケーリングによってレプリカが増減しても、既存のユーザー接続には一切影響がない",
+          "wrongFeedback": "ダウンスケールでレプリカが削除されると、そのレプリカへの既存の接続は切断されてしまいます。"
+        },
+        {
+          "text": "レプリカは高可用性のためではなく、専らスループット向上のための負荷分散専用に使われる",
+          "wrongFeedback": "レプリカは高可用性・フェイルオーバーのためのものであり、`cloudflared`自体はレプリカ間の負荷分散を行いません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`cloudflared`はレプリカ間の負荷分散を行わず、レプリカはあくまで高可用性のためのものです。リクエストは最も近いレプリカにルーティングされます。オートスケーリングでレプリカを削除(ダウンスケール)すると、そのレプリカへの既存のユーザー接続が切断されてしまうため、オートスケーリング環境での`cloudflared`の利用は推奨されていません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/#cloud-platform-setup-guides",
+      "hint": "「レプリカを増減させる仕組み」と「レプリカ間で負荷を分け合う仕組み」は、必ずしもセットではないことを考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "レプリカの役割とオートスケーリングの影響",
+          "columns": [
+            { "heading": "レプリカの役割", "items": ["高可用性・フェイルオーバー用", "負荷分散は行わない"] },
+            { "heading": "オートスケーリングの影響", "items": ["ダウンスケールで既存接続が切断"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-016",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "Workers VPCの制限値に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "1アカウントあたり作成できるVPC Serviceの数に上限はなく、無制限に登録できる",
+          "wrongFeedback": "1アカウントあたり最大1,000個までという上限があります。"
+        },
+        {
+          "text": "VPC Service経由のリクエストには、通常のWorkersのリクエストサイズ・タイムアウト・サブリクエストといった制限はどれも一切適用されず、常に完全に無制限のまま扱われる",
+          "wrongFeedback": "VPC Service経由のリクエストにも、通常のWorkersのリクエストサイズ・タイムアウト・サブリクエストの制限がそのまま適用されます。"
+        },
+        {
+          "text": "1アカウントあたり最大1,000個までのVPC Serviceを作成でき、リクエストサイズ・タイムアウト・サブリクエスト数には通常のWorkersの制限がそのまま適用される"
+        },
+        {
+          "text": "VPC Serviceの上限数はWorkersプランの種類によって異なり、無料プランでは0個、有料プランでは1,000個までとなる",
+          "wrongFeedback": "プランによって上限数が変わるという説明ではなく、アカウントあたり1,000個までという上限が示されています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Workers VPCでは、1アカウントあたり最大1,000個までのVPC Serviceを作成できます。VPC Service経由のリクエストにも、リクエストサイズ・タイムアウト・サブリクエスト数といった通常のWorkersの制限がそのまま適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/reference/limits/",
+      "hint": "「VPC Service固有の上限」と「Workers全般にもともとある上限」の両方が関係することを意識しましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Workers VPCの制限値",
+          "columns": [
+            { "heading": "VPC Services数", "items": ["1アカウントあたり最大1,000個"] },
+            { "heading": "リクエスト関連", "items": ["通常のWorkers制限がそのまま適用"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-017",
+      "category": "workers-vpc",
+      "difficulty": "intermediate",
+      "question": "Workers VPCのエラーコードの分類に関する正しい説明はどれですか？",
+      "options": [
+        {
+          "text": "エラーは「Bad Upstream」「Client」「Internal」に分類され、`dns_error`はNXDOMAINならClient、他はBad Upstreamになる"
+        },
+        {
+          "text": "すべてのDNS関連エラー(`dns_error`)は原因に関わらず常に「Internal」エラーとして分類される",
+          "wrongFeedback": "DNS関連エラーは原因によって「Client」(NXDOMAINの場合)または「Bad Upstream」(それ以外のDNS障害)に分類され、「Internal」には分類されません。"
+        },
+        {
+          "text": "「Client」エラーという名前とは裏腹に、実際には常にCloudflareの基盤側にのみ原因があり、利用者側で対処できることは何もない",
+          "wrongFeedback": "「Client」エラーはVPC Serviceの設定やWorkerのコードに原因があるものを指し、利用者側の設定変更で対処できることが多いです。"
+        },
+        {
+          "text": "エラーの分類はダッシュボードのMetricsタブには表示されず、APIレスポンスのみで確認できる",
+          "wrongFeedback": "エラーの分類(Bad Upstream/Client/Internal)は、VPC ServiceのMetricsタブにも表示されるラベルと一致します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Workers VPCのエラーは、「Bad Upstream」(トンネルやプライベートサービス側に原因があり到達できない)・「Client」(VPC Serviceの設定やWorkerのコード側に原因がある)・「Internal」(Cloudflare基盤側の問題)の3種類に分類されます。`dns_error`は原因によって分類が変わり、ホスト名が存在しないNXDOMAINの場合は設定ミスの可能性が高いため「Client」、それ以外のDNS障害(SERVFAILやタイムアウトなど)は「Bad Upstream」に分類されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/reference/troubleshooting/",
+      "hint": "同じ「DNSエラー」でも、原因が「設定ミス」か「相手側の問題」かで扱いが変わることを意識しましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "エラーコードの3分類",
+          "columns": [
+            { "heading": "Bad Upstream", "items": ["トンネル/プライベートサービス側", "例: NXDOMAIN以外のDNS障害"] },
+            { "heading": "Client", "items": ["VPC Service設定/Workerコード側", "例: NXDOMAIN"] },
+            { "heading": "Internal", "items": ["Cloudflare基盤側"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vp-018",
+      "category": "workers-vpc",
+      "difficulty": "advanced",
+      "question": "VPC ServicesがSSRF(サーバーサイドリクエストフォージェリ)対策として機能する仕組みとして正しいものはどれですか？",
+      "options": [
+        {
+          "text": "VPC Serviceはリクエストのボディの内容を検査し、悪意のあるペイロードのパターンを検出してブロックする",
+          "wrongFeedback": "ペイロードの内容検査によるブロックではありません。ルーティング先を固定することでSSRFを防ぐ設計です。"
+        },
+        {
+          "text": "VPC ServiceはWorkerのソースコードを静的解析し、SSRFを引き起こしうるコードパターンをデプロイ前に検出する",
+          "wrongFeedback": "静的解析によるコード検査の仕組みではありません。実行時のルーティングを固定する設計によってSSRFを防ぎます。"
+        },
+        {
+          "text": "VPC Serviceは、Workerからの`X-Forwarded-Host`のようなリクエストヘッダーに含まれるIPアドレスをそのまま信頼し、指定された任意の宛先にルーティングする",
+          "wrongFeedback": "任意の宛先にルーティングするのではなく、あらかじめ登録された特定のホスト・ポートにのみルーティングすることでSSRFを防ぎます。"
+        },
+        {
+          "text": "各VPC Serviceが特定の1つのホスト・ポートの組み合わせにのみルーティングするよう強制されているため、Workerのコードが細工されたURLを`fetch()`に渡しても、プライベートネットワーク全体を露出させることなく、意図した1つの宛先だけにリクエストが制限される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "VPC Serviceは、あらかじめ登録した特定のホスト・ポートの組み合わせにのみリクエストをルーティングするよう強制する設計になっています。そのため、Workerのコードに脆弱性があり細工されたURLが`fetch()`に渡されたとしても、リクエストは登録済みの1つの宛先に限定され、プライベートネットワーク全体を露出させるSSRF攻撃を防ぐことができます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/",
+      "hint": "「行き先を1つに固定しておく」ことが、なぜ攻撃者に自由な宛先を選ばせない防御になるのか考えましょう。",
+      "tags": ["workers-vpc", "practical"],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "VPC Serviceの有無によるSSRFリスクの違い",
+          "columns": [
+            { "heading": "VPC Serviceなし(想定される脆弱性)", "items": ["fetch()先を攻撃者が自由に操作", "プライベート網全体が露出しうる"] },
+            { "heading": "VPC Serviceあり", "items": ["登録済みの1つの宛先に限定", "SSRFを防止"] }
+          ]
+        }
+      ]
     }
   ]
 }

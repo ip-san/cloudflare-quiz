@@ -128,6 +128,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('workers-for-platforms')
     expect(ids).toContain('ai-gateway')
     expect(ids).toContain('realtime')
+    expect(ids).toContain('workers-vpc')
     expect(ids).toContain('architecture')
   })
 
