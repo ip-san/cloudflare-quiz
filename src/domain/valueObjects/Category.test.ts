@@ -145,6 +145,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('client-side-security')
     expect(ids).toContain('gateway')
     expect(ids).toContain('data-loss-prevention')
+    expect(ids).toContain('browser-isolation')
     expect(ids).toContain('architecture')
   })
 

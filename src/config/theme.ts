@@ -473,6 +473,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '機密データの漏えいを検知・防止する仕組みを適切に設計できる',
     },
     {
+      id: 'browser-isolation',
+      name: 'Browser Isolation',
+      icon: '🖼️',
+      color: 'orchid',
+      weight: 10,
+      description:
+        'Network Vector Renderingでリスクの高いWebページをリモート実行するBrowser Isolation。分離ポリシー・Canvas Remoting・クライアントレス分離',
+      skillDescription: 'アクティブコンテンツをリモートで実行し、ローカル端末を悪性コードから隔離できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

@@ -34536,6 +34536,980 @@
           ]
         }
       ]
+    },
+    {
+      "id": "bi-001",
+      "category": "browser-isolation",
+      "difficulty": "beginner",
+      "question": "Browser Isolationがリモートブラウザの表示内容をユーザーの端末へ届ける仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Browser IsolationはNetwork Vector Rendering(NVR)という技術を使い、ページの映像や画素(ピクセル)をストリーミングするのではなく、軽量な描画命令をユーザーのブラウザへ送信する"
+        },
+        {
+          "text": "Browser Isolationはページ全体を録画した動画としてストリーミングする方式を採用しており、これにより高い帯域幅効率を実現している",
+          "wrongFeedback": "動画ストリーミングではなく、軽量な描画命令(NVR)を送信する方式です。動画方式は帯域幅の制約が大きくなります。"
+        },
+        {
+          "text": "Browser Isolationはリモートブラウザのスクリーンショットを定期的に撮影してユーザーへ送信する方式を採用している",
+          "wrongFeedback": "スクリーンショットの定期送信ではなく、描画命令をリアルタイムに送信する方式(NVR)です。"
+        },
+        {
+          "text": "BrowserIsolationはリモートブラウザのDOMをそのままユーザーのローカルブラウザへ複製(ミラーリング)し、ローカル側でHTMLを再構築する",
+          "wrongFeedback": "DOMをローカルへ複製する方式ではありません。アクティブコンテンツはリモート側でのみ実行され、ローカルには描画命令のみが送られます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Browser IsolationはNetwork Vector Rendering(NVR)という技術を使い、ページの映像や画素(ピクセル)をストリーミングするのではなく、軽量な描画命令をユーザーのブラウザへ送信します。これによりアクティブコンテンツ(JavaScriptなど)はリモート側でのみ実行され、動画ストリームのような帯域幅の制約なくセキュアなリモート計算体験を提供します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#website-compatibility",
+      "hint": "「動画を送る」のでも「画面を複製する」のでもなく、「描き方の指示だけを送る」という方式を考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Network Vector Renderingの仕組み",
+          "steps": [
+            {
+              "text": "アクティブコンテンツ(JS等)はリモートブラウザ内で実行"
+            },
+            {
+              "text": "描画結果を軽量な描画命令(NVR)へ変換"
+            },
+            {
+              "text": "描画命令をユーザーのブラウザへ送信"
+            },
+            {
+              "text": "ローカル側で命令を再生して表示"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-002",
+      "category": "browser-isolation",
+      "difficulty": "intermediate",
+      "question": "HTTPポリシーのIsolateアクションが適用される条件に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "IsolateアクションはHTTPリクエストの`Accept`ヘッダーの値に関わらず、一致したすべてのリクエスト(API呼び出しを含む)に適用される",
+          "wrongFeedback": "Isolateポリシーは`Accept: text/html*`を含むリクエストに適用される仕組みになっており、これによりAPIトラフィックとの共存が可能になっています。"
+        },
+        {
+          "text": "IsolateポリシーはHTTPリクエストの`Accept: text/html*`ヘッダーを含むリクエストに適用される仕組みになっており、これによりAPIトラフィックとポリシーを共存させることができる"
+        },
+        {
+          "text": "IsolateアクションはNetworkポリシーの一種であり、HTTPポリシーとは独立した別のポリシービルダーで設定する",
+          "wrongFeedback": "IsolateはHTTPポリシーのアクションの1つであり、HTTPポリシービルダー内で設定します。"
+        },
+        {
+          "text": "Isolateアクションを適用すると、対象ドメインへのAPIリクエストはすべて自動的にブロックされる",
+          "wrongFeedback": "APIリクエストが自動的にブロックされるわけではありません。`Accept: text/html*`を含まないリクエスト(多くのAPI呼び出し)はIsolateポリシーの対象になりにくく、共存できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "IsolateポリシーはHTTPリクエストの`Accept: text/html*`ヘッダーを含むリクエストに適用される仕組みになっています。これにより、同じホストへのAPI呼び出しのようなHTML以外のリクエストはIsolateポリシーの影響を受けにくく、Browser IsolationポリシーとAPIトラフィックが共存できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/isolation-policies/#isolate",
+      "hint": "「HTMLページの表示リクエスト」と「裏側で動くAPI呼び出し」を、ヘッダーの値でどう区別しているか考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Isolateポリシーが対象とするリクエスト",
+          "steps": [
+            {
+              "text": "HTTPリクエストを受信"
+            },
+            {
+              "text": "Acceptヘッダーがtext/html*を含むか確認"
+            },
+            {
+              "text": "含む場合はIsolateポリシーの対象"
+            },
+            {
+              "text": "含まない場合(多くのAPI呼び出し)は対象になりにくい"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-003",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "SSO(シングルサインオン)を使うアプリケーションをIsolateポリシーの対象にする際の注意点に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "アプリケーション本体をIsolateポリシーの対象にすれば、サードパーティのCookieを使うSSOのログインセッションも自動的にリモートブラウザへ引き継がれる",
+          "wrongFeedback": "通常のブラウジングで発行された既存のCookieやセッションはリモートブラウザへは送信されません。SSOで使うIDプロバイダー側のドメインも別途Isolate対象にする必要があります。"
+        },
+        {
+          "text": "SSOを使うアプリケーションはBrowser Isolationの対象にすること自体ができない",
+          "wrongFeedback": "対象にすること自体は可能です。ただし、SSOで使うIDプロバイダーのドメインも合わせて分離する必要があります。"
+        },
+        {
+          "text": "通常のブラウジングで発行された既存のCookieやセッションはリモートブラウザへ送信されないため、サードパーティCookieを使ってSSOを実装しているアプリケーションでは、アプリケーション本体だけでなくIDプロバイダーのドメインも合わせてIsolate対象にする必要がある"
+        },
+        {
+          "text": "IDプロバイダーのドメインをIsolate対象にすると、そのIDプロバイダーを使う他のすべてのアプリケーションのログインも自動的に無効化される",
+          "wrongFeedback": "IDプロバイダーのドメインをIsolate対象にしても、それは通信経路の分離設定が変わるだけです。そのIDプロバイダーを使う他のアプリケーションのログインが自動的に無効化されるような仕組みは文書化されていません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "通常のブラウジングで発行された既存のCookieやセッションはリモートブラウザへは送信されません。サードパーティCookieを使ってSSOを実装しているアプリケーションでは、アプリケーション本体だけでなくIDプロバイダーのドメインも合わせてIsolate対象にしておく必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/isolation-policies/#isolate",
+      "hint": "リモートブラウザは「まっさらな状態」から始まる、という前提を考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "SSOアプリのIsolate対象範囲",
+          "nodes": [
+            {
+              "id": "app",
+              "text": "アプリケーション本体",
+              "sub": "Isolate対象"
+            },
+            {
+              "id": "idp",
+              "text": "IDプロバイダー",
+              "sub": "サードパーティCookie、Isolate対象"
+            },
+            {
+              "id": "user",
+              "text": "ユーザー"
+            }
+          ],
+          "edges": [
+            {
+              "from": "user",
+              "to": "app",
+              "label": "アクセス"
+            },
+            {
+              "from": "app",
+              "to": "idp",
+              "label": "SSOログイン"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-004",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "IsolateアクションのCopy(コピー)・Paste(ペースト)設定に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Copy・Pasteの設定にはAllow(許可)とDo not allow(禁止)の2段階しか存在せず、中間的な選択肢は用意されていない",
+          "wrongFeedback": "Allow・Do not allowに加えて、「分離されたブラウザ内でのみ許可」という中間的な選択肢も用意されています。"
+        },
+        {
+          "text": "リモートブラウザからローカル端末へのCopyのみ制御でき、ローカル端末からリモートブラウザへのPasteは制御対象になっていない",
+          "wrongFeedback": "Copy(リモートからクライアントへ)・Paste(クライアントからリモートへ)の両方が個別に制御可能です。"
+        },
+        {
+          "text": "「分離されたブラウザ内でのみ許可」という設定は、Copy設定にのみ存在し、Paste設定には存在しない",
+          "wrongFeedback": "この中間的な設定はCopy・Pasteの両方に存在し、組み合わせることで分離されたサイト間でのみコピー&ペーストを許可できます。"
+        },
+        {
+          "text": "Copy・Pasteにはそれぞれ、Allow(許可・デフォルト)、分離されたブラウザ内でのみ許可、Do not allow(禁止)という3段階の設定があり、両方を「分離されたブラウザ内でのみ許可」に設定することで、分離されたサイト同士の間でのみコピー&ペーストを許可できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Copy(リモートからクライアントへ)・Paste(クライアントからリモートへ)にはそれぞれ、Allow(許可・デフォルト)、分離されたブラウザ内でのみ許可、Do not allow(禁止)という3段階の設定があります。両方を「分離されたブラウザ内でのみ許可」に設定することで、分離されたサイト同士の間でのみコピー&ペーストを許可し、ローカル端末との間のデータ移動を防げます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/isolation-policies/#copy-from-remote-to-client",
+      "hint": "「完全に許可」と「完全に禁止」の間に、もう1段階の選択肢があることを考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Copy・Pasteの3段階設定",
+          "columns": [
+            {
+              "heading": "Allow(デフォルト)",
+              "items": [
+                "制限なく許可"
+              ]
+            },
+            {
+              "heading": "分離されたブラウザ内でのみ許可",
+              "items": [
+                "分離サイト間のみ許可"
+              ]
+            },
+            {
+              "heading": "Do not allow",
+              "items": [
+                "完全に禁止"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-005",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "IsolateアクションのFile downloads(ファイルダウンロード)設定に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "File downloadsの設定にはAllow・Do not allowに加えて「View in remote browser」という選択肢があり、これはローカル端末へダウンロードさせずリモートブラウザ内でファイルを開いて閲覧させる機能で、リモートブラウザへのダウンロード自体を完全に防ぐには別途HTTPポリシーのDownload Mime Typeセレクタを使う必要がある"
+        },
+        {
+          "text": "File downloadsをDo not allowに設定すれば、ローカル端末へのダウンロードだけでなく、リモートブラウザ内へのファイルのダウンロード自体も含めてすべて完全にブロックされる",
+          "wrongFeedback": "この設定はローカル端末へのダウンロードを制御するものです。リモートブラウザへのダウンロード自体を防ぐには、別途Download Mime TypeセレクタによるHTTPポリシーが必要です。"
+        },
+        {
+          "text": "「View in remote browser」はファイルをローカル端末へ自動的にダウンロードしたうえで、それと同時にリモートブラウザ内でも表示するという二重の動作をする機能である",
+          "wrongFeedback": "「View in remote browser」はローカル端末へダウンロードさせず、リモートブラウザ内でのみファイルを開いて閲覧させる機能です。"
+        },
+        {
+          "text": "File downloadsの設定はデフォルトでDo not allow(禁止)になっており、管理者が明示的にAllowへ変更しない限りダウンロードは一切できない",
+          "wrongFeedback": "デフォルトはAllow(許可)です。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "File downloadsの設定にはAllow(デフォルト)・Do not allowに加えて「View in remote browser」という選択肢があります。これはローカル端末へダウンロードさせず、リモートブラウザ内でファイルを開いて閲覧させる機能です。この設定はリモートブラウザ自体へのダウンロードは制限しないため、それを防ぐには別途HTTPポリシーのDownload Mime Typeセレクタを使う必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/isolation-policies/#file-downloads",
+      "hint": "「ローカル端末へ持ち出す」ことを防ぐ設定と、「リモート側にすら取り込ませない」ことを防ぐ設定は別物だと考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "File downloadsの選択肢",
+          "columns": [
+            {
+              "heading": "Allow(デフォルト)",
+              "items": [
+                "ローカルへダウンロード可能"
+              ]
+            },
+            {
+              "heading": "View in remote browser",
+              "items": [
+                "リモート内でのみ閲覧"
+              ]
+            },
+            {
+              "heading": "Do not allow",
+              "items": [
+                "ローカルへのダウンロード禁止"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-006",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "入力手段が複数存在することを踏まえると、IsolateアクションのKeyboard(キーボード)設定に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Keyboardの入力をDo not allowに設定すると、マウス操作を含むすべての入力手段が無効化され、リンクをたどることもできなくなる",
+          "wrongFeedback": "マウス操作(リンクのクリックやスクロール)は無効化されません。無効化されるのはキーボード入力のみです。"
+        },
+        {
+          "text": "Keyboardの入力をDo not allowに設定してもマウス操作(ハイパーリンクのクリックやスクロール)は引き続き利用でき、また分離されたWebサイト内のサードパーティ製の仮想キーボードへの入力までは防げない"
+        },
+        {
+          "text": "Keyboardの設定を変更すると、分離されたWebサイト内のあらゆる入力手段(仮想キーボードを含む)が一律に無効化される",
+          "wrongFeedback": "サードパーティ製の仮想キーボードへの入力までは防げません。"
+        },
+        {
+          "text": "Keyboardの設定はPrintingの設定と連動しており、Keyboardを禁止すると自動的にPrintingも禁止される",
+          "wrongFeedback": "KeyboardとPrintingは独立した設定であり、連動して自動的に変更されることはありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Keyboardの入力をDo not allowに設定しても、マウス操作(ハイパーリンクのクリックやスクロール)によるWebサイトの閲覧は引き続き可能です。また、この設定は分離されたWebサイト内のサードパーティ製の仮想キーボードへのユーザー入力までは防げません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/isolation-policies/#keyboard",
+      "hint": "「キーボード入力」と「マウス操作」は別々の入力手段であることを考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Keyboard: Do not allow時の挙動",
+          "columns": [
+            {
+              "heading": "無効化される",
+              "items": [
+                "物理キーボードからの入力"
+              ]
+            },
+            {
+              "heading": "無効化されない",
+              "items": [
+                "マウス操作(クリック・スクロール)",
+                "サードパーティ製仮想キーボード"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-007",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "対応するコンテンツの種類に制約があることを踏まえると、Canvas Remotingという機能に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Canvas Remotingはデフォルトでは無効になっており、利用するには管理者が明示的に有効化する設定作業が必要である",
+          "wrongFeedback": "Canvas RemotingはBrowser Isolationのすべての顧客に対してデフォルトで有効になっており、追加の設定は不要です。"
+        },
+        {
+          "text": "Canvas Remotingは3D(WebGL・WebGPU)コンテキストを含むすべてのCanvasコンテンツに対応しており、GPUアクセラレーションを必要とする高度な機能もサポートしている",
+          "wrongFeedback": "Canvas Remotingが対応するのは2D Canvasコンテキストのみです。WebGL・WebGPUのような3Dコンテキストや、GPUアクセラレーションを必要とする高度な機能には対応していません。"
+        },
+        {
+          "text": "Canvas Remotingは、HTML5 Canvasへの描画命令をラスタライズされたビットマップとして送信するのではなく、ベクター描画コマンドとしてクライアントへ送信することで帯域幅消費を削減する機能で、2D Canvasコンテキストのみに対応しており、WebGLやWebGPUのような3Dコンテキストには対応していない"
+        },
+        {
+          "text": "Canvas Remotingは常時有効で、セッション単位で一時的に無効化する手段は用意されていない",
+          "wrongFeedback": "右クリックのコンテキストメニューから、現在のセッションに限定してCanvas Remotingを一時的に無効化・再有効化する手段が用意されています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Canvas Remotingは、HTML5 Canvasへの描画命令をラスタライズされたビットマップ(画素画像)として送信するのではなく、ベクター描画コマンドとしてクライアントへ送信することで帯域幅消費を削減する機能です。すべての顧客に対してデフォルトで有効になっていますが、2D Canvasコンテキストのみに対応しており、WebGLやWebGPUのような3Dコンテキストには対応していません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/canvas-remoting/#limitations",
+      "hint": "「画像として送る」のと「描画コマンドとして送る」のとで、帯域幅の使い方がどう変わるか考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Canvas Remotingの対応範囲",
+          "columns": [
+            {
+              "heading": "対応",
+              "items": [
+                "2D Canvasコンテキスト"
+              ]
+            },
+            {
+              "heading": "非対応",
+              "items": [
+                "WebGL",
+                "WebGPU",
+                "GPUアクセラレーションが必要な高度な機能"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-008",
+      "category": "browser-isolation",
+      "difficulty": "intermediate",
+      "question": "Browser Isolationにおけるブラウザ拡張機能のサポートに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ローカル端末にインストールされた拡張機能は、分離されたページに対してもそのまま動作し、パスワードマネージャーや広告ブロッカーなどがDOMへアクセスできる",
+          "wrongFeedback": "分離されたページのコンテンツはリモート側にのみ存在するため、ローカルにインストールされた拡張機能は分離されたページに対して動作できません。"
+        },
+        {
+          "text": "リモートブラウザ内に拡張機能をインストールする機能は一切提供されておらず、分離されたセッションでは拡張機能をまったく利用できない",
+          "wrongFeedback": "リモートブラウザ内へネイティブのChromium Web Extensionsをインストールして実行することができます。"
+        },
+        {
+          "text": "リモートブラウザへ拡張機能をインストールする際、Chrome Web Store自体を分離対象にする必要はなく、通常のブラウジングと全く同じ手順でそのままインストールできる",
+          "wrongFeedback": "リモートブラウザへ拡張機能をインストールするには、事前にChrome Web Store(chromewebstore.google.com)自体をIsolate対象にしておく必要があります(クライアントレスモードを除く)。"
+        },
+        {
+          "text": "分離されたページのコンテンツはリモート側にのみ存在するため、ローカルにインストールされた拡張機能は分離されたページに対して動作できない一方、リモートブラウザ内へネイティブのChromium Web Extensionsをインストールして実行することができ、その際は事前にChrome Web Store自体をIsolate対象にしておく必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "分離されたページのコンテンツはリモート側にのみ存在するため、ローカルにインストールされた拡張機能は分離されたページに対して動作できません。一方で、リモートブラウザ内へネイティブのChromium Web Extensionsをインストールして実行することができ、その際は事前にChrome Web Store自体をIsolate対象にしておく必要があります(クライアントレスモードでは事前に分離済みのため不要)。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/extensions/#prerequisite-isolate-chrome-web-store",
+      "hint": "「ローカル側の拡張機能」と「リモート側にインストールする拡張機能」は別物だと考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "リモートブラウザへの拡張機能インストール",
+          "steps": [
+            {
+              "text": "Chrome Web StoreをIsolate対象に設定"
+            },
+            {
+              "text": "分離された状態でChrome Web Storeへアクセス"
+            },
+            {
+              "text": "拡張機能をリモートブラウザへインストール"
+            },
+            {
+              "text": "以降のセッションでも自動的に再インストールされる"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-009",
+      "category": "browser-isolation",
+      "difficulty": "intermediate",
+      "question": "Browser Isolationの既知の制限として文書化されている内容に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "NetflixやSpotify Web Playerは問題なく利用でき、既知の制限には含まれていない",
+          "wrongFeedback": "NetflixやSpotify Web Playerは利用できないと明記されています。"
+        },
+        {
+          "text": "Webカメラ・マイクの利用、NetflixやSpotify Web Playerの利用、H.265/HEVC形式の動画再生は、いずれも現時点でサポートされていないと明記されている"
+        },
+        {
+          "text": "H.265/HEVC形式の動画再生には対応しているが、H.264形式には対応していない",
+          "wrongFeedback": "文書ではH.265/HEVCが現時点でサポートされていない形式として明記されています。"
+        },
+        {
+          "text": "Webカメラ・マイクの利用に関する制限は明記されておらず、ビデオ会議アプリケーションも問題なく利用できる",
+          "wrongFeedback": "Webカメラ・マイクの利用は現時点で利用できないと明記されています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "既知の制限として、Webカメラ・マイクの利用、NetflixやSpotify Web Playerの利用、H.265/HEVC形式の動画再生は、いずれも現時点でサポートされていないと明記されています。これらは今後実装される可能性がある機能として位置づけられています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#website-compatibility",
+      "hint": "リアルタイムの映像・音声処理が絡む機能は、まだ対応が難しい領域だと考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "既知の制限(Website compatibility)",
+          "items": [
+            {
+              "text": "Webカメラ・マイクの利用不可"
+            },
+            {
+              "text": "WebGLを使うサイトが動作しない場合がある"
+            },
+            {
+              "text": "Netflix・Spotify Web Playerが利用不可"
+            },
+            {
+              "text": "H.265/HEVC形式が未対応"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-010",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "GatewayのHTTPポリシーで、Isolateポリシーの対象として使用できないセレクタに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Destination Continent IP Geolocation・Destination Country IP Geolocation・Destination IPを含むあらゆる種類のセレクタが、制限なくIsolateポリシーの対象として問題なく利用できる",
+          "wrongFeedback": "Destination Continent/Country IP Geolocation・Destination IPの3つのセレクタは、Isolateポリシーの対象として利用できません。"
+        },
+        {
+          "text": "特定のセレクタが使えない制約はあるものの、その一致状況自体はGatewayのログに他のセレクタと同様に正常に記録される",
+          "wrongFeedback": "これらのセレクタによる一致はGatewayのログには表示されません。"
+        },
+        {
+          "text": "Destination Continent IP Geolocation・Destination Country IP Geolocation・Destination IPというセレクタはIsolateポリシーの対象として利用できず、これらのセレクタに基づく一致はGatewayのログにも表示されないうえ、いったん分離された通信に対してこれらのセレクタに基づく他のポリシー(宛先IPによるBlockなど)を適用することもできない"
+        },
+        {
+          "text": "この制約はHTTPポリシー全般に一律に適用されるものであり、Isolate以外のAllow・Blockといった他のアクションにも同様に及ぶ",
+          "wrongFeedback": "この制約はこれらのセレクタを使うポリシー全般に及ぶものであり、Isolateアクションに限りません。ただし、それ以外のセレクタに基づくAllow/Blockポリシーまで一律に無効になるわけではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Destination Continent IP Geolocation・Destination Country IP Geolocation・Destination IPというセレクタは、Isolateポリシーの対象として利用できません。これらのセレクタに基づく一致はGatewayのログにも表示されず、いったん分離された通信に対して、これらのセレクタに基づく他のポリシー(宛先IPによるBlockなど)を適用することもできません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#gateway-selectors",
+      "hint": "「宛先の地理情報・IPアドレス」に基づくセレクタが、なぜ分離との相性が悪いのか考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Isolateポリシーで使えないセレクタ",
+          "items": [
+            {
+              "text": "Destination Continent IP Geolocation"
+            },
+            {
+              "text": "Destination Country IP Geolocation"
+            },
+            {
+              "text": "Destination IP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-011",
+      "category": "browser-isolation",
+      "difficulty": "intermediate",
+      "question": "リモートブラウザ内でのファイルダウンロードに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ダウンロードされたファイルはCloudflareのストレージに永続的に保存され、セッション終了後もアクセスできる",
+          "wrongFeedback": "ダウンロードされたファイルはメモリ内に保持され、リモートブラウザセッションの終了時に破棄されます。永続的に保存されるわけではありません。"
+        },
+        {
+          "text": "ファイルサイズの上限は設けられておらず、どんなに大きなファイルでも問題なくダウンロードできる",
+          "wrongFeedback": "個々のファイルサイズは最大512MBまでが推奨されています。"
+        },
+        {
+          "text": "推奨される個々のファイルサイズの上限は5GBである",
+          "wrongFeedback": "推奨される上限は512MBです。5GBではありません。"
+        },
+        {
+          "text": "ダウンロードされたファイルはメモリ内に保持され、リモートブラウザセッションの終了時に破棄される仕組みになっており、個々のファイルサイズは最大512MBまでが推奨されている"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "リモートブラウザ内でダウンロードされたファイルはメモリ内に保持され、リモートブラウザセッションの終了時に破棄される仕組みになっています。個々のファイルサイズは最大512MBまでが推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#file-download-size",
+      "hint": "ダウンロードされたファイルが「どこに」「いつまで」保管されるのかを考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "リモートブラウザでのダウンロード",
+          "steps": [
+            {
+              "text": "ファイルをリモートブラウザ内でダウンロード(最大512MB推奨)"
+            },
+            {
+              "text": "メモリ内に保持"
+            },
+            {
+              "text": "セッション終了"
+            },
+            {
+              "text": "ファイルは破棄される"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-012",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "多要素認証(Yubikey・WebAuthN)とBrowser Isolationの組み合わせに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Clientless Web IsolationはYubikeyやWebAuthNのようなハードウェアセキュリティキー認証をサポートしていない。これはClientless Web IsolationがURLにプレフィックスを追加することでドメイン名が変わってしまい、分離前後で同一ドメインである必要があるこれらの認証技術の要件を満たせなくなるためである"
+        },
+        {
+          "text": "Yubikey・WebAuthNはBrowser Isolationのすべての展開方式(インライン・クライアントレスを問わず)でサポートされていない",
+          "wrongFeedback": "インライン展開(分離されたAccessアプリケーションなど)では問題なく機能します。サポートされていないのはClientless Web Isolationの場合です。"
+        },
+        {
+          "text": "Clientless Web Isolationでも、URLのプレフィックスによってドメイン名が変わることはなく、Yubikey・WebAuthNは問題なく機能する",
+          "wrongFeedback": "Clientless Web IsolationはURLにプレフィックスを追加するため、分離前後でドメイン名が変わり、Yubikey・WebAuthNの要件を満たせなくなります。"
+        },
+        {
+          "text": "この制限はSAMLアプリケーションにも同様に適用され、SAMLのHTTP-POSTバインディングもClientless Web Isolationでは動作しない",
+          "wrongFeedback": "SAMLのHTTP-POSTバインディングはサポートされています。この制限はYubikey・WebAuthNのようなハードウェアセキュリティキー認証に固有のものです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Clientless Web IsolationはYubikeyやWebAuthNのようなハードウェアセキュリティキー認証をサポートしていません。Clientless Web IsolationはURLにプレフィックスを追加することでドメイン名が変わってしまい、分離前後で同一ドメインである必要があるこれらの認証技術の要件を満たせなくなるためです。インライン展開のような、URLが変わらない方式では問題なく機能します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#multifactor-authentication",
+      "hint": "URLにプレフィックスが付くことで、「同じドメインである」という前提がどう崩れるかを考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "MFA(ハードウェアキー)の互換性",
+          "columns": [
+            {
+              "heading": "インライン展開",
+              "items": [
+                "ドメイン名が変わらない",
+                "Yubikey/WebAuthNが機能する"
+              ]
+            },
+            {
+              "heading": "Clientless Web Isolation",
+              "items": [
+                "URLにプレフィックスが付与",
+                "Yubikey/WebAuthNが機能しない"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-013",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "Browser Isolationのネットワーク要件(ファイアウォール設定)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ローカルブラウザとリモートブラウザ間の低遅延通信にはWebRTCが使われており、このWebRTCトラフィックはローカルのHTTP/HTTPSプロキシ設定を経由して転送される",
+          "wrongFeedback": "WebRTCはUDPを使用するため、ローカルのHTTP/HTTPSプロキシ設定を経由しません。デバイスは指定されたIP範囲へ直接UDP接続できる必要があります。"
+        },
+        {
+          "text": "ローカルブラウザとリモートブラウザ間の低遅延通信にはUDPを使うWebRTCが使われており、このトラフィックは標準的なHTTP/HTTPSプロキシ設定を経由しないため、接続するデバイスは指定されたIP範囲(ポート10000〜59999)へ直接UDP接続できる必要がある"
+        },
+        {
+          "text": "リモートブラウザセッションに割り当てられるポート番号は常に固定されており、ユーザーごとに変わることはない",
+          "wrongFeedback": "各リモートブラウザインスタンスにはランダムなポートが割り当てられ、頻繁かつ予告なく変わることがあります。"
+        },
+        {
+          "text": "Remoting client(サービス)の通信には`*.browser.run`へのHTTPS通信は不要であり、WebRTCの通信のみで完結する",
+          "wrongFeedback": "`*.browser.run`へのポート443でのHTTPS通信の許可も必要です。WebRTCの通信だけでは完結しません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "ローカルブラウザとリモートブラウザ間の低遅延通信にはUDPを使うWebRTCが使われています。このトラフィックは標準的なHTTP/HTTPSプロキシ設定を経由しないため、接続するデバイスは指定されたIP範囲(ポート10000〜59999)へ直接UDP接続できる必要があります。加えて`*.browser.run`へのポート443でのHTTPS通信の許可も必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/network-dependencies/#webrtc-channel",
+      "hint": "企業のプロキシ設定を素通りしてしまう通信プロトコルがあることを考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "Browser Isolationのネットワーク経路",
+          "nodes": [
+            {
+              "id": "local",
+              "text": "ローカルブラウザ"
+            },
+            {
+              "id": "webrtc",
+              "text": "WebRTC(UDP)",
+              "sub": "ポート10000〜59999、プロキシ非経由"
+            },
+            {
+              "id": "https",
+              "text": "HTTPS(*.browser.run)",
+              "sub": "ポート443"
+            },
+            {
+              "id": "remote",
+              "text": "リモートブラウザ"
+            }
+          ],
+          "edges": [
+            {
+              "from": "local",
+              "to": "webrtc",
+              "label": "低遅延通信"
+            },
+            {
+              "from": "webrtc",
+              "to": "remote"
+            },
+            {
+              "from": "local",
+              "to": "https"
+            },
+            {
+              "from": "https",
+              "to": "remote"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-014",
+      "category": "browser-isolation",
+      "difficulty": "beginner",
+      "question": "Browser Isolationの基本的な有効化の流れに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Browser Isolationのアドオンを契約した時点で、追加のポリシー設定なしにすべてのHTTPトラフィックが自動的に分離される",
+          "wrongFeedback": "Isolateポリシーを追加するまでは、デフォルトでは一切のトラフィックが分離されません。"
+        },
+        {
+          "text": "接続方式はインライン方式のみが提供されており、クライアントをインストールできない端末からは一切利用できない",
+          "wrongFeedback": "インライン方式に加えて、Cloudflare One Clientのインストールが不要な「プレフィックス付きURL」方式(Clientless Web Isolation)も提供されています。"
+        },
+        {
+          "text": "デフォルトではIsolateポリシーを追加するまで一切のトラフィックが分離されず、接続方式には通常のURLでブラウジングするインライン方式と、Cloudflareがホストするプレフィックス付きURLを経由するクライアントレス方式の2種類がある"
+        },
+        {
+          "text": "GatewayのHTTPポリシーとは別に、Browser Isolation専用の独立したポリシービルダーでIsolateポリシーを作成する",
+          "wrongFeedback": "IsolateはGatewayのHTTPポリシービルダーの中のアクションの1つとして設定します。専用の別ビルダーは存在しません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "デフォルトではIsolateポリシーを追加するまで一切のトラフィックが分離されません。接続方式には、通常のURLでブラウジングするインライン方式(Cloudflare One Clientなど)と、Cloudflareがホストするプレフィックス付きURLを経由するクライアントレス方式(Clientless Web Isolation)の2種類があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/setup/#1-connect-devices-to-cloudflare",
+      "hint": "「何もしなければ分離されない」という初期状態と、2つの接続方式を考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Browser Isolationの接続方式",
+          "columns": [
+            {
+              "heading": "インライン方式",
+              "items": [
+                "通常のURLでブラウジング",
+                "Cloudflare One Clientなど"
+              ]
+            },
+            {
+              "heading": "クライアントレス方式",
+              "items": [
+                "プレフィックス付きURL経由",
+                "クライアント不要"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-015",
+      "category": "browser-isolation",
+      "difficulty": "intermediate",
+      "question": "Clientless Web Isolationに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Clientless Web Isolationは、Cloudflare One Clientをインストール済みの管理対象デバイス専用の機能であり、未管理デバイスでは利用できない",
+          "wrongFeedback": "逆です。Clientless Web Isolationは、契約社員のノートPCや個人のスマートフォンのようにソフトウェアをインストールできない未管理デバイスへ分離ブラウジングを提供するための機能です。"
+        },
+        {
+          "text": "Clientless Web IsolationはBrowser Isolationアドオンとは別の独立した契約であり、Browser Isolationアドオンを契約していなくても利用できる",
+          "wrongFeedback": "Clientless Web IsolationにはCloudflare Browser Isolationアドオンの契約が必要です。"
+        },
+        {
+          "text": "Clientless Web IsolationのURLは`https://<チーム名>.cloudflareaccess.com/isolate/<URL>`という形式である",
+          "wrongFeedback": "正しい形式は`https://<チーム名>.cloudflareaccess.com/browser/<URL>`です。"
+        },
+        {
+          "text": "Clientless Web Isolationは、契約社員のノートPCや個人のスマートフォンのようにCloudflare One Clientをインストールできない未管理デバイスへ分離ブラウジングを提供するための機能で、Browser Isolationアドオンの契約が必要であり、`https://<チーム名>.cloudflareaccess.com/browser/<URL>`という形式のURLでアクセスする"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Clientless Web Isolationは、契約社員のノートPCや個人のスマートフォンのようにCloudflare One Clientをインストールできない未管理デバイスへ分離ブラウジングを提供するための機能です。Browser Isolationアドオンの契約が必要で、`https://<チーム名>.cloudflareaccess.com/browser/<URL>`という形式のURLでアクセスします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/setup/clientless-browser-isolation/#use-the-remote-browser",
+      "hint": "「ソフトウェアをインストールできない端末」にどう分離ブラウジングを提供するか考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Clientless Web Isolationの利用",
+          "steps": [
+            {
+              "text": "未管理デバイス(契約社員PC等)からアクセス"
+            },
+            {
+              "text": "https://<チーム名>.cloudflareaccess.com/browser/<URL> を開く"
+            },
+            {
+              "text": "クライアント不要でリモートブラウザに接続"
+            },
+            {
+              "text": "分離された状態でサイトを閲覧"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-016",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "機能が動作することと検査が行われることは別だという点を踏まえると、Clientless Web IsolationとTLS復号の関係に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Clientless Web Isolation自体はTLS復号を有効にしなくても機能するが、GatewayがHTTPポリシーによってトラフィックの中身を検査・フィルタリングするにはTLS復号が必須である"
+        },
+        {
+          "text": "Clientless Web Isolationを機能させるには、TLS復号を必ず有効にする必要があり、TLS復号なしでは一切動作しない",
+          "wrongFeedback": "TLS復号を有効にしなくてもClientless Web Isolation自体は機能します。ただしHTTPポリシーを適用するにはTLS復号が必要です。"
+        },
+        {
+          "text": "TLS復号を有効にすると、Clientless Web Isolationでは証明書ピニングを使うサイトも含めてすべてのサイトに問題なく対応できる",
+          "wrongFeedback": "証明書ピニングを使うサイトはTLS復号と非互換であり、Do Not Inspectポリシーのような対応が必要です。"
+        },
+        {
+          "text": "TLS復号の有無はHTTPポリシーの適用可否には影響せず、TLS復号なしでもすべてのHTTPポリシーを適用できる",
+          "wrongFeedback": "GatewayがHTTPポリシーで検査・フィルタリングを行うにはTLS復号によってトラフィックの中身を見える状態にする必要があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Clientless Web Isolation自体はTLS復号を有効にしなくても機能します。しかし、GatewayがHTTPポリシーによってトラフィックの中身を検査・フィルタリングするにはTLS復号が必須です。証明書ピニングを使うような、TLS復号と非互換のサイトにはDo Not Inspectポリシーのような対応が必要になります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/setup/clientless-browser-isolation/#bypass-tls-decryption",
+      "hint": "「機能そのものが動くこと」と「中身を検査できること」は別の話だと考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "TLS復号の有無による違い",
+          "columns": [
+            {
+              "heading": "TLS復号なし",
+              "items": [
+                "Clientless Web Isolationは機能する",
+                "HTTPポリシーは適用されない"
+              ]
+            },
+            {
+              "heading": "TLS復号あり",
+              "items": [
+                "Clientless Web Isolationは機能する",
+                "HTTPポリシーで検査・フィルタリング可能"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-017",
+      "category": "browser-isolation",
+      "difficulty": "advanced",
+      "question": "非アイデンティティ(non-identity)のオンランプ経由でBrowser Isolationを利用する仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "プロキシエンドポイント(PACファイル経由)やCloudflare WAN(GRE/IPsecトンネル)を経由するトラフィックでも、Cloudflare One Clientへのログインと同様にユーザーIDに基づいたIsolateポリシーを組める",
+          "wrongFeedback": "これらのオンランプはCloudflare One Clientへのログインを必要としないため、ユーザーIDに基づいたポリシーは組めません。"
+        },
+        {
+          "text": "プロキシエンドポイントやCloudflare WANのようなオンランプはCloudflare One Clientへのログインを必要としないため、これらの経路ではユーザーIDに基づくIsolateポリシーを組むことができず、非アイデンティティのセレクタに基づいてポリシーを構成する必要がある。またダッシュボードで「ユーザーIDが不明な場合のHTTPトラフィックの分離を許可する」という設定を有効にする必要がある"
+        },
+        {
+          "text": "非アイデンティティのオンランプを使う場合、Browser Isolation設定でのトグル操作は一切不要で、Isolateポリシーを作成するだけで即座に有効になる",
+          "wrongFeedback": "「ユーザーIDが不明な場合のHTTPトラフィックの分離を許可する」というトグルを事前に有効にしておく必要があります。"
+        },
+        {
+          "text": "非アイデンティティのオンランプという概念は、メールのリンクを匿名でクリックするような用途に特化した仕組みであり、プロキシエンドポイントやCloudflare WANとは無関係である",
+          "wrongFeedback": "非アイデンティティのオンランプは、プロキシエンドポイントやCloudflare WANのようにユーザーのログインを伴わない接続経路(オンランプ)のアーキテクチャに関する仕組みです。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "プロキシエンドポイントやCloudflare WANのようなオンランプは、Cloudflare One Clientへのログインを必要としません。そのためこれらの経路ではユーザーIDに基づくIsolateポリシーを組むことができず、非アイデンティティのセレクタに基づいてポリシーを構成する必要があります。また、ダッシュボードで「ユーザーIDが不明な場合のHTTPトラフィックの分離を許可する」という設定を事前に有効にしておく必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/setup/non-identity/#set-up-non-identity-browser-isolation",
+      "hint": "「誰がアクセスしているか分からない」経路では、ユーザー単位のポリシーが組めないことを考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "アイデンティティ経路 vs 非アイデンティティ経路",
+          "columns": [
+            {
+              "heading": "Cloudflare One Client",
+              "items": [
+                "ログインが必要",
+                "ユーザーIDに基づくIsolateポリシーが可能"
+              ]
+            },
+            {
+              "heading": "プロキシエンドポイント/Cloudflare WAN",
+              "items": [
+                "ログイン不要",
+                "非アイデンティティセレクタのみ利用可能"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bi-018",
+      "category": "browser-isolation",
+      "difficulty": "intermediate",
+      "question": "Browser Isolationのアクセシビリティ機能に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "分離されたブラウザにはスクリーンリーダー機能は搭載されておらず、ローカル端末側のスクリーンリーダーだけが利用できる",
+          "wrongFeedback": "分離されたブラウザには組み込みのスクリーンリーダー機能が搭載されており、分離されたページの内容を読み上げます。"
+        },
+        {
+          "text": "分離されたブラウザでの日本語や中国語のような文字ベースの言語や、発音区別符号を使う言語の入力はサポートされていない",
+          "wrongFeedback": "分離されたブラウザはあらゆる言語でのキーボード入力をサポートしており、発音区別符号や文字ベースの言語(中国語・日本語・韓国語など)もネイティブのキーボードで入力できます。"
+        },
+        {
+          "text": "分離されたブラウザには組み込みのスクリーンリーダー機能があり、`CTRL + ALT + Z`のショートカットでオン・オフを切り替えられる。また発音区別符号を使う言語や文字ベースの言語(中国語・日本語・韓国語など)を含む、あらゆる言語でのキーボード入力をサポートしている"
+        },
+        {
+          "text": "スクリーンリーダーのオン・オフはマウス操作でのみ切り替え可能で、`CTRL`キーを使うようなキーボードショートカットは一切用意されていない",
+          "wrongFeedback": "`CTRL + ALT + Z`というキーボードショートカットが用意されています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "分離されたブラウザには組み込みのスクリーンリーダー機能があり、`CTRL + ALT + Z`のショートカット(または右クリックメニュー)でオン・オフを切り替えられます。また発音区別符号を使う言語や文字ベースの言語(中国語・日本語・韓国語など)を含む、あらゆる言語でのキーボード入力をサポートしています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/accessibility/#turn-the-screen-reader-on-or-off",
+      "hint": "視覚に障害のあるユーザーと、多言語を使うユーザー、それぞれへの配慮を考えましょう。",
+      "tags": [
+        "browser-isolation",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Browser Isolationのアクセシビリティ機能",
+          "items": [
+            {
+              "text": "組み込みスクリーンリーダー(CTRL+ALT+Zで切替)"
+            },
+            {
+              "text": "あらゆる言語のキーボード入力に対応"
+            },
+            {
+              "text": "文字ベースの言語(中国語・日本語・韓国語)対応"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
