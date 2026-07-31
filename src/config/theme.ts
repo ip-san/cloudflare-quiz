@@ -483,6 +483,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'アクティブコンテンツをリモートで実行し、ローカル端末を悪性コードから隔離できる',
     },
     {
+      id: 'casb',
+      name: 'CASB',
+      icon: '☁️',
+      color: 'turquoise',
+      weight: 10,
+      description:
+        'ログイン後のSaaS・クラウド環境をAPI経由でスキャンするCloud Access Security Broker。findingの管理・DLP連携・Webhook・修復機能',
+      skillDescription: 'SaaSアプリの設定不備やシャドーITをAPI経由で検知・是正できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

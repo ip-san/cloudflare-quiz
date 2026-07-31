@@ -34,6 +34,7 @@ export const COLOR_MAP: Record<string, string> = {
   sage: '#84a98c',
   scarlet: '#dc2626',
   orchid: '#c084fc',
+  turquoise: '#2dd4bf',
 }
 
 export function getColorHex(colorName: string): string {

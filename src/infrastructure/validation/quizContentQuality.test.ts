@@ -64,6 +64,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   gw: 'gateway',
   dl: 'data-loss-prevention',
   bi: 'browser-isolation',
+  cb: 'casb',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -381,6 +382,14 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/remote-browser-isolation/setup/',
   'cloudflare-one/remote-browser-isolation/setup/clientless-browser-isolation/',
   'cloudflare-one/remote-browser-isolation/setup/non-identity/',
+  'cloudflare-one/cloud-and-saas-findings/',
+  'cloudflare-one/cloud-and-saas-findings/casb-dlp/',
+  'cloudflare-one/cloud-and-saas-findings/manage-findings/',
+  'cloudflare-one/cloud-and-saas-findings/troubleshoot-casb/',
+  'cloudflare-one/integrations/cloud-and-saas/',
+  'cloudflare-one/integrations/cloud-and-saas/webhooks/',
+  'cloudflare-one/integrations/cloud-and-saas/findings/',
+  'cloudflare-one/integrations/cloud-and-saas/troubleshooting/casb/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -821,6 +830,7 @@ describe('Quiz Content Quality', () => {
         'gateway',
         'data-loss-prevention',
         'browser-isolation',
+        'casb',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

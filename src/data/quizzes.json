@@ -35510,6 +35510,935 @@
           ]
         }
       ]
+    },
+    {
+      "id": "cb-001",
+      "category": "casb",
+      "difficulty": "beginner",
+      "question": "Cloudflare CASB(Cloud Access Security Broker)の基本的な仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "CASBはSaaSアプリケーションやクラウド環境のAPIへ接続し、ユーザーが正常にログインした後に発生しうるセキュリティ上の問題(設定不備・不正なユーザー活動・シャドーITなど)をスキャンする"
+        },
+        {
+          "text": "CASBはネットワークを流れるHTTPトラフィックをインラインで検査し、ログイン前の通信内容から機密データを検知する",
+          "wrongFeedback": "それはDLPのインライントラフィックスキャンの説明です。CASBはSaaS/クラウドのAPIへ接続し、ログイン後に発生する問題をスキャンする仕組みです。"
+        },
+        {
+          "text": "CASBはユーザーのブラウザセッションをリモート環境で実行し、アクティブコンテンツをローカル端末から隔離する",
+          "wrongFeedback": "それはBrowser Isolationの説明です。CASBはAPI経由でSaaS/クラウド環境をスキャンする仕組みです。"
+        },
+        {
+          "text": "CASBはユーザーがログインを試みる前の段階でのみ機能し、ログイン後のアクティビティは監視対象にならない",
+          "wrongFeedback": "逆です。CASBはユーザーが正常にログインした後に発生する問題を検知する仕組みです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "CASBはSaaSアプリケーションやクラウド環境のAPIへ接続し、ユーザーが正常にログインした後に発生しうるセキュリティ上の問題(設定不備・不正なユーザー活動・シャドーITなど)をスキャンする仕組みです。インライントラフィックを検査するDLPや、ブラウザセッションを隔離するBrowser Isolationとは異なるアプローチです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/",
+      "hint": "「通信の途中を覗く」のでも「ブラウザを隔離する」のでもなく、別の切り口でログイン後の状態を確認する仕組みだと考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "CASB vs DLP vs Browser Isolation",
+          "columns": [
+            {
+              "heading": "CASB",
+              "items": [
+                "SaaS/クラウドAPI経由",
+                "ログイン後の状態をスキャン"
+              ]
+            },
+            {
+              "heading": "DLP",
+              "items": [
+                "インライントラフィック検査"
+              ]
+            },
+            {
+              "heading": "Browser Isolation",
+              "items": [
+                "ブラウザセッションを隔離"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-002",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASBの利用可能範囲に関するプランごとの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "CASB自体がEnterpriseプラン限定の機能であり、無料プランのユーザーは一切利用できない",
+          "wrongFeedback": "CASBはすべてのZero Trustユーザーが利用できます。無料プランのユーザーも最大2つまでインテグレーションを設定できます。"
+        },
+        {
+          "text": "CASBはすべてのZero Trustユーザーが利用できるが、無料プランのユーザーが設定できるインテグレーションは最大2つまでで、finding(検知結果)インスタンスの詳細を閲覧するにはEnterpriseプランへのアップグレードが必要である"
+        },
+        {
+          "text": "無料プランのユーザーが設定できるインテグレーション数に上限はなく、findingインスタンスの詳細閲覧もすべてのプランで無制限に可能である",
+          "wrongFeedback": "無料プランでは最大2つまでのインテグレーションに制限されており、findingインスタンスの詳細閲覧にはEnterpriseプランが必要です。"
+        },
+        {
+          "text": "findingインスタンスの詳細閲覧はすべてのプランで可能だが、インテグレーションの設定自体がEnterpriseプラン限定である",
+          "wrongFeedback": "インテグレーションの設定自体は無料プランでも(最大2つまで)可能です。Enterpriseプランが必要なのはfindingインスタンスの詳細閲覧です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "CASBはすべてのZero Trustユーザーが利用できますが、無料プランのユーザーが設定できるインテグレーションは最大2つまでです。findingインスタンスの詳細を閲覧するにはEnterpriseプランへのアップグレードが必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/",
+      "hint": "「使えるかどうか」と「どこまで詳しく見られるか」は別々の制限だと考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プランによるCASBの利用範囲",
+          "columns": [
+            {
+              "heading": "無料プラン",
+              "items": [
+                "インテグレーション最大2つ",
+                "finding詳細は閲覧不可"
+              ]
+            },
+            {
+              "heading": "Enterpriseプラン",
+              "items": [
+                "インテグレーション数の制限緩和",
+                "finding詳細を閲覧可能"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-003",
+      "category": "casb",
+      "difficulty": "advanced",
+      "question": "既存のCASBインテグレーションへ後からDLPプロファイルを追加した場合のスキャン範囲に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "後からDLPプロファイルを追加した場合でも、インテグレーション内に存在するすべての公開ファイルが、追加した瞬間に過去の作成日時に関わらず即座に全件スキャンされる",
+          "wrongFeedback": "後から追加した場合、スキャン対象はプロファイル有効化後に変更イベントがあった公開ファイルのみに限定されます。"
+        },
+        {
+          "text": "後からDLPプロファイルを追加すると、それ以降そのインテグレーションでは新たなファイルのアップロードそのものが自動的にブロックされ、一切許可されなくなる",
+          "wrongFeedback": "そのような自動ブロックの仕組みは文書化されていません。"
+        },
+        {
+          "text": "後からDLPプロファイルを追加した場合、CASBはプロファイルを有効化した後に変更イベント(内容・ファイル名・公開設定への変更・所有者・保存場所の変更など)があった公開ファイルのみをスキャン対象とし、すべてのファイルを対象にするにはインテグレーションの初期セットアップ時にDLPプロファイルを有効化する必要がある"
+        },
+        {
+          "text": "DLPプロファイルを追加するタイミングがいつであってもスキャン範囲に違いは生じず、常に例外なくすべての公開ファイルが対象になる",
+          "wrongFeedback": "追加のタイミングによってスキャン範囲が異なります。初期セットアップ時に有効化しないと、全件スキャンの対象にはなりません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "既存のインテグレーションへ後からDLPプロファイルを追加した場合、CASBはプロファイルを有効化した後に変更イベント(内容・ファイル名・公開設定への変更・所有者・保存場所の変更など)があった公開ファイルのみをスキャン対象とします。すべてのファイルを対象にするには、インテグレーションの初期セットアップ時にDLPプロファイルを有効化しておく必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/casb-dlp/#modify-an-existing-integration",
+      "hint": "「最初から設定していた場合」と「後から追加した場合」とで、スキャンされる範囲が違うことを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "DLPプロファイルを追加するタイミング",
+          "columns": [
+            {
+              "heading": "初期セットアップ時に有効化",
+              "items": [
+                "すべての公開ファイルが対象"
+              ]
+            },
+            {
+              "heading": "後から追加",
+              "items": [
+                "有効化後に変更があったファイルのみ対象"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-004",
+      "category": "casb",
+      "difficulty": "advanced",
+      "question": "サポートされるファイル形式に応じて対応が分かれることを踏まえると、CASBにおけるDLPスキャンの対象ファイルに関する制約として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "画像ファイルもテキストベースのファイルと同様に、内容の文字起こしを経てスキャン対象に含まれる",
+          "wrongFeedback": "画像ファイルはサポートされていません。スキャン対象はドキュメント・スプレッドシート・PDFのようなテキストベースのファイルです。"
+        },
+        {
+          "text": "ファイルサイズの上限は特に設定されておらず、どれほど巨大なファイルであってもすべてスキャンされる",
+          "wrongFeedback": "100MB以下のファイルのみがスキャン対象です。"
+        },
+        {
+          "text": "JavaやRのソースコードファイルは、ファイルサイズの大小に関わらず例外なくすべてスキャン対象になる",
+          "wrongFeedback": "JavaやRのソースコードファイルは、5KB以上のものだけがスキャン対象です。5KB未満の小さいファイルはスキップされます。"
+        },
+        {
+          "text": "スキャン対象はドキュメント・スプレッドシート・PDFのようなテキストベースのファイルに限られ(画像は非対応)、ファイルサイズは100MB以下という上限があり、JavaやRのソースコードファイルは5KB以上のものだけが対象になる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "CASBにおけるDLPスキャンの対象は、ドキュメント・スプレッドシート・PDFのようなテキストベースのファイルに限られ、画像ファイルは非対応です。ファイルサイズは100MB以下という上限があり、JavaやRのソースコードファイルは5KB以上のものだけがスキャン対象になります(5KB未満はスキップ)。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/casb-dlp/#limitations",
+      "hint": "「対応するファイル形式」「サイズの上限」「言語ごとの例外」という3つの軸で考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "CASB内DLPスキャンの制約",
+          "items": [
+            {
+              "text": "テキストベースのファイルのみ(画像は非対応)"
+            },
+            {
+              "text": "100MB以下のファイルサイズ"
+            },
+            {
+              "text": "Java/Rのソースコードは5KB以上のみ対象"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-005",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASBによるDLPスキャンがどのファイルを対象にするかに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "CASBは、インテグレーション内で公開アクセス可能(publicly accessible)なファイルのみをDLPプロファイルと照合してスキャンし、非公開のファイルはスキャン対象に含まれない"
+        },
+        {
+          "text": "CASBはアクセス権限の設定に関わらず、インテグレーション内のすべてのファイル(非公開のものも含む)をスキャン対象にする",
+          "wrongFeedback": "スキャン対象は公開アクセス可能なファイルに限られます。非公開のファイルは対象になりません。"
+        },
+        {
+          "text": "CASBは特定のユーザーが所有するファイルのみをスキャン対象とし、公開設定の有無はスキャン対象の判定に関与しない",
+          "wrongFeedback": "スキャン対象の判定は公開アクセス可能かどうかに基づきます。所有者だけで決まるわけではありません。"
+        },
+        {
+          "text": "CASBはファイルの公開設定を自動的に変更してからスキャンを実行するため、スキャン後にすべてのファイルが非公開になる",
+          "wrongFeedback": "そのような自動的な公開設定の変更は行われません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "CASBは、インテグレーション内で公開アクセス可能(publicly accessible)なファイルのみをDLPプロファイルと照合してスキャンします。非公開のファイルはスキャン対象に含まれません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/casb-dlp/",
+      "hint": "「誰でもアクセスできてしまう状態のファイル」を優先的にチェックする理由を考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "CASB DLPスキャンの対象判定",
+          "steps": [
+            {
+              "text": "インテグレーション内のファイルを確認"
+            },
+            {
+              "text": "公開アクセス可能かどうかを判定"
+            },
+            {
+              "text": "公開アクセス可能な場合のみDLPプロファイルと照合"
+            },
+            {
+              "text": "非公開ファイルはスキャン対象外"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-006",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASBのfinding(検知結果)の種類であるPosture findingsとContent findingsの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Posture findingsはDLPによって検知されたデータ露出のインスタンスを指し、ファイル名や一致したDLPプロファイルが表示される一方、Content findingsは設定不備や不正なユーザー活動を指し、severityや検知日が表示される",
+          "wrongFeedback": "説明が入れ替わっています。設定不備・不正なユーザー活動を指すのはPosture findings、DLPによって検知されたデータ露出インスタンスを指すのはContent findingsです。"
+        },
+        {
+          "text": "Posture findingsは設定不備・不正なユーザー活動などのセキュリティ問題を指し、severity(重要度)・件数・関連インテグレーション・ステータス・検知日といった情報が表示される。一方Content findingsはDLPによって検知されたデータ露出のインスタンスを指し、ファイル名・ファイルへのリンク・一致したDLPプロファイル・関連インテグレーション・検知日といった情報が表示される"
+        },
+        {
+          "text": "Posture findingsとContent findingsは、ダッシュボード上で表示される情報の項目がどちらも完全に同一であり、あえて2つに区別して管理する実務上の意味がない",
+          "wrongFeedback": "表示される情報項目は異なります。Posture findingsにはseverityが、Content findingsには一致したDLPプロファイルが表示されるなど、それぞれ異なる情報が表示されます。"
+        },
+        {
+          "text": "Content findingsのみがseverity(重要度)による分類の対象であり、Posture findingsの方にはseverityという概念自体がそもそも存在しない",
+          "wrongFeedback": "severity(重要度)の概念があるのはPosture findingsの方です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Posture findingsは設定不備・不正なユーザー活動などのセキュリティ問題を指し、severity(重要度)・件数・関連インテグレーション・ステータス・検知日といった情報が表示されます。一方Content findingsはDLPによって検知されたデータ露出のインスタンスを指し、ファイル名・ファイルへのリンク・一致したDLPプロファイル・関連インテグレーション・検知日といった情報が表示されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#posture-findings",
+      "hint": "「設定やアクティビティの問題」と「データそのものの露出」という、2つの異なる種類の問題を考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Posture findings vs Content findings",
+          "columns": [
+            {
+              "heading": "Posture findings",
+              "items": [
+                "設定不備・不正なユーザー活動",
+                "severity・件数・ステータスを表示"
+              ]
+            },
+            {
+              "heading": "Content findings",
+              "items": [
+                "DLPが検知したデータ露出",
+                "ファイル名・一致したDLPプロファイルを表示"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-007",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASBのPosture findingsに設定されるseverity(重要度)レベルに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "severityレベルはHighとLowの2段階のみで、中間的なレベルは存在しない",
+          "wrongFeedback": "Critical・High・Medium・Lowの4段階が存在します。2段階ではありません。"
+        },
+        {
+          "text": "Criticalは「今月中にレビューされるべき」項目を指し、Lowは「今日中に対応すべき」項目を指す",
+          "wrongFeedback": "説明が入れ替わっています。Criticalは「今日中に対応すべき」、Lowは「情報提供的、または定期レビューの一環」というレベルです。"
+        },
+        {
+          "text": "severityレベルはCritical(今日中に対応すべき)・High(今週中に対応すべき)・Medium(今月中にレビューされるべき)・Low(情報提供的、または定期レビューの一環)の4段階に分かれている"
+        },
+        {
+          "text": "severityレベルを変更すると、同じアプリケーションの他のすべてのインテグレーションのseverityにも自動的に反映される",
+          "wrongFeedback": "severityの変更は、そのインテグレーション内の該当findingにのみ適用されます。同じアプリケーションの他のインテグレーションには影響しません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "severityレベルはCritical(今日中に対応すべき)・High(今週中に対応すべき)・Medium(今月中にレビューされるべき)・Low(情報提供的、または定期レビューの一環)の4段階に分かれています。severityの変更は、そのインテグレーション内の該当findingにのみ適用され、同じアプリケーションの他のインテグレーションには影響しません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#severity-levels",
+      "hint": "重要度によって、対応までに許される猶予期間が段階的に変わることを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "severityレベルと緊急度",
+          "columns": [
+            {
+              "heading": "Critical",
+              "items": [
+                "今日中に対応"
+              ]
+            },
+            {
+              "heading": "High",
+              "items": [
+                "今週中に対応"
+              ]
+            },
+            {
+              "heading": "Medium",
+              "items": [
+                "今月中にレビュー"
+              ]
+            },
+            {
+              "heading": "Low",
+              "items": [
+                "情報提供・定期レビュー"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-008",
+      "category": "casb",
+      "difficulty": "advanced",
+      "question": "CASBのfindingを「Ignore(無視)」する操作と「Hide(非表示)」する操作の違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "IgnoreもHideも、一度実行してしまうとその操作を取り消すことは一切できず、元のActiveタブへ手動で戻すような手段も用意されていない",
+          "wrongFeedback": "どちらの操作も取り消し可能(reversible)です。"
+        },
+        {
+          "text": "Ignoreは特定の1件のインスタンスのみに適用される細かい単位の操作であり、Hideの方はそのfindingタイプ全体という広い単位に適用される",
+          "wrongFeedback": "説明が入れ替わっています。findingタイプ全体に適用されるのはIgnore、特定の1件のインスタンスに適用されるのはHideです。"
+        },
+        {
+          "text": "IgnoreやHideを行うと、CASBはそのfindingタイプ・インスタンスに対するバックグラウンドでのスキャン自体を完全に停止し、以降は二度と検知が行われなくなる",
+          "wrongFeedback": "スキャン自体は継続されます。新たに検知された場合もIgnored/Hiddenタブへ振り分けられるだけで、検知そのものが停止するわけではありません。"
+        },
+        {
+          "text": "Ignoreはそのfindingタイプ全体をActiveからIgnoredへ移動させ、Hideは特定の1件のインスタンスのみをActiveからHiddenへ移動させる操作で、どちらも取り消し可能であり、その後も新たな検知は引き続き行われるが、Ignored/Hiddenタブへ振り分けられる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Ignoreはそのfindingタイプ全体をActiveからIgnoredへ移動させる操作で、Hideは特定の1件のインスタンスのみをActiveからHiddenへ移動させる操作です。どちらも取り消し可能で、その後も新たな検知は引き続き行われますが、Ignored/Hiddenタブへ振り分けられます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#hide-findings",
+      "hint": "「findingの種類全体」を対象にする操作と、「1件の事象」だけを対象にする操作の粒度の違いを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Ignore vs Hide",
+          "columns": [
+            {
+              "heading": "Ignore",
+              "items": [
+                "findingタイプ全体が対象",
+                "Active → Ignored"
+              ]
+            },
+            {
+              "heading": "Hide",
+              "items": [
+                "1件のインスタンスのみが対象",
+                "Active → Hidden"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-009",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASBによるfindingの修復(remediation)機能に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "CASBは検知(detection)専用の機能であり、findingを直接修復する機能は提供されていない",
+          "wrongFeedback": "CASBは検知だけでなく、アプリケーション内のfindingを直接修復する機能も提供しています。"
+        },
+        {
+          "text": "CASBはアプリケーション内のfindingを直接修復する機能を持っており、この機能を利用するにはインテグレーションをRead-Writeモードに設定しておく必要がある"
+        },
+        {
+          "text": "修復機能を利用するために必要な追加の権限設定は存在せず、デフォルトの読み取り専用モードのままで修復できる",
+          "wrongFeedback": "修復機能を利用するにはRead-Writeモードへの設定が必要です。デフォルトの読み取り専用モードのままでは修復できません。"
+        },
+        {
+          "text": "修復機能はすべてのインテグレーションで無条件に利用でき、権限の不足によって失敗することはない",
+          "wrongFeedback": "権限が不足している場合、修復はRejectedステータスになるなど、権限不足による失敗が発生しえます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "CASBはアプリケーション内のfindingを直接修復する機能を持っています。この機能を利用するには、インテグレーションをRead-Writeモードに設定しておく必要があります(デフォルトは読み取り専用)。権限が不足している場合、修復はRejectedステータスになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#remediate-findings",
+      "hint": "「見つけるだけ」ではなく「見つけて直す」ためには、書き込み権限が必要になることを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "CASBの修復機能を使うための準備",
+          "steps": [
+            {
+              "text": "デフォルトは読み取り専用モード"
+            },
+            {
+              "text": "インテグレーションをRead-Writeモードへ変更"
+            },
+            {
+              "text": "findingに対して修復を実行"
+            },
+            {
+              "text": "権限不足の場合はRejectedステータスに"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-010",
+      "category": "casb",
+      "difficulty": "advanced",
+      "question": "修復処理が時系列でどう進行するかを踏まえると、CASBのfinding修復ステータスに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Rejectedステータスは、修復対象のfindingがそもそも存在しなかったことを意味する",
+          "wrongFeedback": "Rejectedは、CASBがそのfindingを修復するための正しい権限を持っていないことを意味します。"
+        },
+        {
+          "text": "Validatingステータスは、修復がまだ開始されておらず、CASBが修復の順番を待っている状態を意味する",
+          "wrongFeedback": "Validatingは、CASBが修復を完了させ、findingが解決されたことの確認を待っている状態を意味します。修復未着手の待機状態を意味するのはPendingです。"
+        },
+        {
+          "text": "修復のステータスにはPending(修復予定として設定済み)・Processing(修復実行中)・Validating(修復完了後、解決の確認待ち)・Completed(修復完了かつ解決を確認済み)・Failed(修復失敗)・Rejected(権限不足で修復不可)がある"
+        },
+        {
+          "text": "Completedステータスは、修復処理を実行したことのみを意味し、実際にfindingが解決されたかどうかまでは確認していない",
+          "wrongFeedback": "Completedは、修復を実行しただけでなく、findingが実際に解決されたことまで確認済みの状態を意味します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "修復のステータスにはPending(修復予定として設定済み)・Processing(修復実行中)・Validating(修復完了後、解決の確認待ち)・Completed(修復完了かつ解決を確認済み)・Failed(修復失敗)・Rejected(権限不足で修復不可)があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#remediate-a-finding",
+      "hint": "修復には「準備」「実行」「確認」という段階があることを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "修復ステータスの流れ",
+          "steps": [
+            {
+              "text": "Pending(修復予定)"
+            },
+            {
+              "text": "Processing(修復実行中)"
+            },
+            {
+              "text": "Validating(解決の確認待ち)"
+            },
+            {
+              "text": "Completed(解決を確認済み)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-011",
+      "category": "casb",
+      "difficulty": "advanced",
+      "question": "CASBのfindingからGatewayのHTTPポリシーを作成する機能に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "この機能はインテグレーションの種類やアプリケーション、findingタイプの組み合わせに関わらず、CASBが検知したあらゆる種類のfindingに対して同様に利用できる汎用的な機能として設計されている",
+          "wrongFeedback": "この機能はGoogle Workspaceの特定の4種類のPosture findingsに限定されています。すべてのfindingで使えるわけではありません。"
+        },
+        {
+          "text": "この機能を利用するにあたって、あらかじめGatewayのトラフィックフィルタリング機能(HTTPインスペクション)を有効化しておくような前提条件は、ドキュメント上どこにも特に定められていない",
+          "wrongFeedback": "この機能を利用するには、事前にGatewayのHTTPフィルタリングを有効化しておく必要があります。"
+        },
+        {
+          "text": "この機能のサポート対象外となっているfindingであっても、アプリケーションのダッシュボードを一切経由することなく、何らかの形で必ずGatewayポリシー経由だけで解決できるという代替手段が用意されている",
+          "wrongFeedback": "サポート対象外のfindingは、アプリケーションのダッシュボードやドメインプロバイダーを通じてのみ解決できます。Gateway経由の代替手段は用意されていません。"
+        },
+        {
+          "text": "この機能はGoogle Workspaceの「編集権限付きで公開アクセス可能なファイル」「閲覧権限付きで公開アクセス可能なファイル」「編集権限付きで社外共有されているファイル」「閲覧権限付きで社外共有されているファイル」という4種類のPosture findingsに限定されており、利用にはGatewayのHTTPフィルタリングを事前に有効化しておく必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "この機能はGoogle Workspaceの4種類のPosture findings(「編集権限付きで公開アクセス可能なファイル」「閲覧権限付きで公開アクセス可能なファイル」「編集権限付きで社外共有されているファイル」「閲覧権限付きで社外共有されているファイル」)に限定されています。利用にはGatewayのHTTPフィルタリングを事前に有効化しておく必要があります。サポート対象外のfindingは、アプリケーションのダッシュボードやドメインプロバイダーを通じてのみ解決できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#resolve-finding-with-a-gateway-policy",
+      "hint": "この機能が「すべてのfindingに使える汎用機能」ではなく、特定の組み合わせに限定されていることを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Gatewayポリシー化に対応するfinding(Google Workspace限定)",
+          "items": [
+            {
+              "text": "編集権限付きで公開アクセス可能"
+            },
+            {
+              "text": "閲覧権限付きで公開アクセス可能"
+            },
+            {
+              "text": "編集権限付きで社外共有"
+            },
+            {
+              "text": "閲覧権限付きで社外共有"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-012",
+      "category": "casb",
+      "difficulty": "beginner",
+      "question": "CASB Webhooksで送信できるfindingの種類に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "CASB WebhooksはPosture findingsのインスタンスのみを送信対象としており、Content findingsを送信することはできない"
+        },
+        {
+          "text": "CASB WebhooksはPosture findings・Content findingsの両方を送信対象としており、区別なく送信できる",
+          "wrongFeedback": "CASB WebhooksはPosture findingsのインスタンスのみを送信対象としています。Content findingsは送信できません。"
+        },
+        {
+          "text": "CASB WebhooksはContent findingsのみを送信対象としており、Posture findingsは送信できない",
+          "wrongFeedback": "逆です。送信対象になるのはPosture findingsで、Content findingsは送信できません。"
+        },
+        {
+          "text": "CASB Webhooksはfindingの種類に関わらず、インテグレーションに関するすべてのイベント(ログイン試行やAPI呼び出しなど)を送信できる",
+          "wrongFeedback": "送信対象はPosture findingsのインスタンスに限定されています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "CASB WebhooksはPosture findingsのインスタンスのみを送信対象としており、Content findingsを送信することはできません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/integrations/cloud-and-saas/webhooks/#limitations",
+      "hint": "2種類あるfindingのうち、外部システムへ送信できるのは片方だけだと考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Webhookで送信できるfinding",
+          "columns": [
+            {
+              "heading": "Posture findings",
+              "items": [
+                "Webhookで送信可能"
+              ]
+            },
+            {
+              "heading": "Content findings",
+              "items": [
+                "Webhookでは送信不可"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-013",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASB Webhookで設定できる認証方式に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "認証方式はBearer認証の1種類のみがサポートされている",
+          "wrongFeedback": "None・Basic Auth・Bearer Auth・Static Headers・HMAC-Signingの5種類がサポートされています。1種類のみではありません。"
+        },
+        {
+          "text": "認証方式にはNone(なし)・Basic Auth・Bearer Auth・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類が用意されている"
+        },
+        {
+          "text": "Static Headersを使う場合、同じヘッダー名を複数回指定して重複させることが推奨されている",
+          "wrongFeedback": "Static Headersのヘッダー名は一意である必要があり、重複は推奨されていません。"
+        },
+        {
+          "text": "HMAC-Signingを選択した場合、署名用シークレットの設定は不要で、Cloudflareが自動的にすべてを処理する",
+          "wrongFeedback": "HMAC-Signingを選択した場合、署名用シークレットの設定が必要です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "認証方式にはNone(なし)・Basic Auth・Bearer Auth・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類が用意されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/integrations/cloud-and-saas/webhooks/#authentication-methods",
+      "hint": "送信先が求める認証の仕組みに合わせて選べるよう、複数の選択肢が用意されていることを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Webhookの認証方式",
+          "items": [
+            {
+              "text": "None(認証なし)"
+            },
+            {
+              "text": "Basic Auth"
+            },
+            {
+              "text": "Bearer Auth"
+            },
+            {
+              "text": "Static Headers"
+            },
+            {
+              "text": "HMAC-Signing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-014",
+      "category": "casb",
+      "difficulty": "advanced",
+      "question": "検証が行われるタイミングを踏まえると、CASB Webhookの送信先URLに関する制約として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "送信先URLは`http://`でも`https://`でもよく、プロトコルの種類に関する制約は特に設けられていない",
+          "wrongFeedback": "`https://`のURLのみが受け付けられます。HTTPは受け付けられません。"
+        },
+        {
+          "text": "送信先URLとしてlocalhostやループバックアドレスのような予約済みアドレスも、他の一般的なURLと同様に問題なく設定できる",
+          "wrongFeedback": "localhost・ループバック・プライベート・その他の予約済みアドレスに解決されるURLは拒否されます。"
+        },
+        {
+          "text": "送信先URLは`https://`かつ外部から到達可能(publicly reachable)である必要があり、localhostやループバック、プライベートアドレスなどの予約済みアドレスに解決されるURLは保存時点で拒否される"
+        },
+        {
+          "text": "送信先URLの妥当性チェックは、Webhookの作成時ではなく実際に配信が試みられた時点で初めて行われる",
+          "wrongFeedback": "妥当性チェック(HTTPSかつ到達可能かなど)はWebhookの保存時点で行われます。配信時まで待つわけではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "送信先URLは`https://`かつ外部から到達可能(publicly reachable)である必要があります。localhostやループバック、プライベートアドレスなどの予約済みアドレスに解決されるURLは、Webhookの保存時点で拒否されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/integrations/cloud-and-saas/webhooks/#create-a-webhook",
+      "hint": "「いつ」そのURLが正しいかどうかをチェックしているのか、タイミングを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Webhook送信先URLの検証",
+          "steps": [
+            {
+              "text": "Webhookを作成し送信先URLを入力"
+            },
+            {
+              "text": "https:// かつ外部到達可能かを検証"
+            },
+            {
+              "text": "localhost/ループバック/プライベートは拒否"
+            },
+            {
+              "text": "問題なければ保存が完了"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-015",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASB Webhookの「Test delivery(テスト配信)」機能に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "テスト配信は実際のfindingインスタンスのデータをそのまま送信先へ送る",
+          "wrongFeedback": "テスト配信は実際の環境からのfindingインスタンスを送信するものではありません。"
+        },
+        {
+          "text": "テスト配信が成功しても、それは送信先URLへ到達できたことを意味するだけで、それ以上の情報は得られない",
+          "wrongFeedback": "テスト配信の成功は、Cloudflareが送信先URLへ到達し、送信先から応答を受け取ったことを意味します。"
+        },
+        {
+          "text": "テスト配信の機能はEnterpriseプランのユーザーのみが利用でき、無料プランのユーザーは利用できない",
+          "wrongFeedback": "そのようなプラン制限は文書化されていません。"
+        },
+        {
+          "text": "テスト配信が成功したことは、Cloudflareが送信先URLへ到達し、送信先が応答を返したことを意味するが、テスト配信では実際の環境からのライブなfindingインスタンスは送信されない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "テスト配信が成功したことは、Cloudflareが送信先URLへ到達し、送信先が応答を返したことを意味します。ただし、テスト配信では実際の環境からのライブなfindingインスタンスは送信されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/integrations/cloud-and-saas/webhooks/#test-delivery",
+      "hint": "「接続確認」と「実際のデータ送信」は別物だと考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Test delivery vs 実際のfinding送信",
+          "columns": [
+            {
+              "heading": "Test delivery",
+              "items": [
+                "接続確認のみ",
+                "ライブなデータは送信しない"
+              ]
+            },
+            {
+              "heading": "実際のfinding送信",
+              "items": [
+                "Posture findingインスタンスを送信"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-016",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASBインテグレーションのスキャン頻度に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "CASBインテグレーションはリアルタイムで更新されるわけではなく、初回スキャンには数時間かかることがあり、それ以降のスキャンはおおむね24〜48時間ごとに定期的に実行される"
+        },
+        {
+          "text": "CASBインテグレーションは常にリアルタイムで更新され、SaaSアプリ側の変更が即座にfindingへ反映される",
+          "wrongFeedback": "CASBインテグレーションはリアルタイムでは更新されません。定期的なスキャン(初回は数時間、以降はおおむね24〜48時間ごと)によって更新されます。"
+        },
+        {
+          "text": "スキャン頻度は初回・2回目以降を問わず常に1時間ごとに固定されている",
+          "wrongFeedback": "初回スキャンには数時間かかることがあり、それ以降はおおむね24〜48時間ごとという頻度です。1時間ごとではありません。"
+        },
+        {
+          "text": "再スキャンを手動でトリガーする手段は用意されておらず、定期スキャンを待つ以外に方法はない",
+          "wrongFeedback": "Configure画面で「Scan for findings」をオフ→オンに切り替えることで、再スキャンをトリガーできます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "CASBインテグレーションはリアルタイムで更新されるわけではありません。初回スキャンには数時間かかることがあり、それ以降のスキャンはおおむね24〜48時間ごとに定期的に実行されます。Configure画面で「Scan for findings」をオフ→オンに切り替えることで、手動での再スキャンをトリガーすることもできます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/troubleshoot-casb/#understand-scan-frequency",
+      "hint": "「常に最新」ではなく「定期的にチェックしている」という前提を考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "CASBのスキャン頻度",
+          "steps": [
+            {
+              "text": "初回スキャン(数時間かかることがある)"
+            },
+            {
+              "text": "以降は約24〜48時間ごとに定期スキャン"
+            },
+            {
+              "text": "手動での再スキャンも可能(Scan for findingsの切り替え)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-017",
+      "category": "casb",
+      "difficulty": "advanced",
+      "question": "CASBインテグレーションのセットアップが失敗する原因として、最も頻度が高いとされているものに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "最も頻度が高い原因はCloudflare側の一時的なネットワーク障害であり、連携先アプリでの権限設定はセットアップの成否にほとんど関係しない",
+          "wrongFeedback": "最も頻度が高い原因として挙げられているのは、サードパーティアプリケーション側での権限不足です。"
+        },
+        {
+          "text": "サードパーティアプリケーション側での権限不足が最も頻度の高い原因とされており、Microsoft 365ではGlobal Administrator、Google WorkspaceではSuper Admin、GitHubではOrganization Ownerという権限が必要とされている"
+        },
+        {
+          "text": "セットアップに必要な権限の要件はどのSaaSアプリケーションでも完全に共通であり、プラットフォームの違いによって必要な権限レベルが変わることはない",
+          "wrongFeedback": "必要な権限はプラットフォームによって異なります(M365はGlobal Administrator、Google WorkspaceはSuper Admin、GitHubはOrganization Ownerなど)。"
+        },
+        {
+          "text": "以前に別のCloudflareアカウントで同じSaaSアプリを連携していた場合でも、新しいアカウントでの連携時に特別な追加作業は不要である",
+          "wrongFeedback": "以前の連携が残っている場合、SaaS側の管理画面で古いアプリの登録を手動で取り消す必要があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "サードパーティアプリケーション側での権限不足が、セットアップ失敗の最も頻度の高い原因とされています。Microsoft 365ではGlobal Administrator、Google WorkspaceではSuper Admin、GitHubではOrganization Ownerという権限が必要です。また、以前に別のCloudflareアカウントで連携していた場合は、SaaS側の管理画面で古いアプリの登録を手動で取り消す必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/troubleshoot-casb/#check-permissions-in-the-third-party-application",
+      "hint": "セットアップでつまずく最も多い原因が、Cloudflare側ではなく連携先アプリ側の設定にあることを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プラットフォームごとの必要な管理者権限",
+          "columns": [
+            { "heading": "Microsoft 365", "items": ["Global Administrator"] },
+            { "heading": "Google Workspace", "items": ["Super Admin"] },
+            { "heading": "GitHub", "items": ["Organization Owner"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cb-018",
+      "category": "casb",
+      "difficulty": "intermediate",
+      "question": "CASBが誤検知(false positive)を生成した場合に推奨される対応の流れに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "誤検知が疑われる場合は、まずそのfindingをダッシュボードから完全に削除してしまい、SaaSプラットフォーム側の状態確認やサポートへの報告を行うことなく、以降二度と検知されないよう設定を変更する",
+          "wrongFeedback": "完全な削除ではなく、証拠を確認したうえでCloudflareサポートへ報告し、対応を待つ間はfindingを一時的に非表示にするという流れが推奨されています。"
+        },
+        {
+          "text": "誤検知はCASBの仕組み上そもそも発生しえない性質のものであるとされているため、それを想定した報告のための手順自体があらかじめ用意されていない",
+          "wrongFeedback": "誤検知は起こりうるものとして文書化されており、報告のための手順(finding IDを添えてサポートへ報告する等)が用意されています。"
+        },
+        {
+          "text": "誤検知が疑われる場合は、まずSaaSプラットフォーム側での実際の状態を確認し(表示されているステータスが不正確な場合があるため)、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みを使ってそのfindingを一時的に非表示にすることが推奨されている"
+        },
+        {
+          "text": "誤検知の報告に際してfinding IDのような識別情報は不要とされており、大まかな症状を言葉で説明するだけで十分な報告として扱われる",
+          "wrongFeedback": "finding IDをできるだけ詳しい情報とともに提供することが推奨されています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "誤検知が疑われる場合は、まずSaaSプラットフォーム側での実際の状態を確認します(表示されているステータスが不正確な場合があるため)。そのうえで、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みを使ってそのfindingを一時的に非表示にすることが推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/troubleshoot-casb/#casb-is-generating-false-positives",
+      "hint": "「確認する」→「報告する」→「一時的にしのぐ」という3段階の流れを考えましょう。",
+      "tags": [
+        "casb",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "誤検知への対応フロー",
+          "steps": [
+            {
+              "text": "SaaSプラットフォーム側の実際の状態を確認"
+            },
+            {
+              "text": "finding IDを添えてサポートへ報告"
+            },
+            {
+              "text": "対応を待つ間はIgnore/Hideで一時的に非表示"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
