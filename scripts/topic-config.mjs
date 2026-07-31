@@ -407,6 +407,19 @@ export const DOC_PAGES = [
   { name: 'cloudflare-one/integrations/cloud-and-saas/webhooks' },
   { name: 'cloudflare-one/integrations/cloud-and-saas/findings' },
   { name: 'cloudflare-one/integrations/cloud-and-saas/troubleshooting/casb' },
+  { name: 'cloudflare-one/insights/dex' },
+  { name: 'cloudflare-one/insights/dex/monitoring' },
+  { name: 'cloudflare-one/insights/dex/rules' },
+  { name: 'cloudflare-one/insights/dex/notifications' },
+  { name: 'cloudflare-one/insights/dex/ip-visibility' },
+  { name: 'cloudflare-one/insights/dex/troubleshooting' },
+  { name: 'cloudflare-one/insights/dex/tests' },
+  { name: 'cloudflare-one/insights/dex/tests/http' },
+  { name: 'cloudflare-one/insights/dex/tests/traceroute' },
+  { name: 'cloudflare-one/insights/dex/tests/view-results' },
+  { name: 'cloudflare-one/insights/dex/diagnostics' },
+  { name: 'cloudflare-one/insights/dex/diagnostics/speed-test' },
+  { name: 'cloudflare-one/insights/dex/diagnostics/client-packet-capture' },
   { name: 'r2' },
   { name: 'r2/api/s3/presigned-urls' },
   { name: 'r2/api/tokens' },
@@ -519,6 +532,10 @@ export const DOC_PAGE_OVERRIDES = {
   // order-of-enforcement.mdx is a thin `<Render file="gateway/order-of-enforcement" />`
   // stub — the actual Gateway policy-evaluation-order reference lives in the partial.
   'cloudflare-one/traffic-policies/order-of-enforcement': 'partials/cloudflare-one/gateway/order-of-enforcement.mdx',
+  // dex/troubleshooting.mdx renders <Render file="troubleshooting/dex" />, a thin
+  // stub — the actual "Data visibility" / "Remote captures" troubleshooting
+  // content (with its own literal headings) lives in the partial.
+  'cloudflare-one/insights/dex/troubleshooting': 'partials/cloudflare-one/troubleshooting/dex.mdx',
 }
 
 /**

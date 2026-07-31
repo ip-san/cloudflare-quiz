@@ -65,6 +65,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   dl: 'data-loss-prevention',
   bi: 'browser-isolation',
   cb: 'casb',
+  dx: 'dex',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -390,6 +391,19 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/integrations/cloud-and-saas/webhooks/',
   'cloudflare-one/integrations/cloud-and-saas/findings/',
   'cloudflare-one/integrations/cloud-and-saas/troubleshooting/casb/',
+  'cloudflare-one/insights/dex/',
+  'cloudflare-one/insights/dex/monitoring/',
+  'cloudflare-one/insights/dex/rules/',
+  'cloudflare-one/insights/dex/notifications/',
+  'cloudflare-one/insights/dex/ip-visibility/',
+  'cloudflare-one/insights/dex/troubleshooting/',
+  'cloudflare-one/insights/dex/tests/',
+  'cloudflare-one/insights/dex/tests/http/',
+  'cloudflare-one/insights/dex/tests/traceroute/',
+  'cloudflare-one/insights/dex/tests/view-results/',
+  'cloudflare-one/insights/dex/diagnostics/',
+  'cloudflare-one/insights/dex/diagnostics/speed-test/',
+  'cloudflare-one/insights/dex/diagnostics/client-packet-capture/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -831,6 +845,7 @@ describe('Quiz Content Quality', () => {
         'data-loss-prevention',
         'browser-isolation',
         'casb',
+        'dex',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

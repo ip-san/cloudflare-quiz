@@ -493,6 +493,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'SaaSアプリの設定不備やシャドーITをAPI経由で検知・是正できる',
     },
     {
+      id: 'dex',
+      name: 'DEX',
+      icon: '🩺',
+      color: 'periwinkle',
+      weight: 10,
+      description:
+        'デバイス・ネットワーク・アプリのパフォーマンスを可視化するDigital Experience Monitoring。HTTPテスト・Tracerouteテスト・スピードテスト・リモートキャプチャ',
+      skillDescription: 'エンドユーザーの接続不良の原因が端末・ネットワーク・Cloudflareのどこにあるかを切り分けられる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',
