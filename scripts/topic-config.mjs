@@ -452,6 +452,20 @@ export const DOC_PAGES = [
   { name: 'cloudflare-network-firewall' },
   { name: 'cloudflare-network-firewall/about' },
   { name: 'cloudflare-network-firewall/reference/network-firewall-fields' },
+  { name: 'spectrum' },
+  { name: 'spectrum/get-started' },
+  { name: 'spectrum/about' },
+  { name: 'spectrum/about/ddos-for-spectrum' },
+  { name: 'spectrum/about/ftp' },
+  { name: 'spectrum/about/load-balancer' },
+  { name: 'spectrum/about/static-ip' },
+  { name: 'spectrum/how-to' },
+  { name: 'spectrum/how-to/enable-proxy-protocol' },
+  { name: 'spectrum/reference/configuration-options' },
+  { name: 'spectrum/reference/limitations' },
+  { name: 'spectrum/reference/analytics' },
+  { name: 'spectrum/reference/settings-by-plan' },
+  { name: 'spectrum/protocols-per-plan' },
   { name: 'r2' },
   { name: 'r2/api/s3/presigned-urls' },
   { name: 'r2/api/tokens' },
@@ -588,6 +602,13 @@ export const DOC_PAGE_OVERRIDES = {
   // magic-transit/reference/gre-ipsec-tunnels.mdx is the same thin Render stub as its
   // Cloudflare WAN counterpart above; point it at the same shared partial.
   'magic-transit/reference/gre-ipsec-tunnels': 'partials/networking-services/reference/gre-ipsec-tunnels.mdx',
+  // spectrum/about, spectrum/how-to, and spectrum/protocols-per-plan are also
+  // thin stubs (<DirectoryListing /> nav pages, or a <FeatureTable /> whose
+  // rows are generated at build time from plan data) — but unlike the pages
+  // above, no static partial exists to point fetch-docs.mjs at instead. Left
+  // without an override entry by design; their real content lives in the
+  // sibling leaf pages under spectrum/about/*, spectrum/how-to/*, which are
+  // fetched normally and already covered by DOC_PAGES.
 }
 
 /**

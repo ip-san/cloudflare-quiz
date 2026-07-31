@@ -38,6 +38,7 @@ export const COLOR_MAP: Record<string, string> = {
   periwinkle: '#818cf8',
   wine: '#831843',
   azure: '#0078d4',
+  plum: '#a21caf',
 }
 
 export function getColorHex(colorName: string): string {

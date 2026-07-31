@@ -523,6 +523,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '拠点間接続とネットワーク層のDDoS防御をオンランプ・ルーティングの選択から設計できる',
     },
     {
+      id: 'spectrum',
+      name: 'Spectrum',
+      icon: '🎮',
+      color: 'plum',
+      weight: 10,
+      description:
+        'HTTP以外のTCP/UDPアプリケーション(SSH・RDP・ゲーム・MQTTなど)をプロキシするSpectrum。アプリケーション設定・PROXY Protocol・TLS終端・IP Access rules・DDoS防御',
+      skillDescription: 'HTTP以外のTCP/UDPアプリケーションを、Spectrumを使って安全に公開・保護できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

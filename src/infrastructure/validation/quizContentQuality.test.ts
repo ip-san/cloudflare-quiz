@@ -68,6 +68,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   dx: 'dex',
   em: 'email-security',
   mw: 'magic-wan',
+  sc: 'spectrum',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -438,6 +439,20 @@ const VALID_DOC_PAGES = [
   'cloudflare-network-firewall/',
   'cloudflare-network-firewall/about/',
   'cloudflare-network-firewall/reference/network-firewall-fields/',
+  'spectrum/',
+  'spectrum/get-started/',
+  'spectrum/about/',
+  'spectrum/about/ddos-for-spectrum/',
+  'spectrum/about/ftp/',
+  'spectrum/about/load-balancer/',
+  'spectrum/about/static-ip/',
+  'spectrum/how-to/',
+  'spectrum/how-to/enable-proxy-protocol/',
+  'spectrum/reference/configuration-options/',
+  'spectrum/reference/limitations/',
+  'spectrum/reference/analytics/',
+  'spectrum/reference/settings-by-plan/',
+  'spectrum/protocols-per-plan/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -882,6 +897,7 @@ describe('Quiz Content Quality', () => {
         'dex',
         'email-security',
         'magic-wan',
+        'spectrum',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

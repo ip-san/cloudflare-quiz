@@ -150,6 +150,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('dex')
     expect(ids).toContain('email-security')
     expect(ids).toContain('magic-wan')
+    expect(ids).toContain('spectrum')
     expect(ids).toContain('architecture')
   })
 

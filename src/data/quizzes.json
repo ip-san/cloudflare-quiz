@@ -39318,6 +39318,995 @@
           ]
         }
       ]
+    },
+    {
+      "id": "sc-001",
+      "category": "spectrum",
+      "difficulty": "beginner",
+      "question": "Cloudflare Spectrumがどのような課題を解決するプロダクトかを説明したものとして、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "SSH・RDP・ゲーム・MQTTなど、HTTPではない任意のTCP/UDPベースのアプリケーションをCloudflareの edge 経由でプロキシし、DDoS防御とオリジンの秘匿を提供するサービスである"
+        },
+        {
+          "text": "エンドユーザーのブラウザとオリジンの間のHTTPトラフィックのみを対象に、WAFのカスタムルールやキャッシュ機能を適用するCDNサービスである",
+          "wrongFeedback": "HTTP専用のWAF・キャッシュはWAFやCacheの役割です。Spectrumは主にHTTP以外のTCP/UDPアプリケーションを対象とするL4プロキシです。"
+        },
+        {
+          "text": "オフィスやデータセンターなどの拠点間を、IPsecまたはGREトンネルで接続するサイト間接続サービスである",
+          "wrongFeedback": "拠点間接続はCloudflare WAN(旧Magic WAN)の役割です。Spectrumは個々のTCP/UDPアプリケーションを対象とするL4プロキシです。"
+        },
+        {
+          "text": "顧客自身がBGPアドバタイズしたIPプレフィックス全体を、ネットワーク層でDDoS攻撃から保護するサービスである",
+          "wrongFeedback": "IPプレフィックス全体をBGPで保護するのはMagic Transitの役割です。Spectrumはアプリケーション単位で設定するL4プロキシです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Spectrumは、TCP/UDPベースの任意のアプリケーション(SSH、RDP、ゲーム、MQTT、メール、ファイル転送など)にセキュリティとパフォーマンスを提供するプロダクトです。トラフィックをCloudflareのedge経由でプロキシすることでオリジンのIPアドレスを隠蔽し、DDoS攻撃から保護します。カスタムのTCP/UDPアプリケーションを使うにはEnterpriseプランでSpectrumを有料アドオンとして有効化する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/",
+      "hint": "「HTTP以外の」プロトコルという点と、アプリケーション単位で設定する点に注目しましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Spectrumと近縁サービスの違い",
+          "columns": [
+            {
+              "heading": "Spectrum",
+              "items": [
+                "アプリ単位のTCP/UDP L4プロキシ",
+                "SSH・RDP・ゲーム・MQTTなどが対象"
+              ]
+            },
+            {
+              "heading": "Cloudflare WAN・Magic Transit",
+              "items": [
+                "拠点間接続・IPプレフィックス全体の保護",
+                "ネットワーク全体を対象とするL3/4サービス"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-002",
+      "category": "spectrum",
+      "difficulty": "beginner",
+      "question": "Spectrumアプリケーションを新規作成する際に、ダッシュボードで設定する項目の組み合わせとして正しいものはどれですか?",
+      "options": [
+        {
+          "text": "WAFカスタムルールのアクション、キャッシュTTL、Edge Port、オリジンのIPアドレス",
+          "wrongFeedback": "WAFカスタムルールはSpectrumアプリケーションでは動作しません(IP Access rulesを使用します)し、キャッシュTTLもSpectrumの設定項目ではありません。"
+        },
+        {
+          "text": "アプリケーションタイプ、ドメイン、Edge Port、オリジンのIPアドレスとポート"
+        },
+        {
+          "text": "BGPアドバタイズするプレフィックス、GREトンネルのエンドポイント、Edge Port",
+          "wrongFeedback": "BGPプレフィックスやGREトンネルのエンドポイントはMagic TransitやCloudflare WANの設定項目であり、Spectrumアプリケーションの設定項目ではありません。"
+        },
+        {
+          "text": "オリジンのプライベートIPをBGPで広告するためのASN設定、GREトンネルのMTU、Edge Port",
+          "wrongFeedback": "ASNやGREトンネルのMTUはMagic TransitやCloudflare WANに関する設定であり、Spectrumアプリケーションの設定項目ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "ダッシュボードでSpectrumアプリケーションを作成する際は、アプリケーションタイプ、Spectrumを利用するドメイン、CloudflareがトラフィックをリッスンするEdge Port、そしてオリジンのIPアドレスとポートを設定します。IPアドレス方式・CNAMEレコード方式・ロードバランサー方式・仮想ネットワーク方式のいずれかでオリジンを指定できます。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/get-started/",
+      "hint": "「どのポートで受けて、どこに転送するか」を指定する項目群を考えましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Spectrumアプリ作成の流れ(ダッシュボード)",
+          "steps": [
+            {
+              "text": "Create an Applicationを選択"
+            },
+            {
+              "text": "Application Typeを選択"
+            },
+            {
+              "text": "Domain・Edge Portを入力"
+            },
+            {
+              "text": "Originのアドレスとポートを入力"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-003",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "SpectrumアプリケーションのOrigin(オリジン)指定方法に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "origin_directとorigin_dnsは常に両方の指定が必須であり、片方だけでは設定を保存できない",
+          "wrongFeedback": "必須なのはどちらか一方であり、両方の指定は許可されず400エラーになります。"
+        },
+        {
+          "text": "origin_dnsで指定できるDNSレコードタイプはCNAMEのみで、AレコードやAAAAレコードは指定できない",
+          "wrongFeedback": "origin_dnsではA、AAAA、SRV、または(AとAAAA両方を意味する)空指定が有効なレコードタイプで、CNAME限定ではありません。ダッシュボードからCNAME方式で作成する場合はCNAMEレコードを別途Cloudflareのゾーンに作成する必要があります。"
+        },
+        {
+          "text": "origin_directとorigin_dnsは、どちらか一方のみを指定でき、両方を同時に指定するとHTTP 400エラーになる"
+        },
+        {
+          "text": "origin_directには、CNAMEレコードのようなホスト名の値を指定して名前解決させることができる",
+          "wrongFeedback": "origin_directは`tcp://192.0.2.1:22`のようにIPアドレス形式の値を指定するフィールドです。ホスト名による名前解決を行いたい場合はorigin_dnsを使用します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Spectrumアプリケーションのオリジンは、直接のIPアドレスを指定するorigin_direct、またはDNSレコードによる名前解決を使うorigin_dnsのいずれかで指定します。リクエストにはorigin_dnsかorigin_directのどちらかのパラメータが含まれている必要があり、両方を指定するとHTTP 400 Bad Requestが返されます。origin_dnsで有効なレコードタイプはA、AAAA、SRV、または空(AとAAAA両方)です。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/settings-by-plan/",
+      "hint": "「オリジンをIPで直接指定する方法」と「DNS名で指定する方法」は併用できるかどうかを考えましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "オリジン指定方法(排他)",
+          "columns": [
+            {
+              "heading": "origin_direct",
+              "items": [
+                "オリジンのIPアドレスを直接指定"
+              ]
+            },
+            {
+              "heading": "origin_dns",
+              "items": [
+                "A/AAAA/SRV等のDNSレコードで名前解決"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-004",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "Spectrumで対応しているEdge TLS Termination(エッジでのTLS終端)のモードに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "offに設定するとSpectrumはHTTP接続を自動的にHTTPSへアップグレードしてオリジンへ転送する",
+          "wrongFeedback": "SpectrumはL4プロキシでありプロトコルのアップグレードは行いません。offの場合、暗号化されずにペイロードがそのまま転送されるため、HTTPで受けた接続がHTTPSに変換されることはありません。"
+        },
+        {
+          "text": "Full (Strict)はCloudflareからオリジンへの通信を暗号化するが、オリジン証明書の検証は行わない",
+          "wrongFeedback": "オリジン証明書を検証せずに暗号化するのはFullモードです。Full (Strict)はオリジン証明書を厳密に検証した上で暗号化します。"
+        },
+        {
+          "text": "Edge TLS TerminationはTCPアプリケーションとUDPアプリケーションの両方に等しく適用できるトグルである",
+          "wrongFeedback": "Edge TLS TerminationのトグルはTCPアプリケーションにのみ適用され、UDPアプリケーションには適用されません。"
+        },
+        {
+          "text": "Flexibleはエッジ側の接続のみを暗号化し、Cloudflareからオリジンへの接続は暗号化しない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "SpectrumのEdge TLS Terminationには Flexible・Full・Full (Strict) の3モードがあります。Flexibleはクライアントとエッジ間のみ暗号化し、エッジからオリジンへは暗号化しません。Fullはオリジンへの通信も暗号化しますが証明書検証は行わず、Full (Strict)は証明書を厳密に検証した上で暗号化します。offに設定した場合はプロトコルのアップグレードは行われず、ペイロードがそのまま転送されます。このトグルが適用されるのはTCPアプリケーションのみです。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
+      "hint": "「オリジン証明書を検証するかどうか」でFullとFull (Strict)の違いを整理しましょう。",
+      "tags": [
+        "spectrum",
+        "ssl-tls"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "Edge TLS Terminationのモード比較",
+          "rowHeader": "モード",
+          "colHeader": "挙動",
+          "rows": [
+            "Flexible",
+            "Full",
+            "Full (Strict)"
+          ],
+          "cols": [
+            "クライアント⇔エッジ",
+            "エッジ⇔オリジン"
+          ],
+          "cells": [
+            [
+              "暗号化",
+              "平文"
+            ],
+            [
+              "暗号化",
+              "暗号化(証明書未検証)"
+            ],
+            [
+              "暗号化",
+              "暗号化(証明書検証あり)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-005",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "SpectrumのPROXY Protocolに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "TCPアプリケーションではPROXY Protocol v1(テキスト形式)またはv2(バイナリ形式)を使ってクライアントの真のIPアドレスをオリジンへ伝えられる"
+        },
+        {
+          "text": "UDPアプリケーションでもPROXY Protocol v1をそのまま利用でき、v1がUDP向けの標準的な選択肢である",
+          "wrongFeedback": "PROXY Protocol v1はTCP向けのテキスト形式ヘッダーです。UDPではPROXY Protocol v2、またはCloudflareが開発したSimple Proxy Protocolを使用します。"
+        },
+        {
+          "text": "PROXY Protocolを有効にしなくても、オリジン側はクライアントの真のIPアドレスを常に取得できる",
+          "wrongFeedback": "CloudflareはクライアントとTCP/UDPコネクションを終端してからオリジンへ接続するため、PROXY Protocolを使わない場合、オリジンから見える送信元IPはCloudflareのIPになります。"
+        },
+        {
+          "text": "PROXY Protocolは仮想ネットワークオリジン(virtual_network_id指定)を使うSpectrumアプリケーションでも常に利用できる",
+          "wrongFeedback": "仮想ネットワークオリジンを使うSpectrumアプリケーションではPROXY Protocolは現時点でサポートされておらず、proxy_protocolをoffにする必要があります。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "CloudflareはクライアントとTCP/UDPコネクションを終端してからオリジンへ接続するため、そのままではオリジンにはCloudflareのIPアドレスが見えます。真のクライアントIPをオリジンへ伝えるため、TCPアプリケーションではPROXY Protocol v1(人間可読なテキスト形式、Amazon ELBやNGINXも対応)またはv2(バイナリ形式)を利用できます。UDPアプリケーションではv2、またはUDP向けにCloudflareが開発したSimple Proxy Protocolを利用します。仮想ネットワークオリジンを使う構成ではPROXY Protocolはサポートされていません。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/how-to/enable-proxy-protocol/",
+      "hint": "「テキスト形式」と「バイナリ形式」、そしてTCP/UDPそれぞれで使えるバージョンの違いに注目しましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "PROXY Protocol v1 ヘッダー例(IPv4)",
+          "filepath": "proxy-protocol-header",
+          "lines": [
+            {
+              "text": "PROXY TCP4 192.0.2.0 192.0.2.255 42300 443",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-006",
+      "category": "spectrum",
+      "difficulty": "advanced",
+      "question": "SpectrumアプリケーションでIP Access rules(IPアクセスルール)を使う場合の挙動に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "WAFのカスタムルール(custom rules)もSpectrumアプリケーションに対して通常どおり動作する",
+          "wrongFeedback": "カスタムルールはSpectrumアプリケーションでは動作しません。IPベースのアクセス制御にはIP Access rulesを使う必要があります。"
+        },
+        {
+          "text": "特定のIPアドレス・IPブロック・国・ASNに対して作成されたallowまたはblockアクションのルールのみが尊重される"
+        },
+        {
+          "text": "challengeアクションを含むあらゆるIP Access rulesのアクションがSpectrumアプリケーションに対して尊重される",
+          "wrongFeedback": "Spectrumが尊重するのはallowまたはblockアクションのルールのみです。challengeのようなインタラクティブなアクションはHTTPの仕組みに依存するため、非HTTPのSpectrumトラフィックには適用されません。"
+        },
+        {
+          "text": "Spectrumのネットワーク分析(Network Analytics)には、IP Access rulesによる許可/ブロックの結果が常に反映される",
+          "wrongFeedback": "SpectrumのNetwork AnalyticsデータにはIP Access rulesの適用結果は反映されません。許可/ブロックされたかどうかを確認するにはSpectrumのイベントログを確認する必要があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "IP Access rulesがSpectrumアプリケーションに対して有効な場合、Cloudflareはそのドメインに設定されたIP Access rulesを尊重しますが、対象は特定のIPアドレス・IPブロック・国・ASNに対して作成されたルールに限られ、アクションもallowまたはblockのみが尊重されます。WAFのカスタムルールはSpectrumでは動作しません。またIP Access rulesの適用結果はNetwork Analyticsには反映されず、確認にはSpectrumのイベントログを使う必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
+      "hint": "「どのアクション」が尊重され、「どこで結果を確認する」必要があるかに注目しましょう。",
+      "tags": [
+        "spectrum",
+        "waf"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "SpectrumでのIP Access rules適用",
+          "steps": [
+            {
+              "text": "IP/IPブロック/国/ASN単位のルールのみ対象"
+            },
+            {
+              "text": "allowまたはblockアクションのみ尊重"
+            },
+            {
+              "text": "challengeなどHTTP前提のアクションは対象外"
+            },
+            {
+              "text": "適用結果はイベントログで確認(Network Analyticsには非反映)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-007",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "SpectrumのDDoS防御に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "SpectrumアプリケーションがTCP用に設定されている場合でも、UDPフラッドのパケットはそのままオリジンへ転送される",
+          "wrongFeedback": "設定したプロトコルと異なる種類のフラッド(例: TCPアプリケーションに対するUDPフラッド)のパケットは、オリジンへ転送されずドロップされます。"
+        },
+        {
+          "text": "SpectrumはL7のDDoS攻撃に対しても、CDN/WAFと同等の検査・緩和を単体で提供する",
+          "wrongFeedback": "SpectrumはL3/L4を対象とするDDoS防御を提供します。L7 DDoS攻撃からHTTP/Sアプリケーションを守るにはWAF/CDNサービスとの併用が推奨されます。"
+        },
+        {
+          "text": "Spectrumはレイヤー4のリバースプロキシとして動作するため、正当なTCPコネクションが確立される前のSYNやSYN-ACKリフレクション攻撃の影響はCloudflareのグローバルネットワーク側に吸収される"
+        },
+        {
+          "text": "SYN cookieチャレンジのようなLinuxネットワークスタックの仕組みはSpectrumのDDoS緩和には利用されていない",
+          "wrongFeedback": "SpectrumはSYNフラッドなどへの対策として、Linuxネットワークスタックの一部であるSYN cookieチャレンジの仕組みを活用しています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "SpectrumはOSI参照モデルのレイヤー3/4でDDoS防御を提供し、TCP/UDPベースの攻撃に対応します。レイヤー4のリバースプロキシとして動作するため、正当なTCPコネクションを確立してからオリジンへプロキシする形になり、SYNやSYN-ACKリフレクション攻撃の影響はCloudflareのグローバルネットワーク側に吸収されます。またSYN cookieチャレンジのようなLinuxネットワークスタックの仕組みも活用します。設定したプロトコル・ポート以外宛てのパケットや、想定外プロトコルのフラッド(例: TCPアプリケーションに対するUDPフラッド)はドロップされます。L7 DDoS攻撃への対応やキャッシュなどの機能を得るには、WAF/CDNサービスとの併用が推奨されます。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/about/ddos-for-spectrum/",
+      "hint": "設定したプロトコルやポートと一致しないトラフィックが来た場合に何が起きるか、また接続確立の前後で何が変わるかを考えましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "SpectrumのL3/4 DDoS防御の流れ",
+          "steps": [
+            {
+              "text": "クライアントがCloudflareエッジへTCPコネクションを試行"
+            },
+            {
+              "text": "エッジでSYN cookieチャレンジ等により正当性を検証"
+            },
+            {
+              "text": "正当なコネクションのみオリジンへプロキシ"
+            },
+            {
+              "text": "プロトコル不一致・不正パケットはドロップ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-008",
+      "category": "spectrum",
+      "difficulty": "beginner",
+      "question": "Spectrumが対象とするユースケースの例として、公式ドキュメントで挙げられているものはどれですか?",
+      "options": [
+        {
+          "text": "静的な画像・CSS・JavaScriptファイルの配信を高速化するCDNのユースケースのみ",
+          "wrongFeedback": "静的アセットの配信高速化はCDN/Cacheの典型的なユースケースであり、Spectrumが主眼とするTCP/UDPアプリケーションのユースケースとは異なります。"
+        },
+        {
+          "text": "SaaSアプリケーションへのログイン後のAPI経由スキャンによる設定不備の検知",
+          "wrongFeedback": "これはCASB(Cloud Access Security Broker)のユースケースです。Spectrumのユースケースではありません。"
+        },
+        {
+          "text": "従業員の端末からインターネット・SaaSへのDNS/Network/HTTPトラフィックの検査",
+          "wrongFeedback": "これはGatewayのユースケースです。Spectrumは個々のTCP/UDPアプリケーションを公開・保護する用途です。"
+        },
+        {
+          "text": "SSH、ゲーム、MQTT、メール、ファイル転送といったTCP/UDPベースのアプリケーション"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Spectrumは、MQTT・メール・ファイル転送・バージョン管理システム・ゲームなど、TCPまたはUDPを使う任意のアプリケーションをCloudflare経由でルーティングし、オリジンを隠蔽してDDoS攻撃から保護するために使われます。CDNの静的アセット配信高速化やCASBのSaaSスキャン、GatewayのDNS/Network/HTTP検査とは異なるレイヤーの課題を解決します。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/",
+      "hint": "「HTTP以外のプロトコルを使うアプリケーション」という共通点を持つ選択肢を探しましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Spectrumの主なユースケース",
+          "items": [
+            {
+              "text": "リモートアクセス",
+              "sub": "SSH・RDP"
+            },
+            {
+              "text": "ゲーム",
+              "sub": "独自TCP/UDPプロトコル"
+            },
+            {
+              "text": "IoT/メッセージング",
+              "sub": "MQTT"
+            },
+            {
+              "text": "メール・ファイル転送",
+              "sub": "SMTP・FTP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-009",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "SpectrumでSSH(TCPポート22)向けのアプリケーションを設定する際の一般的な流れとして、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "SSH通信はCloudflareのHTTP/HTTPSプロキシ(オレンジクラウド)で自動的にプロキシされるため、Spectrumの設定は不要である",
+          "wrongFeedback": "オレンジクラウド(HTTP/HTTPSプロキシ)はHTTPトラフィックのみを扱います。SSHのような非HTTPプロトコルをプロキシするにはSpectrumアプリケーションの作成が必要です。"
+        },
+        {
+          "text": "Cloudflareダッシュボードでドメインに割り当てたEdge Portへの接続を、オリジンのSSHポートへプロキシするアプリケーションを作成し、必要に応じてPROXY Protocolを有効化して真のクライアントIPをオリジンへ伝える"
+        },
+        {
+          "text": "SSHアプリケーションを作成すると、Cloudflareが自動的にSSHの認証情報(公開鍵)を検証し、Access相当のゼロトラスト認証を行う",
+          "wrongFeedback": "SpectrumはL4のプロキシであり、SSHの認証情報を検証する機能はありません。非HTTPアプリケーションへのアイデンティティベースのアクセス制御が必要な場合はCloudflare Accessのinfrastructure applicationsのような別の仕組みを使います。"
+        },
+        {
+          "text": "SSHのようなTCPアプリケーションでは、Edge TLS TerminationをFull (Strict)に設定しない限りアプリケーションを作成できない",
+          "wrongFeedback": "Edge TLS TerminationはTCPアプリケーションで任意に設定できる項目であり、SSHアプリケーションの作成に必須ではありません(offのままでも作成できます)。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "SSHのような非HTTPアプリケーションをSpectrumで公開する場合、ダッシュボードでApplication Type、ドメイン、Edge Port(例: 22)、オリジンのIPアドレスとポートを指定してアプリケーションを作成します。オリジン側で真のクライアントIPが必要な場合は、PROXY Protocol v1/v2を有効化してオリジンへクライアントIP情報を伝えます。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/get-started/",
+      "hint": "「オレンジクラウドのHTTPプロキシとは別に、専用のアプリケーションを作る必要があるかどうか」を考えましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "SSHアプリ公開の流れ",
+          "steps": [
+            {
+              "text": "Spectrumでアプリケーションタイプ・Edge Port・オリジンを設定"
+            },
+            {
+              "text": "必要に応じてPROXY Protocolを有効化"
+            },
+            {
+              "text": "クライアントがEdge Portへ接続"
+            },
+            {
+              "text": "Cloudflareがオリジンのポート22へプロキシ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-010",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "SpectrumとCloudflare WAN(旧Magic WAN)・Magic Transitとの役割の違いに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Spectrum・Cloudflare WAN・Magic Transitはいずれも同じ設定単位(IPプレフィックス全体)で動作する、実質的に同一のサービスである",
+          "wrongFeedback": "3つのサービスは設定単位や対象が異なります。SpectrumはアプリケーションのTCP/UDPポート単位、Magic TransitはIPプレフィックス全体、Cloudflare WANは拠点(サイト)間の接続を対象とします。"
+        },
+        {
+          "text": "Cloudflare WANはHTTPトラフィックのみを、SpectrumはTCP/UDP全般を、Magic TransitはIPプレフィックス全体を扱う",
+          "wrongFeedback": "Cloudflare WANはHTTPに限らずIPトラフィック全体を扱う拠点間接続サービスであり、HTTPトラフィックのみを対象とするわけではありません。"
+        },
+        {
+          "text": "Spectrumはアプリケーション(ポート)単位で設定するL4プロキシであるのに対し、Cloudflare WANは拠点間接続、Magic TransitはBGPアドバタイズしたIPプレフィックス全体をネットワーク層で保護するサービスである"
+        },
+        {
+          "text": "Magic Transitはアプリケーション単位のTCP/UDPプロキシであり、Spectrumはネットワーク全体のBGPルーティングを扱う",
+          "wrongFeedback": "役割が逆です。アプリケーション単位のTCP/UDPプロキシはSpectrum、BGPアドバタイズによるネットワーク全体の保護はMagic Transitの役割です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Spectrumはアプリケーション(ドメイン・ポートの組)単位で設定するL4のTCP/UDPプロキシで、個々のアプリケーションにDDoS防御やTLS終端を提供します。これに対しCloudflare WAN(旧Magic WAN)は拠点(サイト)間をCloudflare経由で接続するWAN-as-a-Serviceであり、Magic TransitはBGPアドバタイズしたIPプレフィックス全体をネットワーク層(L3/4)のDDoS攻撃から保護するサービスです。3つはいずれもHTTP以外のトラフィックを扱える点で共通しますが、設定・保護の単位がアプリケーション単位か、拠点単位か、IPプレフィックス全体かという点で異なります。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/",
+      "hint": "「何を単位に設定・保護するか」(アプリケーション/拠点/IPプレフィックス)という切り口で整理しましょう。",
+      "tags": [
+        "spectrum",
+        "magic-wan"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "L3/4系サービスの設定単位",
+          "columns": [
+            {
+              "heading": "Spectrum",
+              "items": [
+                "アプリケーション(ポート)単位のL4プロキシ"
+              ]
+            },
+            {
+              "heading": "Cloudflare WAN",
+              "items": [
+                "拠点(サイト)間の接続"
+              ]
+            },
+            {
+              "heading": "Magic Transit",
+              "items": [
+                "BGPアドバタイズしたIPプレフィックス全体の保護"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-011",
+      "category": "spectrum",
+      "difficulty": "advanced",
+      "question": "SpectrumアプリケーションでArgo Smart Routingを有効化する場合の説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Argo Smart RoutingはtrafficTypeがdirectであるかどうかに関わらず、あらゆるSpectrumアプリケーションで有効化できる",
+          "wrongFeedback": "Argo Smart RoutingはTCPアプリケーションかつtraffic_typeがdirectの場合に利用可能で、あらゆる構成で有効化できるわけではありません。"
+        },
+        {
+          "text": "argo_smart_routingフィールドはどのCloudflareプランでも共通して利用でき、Enterpriseプランへのアップグレードなしで有効化できる",
+          "wrongFeedback": "argo_smart_routingはEnterpriseプランを必要とするフィールドの一つです。有効化するにはEnterpriseプランへのアップグレードが必要です。"
+        },
+        {
+          "text": "Argo Smart RoutingはHTTP/HTTPSタイプのアプリケーションにのみ提供され、TCP/UDPタイプのアプリケーションには提供されない",
+          "wrongFeedback": "argo_smart_routingフィールドは、traffic_typeがdirectに設定されたTCPタイプのSpectrumアプリケーションで利用可能なフィールドです。HTTP/HTTPSタイプ限定の機能ではありません。"
+        },
+        {
+          "text": "Argo Smart Routingを有効化すると、トラフィックはより高速で信頼性の高い経路を自動的に選択して転送されるようになる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Spectrumアプリケーションに対してArgo Smart Routingを有効にすると、トラフィックは最も速く信頼性の高いネットワーク経路を自動的に選択して転送されるようになります。argo_smart_routingフィールドはtraffic_typeがdirectに設定されたTCPアプリケーションで利用可能な、Enterpriseプランを必要とするフィールドです。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
+      "hint": "「どのプロトコル・どの設定のアプリケーションで利用できるか」という条件に注目しましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Argo Smart Routing有効化の条件",
+          "steps": [
+            {
+              "text": "traffic_type=directのTCPアプリケーション"
+            },
+            {
+              "text": "Enterpriseプランでargo_smart_routingを有効化"
+            },
+            {
+              "text": "最速・最も信頼性の高い経路を自動選択"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-012",
+      "category": "spectrum",
+      "difficulty": "beginner",
+      "question": "Spectrumアプリケーションに割り当てられるIPアドレスに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "アプリケーション作成時にユニークなIPv4/IPv6アドレスが割り当てられ、それらのアドレスは固定ではなく変化しうるため、DNS名での参照が推奨される"
+        },
+        {
+          "text": "割り当てられるIPアドレスは作成時から変化することがなく、常に同一のアドレスを直接ハードコードして利用すべきである",
+          "wrongFeedback": "割り当てられるアドレスは固定ではなく変化する可能性があるため、IPアドレスを直接ハードコードするのではなく、SpectrumアプリケーションのDNS名で参照することが推奨されます。"
+        },
+        {
+          "text": "SpectrumアプリケーションのIPアドレスは、中国を含む全てのCloudflareデータセンターからエニーキャストされる",
+          "wrongFeedback": "中国のデータセンターは例外とされており、SpectrumのIPアドレスは中国を除くCloudflareデータセンターからエニーキャストされます。"
+        },
+        {
+          "text": "IPv6のみで運用することはできず、Spectrumアプリケーションには必ずIPv4アドレスも割り当てられる",
+          "wrongFeedback": "Spectrumアプリケーションは、IPv6のみで運用するよう構成することも可能です。IPv4アドレスの割り当てが常に必須というわけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Spectrumアプリケーションを作成すると、ユニークなIPv4/IPv6アドレスが割り当てられます(IPv6のみで運用するよう構成することも可能です)。これらのアドレスは固定ではなく変化する可能性があるため、現在のアドレスを確認する最良の方法はSpectrumアプリケーションのDNS名を参照することです。アドレスは中国のデータセンターを除くCloudflareの全データセンターからエニーキャストされます。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
+      "hint": "「アドレスが固定かどうか」と「どうやって現在のアドレスを調べるべきか」を考えましょう。",
+      "tags": [
+        "spectrum",
+        "dns"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "SpectrumのIPアドレス解決",
+          "steps": [
+            {
+              "text": "アプリ作成時にIPv4/IPv6(またはIPv6のみ)を割り当て"
+            },
+            {
+              "text": "アドレスは固定ではなく変化しうる"
+            },
+            {
+              "text": "アプリのDNS名を参照して現在のアドレスを取得"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-013",
+      "category": "spectrum",
+      "difficulty": "advanced",
+      "question": "SpectrumでSMTPサーバーを保護する場合の注意点として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Spectrumはメールサーバーの一種として動作し、SMTPプロトコル自体を解釈してスパムフィルタリングを行う",
+          "wrongFeedback": "SpectrumはSMTPを含むアプリケーション層のプロトコルを解釈・処理しません。あくまでTCPのペイロードをそのままオリジンへ転送するL4プロキシです。"
+        },
+        {
+          "text": "SpectrumはSMTPの仲介メールサーバーとしては動作せず、あくまでデータをオリジンへパススルーするだけなので、真の送信元IPが必要な場合はProxy Protocolの有効化が推奨される"
+        },
+        {
+          "text": "Spectrum経由のSMTP通信では、逆引きDNS(reverse DNS)による正当性検査は一切影響を受けない",
+          "wrongFeedback": "Spectrumアプリケーションには逆引きDNSエントリがないため、逆引きDNSチェックを行うSMTPサーバー側でメッセージが拒否される可能性があります。"
+        },
+        {
+          "text": "ドメインのMXレコードをSpectrumアプリケーションに向けても、メール配送には何の問題も生じない",
+          "wrongFeedback": "ドメインのMXレコードがSpectrumアプリケーションに関連付けられていると、送信側サーバーのIPアドレスとSpectrumのIPアドレスが一致しないため、メッセージが拒否される可能性があります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "SpectrumはSMTPサーバーの前段でTCPロードバランサーのように動作しますが、仲介メールサーバーとしては機能せず、データはそのままオリジンへパススルーされます。メールに表示される送信元IPはCloudflareのエッジIPになるため、オリジン側で真のクライアントIPが必要な場合はProxy Protocolの有効化が推奨されます。またSpectrumアプリケーションには逆引きDNSエントリがなく、MXレコードがSpectrumのIPと一致しないため、逆引きDNSチェックやMXレコード照合を行うSMTPサーバーではメッセージが拒否されることがあります。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
+      "hint": "「Spectrumがメールの内容を解釈するかどうか」と「逆引きDNS・MXレコードの整合性」に注目しましょう。",
+      "tags": [
+        "spectrum",
+        "trivia"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Spectrum経由のSMTPの注意点",
+          "steps": [
+            {
+              "text": "SpectrumはSMTPペイロードをパススルーするのみ"
+            },
+            {
+              "text": "オリジンから見える送信元IPはCloudflareのエッジIP"
+            },
+            {
+              "text": "真のクライアントIPが必要ならProxy Protocolを有効化"
+            },
+            {
+              "text": "逆引きDNS/MXレコード照合はSpectrum構成では失敗しうる"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-014",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "Spectrumのポート範囲(port range)構成に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "エッジ側のポート範囲とオリジン側のポート範囲の数が一致していなくても、Cloudflareが自動的にポートを均等割り当てして対応する",
+          "wrongFeedback": "エッジ側とオリジン側で指定するポート数は一致している必要があり、自動的な均等割り当ては行われません。"
+        },
+        {
+          "text": "ポート範囲を使えるのはUDPアプリケーションのみで、TCPアプリケーションでは単一ポートしか指定できない",
+          "wrongFeedback": "ポート範囲の指定はUDP限定ではなく、TCPアプリケーション(direct origin・DNS origin いずれも)でも設定例が示されています。"
+        },
+        {
+          "text": "protocolフィールドで指定したポート範囲の数と、オリジン側(origin_directやorigin_port)で指定したポート範囲の数は一致している必要があり、エッジの各ポートはオリジン範囲内の対応するオフセットのポートへプロキシされる"
+        },
+        {
+          "text": "エッジのポート範囲内のどのポートに接続しても、常にオリジン範囲の先頭ポートへ固定的にプロキシされる",
+          "wrongFeedback": "エッジ範囲内の特定ポートへの接続は、オリジン範囲内で対応するオフセットのポートへプロキシされます。常に先頭ポートへ固定的に転送されるわけではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Spectrumアプリケーションはポート範囲でトラフィックをプロキシするよう構成できます。オリジンのポート範囲内のポート数は、protocolフィールドで指定したポート数と一致している必要があります。エッジのポート範囲内の特定ポートへの接続は、オリジン範囲内の対応するオフセットのポートへプロキシされます(例: range.example.com:1005 は origin範囲の 3005 番へ)。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
+      "hint": "「エッジのポート番号」と「オリジンのポート番号」がどう対応づけられるかを考えましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "ポート範囲のオフセット対応",
+          "filepath": "spectrum-port-range",
+          "lines": [
+            {
+              "text": "edge: range.example.com:1000-2000"
+            },
+            {
+              "text": "origin: 192.0.2.1:3000-4000",
+              "highlight": true
+            },
+            {
+              "text": "接続先 1005 → オリジン 3005 にプロキシ",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-015",
+      "category": "spectrum",
+      "difficulty": "advanced",
+      "question": "Spectrumアプリケーションで仮想ネットワーク(virtual network)オリジンを使う場合の制約として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "HTTP/HTTPSタイプのSpectrumアプリケーションでも仮想ネットワークオリジンを問題なく利用できる",
+          "wrongFeedback": "仮想ネットワークオリジンはTCP/UDPタイプのアプリケーションのみでサポートされ、HTTP/HTTPSタイプのアプリケーションではサポートされません。"
+        },
+        {
+          "text": "仮想ネットワークオリジンではポート範囲やorigin_directの複数アドレス指定も通常どおり利用できる",
+          "wrongFeedback": "仮想ネットワークオリジンではポート範囲やorigin_directの複数アドレス指定はサポートされておらず、単一のプライベートIPと単一ポートのみ指定できます。"
+        },
+        {
+          "text": "仮想ネットワークオリジンを使う場合、Proxy Protocol v2を有効にすることでクライアントIPをより確実にオリジンへ伝達できる",
+          "wrongFeedback": "仮想ネットワークオリジンを使う構成ではProxy Protocolは現時点でサポートされておらず、proxy_protocolはoffに設定する必要があります。"
+        },
+        {
+          "text": "アプリケーションタイプはTCPまたはUDPに限られ、origin_directで単一の到達可能なプライベートIPを1つだけ指定する必要があり、Proxy Protocolはoffにする必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "SpectrumアプリケーションでCloudflare Tunnelの仮想ネットワークをオリジンとして使う場合、アプリケーションタイプはTCPまたはUDPに限られます(HTTP/HTTPSは非対応)。origin_directには単一の、指定した仮想ネットワーク内で到達可能なプライベートIPアドレスのみを指定でき、複数アドレスの指定やホスト名オリジン(origin_dns)、ポート範囲はサポートされません。またProxy Protocolはサポートされておらず、proxy_protocolはoffに設定する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
+      "hint": "「単一アドレスか複数アドレスか」「ポート範囲は使えるか」「PROXY Protocolは使えるか」の3点を確認しましょう。",
+      "tags": [
+        "spectrum",
+        "tunnel"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "仮想ネットワークオリジン構成",
+          "nodes": [
+            {
+              "id": "client",
+              "text": "クライアント"
+            },
+            {
+              "id": "spectrum",
+              "text": "Spectrumアプリ",
+              "sub": "TCP/UDPのみ"
+            },
+            {
+              "id": "tunnel",
+              "text": "Cloudflare Tunnel",
+              "sub": "virtual_network_id"
+            },
+            {
+              "id": "origin",
+              "text": "プライベートオリジン",
+              "sub": "単一IP・単一ポート"
+            }
+          ],
+          "edges": [
+            {
+              "from": "client",
+              "to": "spectrum",
+              "label": "Edge Port"
+            },
+            {
+              "from": "spectrum",
+              "to": "tunnel"
+            },
+            {
+              "from": "tunnel",
+              "to": "origin",
+              "label": "proxy_protocol=off"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-016",
+      "category": "spectrum",
+      "difficulty": "beginner",
+      "question": "Spectrumのアナリティクス(Analytics)で取得できる情報に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "コネクションのイベント数、送受信バイト数、コネクション継続時間の平均・中央値・パーセンタイルなどのメトリクスを、イベント種別・アプリケーションID・Colo名・IPバージョンなどのディメンションで絞り込める"
+        },
+        {
+          "text": "SpectrumのAnalyticsではリクエストURLやHTTPステータスコードごとの集計が主要な指標として提供される",
+          "wrongFeedback": "SpectrumはHTTP以外のTCP/UDPトラフィックも扱うL4プロキシのため、URLやHTTPステータスコードではなく、バイト数やコネクション継続時間といったL4のメトリクスが中心です。"
+        },
+        {
+          "text": "Analyticsのメトリクスにはコネクションの送受信バイト数は含まれるが、コネクション継続時間は一切含まれない",
+          "wrongFeedback": "コネクション継続時間の平均(durationAvg)・中央値(durationMedian)・90/99パーセンタイルもSpectrum Analyticsのメトリクスに含まれます。"
+        },
+        {
+          "text": "SpectrumのAnalyticsはダッシュボードでの表示のみに対応しており、APIから取得することはできない",
+          "wrongFeedback": "Spectrum Analyticsはダッシュボードだけでなく、/zones/{zone_id}/spectrum/analytics/events/summary などのAPIエンドポイントからも取得できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Spectrumはすべてのコネクションについて、イベント数(count)・送信バイト数(bytesIngress)・受信バイト数(bytesEgress)・コネクション継続時間の平均/中央値/90パーセンタイル/99パーセンタイルといったメトリクスを計測します。これらはイベント種別(connect・progress・disconnectなど)・アプリケーションID・Colo名・IPバージョンといったディメンションで絞り込むことができ、ダッシュボードに加えてAPIからも取得できます。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/analytics/",
+      "hint": "SpectrumがL4(TCP/UDP)のプロキシであることを踏まえて、どんな指標が中心になるかを考えましょう。",
+      "tags": [
+        "spectrum",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Spectrum Analyticsの指標",
+          "columns": [
+            {
+              "heading": "メトリクス",
+              "items": [
+                "count",
+                "bytesIngress / bytesEgress",
+                "durationAvg / Median / 90th / 99th"
+              ]
+            },
+            {
+              "heading": "ディメンション",
+              "items": [
+                "event(connect/disconnect等)",
+                "appID・coloName・ipVersion"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-017",
+      "category": "spectrum",
+      "difficulty": "intermediate",
+      "question": "Spectrumの制限事項(Limitations)に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Universal SSLはSpectrumアプリケーションに対しても自動的に発行・適用され、追加の証明書設定は不要である",
+          "wrongFeedback": "Universal SSLはSpectrumと互換性がありません。SpectrumアプリケーションでTLS証明書を使うには、Advanced Certificate Managerまたはカスタム証明書を利用する必要があります。"
+        },
+        {
+          "text": "Universal SSLはSpectrumと互換性がなく、Spectrumで証明書を使うにはAdvanced Certificate Managerまたはカスタム証明書を利用する必要がある"
+        },
+        {
+          "text": "SpectrumのHTTPSアプリケーションは現時点でHTTP/3に完全対応しており、HTTP/3に関する制限は存在しない",
+          "wrongFeedback": "SpectrumのHTTPSアプリケーションは現時点でHTTP/3をサポートしていません。これはSpectrumの既知の制限事項の一つです。"
+        },
+        {
+          "text": "SpectrumでUDPパケットが断片化(フラグメンテーション)された場合でも、Cloudflareのエッジで再構成してからオリジンへ転送される",
+          "wrongFeedback": "SpectrumはUDPパケットの断片化をサポートしておらず、断片化されたパケットはCloudflareのエッジでドロップされます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Universal SSLはCloudflare Spectrumと互換性がありません。Spectrumアプリケーションで証明書を利用するには、Advanced Certificate Managerまたはカスタム証明書を使う必要があります。またSpectrumのHTTPSアプリケーションは現時点でHTTP/3をサポートしておらず、UDPパケットの断片化もサポートされていないため断片化されたパケットはエッジでドロップされます。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/limitations/",
+      "hint": "Universal SSL・HTTP/3・UDPの断片化のそれぞれについて、Spectrumで何がサポートされていないかを一つずつ照らし合わせましょう。",
+      "tags": [
+        "spectrum",
+        "ssl-tls"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "SpectrumのTLS証明書",
+          "columns": [
+            {
+              "heading": "使えないもの",
+              "items": [
+                "Universal SSL(非互換)"
+              ]
+            },
+            {
+              "heading": "代わりに使うもの",
+              "items": [
+                "Advanced Certificate Manager",
+                "カスタム証明書"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc-018",
+      "category": "spectrum",
+      "difficulty": "advanced",
+      "question": "SpectrumとCloudflare Tunnelを組み合わせる場合の制約に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "TCPタイプのSpectrumアプリケーションでも、オリジンにTunnelの<UUID>.cfargotunnel.comサブドメインを直接指定すれば問題なく動作する",
+          "wrongFeedback": "TCPなどHTTP/HTTPS以外のタイプのSpectrumアプリケーションでTunnelのサブドメインを直接オリジンに指定する構成はサポートされておらず、動作しません。"
+        },
+        {
+          "text": "非HTTP(TCP/UDP)のトラフィックをCloudflare Tunnel経由でプライベートエンドポイントへルーティングする方法は存在しない",
+          "wrongFeedback": "Private Network Load Balancing(LTM)を使うCloudflare Load Balancerを間に挟むことで、非HTTPのトラフィックをSpectrumからCloudflare Tunnel経由のプライベートオリジンへルーティングできます。"
+        },
+        {
+          "text": "SpectrumとCloudflare Tunnelの直接統合はHTTP/HTTPSタイプのアプリケーションでのみサポートされ、TCPなど他のタイプでTunnelのサブドメインを直接オリジンに指定することはできない"
+        },
+        {
+          "text": "SpectrumはCloudflare TunnelのHTTPアプリケーションに対して、Layer 7 CDN製品を経由せず直接オリジンへ接続する",
+          "wrongFeedback": "SpectrumがCloudflare TunnelのHTTP/HTTPSアプリケーションへ到達するには、Layer 7 CDN製品を経由してアップストリームする必要があります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "SpectrumとCloudflare Tunnelの直接統合はHTTP/HTTPSタイプのアプリケーションでのみサポートされます。これはSpectrumがTunnelサービスへ到達するために、Layer 7 CDN製品を経由してアップストリームする必要があるためです。TCPなど他のタイプのSpectrumアプリケーションでTunnelのサブドメイン(<UUID>.cfargotunnel.com)を直接オリジンに指定する構成はサポートされていません。非HTTPトラフィックをTunnel経由のプライベートエンドポイントへルーティングしたい場合は、Private Network Load Balancing(LTM)を使うCloudflare Load Balancerを間に挟む代替構成が案内されています。",
+      "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/limitations/",
+      "hint": "「直接統合がサポートされるアプリケーションタイプ」と「非HTTPトラフィックの代替ルーティング方法」を分けて考えましょう。",
+      "tags": [
+        "spectrum",
+        "tunnel"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "SpectrumとCloudflare Tunnelの統合可否",
+          "nodes": [
+            {
+              "id": "spectrum_http",
+              "text": "SpectrumHTTP/HTTPSアプリ"
+            },
+            {
+              "id": "l7",
+              "text": "Layer 7 CDN製品"
+            },
+            {
+              "id": "tunnel",
+              "text": "Cloudflare Tunnel"
+            },
+            {
+              "id": "spectrum_tcp",
+              "text": "SpectrumTCPアプリ"
+            },
+            {
+              "id": "lb",
+              "text": "Load Balancer(LTM)"
+            }
+          ],
+          "edges": [
+            {
+              "from": "spectrum_http",
+              "to": "l7",
+              "label": "サポート対象"
+            },
+            {
+              "from": "l7",
+              "to": "tunnel"
+            },
+            {
+              "from": "spectrum_tcp",
+              "to": "tunnel",
+              "label": "直接統合は不可",
+              "dashed": true
+            },
+            {
+              "from": "spectrum_tcp",
+              "to": "lb",
+              "label": "代替構成"
+            },
+            {
+              "from": "lb",
+              "to": "tunnel"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
