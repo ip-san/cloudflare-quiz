@@ -33589,6 +33589,953 @@
           ]
         }
       ]
+    },
+    {
+      "id": "dl-001",
+      "category": "data-loss-prevention",
+      "difficulty": "intermediate",
+      "question": "DLPが「転送中のデータ(Data in transit)」と「保存中のデータ(Data at rest)」をそれぞれどう検知するかに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "転送中のデータはSecure Web Gateway(HTTPポリシーとTLS復号)と連携して検知され、Do Not InspectポリシーやSplit Tunnelの設定に影響を受ける。一方、保存中のデータはCloudflare CASBがSaaSアプリのAPIへ直接接続してファイルを取得・スキャンするため、Gatewayの設定には影響を受けない"
+        },
+        {
+          "text": "保存中のデータもGatewayのHTTPポリシーを経由して検知される仕組みになっているため、Do Not Inspectポリシーを設定すればCASBによるSaaSアプリのスキャンも同時に無効化できる",
+          "wrongFeedback": "CASBはSaaSアプリのAPIへ直接接続してスキャンするため、Gateway経由の設定であるDo Not Inspectポリシーの影響を受けません。"
+        },
+        {
+          "text": "転送中のデータの検知には暗号化を解除するTLS復号は不要であり、GatewayはHTTPSトラフィックの暗号化された中身をそのまま検査できる仕組みになっている",
+          "wrongFeedback": "転送中のデータの検知にはGatewayのHTTPポリシーによるTLS復号が必要です。復号なしではHTTPSの中身を検査できません。"
+        },
+        {
+          "text": "Split Tunnelの設定は、転送中のデータのスキャンだけでなく、保存中のデータ(CASBによるSaaSアプリのスキャン)にも全く同じように影響を及ぼす",
+          "wrongFeedback": "Split Tunnelの設定が影響するのは転送中のデータのスキャンのみです。保存中のデータ(CASBによるスキャン)には影響しません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "転送中のデータはSecure Web Gatewayと連携し、GatewayのHTTPポリシーとTLS復号を通じて検知されるため、Do Not InspectポリシーやSplit Tunnelの設定に影響を受けます。一方、保存中のデータはCloudflare CASBがSaaSアプリケーションのAPIへ直接接続してファイルを取得・スキャンするため、Gatewayやクライアント側の設定には影響を受けません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/#data-at-rest",
+      "hint": "「通信経路上でのぞき見る」方式と「アプリのAPIに直接問い合わせる」方式の違いを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "転送中データ vs 保存中データ",
+          "columns": [
+            {
+              "heading": "Data in transit",
+              "items": [
+                "Gateway HTTPポリシー経由",
+                "TLS復号が必要",
+                "Do Not Inspect/Split Tunnelの影響を受ける"
+              ]
+            },
+            {
+              "heading": "Data at rest",
+              "items": [
+                "CASBがSaaS APIへ直接接続",
+                "Gateway設定の影響を受けない"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-002",
+      "category": "data-loss-prevention",
+      "difficulty": "beginner",
+      "question": "DLPプロファイルを作成しただけの状態に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "DLPプロファイルを作成した時点で、Gatewayを通過するすべてのHTTPトラフィックへ自動的にスキャンが開始される",
+          "wrongFeedback": "プロファイルを作成しただけではスキャンは開始されません。プロファイルは検知パターンを定義するだけで、実際にスキャンを動かすにはDLPポリシー(GatewayのHTTPポリシー)の作成が必要です。"
+        },
+        {
+          "text": "DLPプロファイルは検知パターンを定義するだけであり、実際にスキャンを開始するには、そのプロファイルを使うDLPポリシー(GatewayのHTTPポリシー)を別途作成する必要がある"
+        },
+        {
+          "text": "DLPプロファイルの作成と同時に、対応するHTTPポリシーがCloudflareによって自動生成される",
+          "wrongFeedback": "HTTPポリシーは自動生成されません。管理者がDLP Profileセレクタを使ってHTTPポリシーを手動で作成する必要があります。"
+        },
+        {
+          "text": "DLPプロファイルは他のGatewayセレクタ(HTTP Methodなど)と組み合わせることができず、プロファイル単独でしかポリシーを構成できない",
+          "wrongFeedback": "DLP ProfileセレクタはHTTP MethodやApplicationなど他のセレクタとAND/OR条件で組み合わせて使うことができます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "DLPプロファイルは検知パターンを定義するだけの設定であり、それ自体ではスキャンは開始されません。実際にスキャンを動かすには、そのプロファイルを「DLP Profile」セレクタとして使うDLPポリシー(GatewayのHTTPポリシー)を別途作成する必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-policies/#2-create-a-dlp-policy",
+      "hint": "「何を検知するか定義するもの」と「実際に動かすためのスイッチ」は別物だと考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "DLPを有効化する手順",
+          "steps": [
+            {
+              "text": "DLPプロファイルを設定(検知パターンを定義)"
+            },
+            {
+              "text": "この時点ではスキャンは開始されない"
+            },
+            {
+              "text": "DLP ProfileセレクタでHTTPポリシーを作成"
+            },
+            {
+              "text": "ポリシー作成後にスキャンが開始される"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-003",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "パターンエントリ(pattern entries)で正規表現を書く際の制約に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "パターンエントリは`+`や`*`のような量指定子を自由に使うことができ、文字数の上限も設定されていない",
+          "wrongFeedback": "`+`や`*`は使用できません。文字列長が無制限にマッチしうるため、`{min,max}`のような範囲指定を使う必要があります。カスタムパターンの検知には1024バイトという長さの上限もあります。"
+        },
+        {
+          "text": "パターンエントリの正規表現はUTF-8ではなくASCII文字のみをサポートしており、日本語などのマルチバイト文字は検知対象にできない",
+          "wrongFeedback": "UTF-8(1文字あたり最大4バイト)をサポートしており、マルチバイト文字も検知対象にできます。"
+        },
+        {
+          "text": "パターンエントリは`+`や`*`のような、際限なく長い文字列にマッチしうる量指定子をサポートしておらず、代わりに`a{1,1024}`のような範囲を指定する書き方が推奨されている"
+        },
+        {
+          "text": "パターンエントリは他の検知エントリ(データセットやドキュメントエントリ)とは異なり、DLPプロファイルに追加することができない",
+          "wrongFeedback": "パターンエントリも他の検知エントリと同様にDLPプロファイルに追加して使用できます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "パターンエントリは`+`や`*`のような際限なく長い文字列にマッチしうる量指定子をサポートしていません。これは文字列長の制限(カスタムパターン検知は1024バイトまで)を超えやすくなるためで、代わりに`a{1,1024}`のような範囲指定の書き方が推奨されています。文字コードとしてはUTF-8(最大4バイト/文字)をサポートしています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/detection-entries/configure-detection-entries/#pattern-entries",
+      "hint": "「無制限に繰り返せる」書き方が、なぜ長さ制限のある仕組みと相性が悪いのか考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "パターンエントリの正規表現の制約",
+          "columns": [
+            {
+              "heading": "サポートされない書き方",
+              "items": [
+                "`a+`",
+                "`a*`"
+              ]
+            },
+            {
+              "heading": "推奨される書き方",
+              "items": [
+                "`a{1,1024}`のような範囲指定"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-004",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "Exact Data Match(EDM)データセットとCustom Wordlist(CWL)データセットの保存方法の違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "EDMデータセットもCWLデータセットも、どちらもCloudflare側でプレーンテキストのまま保存され、ログにもマッチした値がそのまま表示される",
+          "wrongFeedback": "EDMデータはハッシュ化されて扱われ、ログではマッチした値が編集(redact)されます。プレーンテキストで保存・表示されるのはCWLデータの方です。"
+        },
+        {
+          "text": "EDMデータセットとCWLデータセットは保存方法において実質的な違いはなく、どちらも同じ暗号化アルゴリズムを使用している",
+          "wrongFeedback": "保存方法に明確な違いがあります。EDMはハッシュ化、CWLはプレーンテキスト保存です。"
+        },
+        {
+          "text": "EDMデータセットはCloudflare R2バケットに暗号化保存され、CWLデータセットはハッシュ化されてメモリ内にのみ一時保存される",
+          "wrongFeedback": "説明が入れ替わっています。R2バケットへの暗号化保存はドキュメントエントリ(document entries)の方式であり、EDMはハッシュ化・CWLはプレーンテキスト保存です。"
+        },
+        {
+          "text": "EDMデータセットはハッシュ化された形で扱われ、ペイロードログでもマッチした値が編集(redact)される一方、CWLデータセットはプレーンテキストのままDLP内に保存され、マッチした値がペイロードログにそのまま表示される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "EDMデータセットのデータはハッシュ化された形で扱われ、トラフィックとハッシュ同士を比較する仕組みのため、ペイロードログでもマッチした値は編集(redact)されます。一方、CWLデータセットのデータはプレーンテキストのままDLP内に保存され、マッチした値はペイロードログにそのまま表示されます。ドキュメントエントリはさらに別方式で、Cloudflare R2バケットに暗号化保存されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/detection-entries/configure-detection-entries/#exact-data-match-datasets",
+      "hint": "「氏名や口座番号のような機密性の高いデータ」と「社内プロジェクト名のような非機密の用語」とで、求められる保護レベルが違うことを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "EDM vs CWL vs ドキュメントエントリの保存方式",
+          "columns": [
+            {
+              "heading": "EDM",
+              "items": [
+                "ハッシュ化",
+                "ログでは編集(redact)"
+              ]
+            },
+            {
+              "heading": "CWL",
+              "items": [
+                "プレーンテキスト保存",
+                "ログにそのまま表示"
+              ]
+            },
+            {
+              "heading": "ドキュメントエントリ",
+              "items": [
+                "R2バケットに暗号化保存"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-005",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "ドキュメントエントリ(document entries)によるフィンガープリンティングに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ドキュメントエントリは、契約書テンプレートや社内レポートのように個々の値のリストに単純化できない内容を保護するために、ドキュメント全体の一意なフィンガープリントを作成し、トラフィックとの類似度を比較する仕組みで、`.docx`や`.txt`形式かつ10MB未満のファイルに対応する"
+        },
+        {
+          "text": "ドキュメントエントリは氏名や電話番号のような個々の値のリストを保護する用途に特化しており、契約書テンプレートのような非構造化文書には対応していない",
+          "wrongFeedback": "逆です。個々の値のリストに単純化できない非構造化文書(契約書テンプレートなど)を保護するための仕組みがドキュメントエントリです。"
+        },
+        {
+          "text": "ドキュメントエントリで登録できるファイルサイズに上限は設定されておらず、`.docx`や`.txt`に限らずどんなに大きなファイルでも登録できる",
+          "wrongFeedback": "10MB未満という上限が設定されています。"
+        },
+        {
+          "text": "「最小一致度(Minimum similarity for matches)」の設定は存在せず、フィンガープリントが完全に一致した場合のみ検知される",
+          "wrongFeedback": "0%〜100%の範囲で「最小一致度」を設定でき、完全一致でなくても類似度に基づいて検知できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "ドキュメントエントリは、契約書テンプレートや社内レポートのように個々の値のリストへ単純化できない内容を保護するための仕組みです。ドキュメント全体の一意なフィンガープリントを作成し、トラフィックとの類似度を比較します。`.docx`・`.txt`形式で10MB未満のファイルに対応し、0%〜100%の「最小一致度」を設定できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/detection-entries/configure-detection-entries/#document-entries",
+      "hint": "「個々の値のリスト」に落とし込めない、まとまった文書全体をどう保護するかを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ドキュメントエントリの仕組み",
+          "steps": [
+            {
+              "text": "保護したい文書(.docx/.txt、10MB未満)をアップロード"
+            },
+            {
+              "text": "文書のフィンガープリントを生成"
+            },
+            {
+              "text": "通過するトラフィックとの類似度を比較"
+            },
+            {
+              "text": "最小一致度を超えた場合に検知"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-006",
+      "category": "data-loss-prevention",
+      "difficulty": "intermediate",
+      "question": "AIプロンプトトピック(AI prompt topics)によるAIプロンプトの検知に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "AIプロンプトトピックはプロンプトの内容(Content)のみを分析し、ユーザーの意図(Intent)を分析することはできない",
+          "wrongFeedback": "内容(Content)だけでなく、ユーザーの意図(Intent)も分析します。たとえばAIに悪意のあるコード生成やPIIの抽出を依頼するような意図も検知対象です。"
+        },
+        {
+          "text": "AIプロンプトトピックは、プロンプトに含まれる内容(Content)と、ユーザーがAIに何をさせようとしているかという意図(Intent)の両方を分析でき、対応するAIアプリケーションにはChatGPT・Google Gemini・Perplexity・Claudeが含まれる"
+        },
+        {
+          "text": "AI Gatewayを経由したDLPスキャンであっても、GatewayのHTTPフィルタリングとTLS復号が別途必ず必要である",
+          "wrongFeedback": "AI Gateway経由のDLPは、GatewayのHTTPフィルタリングやTLS復号を必要とせずに機能します。"
+        },
+        {
+          "text": "AIプロンプトトピックで検知対象にできるAIアプリケーションの種類に制限はなく、あらゆるAIサービスへのプロンプトを検知できる",
+          "wrongFeedback": "対応するAIアプリケーションはChatGPT・Google Gemini・Perplexity・Claudeなど、Application Granular Controlsでサポートされているものに限られます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "AIプロンプトトピックは、プロンプトに含まれる内容(Content、たとえば貼り付けられたソースコード)と、ユーザーの意図(Intent、たとえば悪意のあるコード生成やPIIの抽出をAIに依頼しようとする意図)の両方を分析します。対応するAIアプリケーションにはChatGPT・Google Gemini・Perplexity・Claudeが含まれます。なお、AI Gateway経由のDLPはGatewayのHTTPフィルタリングやTLS復号を必要としません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/detection-entries/configure-detection-entries/#ai-prompt-topics",
+      "hint": "「何が書かれているか」と「何をさせようとしているか」という2つの異なる観点で分析している点を考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "AIプロンプトトピックの分析軸",
+          "columns": [
+            {
+              "heading": "Content(内容)",
+              "items": [
+                "貼り付けられたソースコードなど"
+              ]
+            },
+            {
+              "heading": "Intent(意図)",
+              "items": [
+                "悪意のあるコード生成の依頼",
+                "PII抽出の依頼"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-007",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "Personally Identifiable Information(PII)Recordという事前定義プロファイルのマッチング方式に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "他の多くの事前定義プロファイルと同様に、有効化されたいずれか1つの検知エントリが一致すればプロファイル全体が一致したと判定される",
+          "wrongFeedback": "PII Recordプロファイルは他の多くのプロファイルとは異なり、単一の検知エントリの一致だけではマッチしません。"
+        },
+        {
+          "text": "PII Recordプロファイルはクレジットカード番号のみを検知対象としており、氏名や住所などの他のPII情報は含まれない",
+          "wrongFeedback": "PII Recordプロファイルには、クレジットカード番号だけでなく、パスポート番号・運転免許証番号・メールアドレス・氏名・住所・SSNなど14種類の検知エントリが含まれています。"
+        },
+        {
+          "text": "PII Recordプロファイルは、他の多くの事前定義・カスタムプロファイルとは異なり、少なくとも3つの異なる検知エントリが近接した範囲で見つかった場合にのみマッチする"
+        },
+        {
+          "text": "PII Recordプロファイルのマッチング方式は、Social Security, Insurance, Tax, and Identifier Numbersプロファイルと完全に同じロジックを採用している",
+          "wrongFeedback": "PII Recordプロファイルは3つ以上の異なる検知エントリが近接して見つかる必要がある特殊なロジックを採用しており、他のプロファイルとは異なります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "PII Recordプロファイルは、他の多くの事前定義・カスタムプロファイルが「いずれか1つの検知エントリが一致すればマッチ」という単純なロジックを採用しているのに対し、少なくとも3つの異なる検知エントリが近接した範囲で見つかった場合にのみマッチするという特殊なロジックを採用しています。14種類のPII関連の検知エントリ(パスポート・運転免許証・メールアドレス・氏名・住所・SSNなど)を含みます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/predefined-profiles/#personally-identifiable-information-pii-record",
+      "hint": "「1つ見つかれば十分」というマッチング方式と、「複数まとまって見つかる必要がある」というマッチング方式の違いを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "マッチング方式の違い",
+          "columns": [
+            {
+              "heading": "一般的なプロファイル",
+              "items": [
+                "いずれか1つの一致でマッチ"
+              ]
+            },
+            {
+              "heading": "PII Recordプロファイル",
+              "items": [
+                "3つ以上の異なるエントリが近接して必要"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-008",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "誤検知を減らすための追加検証の有無を踏まえると、クレジットカード番号と米国の社会保障番号(SSN)の検証方式の違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "クレジットカード番号もSSNも、どちらもLuhnのアルゴリズムによるチェックサム検証が行われる",
+          "wrongFeedback": "Luhnのアルゴリズムによるチェックサム検証が行われるのはクレジットカード番号(Visa・Mastercard・Amexなど)のみです。SSNにはこのような組み込みのチェックサムが存在しません。"
+        },
+        {
+          "text": "クレジットカード番号にはチェックサムが存在せず、SSNにのみLuhnのアルゴリズムによる検証が行われる",
+          "wrongFeedback": "逆です。Luhnのアルゴリズムによるチェックサム検証が行われるのはクレジットカード番号の方です。"
+        },
+        {
+          "text": "SSNの検証には区切り文字の有無は関係せず、`000-00-0000`のようなハイフン付きの形式も`000000000`のようなハイフンなしの形式も同様にマッチする",
+          "wrongFeedback": "SSNの検証では区切り文字が必要です。`000-00-0000`はマッチしますが`000000000`はマッチしません。"
+        },
+        {
+          "text": "クレジットカード番号はLuhnのアルゴリズムなどでチェックサムを検証できるが、SSNには組み込みのチェックサムが存在しないため、DLPはハイフンなどの区切り文字を含む形式のみを検証する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "クレジットカード番号(Visa・Mastercard・Amexなど)はLuhnのアルゴリズムなどによるチェックサム検証が可能ですが、SSNには組み込みのチェックサムが存在しないため、DLPは形式(ハイフンなどの区切り文字を含む`000-00-0000`のような形式)のみを検証します。ハイフンのない`000000000`のような形式はマッチしません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/predefined-profiles/#social-security-insurance-tax-and-identifier-numbers",
+      "hint": "「数式的に正しいかどうか検証できる番号」と「形式が合っているかどうかしか検証できない番号」の違いを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "クレジットカード番号 vs SSNの検証方式",
+          "columns": [
+            {
+              "heading": "クレジットカード番号",
+              "items": [
+                "Luhnアルゴリズムでチェックサム検証"
+              ]
+            },
+            {
+              "heading": "SSN",
+              "items": [
+                "チェックサムなし",
+                "区切り文字を含む形式のみ検証"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-009",
+      "category": "data-loss-prevention",
+      "difficulty": "intermediate",
+      "question": "Free・Pay-as-you-goプランでも利用できるDLP機能に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Free・Pay-as-you-goプランでは、事前定義プロファイルを含むDLPのすべての機能が制限なく利用できる",
+          "wrongFeedback": "DLPはZero Trust Enterpriseプランのアドオンが基本であり、Free・PAYGプランで使えるのは一部の機能に限られます。"
+        },
+        {
+          "text": "Free・Pay-as-you-goプランでは、Financial Informationプロファイル、Social Security・Insurance・Tax・Identifier Numbersプロファイル、ペイロードロギング、誤検知の報告機能が利用できる"
+        },
+        {
+          "text": "Free・Pay-as-you-goプランでは、ペイロードロギングは利用できるが、誤検知の報告機能はEnterpriseプラン限定である",
+          "wrongFeedback": "誤検知の報告機能もFree・PAYGプランを含むすべてのプランで利用できます。"
+        },
+        {
+          "text": "Free・Pay-as-you-goプランでは、カスタムプロファイルの作成は制限なく行えるが、事前定義プロファイルは一切利用できない",
+          "wrongFeedback": "逆に近い状況です。Free・PAYGプランでは特定の事前定義プロファイル(Financial Information、Social Security等)が利用できます。DLP全体はEnterpriseアドオンが基本です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "DLPはZero Trust Enterpriseプランのアドオンとして提供されますが、Free・Pay-as-you-goプランでも、Financial Informationプロファイル、Social Security・Insurance・Tax・Identifier Numbersプロファイル、ペイロードロギング、誤検知の報告機能の4つは利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/",
+      "hint": "「基本はEnterprise限定」という原則に対して、例外的に下位プランでも使える機能がいくつかあることを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Free/PAYGプランで利用できるDLP機能",
+          "items": [
+            {
+              "text": "Financial Informationプロファイル"
+            },
+            {
+              "text": "SSN/Tax/Identifierプロファイル",
+              "sub": "Social Security, Insurance, Tax, and Identifier Numbers"
+            },
+            {
+              "text": "ペイロードロギング"
+            },
+            {
+              "text": "誤検知の報告機能"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-010",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "DLPプロファイルの信頼度しきい値(confidence thresholds)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "信頼度しきい値はすべての検知エントリに対して一律に適用され、Exact Data Match(EDM)のような完全一致方式の検知エントリにも同様に適用される",
+          "wrongFeedback": "EDMのような完全一致(exact match)方式を使う検知エントリの一部は、信頼度スコアという概念自体が適用されず、しきい値の設定対象になりません。"
+        },
+        {
+          "text": "信頼度しきい値を高く設定するほど、誤検知(false positive)は増えるが検知漏れ(false negative)は減る",
+          "wrongFeedback": "逆の傾向です。しきい値を高くするほど追加の検証が働き、誤検知は減る一方で、検知の網羅性は下がる可能性があります。"
+        },
+        {
+          "text": "デフォルトのLowレベルは、周辺のキーワード(proximity keywords)が少ない正規表現ベースの判定で、誤検知への許容度が最も高い設定になっている"
+        },
+        {
+          "text": "信頼度しきい値は現在Lowという1段階のレベルのみが提供されており、Medium以上の複数段階のレベルは存在しない",
+          "wrongFeedback": "Low・Mediumなど複数段階の信頼度レベルが提供されています。1段階のみではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "デフォルトのLowレベルは、周辺のキーワード(proximity keywords)が少ない正規表現ベースの判定で、最も網羅的(誤検知への許容度が最も高い)な設定です。Mediumレベルでは追加の検証が加わり誤検知の許容度が下がります。なお、Exact Data Matchのような完全一致方式を使う検知エントリの一部には、信頼度スコアという概念自体が適用されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/advanced-settings/#confidence-thresholds",
+      "hint": "「網羅性を優先する設定」と「精度を優先する設定」のどちらがデフォルトになっているかを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "信頼度しきい値のレベル",
+          "columns": [
+            {
+              "heading": "Low(デフォルト)",
+              "items": [
+                "正規表現ベース",
+                "誤検知への許容度が高い"
+              ]
+            },
+            {
+              "heading": "Medium/High",
+              "items": [
+                "追加の検証を実施",
+                "誤検知への許容度が低い"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-011",
+      "category": "data-loss-prevention",
+      "difficulty": "intermediate",
+      "question": "DLPプロファイル設定の「マッチ数(match count)」に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "マッチ数は、異なる種類の検知エントリが何種類ヒットしたかを数える設定であり、同じ値が繰り返し検出された場合はカウントされない",
+          "wrongFeedback": "マッチ数は検知の「回数」を数える設定です。同じクレジットカード番号が10回出現すれば10件のマッチとしてカウントされ、ユニークである必要はありません。"
+        },
+        {
+          "text": "マッチ数のしきい値を設定できるのは、事前定義プロファイルのみであり、カスタムプロファイルでは設定できない",
+          "wrongFeedback": "マッチ数の設定はプロファイル設定の一部であり、事前定義・カスタムを問わず利用できます。"
+        },
+        {
+          "text": "マッチ数のしきい値は、1つのファイルやHTTPボディ全体ではなく、HTTPリクエスト全体を横断して累積される",
+          "wrongFeedback": "マッチ数のしきい値は、1つのファイル・HTTPボディの中での検知件数を対象とした設定です。"
+        },
+        {
+          "text": "マッチ数は、アクションを発動させるために必要な検知の最小しきい値を設定するもので、同じ値が繰り返し検出された場合でも、その都度マッチとしてカウントされる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "マッチ数(match count)は、アクションを発動させるために必要な検知の最小しきい値を設定するものです。たとえばしきい値を10に設定すると、1つのファイルやHTTPボディの中で10件以上の検知が必要になります。この検知はユニークである必要はなく、同じクレジットカード番号が10回出現すれば10件のマッチとしてカウントされます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/advanced-settings/#match-count",
+      "hint": "「同じ値が繰り返し出てきた場合」も、それぞれ独立したマッチとして数えられるかどうかを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "マッチ数のしきい値の考え方",
+          "steps": [
+            {
+              "text": "マッチ数のしきい値を10に設定"
+            },
+            {
+              "text": "同じクレジットカード番号が10回出現"
+            },
+            {
+              "text": "ユニークでなくても10件としてカウント"
+            },
+            {
+              "text": "しきい値に達しアクションが発動"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-012",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "Gateway detectionsとして推奨される、信頼度の異なる2つのDLPポリシーを組み合わせる設計パターンに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Low/Medium信頼度のプロファイルをAllowアクションのポリシーでログのみ記録し、High信頼度のプロファイルを別のBlockアクションのポリシーで実際にブロックするという、2つの独立したHTTPポリシーを組み合わせる設計が推奨されている"
+        },
+        {
+          "text": "信頼度の異なる複数のプロファイルは、1つのHTTPポリシーの中にすべてまとめて設定することが推奨されている",
+          "wrongFeedback": "1つのポリシーにまとめるのではなく、異なるDLPプロファイルを使う2つの別々のHTTPポリシーとして構成することが推奨されています。"
+        },
+        {
+          "text": "信頼度の低いプロファイルはBlockアクションで即座にブロックし、信頼度の高いプロファイルはAllowアクションでログのみ記録することが推奨されている",
+          "wrongFeedback": "逆です。信頼度の低いプロファイルはAllow(ログのみ)、信頼度の高いプロファイルはBlock(実際にブロック)という組み合わせが推奨されています。"
+        },
+        {
+          "text": "この設計パターンは事前定義プロファイルにのみ適用可能で、カスタムプロファイルの信頼度しきい値には適用できない",
+          "wrongFeedback": "そのような制限は文書化されていません。事前定義プロファイルと同様に、カスタムプロファイルにも信頼度しきい値の設定を適用できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Low/Medium信頼度のプロファイルをAllowアクションのポリシーで運用してログのみ記録し(誤検知を許容しつつ可視化)、High信頼度のプロファイルを別のBlockアクションのポリシーで実際にブロックするという、2つの独立したHTTPポリシーを組み合わせる設計が推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/advanced-settings/#gateway-detections",
+      "hint": "「広く拾ってログに残す役割」と「確実なものだけ止める役割」を、別々のポリシーに分担させると考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "2ポリシーによるGateway detections設計",
+          "columns": [
+            {
+              "heading": "ポリシー1",
+              "items": [
+                "Low/Medium信頼度プロファイル",
+                "Allowアクション(ログのみ)"
+              ]
+            },
+            {
+              "heading": "ポリシー2",
+              "items": [
+                "High信頼度プロファイル",
+                "Blockアクション(実際にブロック)"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-013",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "DLPのロギング方式(ペイロードロギング と Logpushフォレンジックコピー)の違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ペイロードロギングもLogpushフォレンジックコピーも、どちらもマッチした内容を編集せず、完全なHTTPリクエストをそのままの形で記録するという点で共通している",
+          "wrongFeedback": "完全なHTTPリクエストを記録するのはLogpushフォレンジックコピーのみです。ペイロードロギングは編集されたマッチ内容と前後75バイトの文脈のみを記録します。"
+        },
+        {
+          "text": "ペイロードロギングは編集(redact)されたマッチ内容と前後75バイトの文脈のみを記録し全プランで利用できるのに対し、Logpushフォレンジックコピーは完全なHTTPリクエスト(ヘッダーとボディ)を記録しEnterpriseプラン限定で、1アカウントあたり最大4つのジョブまで設定できる"
+        },
+        {
+          "text": "Logpushフォレンジックコピーの方が全プランで利用でき、ペイロードロギングの方がEnterpriseプラン限定の機能として提供されている",
+          "wrongFeedback": "逆です。ペイロードロギングは全プランで利用でき、Logpushフォレンジックコピーの方がEnterpriseプラン限定です。"
+        },
+        {
+          "text": "Logpushフォレンジックコピーの設定台数に上限は設けられておらず、1つのアカウントで際限なくジョブを作成し続けることができる",
+          "wrongFeedback": "1アカウントあたり最大4つのDLP Forensic Copy Logpushジョブという上限が設定されています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "ペイロードロギングは編集(redact)されたマッチ内容と前後75バイトの文脈のみを記録し、全プランで利用できます。一方、Logpushフォレンジックコピーは完全なHTTPリクエスト(ヘッダーとボディ)を記録しますが、Enterpriseプラン限定で、1アカウントあたり最大4つのジョブまでという上限があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-policies/logging-options/#send-dlp-forensic-copies-to-logpush-destination",
+      "hint": "「一部を編集して記録する」方式と「まるごと記録する」方式で、利用できるプランが異なることを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ペイロードロギング vs Logpushフォレンジックコピー",
+          "columns": [
+            {
+              "heading": "ペイロードロギング",
+              "items": [
+                "編集されたマッチ+前後75バイト",
+                "全プランで利用可能"
+              ]
+            },
+            {
+              "heading": "Logpushフォレンジックコピー",
+              "items": [
+                "完全なHTTPリクエスト",
+                "Enterprise限定・最大4ジョブ"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-014",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "ペイロードログのマスキング設定(Payload log masking)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Partial Maskを選択すると、マッチした内容の100%が明らかになり、実質的にClear Textと同じ結果になる",
+          "wrongFeedback": "Partial Maskで明らかになるのはマッチした内容の25%です。100%明らかになるのはClear Textの場合です。"
+        },
+        {
+          "text": "選択したマスキングレベルは、ポリシーに一致した検知結果そのものにのみ適用され、同じペイロードウィンドウ内で検知された他の機密データには適用されない",
+          "wrongFeedback": "選択したマスキングレベルは、ペイロードウィンドウ内で見つかったすべての機密データの一致に適用されます。ポリシーの引き金となった一致だけに限定されるわけではありません。"
+        },
+        {
+          "text": "選択したマスキングレベルは、ポリシーの引き金となった一致だけでなく、同じペイロードウィンドウ内で検出された他のすべての機密データの一致にも一律に適用される"
+        },
+        {
+          "text": "マスキングは暗号化の後に適用される処理であり、暗号化されたペイロードに対して事後的にマスキングが行われる",
+          "wrongFeedback": "マスキングは検知時点で、ペイロードが暗号化される前に適用されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "選択したマスキングレベル(Full Mask・Partial Mask・Clear Text)は、ポリシーの引き金となった一致だけでなく、同じペイロードウィンドウ内で検出された他のすべての機密データの一致にも一律に適用されます。マスキングはペイロードが暗号化される前、検知時点で適用されます。Partial Maskではマッチした内容の25%が明らかになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-settings/#payload-log-masking",
+      "hint": "「ポリシーの引き金になった一致」だけでなく、周囲にある他の機密データにも同じルールが及ぶことを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ペイロードマスキングのレベル",
+          "columns": [
+            {
+              "heading": "Full Mask(デフォルト)",
+              "items": [
+                "***-**-****"
+              ]
+            },
+            {
+              "heading": "Partial Mask",
+              "items": [
+                "25%を表示: ***-**-6789"
+              ]
+            },
+            {
+              "heading": "Clear Text",
+              "items": [
+                "完全に表示: 123-45-6789"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-015",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "ペイロード暗号化キー(payload encryption key)の秘密鍵を紛失した場合の影響に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "秘密鍵を紛失しても、Cloudflareがバックアップを保持しているため、サポートに連絡すれば過去のログを復元できる",
+          "wrongFeedback": "Cloudflareは秘密鍵を保持していません。そのためサポートに連絡しても過去のログを復元することはできません。"
+        },
+        {
+          "text": "秘密鍵を紛失した場合、新しい鍵ペアを生成して公開鍵をアップロードすれば、過去に古い鍵で暗号化されたログも自動的に新しい鍵で再暗号化される",
+          "wrongFeedback": "自動的な再暗号化は行われません。古い鍵で暗号化された過去のログは、新しい鍵をアップロードしても永久に読めなくなります。"
+        },
+        {
+          "text": "ペイロード暗号化キーはCloudflare側で自動生成・自動管理されており、管理者が鍵ペアを生成・アップロードする作業は不要である",
+          "wrongFeedback": "管理者自身が鍵ペアを生成し、公開鍵をCloudflareへアップロードする必要があります。"
+        },
+        {
+          "text": "秘密鍵を紛失した場合、新しい鍵ペアを生成して公開鍵をアップロードする必要があるが、古い鍵で暗号化された過去のログは永久に読めなくなり、新しい鍵は今後のログにのみ有効になる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "ペイロード暗号化キーの秘密鍵はCloudflareが保持していないため、紛失した場合はサポートに連絡しても復元できません。新しい鍵ペアを生成して公開鍵をアップロードする必要がありますが、古い鍵で暗号化された過去のログは永久に読めなくなり、新しい鍵は今後生成されるログにのみ有効です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-settings/#payload-encryption-key",
+      "hint": "Cloudflare自身がその鍵を保持していない、という設計の意味を考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "秘密鍵紛失時の影響",
+          "steps": [
+            {
+              "text": "秘密鍵を紛失"
+            },
+            {
+              "text": "新しい鍵ペアを生成し公開鍵をアップロード"
+            },
+            {
+              "text": "古い鍵で暗号化された過去のログは永久に読めない"
+            },
+            {
+              "text": "新しい鍵は今後のログにのみ有効"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-016",
+      "category": "data-loss-prevention",
+      "difficulty": "intermediate",
+      "question": "Data ClassificationとDLPプロファイルをどう使い分けるべきかに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "エンフォースメント(実際にブロック・許可などのアクションを実行すること)が目的の場合はDLPプロファイルを使い、機密コンテンツを再利用可能な形で整理・ラベル付けすることが目的の場合はData Classificationを使う"
+        },
+        {
+          "text": "Data ClassificationとDLPプロファイルは完全に同じ目的のために存在しており、どちらを使っても同じ結果が得られる",
+          "wrongFeedback": "目的が異なります。エンフォースメントにはDLPプロファイル、整理・ラベル付けにはData Classificationという使い分けが推奨されています。"
+        },
+        {
+          "text": "データクラス(data class)は、他のデータクラス自身を含め、どのような検知エントリやデータクラスでも自由に組み合わせて自己参照的なルールを作成できる",
+          "wrongFeedback": "自己参照は禁止されています。データクラスを作成する際、そのデータクラス自身は選択肢から除外され、循環参照を防ぐ仕組みになっています。"
+        },
+        {
+          "text": "Data Classificationで作成したデータクラスは、カスタムDLPプロファイルに追加することができず、独立した機能として運用するしかない",
+          "wrongFeedback": "データクラスはカスタムDLPプロファイルに追加して、検知エントリやラベルと組み合わせて使用できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "エンフォースメント(実際にブロック・許可などのアクションを実行すること)が目的の場合はDLPプロファイルを使い、機密コンテンツを再利用可能な形で整理・ラベル付けすることが目的の場合はData Classificationを使うという使い分けが推奨されています。データクラス作成時は循環参照を防ぐため、そのデータクラス自身は選択肢から除外されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/data-classification/#when-to-use-data-classification-vs-dlp-profiles",
+      "hint": "「実際に止める・許可する」役割と、「分類して整理する」役割の違いを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Data Classification vs DLPプロファイル",
+          "columns": [
+            {
+              "heading": "DLPプロファイル",
+              "items": [
+                "エンフォースメントが目的",
+                "Allow/Blockなどのアクション"
+              ]
+            },
+            {
+              "heading": "Data Classification",
+              "items": [
+                "整理・ラベル付けが目的",
+                "再利用可能な分類ルール"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-017",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "Microsoft Purview Information Protection(MIP)の感度ラベルを利用するインテグレーションプロファイルに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Microsoft側での感度ラベルの追加・編集・削除は、いずれもリアルタイムで即座にCloudflare DLPへ反映される",
+          "wrongFeedback": "追加・編集の反映には最大24時間かかり、さらにMicrosoft側での削除はCloudflare側へ反映されません。即座に・すべて反映されるわけではありません。"
+        },
+        {
+          "text": "Microsoft側での感度ラベルの追加・編集は24時間以内にCloudflare DLPへ反映されるが、Microsoft側でラベルを削除しても、Cloudflare DLPプロファイル内のエントリは自動的には削除されない"
+        },
+        {
+          "text": "インテグレーションプロファイル内の検知エントリは、Cloudflareのダッシュボードから直接編集・削除することができる",
+          "wrongFeedback": "インテグレーションプロファイル内の検知エントリはサードパーティ側(Microsoft Purviewなど)によって管理されており、Cloudflare側から手動で追加・編集・削除することはできません。"
+        },
+        {
+          "text": "インテグレーションプロファイルを使うにはCloudflare CASBとの連携は不要であり、DLPだけで完結して利用できる",
+          "wrongFeedback": "インテグレーションプロファイルの利用にはCloudflare CASBが必要です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Microsoft側での感度ラベルの追加・編集は最大24時間でCloudflare DLPへ反映されますが、Microsoft側でラベルを削除しても、Cloudflare DLPプロファイル内のエントリは自動的には削除されません。インテグレーションプロファイル内の検知エントリはサードパーティ側で管理されているため、Cloudflareのダッシュボードから手動で編集・削除することもできません。利用にはCloudflare CASBとの連携が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/integration-profiles/#syncing",
+      "hint": "「追加・編集」の同期と「削除」の同期が、同じように働くとは限らないことを考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Microsoft Purview連携の同期挙動",
+          "columns": [
+            {
+              "heading": "追加・編集",
+              "items": [
+                "最大24時間で反映"
+              ]
+            },
+            {
+              "heading": "削除",
+              "items": [
+                "Cloudflare側には反映されない"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dl-018",
+      "category": "data-loss-prevention",
+      "difficulty": "advanced",
+      "question": "AIコンテキスト分析(AI context analysis)の仕組みと、プロファイルレベル設定とアカウントレベル設定を両方構成した場合の挙動に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "AIコンテキスト分析は、CASBによる保存中データのスキャンにも対応しており、GatewayのHTTP/HTTPSトラフィックに限定されない",
+          "wrongFeedback": "AIコンテキスト分析はGatewayのHTTP/HTTPSトラフィックのみをサポートしています。保存中データのスキャン(CASB)には対応していません。"
+        },
+        {
+          "text": "プロファイルレベルとアカウントレベルの両方でAIコンテキスト分析関連の設定を構成した場合、Cloudflareはより厳格な(制限が強い)方の設定を優先して適用する",
+          "wrongFeedback": "厳格な方を優先する仕組みではなく、いずれかの設定が検知条件を満たせば検知が発生するOR条件で評価されます。"
+        },
+        {
+          "text": "AIコンテキスト分析はマッチしたテキストを編集(redact)したうえで、周辺の文脈をベクトル埋め込みに変換してCloudflare Workers AIへ送信し、生のテキストではなくベクトル埋め込みをユーザー専用のプライベートな名前空間に最長6か月保持する。プロファイルレベルとアカウントレベルの両方を構成した場合はOR条件で評価される"
+        },
+        {
+          "text": "AIコンテキスト分析はマッチしたテキストをそのままの形でCloudflare Workers AIへ送信し、生のテキストをそのまま無期限に保持する",
+          "wrongFeedback": "マッチしたテキストは編集(redact)されたうえで、生のテキストではなくベクトル埋め込みの形に変換されて送信され、保持期間も無期限ではなく最長6か月です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "AIコンテキスト分析は、マッチしたテキストを編集(redact)したうえで、周辺の文脈をベクトル埋め込みに変換してCloudflare Workers AIへ送信します。生のテキストではなくベクトル埋め込みが、ユーザー専用のプライベートな名前空間に最長6か月保持されます。プロファイルレベルとアカウントレベルの両方でこの機能を構成した場合、いずれかの設定が検知条件を満たせば検知が発生するOR条件で評価されます。この機能はGatewayのHTTP/HTTPSトラフィックのみをサポートします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-settings/#ai-context-analysis",
+      "hint": "「生のテキストを送るのか、変換した形で送るのか」、そして「両方の設定があるとき、どちらか一方で十分なのか」という2点を考えましょう。",
+      "tags": [
+        "data-loss-prevention",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "AIコンテキスト分析の処理フロー",
+          "steps": [
+            {
+              "text": "マッチしたテキストを編集(redact)"
+            },
+            {
+              "text": "周辺の文脈をベクトル埋め込みに変換"
+            },
+            {
+              "text": "Cloudflare Workers AIへ送信"
+            },
+            {
+              "text": "ベクトル埋め込みを最長6か月、専用名前空間に保持"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

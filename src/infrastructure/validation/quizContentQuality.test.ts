@@ -62,6 +62,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   tn: 'tunnel',
   cx: 'client-side-security',
   gw: 'gateway',
+  dl: 'data-loss-prevention',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -354,6 +355,21 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/traffic-policies/order-of-enforcement/',
   'cloudflare-one/traffic-policies/domain-categories/',
   'cloudflare-one/traffic-policies/resolver-policies/',
+  'cloudflare-one/data-loss-prevention/',
+  'cloudflare-one/data-loss-prevention/detection-entries/',
+  'cloudflare-one/data-loss-prevention/detection-entries/predefined-detection-entries/',
+  'cloudflare-one/data-loss-prevention/detection-entries/configure-detection-entries/',
+  'cloudflare-one/data-loss-prevention/dlp-policies/',
+  'cloudflare-one/data-loss-prevention/dlp-policies/common-policies/',
+  'cloudflare-one/data-loss-prevention/dlp-policies/logging-options/',
+  'cloudflare-one/data-loss-prevention/dlp-profiles/',
+  'cloudflare-one/data-loss-prevention/dlp-profiles/predefined-profiles/',
+  'cloudflare-one/data-loss-prevention/dlp-profiles/integration-profiles/',
+  'cloudflare-one/data-loss-prevention/dlp-profiles/advanced-settings/',
+  'cloudflare-one/data-loss-prevention/data-classification/',
+  'cloudflare-one/data-loss-prevention/data-classification/build-a-data-class/',
+  'cloudflare-one/data-loss-prevention/saas-apps/',
+  'cloudflare-one/data-loss-prevention/dlp-settings/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -792,6 +808,7 @@ describe('Quiz Content Quality', () => {
         'tunnel',
         'client-side-security',
         'gateway',
+        'data-loss-prevention',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

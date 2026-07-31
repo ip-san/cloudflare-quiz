@@ -463,6 +463,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '組織のトラフィックをDNS/Network/HTTPの各層で適切にフィルタリングできる',
     },
     {
+      id: 'data-loss-prevention',
+      name: 'DLP',
+      icon: '🧯',
+      color: 'scarlet',
+      weight: 10,
+      description:
+        'HTTPトラフィックやSaaSアプリの機密データを検知するData Loss Prevention。検知エントリ・プロファイル・ロギング・データ分類',
+      skillDescription: '機密データの漏えいを検知・防止する仕組みを適切に設計できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

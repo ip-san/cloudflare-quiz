@@ -32,6 +32,7 @@ export const COLOR_MAP: Record<string, string> = {
   burgundy: '#9f1239',
   lavender: '#c4b5fd',
   sage: '#84a98c',
+  scarlet: '#dc2626',
 }
 
 export function getColorHex(colorName: string): string {
