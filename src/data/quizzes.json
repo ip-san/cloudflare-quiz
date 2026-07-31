@@ -41343,6 +41343,1020 @@
           ]
         }
       ]
+    },
+    {
+      "id": "zr-001",
+      "category": "zaraz",
+      "difficulty": "beginner",
+      "question": "Cloudflare Zarazが解決する主な課題として、最も適切な説明はどれですか?",
+      "options": [
+        {
+          "text": "サードパーティのアナリティクスや広告タグなどをブラウザではなくCloudflareのエッジ側で実行することで、ブラウザが読み込むスクリプトを減らせる"
+        },
+        {
+          "text": "サードパーティツールをブラウザから完全に排除し、あらゆる形でのデータ収集自体を不可能にする",
+          "wrongFeedback": "Zarazはサードパーティツールの実行場所をエッジ側に移すものであり、データ収集そのものをすべて禁止する機能ではありません。むしろツールは引き続き動作します。"
+        },
+        {
+          "text": "Cloudflareのオリジンサーバー上のコンテンツをキャッシュして配信を高速化するCDN機能である",
+          "wrongFeedback": "これはCDNのキャッシュ機能の説明であり、Zarazはサードパーティのタグ/スクリプト管理に特化した別の機能です。"
+        },
+        {
+          "text": "Cloudflare Workersのスクリプトが使用できるCPU実行時間の上限を緩和するための機能である",
+          "wrongFeedback": "ZarazはWorkersのCPU時間制限を変更する機能ではありません。サードパーティツールの実行場所を変える仕組みです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Zarazは、Google AnalyticsやFacebook Pixelのようなサードパーティのアナリティクス・広告・マーケティングツールを、ブラウザ上ではなくCloudflareのエッジ側で実行するツールです。これにより、ブラウザが直接ダウンロード・実行するスクリプトの数や重さを減らし、ページの速度・セキュリティを改善しつつ、外部に送信されるデータをより細かく制御できるようになります。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/",
+      "hint": "「ブラウザ側」と「エッジ側」のどちらでスクリプトを実行する仕組みかを考えましょう。",
+      "tags": [
+        "zaraz",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Zarazなし/ありでのスクリプト実行場所の違い",
+          "columns": [
+            {
+              "heading": "Zarazなし(クライアントサイド実行)",
+              "items": [
+                "ブラウザが各サードパーティのJSファイルを直接ダウンロード",
+                "スクリプトが増えるほど描画がブロックされやすい",
+                "広告ブロッカーなどの影響を受けやすい"
+              ]
+            },
+            {
+              "heading": "Zarazあり(エッジサイド実行)",
+              "items": [
+                "Cloudflareのエッジがツールを代わりに実行",
+                "ブラウザが読み込むスクリプトの数・重さを削減",
+                "外部へ送信するデータをより細かく制御しやすい"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-002",
+      "category": "zaraz",
+      "difficulty": "beginner",
+      "question": "Zarazにおける「トリガー」と「アクション」の関係を正しく説明しているものはどれですか?",
+      "options": [
+        {
+          "text": "アクションが発火条件(ページビューやクリックなど)を定義し、トリガーはツールが実行する具体的な処理内容を指す",
+          "wrongFeedback": "説明が逆です。発火条件を定義するのはトリガー、ツールが実行する具体的な処理を指すのがアクションです。"
+        },
+        {
+          "text": "トリガーが発火条件(ページビューやクリックなど)を定義し、アクションはそれに応じてツールが実行する具体的な処理を指す"
+        },
+        {
+          "text": "ツールという概念はトリガーともアクションとも無関係な、単なる表示上の分類ラベルにすぎない",
+          "wrongFeedback": "ツールはトリガーとアクションの両方と結びつく実体です。ツールに紐づくアクションが、特定のトリガーによって発火します。"
+        },
+        {
+          "text": "1つのアクションに対して、発火トリガーとして複数のトリガーを設定することはできない",
+          "wrongFeedback": "1つのアクションの「Firing Triggers」には複数のトリガーを選択でき、選択したいずれかのトリガーが一致すればアクションが発火します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Zarazでは、ページビューやクリックなどの「発火条件」を定義するのがトリガーで、そのトリガーが一致したときにツールが実行する具体的な処理(データ送信など)を定義するのがアクションです。1つのアクションには複数のトリガーを「Firing Triggers」として割り当てることができ、そのいずれかが一致すればアクションが発火します。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
+      "hint": "「いつ発火するか」を決める役割と、「発火した結果何をするか」を決める役割、それぞれの名前を思い出しましょう。",
+      "tags": [
+        "zaraz",
+        "topic-triggers"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Trigger から Action への流れ",
+          "steps": [
+            {
+              "text": "訪問者がページを閲覧・クリックするなどのイベントが発生"
+            },
+            {
+              "text": "条件に一致するTriggerが発火"
+            },
+            {
+              "text": "Triggerに紐づくツールのActionが実行される",
+              "sub": "例: Google Analyticsへのイベント送信"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-003",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "Zarazのトリガーで利用できるルールタイプの説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "「Match rule」は任意のJavaScriptコードを条件式として自由に記述できるルールタイプである",
+          "wrongFeedback": "Match ruleは「変数名」「一致条件」「一致文字列」を組み合わせて条件を作る仕組みで、任意のJavaScriptを自由記述できるものではありません。"
+        },
+        {
+          "text": "「Click listener」はCSSセレクタでのみクリックを検知でき、XPath式には対応していない",
+          "wrongFeedback": "Click listenerはCSSセレクタだけでなく、XPath式によるクリック検知にも対応しています。"
+        },
+        {
+          "text": "「Scroll depth」は固定のピクセル数、またはページ表示割合(%)のいずれかを指定してトリガーを発火できる"
+        },
+        {
+          "text": "「Timer」は指定した間隔で無限に繰り返され、発火回数の上限を設定する方法は用意されていない",
+          "wrongFeedback": "Timerルールには「Limit」があり、発火回数の上限を指定できます。Limitを指定しない場合のみ、ページが表示されている間繰り返されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Scroll depthルールは、固定のピクセル数(例: `100px`)またはページの表示割合(例: `45%`)のいずれかを指定して、その位置までスクロールされたときにトリガーを発火させることができます。なお、Match ruleは変数名・一致条件・一致文字列の組み合わせで条件を作る仕組みであり、Click listenerはCSSセレクタとXPathの両方に対応し、TimerにはLimitで発火回数の上限を設定できます。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
+      "hint": "各ルールタイプが「何を単位に」条件を判定するかを比較してみましょう。",
+      "tags": [
+        "zaraz",
+        "topic-triggers"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "主なトリガールールタイプの設定項目",
+          "rowHeader": "ルールタイプ",
+          "colHeader": "設定内容",
+          "rows": [
+            "Click listener",
+            "Scroll depth",
+            "Timer"
+          ],
+          "cols": [
+            "主な設定項目",
+            "備考"
+          ],
+          "cells": [
+            [
+              "CSSセレクタ または XPath",
+              "Wait for actions(ミリ秒)を指定可能"
+            ],
+            [
+              "ピクセル数 または ページ表示割合(%)",
+              "スクロール位置で発火"
+            ],
+            [
+              "Interval(間隔、ミリ秒)",
+              "Limitで発火回数の上限を指定可能"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-004",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "Zarazでサーバーサイド(エッジ側)で実行されるツールへの通信について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ブラウザが各サードパーティのサーバーに直接接続してリクエストを送信し、Zarazはその通信内容を横から監視するだけである",
+          "wrongFeedback": "サーバーサイドで実行されるツールへの通信は、ブラウザが直接送るのではなくCloudflareのエッジから送信されます。"
+        },
+        {
+          "text": "サーバーサイドで実行されるツールに渡すIPアドレスは、`Trim IP addresses`のような設定があっても常に訪問者の生のIPアドレスのままで、匿名化のためのオプションは提供されていない",
+          "wrongFeedback": "`Trim IP addresses`という設定で、サーバーサイドで実行されるツールに渡す前にIPアドレスの一部を切り詰めることができます。"
+        },
+        {
+          "text": "サーバーサイドで実行されるツールへ渡すUser Agent文字列は、`Clean User Agent strings`のような設定があっても加工されずにそのまま第三者へ転送される仕組みになっている",
+          "wrongFeedback": "`Clean User Agent strings`という設定で、OSバージョンや拡張機能情報などのセンシティブな情報をUser Agent文字列から取り除くことができます。"
+        },
+        {
+          "text": "サーバーサイドで実行されるツールへの通信はCloudflareのエッジから送信されるため、`Trim IP addresses`や`Clean User Agent strings`といった設定で、第三者に渡す情報を加工できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Zarazでサーバーサイド実行されるツールへの通信は、ブラウザから直接ではなくCloudflareのエッジから送信されます。そのため、エッジを通過する際に「Trim IP addresses」(IPアドレスの一部を切り詰める)や「Clean User Agent strings」(User Agent文字列からセンシティブな情報を除去する)といった設定を使い、第三者に渡す前に情報を加工できます。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
+      "hint": "サーバーサイドで実行されるツールへの通信が、どこから送信され、途中でどのような加工が可能かを考えましょう。",
+      "tags": [
+        "zaraz",
+        "topic-privacy"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "サーバーサイド実行時の通信経路",
+          "nodes": [
+            {
+              "id": "browser",
+              "text": "訪問者のブラウザ"
+            },
+            {
+              "id": "edge",
+              "text": "Cloudflareエッジ(Zaraz)",
+              "sub": "IP/User Agentを加工可能"
+            },
+            {
+              "id": "thirdparty",
+              "text": "サードパーティのサーバー",
+              "sub": "例: 広告・分析プラットフォーム"
+            }
+          ],
+          "edges": [
+            {
+              "from": "browser",
+              "to": "edge",
+              "label": "ページビュー/イベント送信"
+            },
+            {
+              "from": "edge",
+              "to": "thirdparty",
+              "label": "加工後のデータでサーバーサイドリクエスト"
+            },
+            {
+              "from": "edge",
+              "to": "browser",
+              "label": "軽量なレスポンス",
+              "dashed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-005",
+      "category": "zaraz",
+      "difficulty": "beginner",
+      "question": "Zaraz Consent Management platform (CMP) の説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "サイトで使用するツールに「Purpose(目的)」を割り当て、ユーザーの同意状況に基づいてZarazがそのツールをロードするかどうかを制御する仕組みである"
+        },
+        {
+          "text": "ツールを追加すると自動的に適切なPurposeが割り当てられ、GDPR対応が自動的に完了する仕組みである",
+          "wrongFeedback": "Zarazは新しいツールを追加してもPurposeを自動的には割り当てません。Purposeの割り当てはサイト運営者の責任で行う必要があります。"
+        },
+        {
+          "text": "一度でも同意を得たユーザーに対しては、以後Zaraz側から同意状況を確認・再表示する手段は一切提供されない",
+          "wrongFeedback": "`zaraz.showConsentModal()`関数を呼び出すことで、同意モーダルを再表示させることができます。"
+        },
+        {
+          "text": "1つのツールを複数のPurposeに自由に割り当てることができ、Purposeとツールは常に多対多の関係になる",
+          "wrongFeedback": "1つのPurposeには複数のツールを割り当てられますが、1つのツールが割り当てられるPurposeは1つだけです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Zaraz Consent Management platform (CMP)は、サイトで使用するツールに「Purpose(目的)」を割り当て、ユーザーがそのPurposeに同意したかどうかに基づいて、Zarazが該当ツールをロードするかどうかを制御する仕組みです。1つのPurposeには複数のツールを割り当てられますが、1つのツールが持てるPurposeは1つだけです。Purposeの割り当ては自動化されておらず、サイト運営者が責任を持って設定する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/consent-management/",
+      "hint": "「誰が」「何に対して」同意するのかという単位に注目しましょう。",
+      "tags": [
+        "zaraz",
+        "topic-consent"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Consent Management platform の関係",
+          "items": [
+            {
+              "text": "Purpose(目的)",
+              "sub": "例: Analytics, Advertising"
+            },
+            {
+              "text": "Tool(ツール)",
+              "sub": "1つのPurposeにのみ割り当てられる"
+            },
+            {
+              "text": "Consent Cookie",
+              "sub": "Purpose IDごとにtrue/false/未設定を保持"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-006",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "ユーザーの同意設定(Consent Management platform)の保存方法に関する記述として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "ユーザーの同意状態はサーバー側のデータベースにのみ保存され、ブラウザ側には一切保存されない",
+          "wrongFeedback": "同意状態はサーバー側データベースではなく、ファーストパーティCookieとしてブラウザ側に保存されます。"
+        },
+        {
+          "text": "ユーザーの同意設定はファーストパーティCookieに保存され、各Purpose IDに対してtrue/false/未設定のいずれかの値がマッピングされる"
+        },
+        {
+          "text": "Purposeに紐づいていないツールは、デフォルトでは同意なしには絶対にロードされない仕組みになっている",
+          "wrongFeedback": "Purposeが割り当てられていないツールは、デフォルトでは同意チェックをスキップしてロードされてしまいます。だからこそPurposeの設定確認が重要です。"
+        },
+        {
+          "text": "一度非表示にした同意モーダルは、`zaraz.showConsentModal()`を呼び出しても二度と再表示できない",
+          "wrongFeedback": "`zaraz.showConsentModal()`を呼び出すことで、同意モーダルをボタンなどに紐づけて再表示させることができます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "ユーザーの同意設定は、JSON形式のファーストパーティCookieに保存され、各PurposeのIDに対してtrue(同意)/false(拒否)/値なし(未選択)のいずれかがマッピングされます。Purposeが割り当てられていないツールはデフォルトで同意チェックをスキップしてロードされてしまうため、意図しない動作を避けるにはPurposeの割り当てを確認する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/consent-management/",
+      "hint": "同意状態がどこに、どのような形式で保存されるかを思い出しましょう。",
+      "tags": [
+        "zaraz",
+        "topic-consent"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "同意設定を保持するCookieのイメージ",
+          "filepath": "consent-cookie (JSON)",
+          "lines": [
+            {
+              "text": "{ \"analytics\": true,",
+              "highlight": true
+            },
+            {
+              "text": "  \"advertising\": false,"
+            },
+            {
+              "text": "  \"marketing\": undefined }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-007",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "Zarazの「Preview & Publish」ワークフローに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Zarazはデフォルトで変更を即座に反映しない設計であり、`Preview & Publish`を有効化して初めて設定変更が有効になる",
+          "wrongFeedback": "Zarazはデフォルトでは変更をリアルタイムに反映する設計です。`Preview & Publish`はあえて有効化するオプション機能です。"
+        },
+        {
+          "text": "Preview & Publishを有効化すると、`Zaraz History`機能はかえって利用できなくなる",
+          "wrongFeedback": "Preview & Publishを有効化すると、逆に`Zaraz History`機能へアクセスできるようになります。"
+        },
+        {
+          "text": "Preview & Publishを有効化すると、ブラウザコンソールで`zaraz.preview(\"<デバッグキー>\")`を実行することで、未公開の変更を自分のブラウザだけで確認できる"
+        },
+        {
+          "text": "Preview & Publishモードを無効化する際、未公開の変更は必ず自動的に`Publish`され、破棄するという選択肢は用意されていない",
+          "wrongFeedback": "Preview & Publishを無効化する際には、未公開の変更をすべて削除するか、公開するかをモーダルで選択できます。自動的にどちらかへ強制されるわけではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Preview & Publishワークフローを有効にすると、ダッシュボードでの変更はすぐには公開されず、ブラウザのコンソールで`zaraz.preview(\"<デバッグキー>\")`を実行することで、自分のブラウザ上だけで未公開の変更を試すことができます。問題なければダッシュボードから「Publish」を選択して全ユーザーに反映します。なおZarazはデフォルトではリアルタイムに変更を反映する設計であり、Preview & Publishはあえて有効化するオプションです。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/history/preview-mode/",
+      "hint": "「公開前に自分だけで試す」ためにブラウザのコンソールで何を実行するかを考えましょう。",
+      "tags": [
+        "zaraz",
+        "topic-workflow"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Preview & Publish での確認フロー",
+          "actors": [
+            "開発者",
+            "ダッシュボード",
+            "ブラウザコンソール"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "設定を変更(未公開のまま保存)"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "text": "zaraz.preview(\"<デバッグキー>\") を実行"
+            },
+            {
+              "from": 2,
+              "to": 0,
+              "text": "Zarazデバッガーで未公開の変更を確認"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "問題なければPublishで全体に反映"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-008",
+      "category": "zaraz",
+      "difficulty": "advanced",
+      "question": "Zaraz Context Enricherを本番環境の全リクエストに適用したい場合、その仕組みについて正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ブラウザ上で動作するJavaScriptスニペットで、`DOM`要素を直接書き換えることでコンテキストを拡張する",
+          "wrongFeedback": "Context EnricherはCloudflare Worker上で動くサーバーサイドの仕組みであり、ブラウザ上で`DOM`を直接書き換えるものではありません。"
+        },
+        {
+          "text": "設定したContext Enricherは、指定した特定のツールにのみ影響し、他のツールの`context`には影響しない",
+          "wrongFeedback": "Context Enricherは特定のツールだけでなく、そのゾーンにおけるZarazのすべてのリクエストに対して実行されます。"
+        },
+        {
+          "text": "Context Enricherはダッシュボード内のノーコードエディタで記述するものであり、`Cloudflare Workers`を作成する必要はない",
+          "wrongFeedback": "Context Enricherを使うには、まずCloudflare Workerを作成し、そのWorkerをZarazの設定で選択する必要があります。"
+        },
+        {
+          "text": "Cloudflare Workerとして実装し、リクエストごとに`system`と`client`のコンテキストオブジェクトを受け取って加工し、JSONとして返すことでZaraz全体のコンテキストを拡張できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Zaraz Context Enricherは、Cloudflare Worker上に実装する仕組みです。WorkerはリクエストのJSONボディから`system`と`client`のコンテキストオブジェクトを受け取り、必要な加工(値の追加・書き換え・マスキングなど)を行った上で、同じ形式のJSONとして返します。設定したContext Enricher Workerは、特定のツールだけでなく、そのゾーンにおけるZarazのすべてのリクエストに対して実行されます。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/advanced/context-enricher/",
+      "hint": "この機能がブラウザ側とサーバー側のどちらで、何を材料に動作するかを考えましょう。",
+      "tags": [
+        "zaraz",
+        "topic-context-enricher"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Context Enricher の処理フロー",
+          "actors": [
+            "ブラウザ",
+            "Zaraz(エッジ)",
+            "Context Enricher Worker"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "イベント/ページビューを送信"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "system・clientのコンテキストをJSONで送信"
+            },
+            {
+              "from": 2,
+              "to": 1,
+              "text": "加工後のコンテキストをJSONで返却"
+            },
+            {
+              "from": 1,
+              "to": 1,
+              "text": "拡張されたコンテキストでActionを実行"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-009",
+      "category": "zaraz",
+      "difficulty": "advanced",
+      "question": "Zarazのデータレイヤー互換モード(Data layer compatibility mode)についての記述として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "デフォルトで有効になっており、無効化するオプションは用意されていない",
+          "wrongFeedback": "データレイヤー互換モードはスクリプトを小さく保つため、デフォルトでは無効になっています。設定画面から有効化する必要があります。"
+        },
+        {
+          "text": "有効にすると`dataLayer.push()`の呼び出しを自動的に`zaraz.track()`呼び出しに変換するが、Eコマースイベントの自動マッピングには対応していない"
+        },
+        {
+          "text": "`dataLayer.push()`で送信したオブジェクトは、キーの内容にかかわらずすべてのキーがイベント名として扱われる",
+          "wrongFeedback": "`event`キーの値がイベント名として使われ、それ以外のキーは`eventProperties`として扱われます。すべてのキーがイベント名になるわけではありません。"
+        },
+        {
+          "text": "有効化するとZarazスクリプトのサイズが縮小されるため、パフォーマンス向上を目的として常に有効化することが推奨されている",
+          "wrongFeedback": "Zarazはスクリプトを小さく保つためデータレイヤー互換モードをデフォルトで無効にしており、公式にも`dataLayer`の利用自体は推奨されていません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "データレイヤー互換モードを有効にすると、`dataLayer.push({event: \"purchase\", price: 24})`のような呼び出しを自動的に`zaraz.track(\"purchase\", {price: 24})`相当の呼び出しに変換してくれます。ただし、このモードはEコマースイベントの自動マッピングには対応しておらず、Eコマースデータを扱いたい場合はE-commerce APIを使う必要があります。またこの機能はスクリプトを小さく保つためデフォルトで無効になっており、公式にも`dataLayer`自体の利用は推奨されていません。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/advanced/datalayer-compatibility/",
+      "hint": "`dataLayer.push()`が変換される先のメソッド名と、対応していない用途は何かを考えましょう。",
+      "tags": [
+        "zaraz",
+        "topic-data-layer"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "dataLayer 互換モードの変換フロー",
+          "steps": [
+            {
+              "text": "サイトが dataLayer.push({event: 'purchase', price: 24}) を実行"
+            },
+            {
+              "text": "互換モードが呼び出しを検知"
+            },
+            {
+              "text": "zaraz.track('purchase', {price: 24}) 相当に自動変換",
+              "sub": "Eコマースの自動マッピングは対象外"
+            },
+            {
+              "text": "Event Nameが一致するTriggerが発火"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-010",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "ZarazのDebug Modeを有効化する正しい方法はどれですか?",
+      "options": [
+        {
+          "text": "ダッシュボードの「有効化」ボタンをクリックするだけでよく、ブラウザコンソールでのコマンド実行は不要である",
+          "wrongFeedback": "Debug Modeの有効化には、ブラウザのコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行する操作が必要です。ダッシュボードのボタンだけでは有効化できません。"
+        },
+        {
+          "text": "ブラウザコンソールで`zaraz.preview()`関数を実行することで有効化する",
+          "wrongFeedback": "`zaraz.preview()`はPreview & Publishモードで未公開の変更を確認するための関数であり、Debug Modeを有効化する関数とは異なります。"
+        },
+        {
+          "text": "設定ページで取得したDebug Keyを使い、ブラウザコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行して`zarazDebug`Cookieを作成する"
+        },
+        {
+          "text": "HTTPリクエストヘッダーに`X-Zaraz-Debug`ヘッダーを付与することで有効化する",
+          "wrongFeedback": "Debug Modeの有効化はHTTPリクエストヘッダーではなく、ブラウザコンソールでの`zaraz.debug()`関数の実行によって行います。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Debug Modeを有効にするには、まずSettingsページでDebug Keyを確認し、ブラウザの開発者ツールのコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行します。これにより`zarazDebug`という名前のデバッグ用Cookieが作成され、デバッガーのポップアップが表示されます。無効化するには`zaraz.debug()`を引数なしで実行してCookieを削除します。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/web-api/debug-mode/",
+      "hint": "有効化の手段が、ダッシュボードの操作だけで済むのか、それとも別の場所での操作を必要とするのかを考えましょう。",
+      "tags": [
+        "zaraz",
+        "topic-debugging"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "Debug Mode の有効化・無効化",
+          "lines": [
+            {
+              "type": "command",
+              "text": "zaraz.debug(\"YOUR_DEBUG_KEY\")"
+            },
+            {
+              "type": "response",
+              "text": "zarazDebug Cookieを作成し、デバッガーを表示"
+            },
+            {
+              "type": "command",
+              "text": "zaraz.debug()"
+            },
+            {
+              "type": "response",
+              "text": "Cookieを削除しDebug Modeを終了"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-011",
+      "category": "zaraz",
+      "difficulty": "beginner",
+      "question": "Zaraz Monitoringページで確認できる情報の組み合わせとして、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Loads・Events・Triggers・Actionsの4項目のみで、サードパーティツールへのサーバーサイドリクエストのステータスコードは確認できない",
+          "wrongFeedback": "Zaraz MonitoringにはServer-side requestsという項目もあり、サードパーティツールへのサーバーサイドリクエストのステータスコードも確認できます。"
+        },
+        {
+          "text": "Zaraz Monitoringは、Zaraz Paidプランを契約しているアカウントのみが利用できる機能である",
+          "wrongFeedback": "Zaraz Monitoringの利用がPaidプラン限定であるとは説明されていません。Zaraz自体は全プランで利用可能な機能です。"
+        },
+        {
+          "text": "Eventsの集計対象にはPageviewイベントは含まれず、`zaraz.track()`によるイベントのみが対象になる",
+          "wrongFeedback": "EventsにはPageviewイベント、Track events、E-commerce eventsのいずれもが含まれます。"
+        },
+        {
+          "text": "Loads・Events・Triggers・Actionsに加えて、サードパーティツールへのサーバーサイドリクエストのステータスコードも確認できる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Zaraz Monitoringでは、Loads(Zarazの読み込み回数)、Events(Pageview・Track・E-commerceを含むイベント数)、Triggers(発火したトリガー数)、Actions(実行されたアクション数)に加えて、Zarazがサードパーティツールに対して行うサーバーサイドリクエストのステータスコードも確認できます。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/monitoring/",
+      "hint": "Monitoringが対象とする範囲が、ブラウザ側のイベントだけに限られるのかどうかを考えましょう。",
+      "tags": [
+        "zaraz",
+        "topic-monitoring"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Zaraz Monitoring の確認項目",
+          "items": [
+            {
+              "text": "Loads",
+              "sub": "Zarazがページに読み込まれた回数"
+            },
+            {
+              "text": "Events",
+              "sub": "Pageview / Track / E-commerceイベント数"
+            },
+            {
+              "text": "Triggers",
+              "sub": "発火したトリガー数"
+            },
+            {
+              "text": "Actions",
+              "sub": "実行されたアクション数"
+            },
+            {
+              "text": "Server-side requests",
+              "sub": "サードパーティへのリクエストのステータスコード"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-012",
+      "category": "zaraz",
+      "difficulty": "beginner",
+      "question": "Zarazの料金体系について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "全てのCloudflareプランで利用可能で、アカウントごとに毎月100万件のZaraz Eventsが無料枠として提供される"
+        },
+        {
+          "text": "Zaraz Paidプランに加入しない場合、無料枠を超えた時点でウェブサイトへのアクセス自体がすべて遮断される",
+          "wrongFeedback": "無料枠を超えてPaidプランを有効化しない場合に発生するのは、次の請求サイクルまでZarazが無効化されることであり、ウェブサイトへのアクセス自体が遮断されるわけではありません。"
+        },
+        {
+          "text": "Zaraz Eventsの使用量はダッシュボードから確認できず、確認するにはサポートへの問い合わせが必要である",
+          "wrongFeedback": "Zaraz EventsのMonitoringページから、現在の使用量を簡単に確認できます。"
+        },
+        {
+          "text": "無料枠の使用量に関する通知メールは一切送信されない仕組みになっている",
+          "wrongFeedback": "無料枠の50%・80%・90%に達した際に通知メールが送信される仕組みになっています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Zarazは全てのCloudflareプランで利用可能で、アカウントごとに毎月100万件のZaraz Eventsが無料枠として提供されます。追加分は100万イベントごとに月額5ドルのZaraz Paidプランで利用できます。Paidプランを有効化せずに無料枠を超えた場合は、次の請求サイクルまでZarazが無効化されます(ウェブサイト自体へのアクセスが遮断されるわけではありません)。無料枠の50%・80%・90%に達した際には通知メールが送信されます。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/pricing-info/",
+      "hint": "Zarazがどのプラン層で利用でき、使用量の確認や通知がどのように行われる設計かを整理しましょう。",
+      "tags": [
+        "zaraz",
+        "topic-pricing"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "Zaraz Eventsの料金体系",
+          "rowHeader": "区分",
+          "colHeader": "内容",
+          "rows": [
+            "無料枠",
+            "超過分(Paidプラン)"
+          ],
+          "cols": [
+            "月間イベント数",
+            "料金"
+          ],
+          "cells": [
+            [
+              "1,000,000イベント/月",
+              "$0"
+            ],
+            [
+              "追加100万イベントごと",
+              "$5/月"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-013",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "Zarazが公式にネイティブサポートしていないサードパーティツールを組み込みたい場合の対応として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Zarazはネイティブサポート対象のツールしか追加できず、非対応のツールを組み込む方法は用意されていない",
+          "wrongFeedback": "Zarazには非対応ツール向けのCustom HTML・Custom Image・HTTP Requestといったカスタム統合が用意されています。"
+        },
+        {
+          "text": "Custom HTML・Custom Image・HTTP Requestといったカスタム統合を使って、任意のツールを組み込むことができる"
+        },
+        {
+          "text": "非対応ツールを追加するには、Cloudflareサポートに申請してZarazのツールカタログへ承認登録してもらう必要がある",
+          "wrongFeedback": "非対応ツールの追加にサポートへの事前申請は必要なく、用意されているカスタム統合(Custom HTML等)を使って自分で組み込めます。"
+        },
+        {
+          "text": "非対応ツールは、Zaraz Context Enricherを使わない限り一切追加できない",
+          "wrongFeedback": "Context Enricherはコンテキストを拡張するための仕組みであり、非対応ツールの追加に必須というわけではありません。非対応ツールの追加にはCustom HTML等のカスタム統合を使います。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Zarazのツールカタログにネイティブ対応がない場合でも、Custom HTML・Custom Image・HTTP Requestといったカスタム統合を使うことで、任意のサードパーティツールをZaraz経由で組み込むことができます。これらの利用にサポートへの事前申請は不要です。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/supported-tools/",
+      "hint": "ネイティブ対応がない場合の「受け皿」となる統合の種類を思い出しましょう。",
+      "tags": [
+        "zaraz",
+        "topic-tools"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Zarazで組み込めるツールの種類",
+          "items": [
+            {
+              "text": "ネイティブ対応ツール",
+              "sub": "例: Google Analytics, Facebook Pixel, TikTokなど"
+            },
+            {
+              "text": "カスタム統合",
+              "sub": "Custom HTML / Custom Image / HTTP Request"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-014",
+      "category": "zaraz",
+      "difficulty": "advanced",
+      "question": "Zaraz Web APIの`zaraz.track()`・`zaraz.set()`・`zaraz.ecommerce()`の役割の違いを正しく説明しているものはどれですか?",
+      "options": [
+        {
+          "text": "`zaraz.track()`は変数を一度定義すれば、以降のすべてのTrack呼び出しに自動的に付与される値を設定するための関数である",
+          "wrongFeedback": "その説明は`zaraz.set()`の役割です。`zaraz.track()`はカスタムイベントをその場で記録するための関数です。"
+        },
+        {
+          "text": "`zaraz.ecommerce()`はEコマース専用のトリガーとアクションを個別に設定しない限り、一切データを送信できない関数である",
+          "wrongFeedback": "`zaraz.ecommerce()`はトリガーやアクションを個別に設定しなくても、Eコマース関連データを複数ツールへ送信できる統一メソッドです。"
+        },
+        {
+          "text": "`zaraz.track()`はイベントをその場で記録し、`zaraz.set()`は変数を一度設定して以降のTrack呼び出しに自動付与し、`zaraz.ecommerce()`はEコマースデータをトリガー設定なしで送信できる統一メソッドである"
+        },
+        {
+          "text": "この3つの関数はすべて同期的に実行され、いずれも`await`で完了を待つことはできない仕様になっている",
+          "wrongFeedback": "`zaraz.track()`は`async`関数であり、`await`を使って完了を待つことができます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`zaraz.track()`はカスタムイベントをその場でリアルタイムに記録するための関数、`zaraz.set()`は一度変数を設定すれば以降のすべての`track()`呼び出しに自動的に付与されるようにするショートカット、`zaraz.ecommerce()`はEコマース関連のデータをトリガーやアクションを個別に設定しなくても複数のツールへ送信できる統一メソッドです。`zaraz.track()`は`async`関数であり、必要に応じて`await`で完了を待つこともできます。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/get-started/",
+      "hint": "3つの関数がそれぞれ何のために用意されているのか、役割の違いを整理しましょう。",
+      "tags": [
+        "zaraz",
+        "topic-web-api"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Zaraz Web APIの3つのメソッド",
+          "columns": [
+            {
+              "heading": "zaraz.track()",
+              "items": [
+                "カスタムイベントをリアルタイムに記録",
+                "async関数でawait可能"
+              ]
+            },
+            {
+              "heading": "zaraz.set()",
+              "items": [
+                "変数を一度定義",
+                "以降のtrack呼び出しに自動付与"
+              ]
+            },
+            {
+              "heading": "zaraz.ecommerce()",
+              "items": [
+                "Eコマース専用データを送信",
+                "トリガー設定不要で複数ツールへ送信可能"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-015",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "Zarazのトリガーで「Click listener」をCSSセレクタ型で設定する際の注意点として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "セレクタには`#`や`.`のような記号を省略しても正しく動作する",
+          "wrongFeedback": "CSSセレクタでは`#`(ID)や`.`(クラス)の記号を省略すると、Click listenerが正しく動作しません。"
+        },
+        {
+          "text": "`Wait for actions`の値はミリ秒ではなく秒単位で指定する必要がある",
+          "wrongFeedback": "`Wait for actions`はミリ秒単位で指定します(例: `500`は500ミリ秒)。"
+        },
+        {
+          "text": "`<a>`タグのリンククリックを追跡する場合、要素セレクタを指定するだけで自動的にリンク先への遷移前にイベントが送信される",
+          "wrongFeedback": "`<a>`タグのリンククリックを追跡するには、要素セレクタだけでなく`href`属性に対するリスナーを個別に作成する必要があります。"
+        },
+        {
+          "text": "CSSセレクタでは`#`や`.`のような記号を省略すると動作しないため必ず含める必要があり、リンク要素のクリックを追跡する場合は`href`属性に対するリスナーを作成する必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Click listenerをCSSセレクタ型で設定する場合、`#`(ID)や`.`(クラス)などの記号を省略すると正しく動作しないため、必ず含める必要があります。また、`<a>`タグのようなリンク要素のクリックを追跡したい場合は、要素そのものではなく`href`属性に対するリスナーを個別に作成する必要があります。`Wait for actions`はミリ秒単位で指定し、指定した時間だけページ遷移を待たせてリクエストの送信を完了させます。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
+      "hint": "CSSセレクタの書き方やリンク要素の扱いについて、細かな設定上の注意点を思い出しましょう。",
+      "tags": [
+        "zaraz",
+        "topic-triggers"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "Click listener トリガーの設定例",
+          "filepath": "Trigger: Click listener (CSS)",
+          "lines": [
+            {
+              "text": "Rule type: Click listener"
+            },
+            {
+              "text": "Type: CSS"
+            },
+            {
+              "text": "Selector: #my-button",
+              "highlight": true
+            },
+            {
+              "text": "Wait for actions: 500 (ミリ秒)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-016",
+      "category": "zaraz",
+      "difficulty": "beginner",
+      "question": "Zarazを使い始める際の前提条件・初期設定について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Zarazを利用する前に、基本的にはウェブサイトをCloudflare経由でプロキシしておくことが推奨されるが、プロキシしないドメインでの利用方法も別途用意されている"
+        },
+        {
+          "text": "Zarazを利用するには、ウェブサイトをCloudflareのプロキシ経由にする以外の方法は一切存在しない",
+          "wrongFeedback": "プロキシしないドメインでZarazを利用する方法も別途ドキュメント化されており、「以外の方法は一切ない」という説明は誤りです。"
+        },
+        {
+          "text": "ツールを追加する際、Actionsとして選択できるのはPageviewsのみであり、EventsやE-commerceは選択できない",
+          "wrongFeedback": "Automatic Actionsに対応するツールでは、Pageviews・Events・E-commerceのいずれも選択できます。"
+        },
+        {
+          "text": "ツールを追加する際は、必ずCustom Actionsを手動で設定しない限り、いかなるアクションも発火させることができない",
+          "wrongFeedback": "Automatic Actionsに対応するツールでは、Custom Actionsを手動設定しなくても、Pageviews・Events・E-commerceのアクションを設定できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Zarazを使い始める前には、基本的にはウェブサイトをCloudflare経由でプロキシしておくことが推奨されますが、プロキシしないドメインでZarazを利用する方法も別途用意されています。ツールを追加する際、Automatic Actionsに対応するツールであればPageviews・Events・E-commerceのいずれかを選択でき、対応していないツールの場合はCustom Actionsで個別に設定します。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/get-started/",
+      "hint": "「プロキシが必須かどうか」と「Actionsの選択肢」の2点を、ドキュメントの記述に沿って確認しましょう。",
+      "tags": [
+        "zaraz",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ツール追加の基本的な流れ",
+          "steps": [
+            {
+              "text": "サイトをCloudflare経由でプロキシ(推奨。非プロキシ向けの方法も別途あり)"
+            },
+            {
+              "text": "Tag Setupページでツールをカタログから選択"
+            },
+            {
+              "text": "Actions設定でPageviews / Events / E-commerceを選択"
+            },
+            {
+              "text": "Saveして完了"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-017",
+      "category": "zaraz",
+      "difficulty": "advanced",
+      "question": "Zaraz設定の「Bot Score Threshold」および関連するプライバシー設定の説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Bot Score Thresholdを設定すると、ボットと判定されたリクエストに対して100%確実にZarazの読み込みを阻止できることが保証されている",
+          "wrongFeedback": "Bot Score Thresholdの判定はボットスコアという推定値に基づくものであり、常に100%正確であることは保証されていません。"
+        },
+        {
+          "text": "Bot Score Thresholdは「Automatedのみブロック」「AutomatedとLikely Automatedをブロック」といった選択肢を提供し、ボットスコアはあくまで推定値であるため常に正確とは限らない"
+        },
+        {
+          "text": "「Trim IP addresses」を有効にすると、サーバーサイドで読み込まれるツールに渡すIPアドレスを完全に暗号化し、復元を一切不可能にする",
+          "wrongFeedback": "「Trim IP addresses」はIPアドレスの一部を切り詰めて渡す機能であり、完全な暗号化・復元不可能化を行うものではありません。"
+        },
+        {
+          "text": "「Remove URL query parameters」は指定した一部のクエリパラメータのみを除去し、URLの構造を保ったまま部分的にマスキングする",
+          "wrongFeedback": "「Remove URL query parameters」はURLのクエリパラメータをすべて除去する設定であり、一部だけを選んで除去する仕組みではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Bot Score Thresholdは、「Block automated only(Automatedカテゴリのみブロック)」や「Block automated and likely automated(AutomatedとLikely Automatedをブロック)」といった選択肢を提供し、リクエストのボットスコアに基づいてZarazの読み込みを制御します。ただしボットスコアはあくまで推定値であり、常に正確であることが保証されているわけではありません。また「Trim IP addresses」はIPアドレスの一部を切り詰める機能、「Remove URL query parameters」はクエリパラメータをすべて除去する機能です。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
+      "hint": "ボットスコアという仕組み自体が、リクエストの性質をどの程度の確実性で言い当てられるものかを考えましょう。",
+      "tags": [
+        "zaraz",
+        "topic-privacy"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "プライバシー関連設定の効果",
+          "rowHeader": "設定項目",
+          "colHeader": "内容",
+          "rows": [
+            "Bot Score Threshold",
+            "Trim IP addresses",
+            "Remove URL query parameters"
+          ],
+          "cols": [
+            "目的",
+            "注意点"
+          ],
+          "cells": [
+            [
+              "ボットからのZaraz読み込みを抑制",
+              "スコアは推定値であり100%正確とは限らない"
+            ],
+            [
+              "IPアドレスの一部を切り詰めて転送",
+              "完全な暗号化・復元不可能化ではない"
+            ],
+            [
+              "URLのクエリパラメータを除去",
+              "一部のみの選択的除去はできない(全除去のみ)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zr-018",
+      "category": "zaraz",
+      "difficulty": "intermediate",
+      "question": "Zaraz設定の「Auto-inject script」に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "デフォルトでは無効になっており、有効化しない限りZarazはウェブサイト上でまったく動作しない",
+          "wrongFeedback": "「Auto-inject script」はデフォルトで有効になっています。無効化した場合はスクリプトを手動で追加する必要があります。"
+        },
+        {
+          "text": "この設定を無効化しても、Zarazの動作には一切影響がなく、常に自動でスクリプトが挿入され続ける",
+          "wrongFeedback": "この設定を無効化すると、Zarazは自動的なスクリプトの挿入を停止するため、動作に影響します。"
+        },
+        {
+          "text": "デフォルトで有効になっており、無効化した場合はZarazスクリプトを手動でサイトに追加する必要がある"
+        },
+        {
+          "text": "「Auto-inject script」はiframe要素には常に適用されず、別途「Iframe injection」を有効にしても効果を持たない",
+          "wrongFeedback": "「Iframe injection」を有効にすると、Zarazスクリプトをiframe要素にも挿入するようになります。「効果を持たない」という説明は誤りです。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "「Auto-inject script」はデフォルトで有効になっており、Zarazの動作に必要なスクリプトを自動的にページへ挿入します。この設定を無効化すると自動挿入が停止するため、Zarazの機能を使い続けるにはスクリプトを手動で追加する必要があります。なお、iframe要素への挿入は別設定の「Iframe injection」で制御され、これを有効にするとiframe内にもスクリプトが挿入されるようになります。",
+      "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
+      "hint": "デフォルトの状態(有効/無効)と、オフにしたときに開発者が追加で行う必要がある作業を考えましょう。",
+      "tags": [
+        "zaraz",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Auto-inject script の挙動",
+          "steps": [
+            {
+              "text": "デフォルトでAuto-inject scriptが有効"
+            },
+            {
+              "text": "ページ読み込み時にZarazスクリプトを自動挿入"
+            },
+            {
+              "text": "無効化すると自動挿入が停止",
+              "sub": "iframeへの挿入は別設定(Iframe injection)"
+            },
+            {
+              "text": "無効化時はスクリプトを手動でサイトに追加する必要がある"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

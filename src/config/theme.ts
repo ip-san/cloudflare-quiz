@@ -543,6 +543,17 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: '需要急増時のトラフィックを、Waiting Roomでキューイングしてオリジンを保護する設計ができる',
     },
     {
+      id: 'zaraz',
+      name: 'Zaraz',
+      icon: '🏷️',
+      color: 'ochre',
+      weight: 10,
+      description:
+        'サードパーティのアナリティクス・広告・マーケティングツールをブラウザではなくエッジで実行するZaraz。Tools/Triggers/Actionsモデル・Consent Management・Context Enricher・データレイヤー互換モード・Web API(track/set/ecommerce)・Preview/Debug Mode',
+      skillDescription:
+        'サードパーティツールをエッジで実行する仕組みを理解し、トリガー・アクション・同意管理を設計できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

@@ -70,6 +70,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   mw: 'magic-wan',
   sc: 'spectrum',
   wa: 'waiting-room',
+  zr: 'zaraz',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -466,6 +467,21 @@ const VALID_DOC_PAGES = [
   'waiting-room/reference/configuration-settings/',
   'waiting-room/reference/waiting-room-cookie/',
   'waiting-room/plans/',
+  'zaraz/',
+  'zaraz/get-started/',
+  'zaraz/reference/triggers/',
+  'zaraz/reference/supported-tools/',
+  'zaraz/reference/settings/',
+  'zaraz/custom-actions/create-action/',
+  'zaraz/custom-actions/create-trigger/',
+  'zaraz/consent-management/',
+  'zaraz/advanced/datalayer-compatibility/',
+  'zaraz/advanced/context-enricher/',
+  'zaraz/web-api/track/',
+  'zaraz/web-api/debug-mode/',
+  'zaraz/history/preview-mode/',
+  'zaraz/monitoring/',
+  'zaraz/pricing-info/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -912,6 +928,7 @@ describe('Quiz Content Quality', () => {
         'magic-wan',
         'spectrum',
         'waiting-room',
+        'zaraz',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])
