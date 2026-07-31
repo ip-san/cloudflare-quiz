@@ -37413,6 +37413,941 @@
           ]
         }
       ]
+    },
+    {
+      "id": "em-001",
+      "category": "email-security",
+      "difficulty": "beginner",
+      "question": "Email Securityのデプロイモデルである「配信前(pre-delivery)」と「配信後(post-delivery)」の違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "配信前(pre-delivery、MX/Inline)はMXレコードをCloudflareへ向けることでメールが受信箱に届く前にスキャンするのに対し、配信後(post-delivery、API/BCC-Journaling)はメールが受信箱に届いた後にスキャンする"
+        },
+        {
+          "text": "配信前(pre-delivery)はメールが受信箱に届いた後にスキャンし、配信後(post-delivery)はメールが受信箱に届く前にスキャンする",
+          "wrongFeedback": "説明が入れ替わっています。受信箱に届く前にスキャンするのが配信前(pre-delivery)、届いた後にスキャンするのが配信後(post-delivery)です。"
+        },
+        {
+          "text": "配信前・配信後のどちらのデプロイモデルでも、MXレコードをCloudflareへ向ける設定が必須である",
+          "wrongFeedback": "MXレコードの変更が必須なのは配信前(MX/Inline)のみです。配信後(API/BCC-Journaling)ではMXレコードの変更は不要です。"
+        },
+        {
+          "text": "配信後(post-delivery)デプロイでは、Microsoft 365・Google Workspaceを問わずすべてのプロバイダで同一のAPI統合方式が使われる",
+          "wrongFeedback": "プロバイダによって統合方式が異なります。Microsoft 365はMicrosoft Graph API、Google WorkspaceはBCCが使われます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "配信前(pre-delivery、MX/Inline)はMXレコードをCloudflareへ向けることで、メールが受信箱に届く前にスキャンします。配信後(post-delivery、API/BCC-Journaling)はメールが受信箱に届いた後にスキャンし、MXレコードの変更は不要です。統合方式はプロバイダによって異なり、Microsoft 365はMicrosoft Graph API、Google WorkspaceはBCCが使われます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/setup/#1-choose-a-deployment",
+      "hint": "「メールが受信箱に届く前」と「届いた後」、どちらのタイミングでスキャンするかという時系列の違いを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "配信前 vs 配信後デプロイ",
+          "columns": [
+            {
+              "heading": "配信前(MX/Inline)",
+              "items": [
+                "受信箱に届く前にスキャン",
+                "MXレコードの変更が必要"
+              ]
+            },
+            {
+              "heading": "配信後(API/BCC-Journaling)",
+              "items": [
+                "受信箱に届いた後にスキャン",
+                "MXレコード変更は不要"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-002",
+      "category": "email-security",
+      "difficulty": "intermediate",
+      "question": "Email Securityがフィッシングを検知する基本的な考え方に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "多くの場合、単一のパターン評価だけで最終的な判定(verdict)が確定する仕組みになっている",
+          "wrongFeedback": "多くの場合、単一の要素だけでは最終判定は確定しません。複数の要素・非要素の組み合わせで判定します。"
+        },
+        {
+          "text": "多くの場合、単一のパターン評価だけでは最終判定が確定せず、複数の要素・非要素を組み合わせて正規のフィッシングキャンペーンと無害なトラフィックを区別している。またMimecastのような一部のURLリライト方式はデコードできないという制約がある"
+        },
+        {
+          "text": "すべてのURLリライト方式は例外なくデコード可能であり、デコードできない方式は存在しない",
+          "wrongFeedback": "Mimecastのような一部のURLリライト方式はデコードできないという制約が明記されています。"
+        },
+        {
+          "text": "Email SecurityがスコープとするのはDDoS攻撃(L3/L4/L7のTCP/UDP/DNS/HTTPSトラフィック)であり、SMTP/IMAP/POP3のようなメールプロトコルは対象外である",
+          "wrongFeedback": "逆です。Email SecurityはSMTP・IMAP・POP3を対象とし、DDoS攻撃対策は別のDDoS Protectionの範疇です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "多くの場合、単一のパターン評価だけでは最終判定が確定せず、複数の要素・非要素を組み合わせて正規のフィッシングキャンペーンと無害なトラフィックを区別しています。またMimecastのような一部のURLリライト方式はデコードできないという制約があります。Email SecurityはSMTP・IMAP・POP3のようなメールプロトコルを対象とします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/how-es-detects-phish/#scope",
+      "hint": "「1つの手がかりだけで決めつけない」という判定方式の考え方を考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "フィッシング判定の考え方",
+          "steps": [
+            {
+              "text": "複数のパターン評価を実施"
+            },
+            {
+              "text": "単一の要素だけでは判定を確定させない"
+            },
+            {
+              "text": "複数の要素・非要素を組み合わせて評価"
+            },
+            {
+              "text": "最終的なverdictを決定"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-003",
+      "category": "email-security",
+      "difficulty": "intermediate",
+      "question": "QRコードを使ったフィッシング攻撃(Quishing)に対するEmail Securityの検知手法に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "QRコード画像はスキャン対象から除外されており、画像内のURLを解析する仕組みは提供されていない",
+          "wrongFeedback": "QRコードに似た画像をURLへ解決したうえで、他のURL検知手法を適用する仕組みが提供されています。"
+        },
+        {
+          "text": "QRコードフィッシングの検知は、メッセージの送信者レピュテーションのみに基づいて行われ、画像自体の解析は行われない",
+          "wrongFeedback": "QRコードに似た画像をURLへ解決する処理が行われます。送信者レピュテーションのみに基づく判定ではありません。"
+        },
+        {
+          "text": "QRコードに似た画像をURLへ解決し、そのうえで他の悪性URL検知手法(継続的クロールやMLモデルなど)を適用するという仕組みで検知される"
+        },
+        {
+          "text": "QRコードフィッシングはEmail Securityの検知対象カテゴリには含まれておらず、別のCloudflare製品での対応が必要である",
+          "wrongFeedback": "QRコードフィッシングもEmail Securityの検知対象カテゴリの1つとして明記されています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "QRコードに似た画像をURLへ解決し、そのうえで他の悪性URL検知手法(継続的クロールやMLモデルなど)を適用するという仕組みで検知されます。QRコードフィッシング(Quishing)はEmail Securityの検知対象カテゴリの1つとして明記されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/how-es-detects-phish/#malicious-urls-associated-with-qr-codes-qr-code-phishing-attacks-quishing",
+      "hint": "画像に埋め込まれたQRコードを、まず「文字列としてのURL」に変換してから判定していると考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Quishing(QRコードフィッシング)の検知",
+          "steps": [
+            {
+              "text": "メールに添付されたQRコード風の画像を検出"
+            },
+            {
+              "text": "画像をURLへ解決"
+            },
+            {
+              "text": "他の悪性URL検知手法を適用"
+            },
+            {
+              "text": "悪性と判定されればブロック"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-004",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "URL短縮サービス(Bitly等)を悪用したフィッシングURLに対する検知タイミングに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "URL短縮サービスのリンクは、メッセージが配信されるずっと以前の時点で事前にクロールされ、キャッシュされた結果が使われる",
+          "wrongFeedback": "短縮URLはメッセージ配信の時点でリアルタイムにクロールされます。サービスの動的な性質上、意図的に事前クロールは行われていません。"
+        },
+        {
+          "text": "URL短縮サービスのリンクは検知対象から除外されており、最終的な遷移先URLまでは追跡されない",
+          "wrongFeedback": "短縮URLは最終的な遷移先URLまでリアルタイムでクロールされ、追跡されます。"
+        },
+        {
+          "text": "短縮URLの検知には人間のアナリストによる目視確認が必須であり、自動化された仕組みは提供されていない",
+          "wrongFeedback": "自動化されたリアルタイムクロールと機械学習による検知が行われます。人間の目視確認が必須というわけではありません。"
+        },
+        {
+          "text": "URL短縮サービスの動的な性質上、Cloudflareは意図的に事前クロールを行わず、メッセージ配信の瞬間にリアルタイムでクロールしてから他のURL検知手法を適用する"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "URL短縮サービスの動的な性質上、Cloudflareは意図的に事前クロールを行いません。メッセージ配信の瞬間にリアルタイムでクロールし、最終的な遷移先URLを特定してから他のURL検知手法を適用します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/how-es-detects-phish/#malicious-urls-behind-url-shortening-services",
+      "hint": "「あらかじめ結果を用意しておく」方式と「その場で確認する」方式のどちらが、変わりやすい対象に向いているかを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "URL短縮サービスのリンク検知",
+          "steps": [
+            {
+              "text": "メッセージが配信される"
+            },
+            {
+              "text": "その瞬間にリアルタイムで短縮URLをクロール"
+            },
+            {
+              "text": "最終的な遷移先URLを特定"
+            },
+            {
+              "text": "他のURL検知手法を適用"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-005",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "配信時点では悪性コンテンツが検知されない「Deferred campaign attacks」に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "配信時点ではペイロードもURLもクリーンな状態だが、3〜4時間後に遅延して攻撃が有効化される仕組みのキャンペーンであり、URLリライトやDNSブロックによって対応する"
+        },
+        {
+          "text": "Deferred campaign attacksは配信時点で悪性ペイロードが明確に検知されるキャンペーンであり、遅延要素は存在しない",
+          "wrongFeedback": "配信時点ではクリーンで、3〜4時間後に遅延して攻撃が有効化される点が特徴です。"
+        },
+        {
+          "text": "Deferred campaign attacksへの対応には、機械学習モデルによる添付ファイルのビットマップ解析のみが使われる",
+          "wrongFeedback": "対応にはURLリライトやDNSブロックが使われます。添付ファイルのビットマップ解析は別の攻撃タイプ(悪性ペイロード添付)への対応手法です。"
+        },
+        {
+          "text": "Deferred campaign attacksは遅延時間が常に24時間以上であり、数時間単位での有効化は想定されていない",
+          "wrongFeedback": "遅延時間は3〜4時間程度とされています。24時間以上ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Deferred campaign attacksは、配信時点ではペイロードもURLもクリーンな状態ですが、3〜4時間後に遅延して攻撃が有効化される仕組みのキャンペーンです。この種の攻撃には、URLリライトやDNSブロックによって対応します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/how-es-detects-phish/#deferred-campaign-attacks",
+      "hint": "「配信された瞬間」と「実際にユーザーがクリックする瞬間」の間に、時間差が仕込まれている攻撃だと考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Deferred campaign attacksのタイムライン",
+          "actors": [
+            "攻撃者",
+            "メール",
+            "受信者"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "クリーンな状態でメールを配信"
+            },
+            {
+              "from": 1,
+              "to": 1,
+              "text": "3〜4時間後にURL/ペイロードを悪性化"
+            },
+            {
+              "from": 2,
+              "to": 1,
+              "text": "受信者がクリックした時点で攻撃発動"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-006",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "Email Securityにおける「Detection」と「Disposition」の関係、およびSPAM判定時のヘッダー表記に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "1通のメールは複数のdispositionを同時に持つことができ、代わりにdetectionの方が常に1つに限定されるという関係になっている",
+          "wrongFeedback": "逆です。1通のメールは複数のdetectionを持てますが、最終的なdispositionは常に1つだけです。"
+        },
+        {
+          "text": "1通のメールは複数のdetectionを持つことができるが、最終的なdispositionは常に1つに定まる。SPAMと判定されたメールのdispositionヘッダーには「SPAM」ではなく「UCE」(unsolicited commercial emails)という値がタグ付けされる"
+        },
+        {
+          "text": "SPAMと判定されたメールのdispositionヘッダーには、他のdispositionと同様に、判定名称であるそのままの「SPAM」という値が特に変換されることなくタグ付けされる",
+          "wrongFeedback": "SPAMと判定された場合、ヘッダーには「SPAM」ではなく「UCE」という値がタグ付けされます。"
+        },
+        {
+          "text": "detectionとdispositionは実質的に同じ概念を指す単なる別名にすぎず、この2つの用語の間に本質的な違いは存在しないとされている",
+          "wrongFeedback": "detectionは脅威を識別するプロセス、dispositionはその結果として付与される最終的な1つの判定であり、明確に異なる概念です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "1通のメールは複数のdetectionを持つことができますが、最終的なdispositionは常に1つに定まります。SPAMと判定されたメールのdispositionヘッダーには「SPAM」ではなく「UCE」(unsolicited commercial emails)という値がタグ付けされます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/dispositions-and-attributes/#dispositions",
+      "hint": "「脅威を見つけるプロセス」と「最終的に1つに絞られる結論」の違いを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "DetectionからDispositionへ",
+          "steps": [
+            {
+              "text": "複数のdetection(脅威判定トリガー)が発火しうる"
+            },
+            {
+              "text": "それらを総合して評価"
+            },
+            {
+              "text": "最終的なdispositionを1つ確定"
+            },
+            {
+              "text": "SPAM判定はヘッダー上でUCEと表記"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-007",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "Email Securityのdisposition(判定)として用意されている値に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Bulkは、複数の受信者へ同時送信された悪性メールを指す用語であり、SpamやMaliciousとは無関係に独立して定義されている",
+          "wrongFeedback": "BulkはGraymail(SpamとSuspiciousの中間に位置するようなメール、例: 意図的に配信停止リンクを分かりにくくしたマーケティングメール)を指す用語として定義されています。"
+        },
+        {
+          "text": "Spoofは、商業目的の非悪性キャンペーンに関連するトラフィックを指す用語であり、送信者認証(SPF/DKIM/DMARC)とは無関係である",
+          "wrongFeedback": "Spoofは、送信者認証ポリシー(SPF/DKIM/DMARC)に非準拠、またはEnvelope FromとHeader Fromの値が一致しないフィッシングキャンペーンに関連するトラフィックを指します。"
+        },
+        {
+          "text": "Maliciousは複数のフィッシング判定トリガーが発動し悪性行為のしきい値を満たしたトラフィックを指し、Spoofは送信者認証への非準拠やEnvelope From/Header From不一致を伴うトラフィックを指し、Bulkはグレイメール(SpamとSuspiciousの中間)を指す"
+        },
+        {
+          "text": "Cleanという判定値は存在せず、フィッシングキャンペーンに関連しないメールにも何らかの脅威系dispositionが必ず付与される",
+          "wrongFeedback": "フィッシングキャンペーンに関連しないメールにはCleanという判定値が付与されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Maliciousは複数のフィッシング判定トリガーが発動し悪性行為のしきい値を満たしたトラフィックを指します。Spoofは送信者認証(SPF/DKIM/DMARC)への非準拠やEnvelope From/Header From不一致を伴うトラフィックを指し、Bulkはグレイメール(SpamとSuspiciousの中間)を指します。フィッシングキャンペーンに関連しないメールにはCleanが付与されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/dispositions-and-attributes/#available-values",
+      "hint": "「明確に悪意がある」ものと「悪意はないがグレー」なもの、それぞれに対応する判定値を考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "主なdisposition値",
+          "items": [
+            {
+              "text": "Malicious(悪性行為のしきい値を満たす)"
+            },
+            {
+              "text": "Spoof(送信者認証の非準拠・不一致)"
+            },
+            {
+              "text": "Spam(商業目的の非悪性キャンペーン)"
+            },
+            {
+              "text": "Bulk(グレイメール)"
+            },
+            {
+              "text": "Clean(フィッシング関連なし)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-008",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "dispositionとは別の軸で情報が付与される仕組みであることを踏まえると、Email Securityの「Attribute(属性)」に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Attributeはdispositionと同じ概念であり、1通のメールに複数付与されることはない",
+          "wrongFeedback": "Attributeはdispositionとは別の概念で、1通のメールに複数のAttributeが付与されることがあります。"
+        },
+        {
+          "text": "`ENCRYPTED`という属性は、メッセージが正規の暗号化通信(TLS)で配送されたことを示すものである",
+          "wrongFeedback": "`ENCRYPTED`はメッセージ自体(添付ファイルなど)が暗号化されていることを示す属性であり、配送経路のTLS暗号化を示すものではありません。"
+        },
+        {
+          "text": "`BEC`属性は、なりすまし登録簿(impersonation registry)に登録されたアドレスとは無関係に、任意のメールへ独立して付与される",
+          "wrongFeedback": "`BEC`属性はimpersonation registryに登録されたリストに含まれるアドレスに関連して付与され、`MALICIOUS`または`SPOOF`のdispositionと関連します。"
+        },
+        {
+          "text": "Attributeはdispositionとは独立して付与される付加的な情報で、1通のメールに複数付与されることがある。例として、新規登録ドメインからの送信を示す`NEW_DOMAIN_SENDER`や、実行可能ファイルを含むことを示す`EXECUTABLE`などがある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Attributeはdispositionとは独立して付与される付加的な情報で、1通のメールに複数付与されることがあります。例として、新規登録ドメインからの送信を示す`NEW_DOMAIN_SENDER`、メッセージ自体が暗号化されていることを示す`ENCRYPTED`、実行可能ファイルを含むことを示す`EXECUTABLE`などがあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/dispositions-and-attributes/#attributes",
+      "hint": "dispositionが「最終的な1つの結論」であるのに対し、Attributeは「複数付けられるタグ」のようなものだと考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Attributeの例",
+          "items": [
+            {
+              "text": "NEW_DOMAIN_SENDER(新規登録ドメインから送信)"
+            },
+            {
+              "text": "NEW_DOMAIN_LINK(新規登録ドメインへのリンク)"
+            },
+            {
+              "text": "ENCRYPTED(メッセージが暗号化)"
+            },
+            {
+              "text": "EXECUTABLE(実行可能ファイルを含む)"
+            },
+            {
+              "text": "BEC(なりすまし登録簿に関連)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-009",
+      "category": "email-security",
+      "difficulty": "intermediate",
+      "question": "Email Securityのリージョナル処理(regional processing)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "リージョナル処理を利用するには、Data Localization Suite(DLS)を別途購入する必要がある",
+          "wrongFeedback": "DLSを別途購入する必要はありません。Email SecurityはDLSの仕組みを使いますが、DLS自体の購入は不要です。"
+        },
+        {
+          "text": "リージョナル処理はUS・Germany・India・Australiaの4リージョンをサポートしており、DLS自体の購入は不要だが、MX/InlineまたはBCC/Journalingでデプロイした顧客のみが利用できる(API/配信後デプロイでは利用できない)"
+        },
+        {
+          "text": "リージョナル処理はAPI(配信後)デプロイでのみ利用可能で、MX/InlineやBCC/Journalingのデプロイでは利用できない",
+          "wrongFeedback": "逆です。リージョナル処理はMX/InlineまたはBCC/Journalingでのデプロイでのみ利用でき、APIデプロイでは利用できません。"
+        },
+        {
+          "text": "リージョナル処理がサポートするリージョンは世界中のあらゆる地域を網羅しており、特定の国・地域に限定されない",
+          "wrongFeedback": "サポートされるのはUS・Germany・India・Australiaの4リージョンに限定されています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "リージョナル処理はUS・Germany・India・Australiaの4リージョンをサポートしています。Data Localization Suite(DLS)自体の購入は不要ですが、MX/InlineまたはBCC/Journalingでデプロイした顧客のみが利用でき、API(配信後)デプロイでは利用できません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/regional-processing/",
+      "hint": "「利用できるデプロイモデルが限定されている」という制約と、「別製品の購入は不要」という点の両方を押さえましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "リージョナル処理の利用可否",
+          "columns": [
+            {
+              "heading": "MX/Inline・BCC/Journaling",
+              "items": [
+                "リージョナル処理を利用可能"
+              ]
+            },
+            {
+              "heading": "API(配信後)",
+              "items": [
+                "リージョナル処理は利用不可"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-010",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "人的なレビュー層をどう位置づけているかを踏まえると、PhishGuardに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "PhishGuardは完全に自動化された機械学習モデルの一種であり、人間のアナリストがレビューへ直接関与することは一切ない",
+          "wrongFeedback": "PhishGuardは人間のアナリストチームによる追加のレビュー層です。自動化された仕組みではありません。"
+        },
+        {
+          "text": "PhishGuardは配信前(pre-delivery)環境でのみ機能する仕組みであり、配信後(post-delivery)環境では一切利用できないとされている",
+          "wrongFeedback": "逆です。PhishGuardは配信後(post-delivery)環境でのみ機能します。"
+        },
+        {
+          "text": "PhishGuardは人間のアナリストチームによる追加のレビュー層で、なりすましイベントや誤検知・見逃しのように自動化システムが見逃しうる事象に対応する。配信後(post-delivery)環境でのみ機能し、PhishGuard契約顧客はauto-movesの設定が必須となる"
+        },
+        {
+          "text": "PhishGuardを契約している場合であっても、auto-movesの設定はあくまで任意の項目にとどまり、設定しなくても運用上は特に支障がないとされている",
+          "wrongFeedback": "PhishGuard契約顧客にとってauto-movesの設定は必須とされています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "PhishGuardは人間のアナリストチームによる追加のレビュー層で、なりすましイベントや誤検知・見逃しのように、コンテキスト不足で自動化システムが見逃しうる事象に対応します。配信後(post-delivery)環境でのみ機能し、PhishGuard契約顧客はauto-movesの設定が必須となります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/phishguard/",
+      "hint": "自動検知が苦手な「文脈の判断」を補うのは誰か、そしてそれがどのデプロイ環境で機能するかを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "layer",
+          "label": "PhishGuardの位置づけ",
+          "layers": [
+            {
+              "text": "人間のアナリストによるPhishGuardレビュー"
+            },
+            {
+              "text": "自動化された検知システム"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-011",
+      "category": "email-security",
+      "difficulty": "intermediate",
+      "question": "Retro Scanに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Retro ScanはGoogle Workspaceアカウント専用の機能であり、Microsoft 365では利用できない",
+          "wrongFeedback": "逆です。Retro ScanはMicrosoft 365アカウント専用の機能です。"
+        },
+        {
+          "text": "Retro Scanはスキャン対象期間に上限がなく、アカウント作成以降のすべてのメールをスキャン対象にする",
+          "wrongFeedback": "スキャン対象は最大14日間分のメールに限定されています。"
+        },
+        {
+          "text": "Retro Scanのレポートには、スキャンで判定を受けたメールが上限なくすべて一覧表示される",
+          "wrongFeedback": "レポートの詳細一覧には最大1,000件までのメールが表示されます。"
+        },
+        {
+          "text": "Retro ScanはMicrosoft 365アカウント専用の機能で、最大14日間分のメールをスキャンし、レポートには最大1,000件までのメールが一覧表示される。Email Securityを未購入の顧客でも無料で試すことができる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Retro ScanはMicrosoft 365アカウント専用の機能で、最大14日間分のメールをスキャンします。レポートの詳細一覧には最大1,000件までのメールが表示されます。Email Securityを未購入の顧客でも無料で試すことができます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/retro-scan/",
+      "hint": "現在の対策で見逃していないかを確認するための機能に、いくつかの数値的な上限が設けられていることを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Retro Scanの制約",
+          "items": [
+            {
+              "text": "Microsoft 365アカウント専用"
+            },
+            {
+              "text": "最大14日間分をスキャン"
+            },
+            {
+              "text": "レポートは最大1,000件まで表示"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-012",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "ライセンス要件と展開のタイムラグを踏まえると、Email SecurityのOutbound DLPに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Outbound DLPはMicrosoft 365専用の機能で、Microsoft E3またはE5ライセンスが必要である。DLP Assist add-inはメッセージがクライアント側で送信される前にEMLへヘッダーを挿入する仕組みで、組織への伝播には最大24時間かかることがある"
+        },
+        {
+          "text": "Outbound DLPはGoogle Workspaceでも全く同じ条件で利用でき、Microsoft 365で必要とされているような特定のライセンスは一切要求されない",
+          "wrongFeedback": "Outbound DLPはMicrosoft 365専用の機能であり、Microsoft E3またはE5ライセンスが必要です。Google Workspaceでは利用できません。"
+        },
+        {
+          "text": "DLP Assist add-inは、メッセージがクライアントから送信されて送信サーバー側に到達した後の段階で初めてヘッダーを挿入する仕組みになっている",
+          "wrongFeedback": "DLP Assist add-inはクライアント側で、メッセージが送信される前にEMLへヘッダーを挿入する仕組みです。"
+        },
+        {
+          "text": "DLP Assist add-inを組織全体へ展開すると、伝播にかかる時間は一切なく、即座に(数分以内に)すべてのユーザーへ反映される仕組みになっている",
+          "wrongFeedback": "add-inの伝播には最大24時間かかることがあると明記されています。即座に反映されるわけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Outbound DLPはMicrosoft 365専用の機能で、Microsoft E3またはE5ライセンスが必要です。DLP Assist add-inはメッセージがクライアント側で送信される前にEMLへヘッダーを挿入する仕組みで、組織への伝播には最大24時間かかることがあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/outbound-dlp/#2-dlp-assist-add-in",
+      "hint": "「どのタイミングで」「どこで」ヘッダーが挿入されるのか、送信の前後関係を考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "DLP Assist add-inの動作",
+          "steps": [
+            {
+              "text": "ユーザーがOutlookでメールを作成"
+            },
+            {
+              "text": "送信前にクライアント側でEMLへヘッダーを挿入"
+            },
+            {
+              "text": "メールが送信される"
+            },
+            {
+              "text": "Microsoft Purview DLPがヘッダーを条件にブロック等を判断"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-013",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "クライアントの新旧やデバイス種別によって挙動が変わりうることを踏まえると、Outbound DLPのプラットフォームごとの安定性に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Outbound DLPはユーザーが管理するメールボックスだけでなく、共有メールボックスや会議室メールボックスも同様に保護する",
+          "wrongFeedback": "Outbound DLPが保護するのはユーザーが管理するメールボックスのみです。"
+        },
+        {
+          "text": "Outbound DLPは、Outlook Webアプリや新しいOutlookデスクトップクライアントでは安定して動作する一方、旧バージョンのOutlookデスクトップクライアントではMicrosoftの制限により動作せず、モバイルクライアント(iOS・Android)でも不安定になる"
+        },
+        {
+          "text": "旧バージョンのOutlookデスクトップクライアントでもOutbound DLPは問題なく安定して動作する",
+          "wrongFeedback": "旧バージョンのOutlookデスクトップクライアントでは、Microsoftの制限により動作しません。"
+        },
+        {
+          "text": "モバイルクライアント(iOS・Android)でのOutbound DLPの動作は、デスクトップクライアントと全く同じ安定性を持つ",
+          "wrongFeedback": "モバイルクライアントでは、AppleやMicrosoftの制限により動作が不安定になるとされています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Outbound DLPは、Outlook Webアプリや新しいOutlookデスクトップクライアントでは安定して動作します。一方、旧バージョンのOutlookデスクトップクライアントではMicrosoftの制限により動作せず、モバイルクライアント(iOS・Android)でもAppleやMicrosoftの制限により不安定になります。また、保護対象はユーザーが管理するメールボックスのみです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/outbound-dlp/#limitations",
+      "hint": "「新しいクライアント」と「古いクライアント」、「デスクトップ」と「モバイル」で、安定性がすべて同じとは限らないことを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Outbound DLPのクライアント別安定性",
+          "columns": [
+            {
+              "heading": "安定",
+              "items": [
+                "Outlook Webアプリ",
+                "新しいOutlookデスクトップ"
+              ]
+            },
+            {
+              "heading": "不安定・非対応",
+              "items": [
+                "旧Outlookデスクトップ(非対応)",
+                "iOS/Androidモバイル(不安定)"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-014",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "5種類のアクションそれぞれの適用範囲を踏まえると、Auto-movesで選択できるアクションのプラットフォーム制限に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "「Soft delete - user recoverable」はGoogle Workspaceユーザー専用のオプションとして提供されており、Microsoft 365の顧客はこのオプションを一切利用できない",
+          "wrongFeedback": "逆です。「Soft delete - user recoverable」はMicrosoft 365顧客専用のオプションです。"
+        },
+        {
+          "text": "「Move to trash」はMicrosoft 365ユーザー専用のオプションとして提供されており、Google Workspaceの顧客はこのオプションを一切利用できない",
+          "wrongFeedback": "逆です。「Move to trash」はGoogle Workspaceユーザー専用のオプションです。"
+        },
+        {
+          "text": "「Soft delete - user recoverable」はMicrosoft 365顧客専用、「Move to trash」はGoogle Workspaceユーザー専用のオプションであり、いずれのプラットフォームでも利用できる「Hard delete - admin recoverable」「Move to junk」「No action」とは異なりプラットフォームが限定されている"
+        },
+        {
+          "text": "Auto-movesで選択できるアクションはすべてのプラットフォームで共通であり、プラットフォームによる利用制限は一切存在しない",
+          "wrongFeedback": "「Soft delete」「Move to trash」のようにプラットフォームごとに利用できるオプションが異なります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "「Soft delete - user recoverable」はMicrosoft 365顧客専用、「Move to trash」はGoogle Workspaceユーザー専用のオプションです。一方、「Hard delete - admin recoverable」「Move to junk」「No action」はいずれのプラットフォームでも利用できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/settings/auto-moves/",
+      "hint": "5つのアクションのうち、プラットフォーム限定のものとそうでないものを分けて考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Auto-movesアクションのプラットフォーム制限",
+          "columns": [
+            {
+              "heading": "プラットフォーム限定",
+              "items": [
+                "Soft delete(M365専用)",
+                "Move to trash(Google Workspace専用)"
+              ]
+            },
+            {
+              "heading": "全プラットフォーム共通",
+              "items": [
+                "Hard delete",
+                "Move to junk",
+                "No action"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-015",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "User submissionsとTeam submissionsの違いに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Team submissionsはユーザーが送信するものであり、User submissionsはセキュリティチームが送信するものである",
+          "wrongFeedback": "説明が入れ替わっています。User submissionsはユーザーが送信するもの、Team submissionsはセキュリティチームが送信するものです。"
+        },
+        {
+          "text": "User submissions・Team submissionsのどちらも、契約プランに関わらず常にCloudflareによる人間のレビューを受ける",
+          "wrongFeedback": "すべてのTeam submissionsは人間のレビューを受けますが、User submissionsが人間のレビューを受けるかどうかはPhishGuard契約の有無によって異なります。"
+        },
+        {
+          "text": "PhishGuardを契約していない顧客であっても、User submissionsは常にCloudflareによる人間のレビューを受ける",
+          "wrongFeedback": "PhishGuardを契約していない顧客の場合、人間による分析を受けられるのはTeam submissionsのみです。"
+        },
+        {
+          "text": "Team submissionsはすべて例外なくCloudflareによる人間のレビューを受けるのに対し、User submissionsが人間のレビューを受けられるかどうかはPhishGuardの契約有無に依存し、PhishGuard非契約の顧客はTeam submissionsとしての提出でのみ人間による分析を受けられる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Team submissionsはすべて例外なくCloudflareによる人間のレビューを受けます。一方、User submissionsが人間のレビューを受けられるかどうかはPhishGuardの契約有無に依存し、PhishGuard非契約の顧客はTeam submissionsとしての提出でのみ人間による分析を受けられます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/submissions/user-submissions/",
+      "hint": "「誰が提出したか」だけでなく、「その提出が必ず人間の目でレビューされるかどうか」という契約状況による違いを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "User submissions vs Team submissions",
+          "columns": [
+            {
+              "heading": "User submissions",
+              "items": [
+                "ユーザーが提出",
+                "人間レビューはPhishGuard契約次第"
+              ]
+            },
+            {
+              "heading": "Team submissions",
+              "items": [
+                "セキュリティチームが提出",
+                "常に人間レビューを受ける"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-016",
+      "category": "email-security",
+      "difficulty": "intermediate",
+      "question": "提出(submission)が「Invalid(無効)」と判定される理由に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "無効と判定される理由には、EMLファイルが添付されていないこと、誤ったファイル拡張子で提出されたこと、誤ったチームまたはユーザーのエイリアス宛てに提出されたことの3つがある"
+        },
+        {
+          "text": "無効と判定される理由は、提出者がEmail Securityの管理者権限を持っていない場合のみである",
+          "wrongFeedback": "権限の有無は無効判定の理由として挙げられていません。EMLファイルの添付漏れ、誤った拡張子、誤った宛先のエイリアスが理由です。"
+        },
+        {
+          "text": "無効と判定される理由は、提出対象のメールが既にMaliciousと判定されている場合のみである",
+          "wrongFeedback": "既にMaliciousと判定されているかどうかは無効判定の理由ではありません。"
+        },
+        {
+          "text": "無効と判定されたメールは自動的に削除され、管理者が内容を確認する手段は用意されていない",
+          "wrongFeedback": "無効な提出はSubmission IDや提出メールで検索して確認できます。自動削除されるわけではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "無効と判定される理由には、EMLファイルが添付されていないこと、誤ったファイル拡張子で提出されたこと、誤ったチームまたはユーザーのエイリアス宛てに提出されたことの3つがあります。無効な提出はSubmission IDや提出メールで検索して確認できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/submissions/invalid-submissions/",
+      "hint": "提出という行為そのものが、届く前の段階で形式的に成立しなかったケースを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "無効な提出(Invalid submission)の理由",
+          "items": [
+            {
+              "text": "EMLファイルが添付されていない"
+            },
+            {
+              "text": "誤ったファイル拡張子で提出"
+            },
+            {
+              "text": "誤ったチーム・ユーザーのエイリアス宛て"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-017",
+      "category": "email-security",
+      "difficulty": "intermediate",
+      "question": "Investigation(調査)機能でのメールのエクスポート・移動に関する上限として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ダッシュボードUIとAPIのどちらを使っても、一度にエクスポートできるメール件数の上限は同じ500件である",
+          "wrongFeedback": "ダッシュボードUIの上限は500件ですが、APIを使えば最大1,000件までエクスポートできます。"
+        },
+        {
+          "text": "ダッシュボードUIからは一度に最大500件までのメールをエクスポートできるのに対し、APIを使えば最大1,000件までエクスポートできる。また一度に移動(move)できるメッセージの件数は最大1,000件である"
+        },
+        {
+          "text": "一度に移動(move)できるメッセージの件数に上限はなく、検索条件に一致したメールをすべて一括で移動できる",
+          "wrongFeedback": "一度に移動できるメッセージの件数は最大1,000件までという上限があります。"
+        },
+        {
+          "text": "APIを使ったエクスポートの上限はダッシュボードUIより少なく、最大100件までに制限されている",
+          "wrongFeedback": "APIを使ったエクスポートの上限はダッシュボードUIより多く、最大1,000件までです。100件ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "ダッシュボードUIからは一度に最大500件までのメールをエクスポートできるのに対し、APIを使えば最大1,000件までエクスポートできます。また一度に移動(move)できるメッセージの件数は最大1,000件です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/investigation/search-email/#export-messages",
+      "hint": "ダッシュボードのUI経由の操作と、APIを直接叩く操作とで、扱える件数の上限が違うことを考えましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "エクスポート・移動の上限",
+          "columns": [
+            {
+              "heading": "ダッシュボードUIエクスポート",
+              "items": [
+                "最大500件"
+              ]
+            },
+            {
+              "heading": "APIエクスポート",
+              "items": [
+                "最大1,000件"
+              ]
+            },
+            {
+              "heading": "一括移動(Move)",
+              "items": [
+                "最大1,000件"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "em-018",
+      "category": "email-security",
+      "difficulty": "advanced",
+      "question": "Investigation機能の高度な検索(Advanced screen)と添付ファイルのプレビューに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Advanced screenでは、Subjectを含むすべてのフィールドに複数のキーワードをカンマ区切りで入力できる",
+          "wrongFeedback": "Subject以外のフィールドは単一の値のみを入力できるという制約があります。"
+        },
+        {
+          "text": "添付ファイルのプレビューは、PDF・Word・Excelなど主要なオフィス文書形式すべてに対応している",
+          "wrongFeedback": "現時点でプレビューに対応しているのはPDFファイルのみです。"
+        },
+        {
+          "text": "Advanced screenでは、Subjectを除くすべてのフィールドに単一の値のみを入力できるという制約があり、また添付ファイルのプレビューは現時点でPDFファイルのみに対応している"
+        },
+        {
+          "text": "Advanced screenでは日付範囲(Date range)の指定が任意であり、指定しなくても検索を実行できる",
+          "wrongFeedback": "Advanced screenでは日付範囲の指定が必須(Required)とされています。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Advanced screenでは、Subjectを除くすべてのフィールドに単一の値のみを入力できるという制約があります。また、添付ファイルのプレビューは現時点でPDFファイルのみに対応しています。日付範囲の指定も必須です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/investigation/search-email/#advanced-screen",
+      "hint": "Subjectフィールドだけが他のフィールドと異なる扱いを受けている点に注目しましょう。",
+      "tags": [
+        "email-security",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Advanced screenの入力制約",
+          "columns": [
+            {
+              "heading": "Subject",
+              "items": [
+                "複数キーワード可能"
+              ]
+            },
+            {
+              "heading": "Subject以外のフィールド",
+              "items": [
+                "単一の値のみ"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

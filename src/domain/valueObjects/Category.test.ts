@@ -148,6 +148,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('browser-isolation')
     expect(ids).toContain('casb')
     expect(ids).toContain('dex')
+    expect(ids).toContain('email-security')
     expect(ids).toContain('architecture')
   })
 

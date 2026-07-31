@@ -420,6 +420,22 @@ export const DOC_PAGES = [
   { name: 'cloudflare-one/insights/dex/diagnostics' },
   { name: 'cloudflare-one/insights/dex/diagnostics/speed-test' },
   { name: 'cloudflare-one/insights/dex/diagnostics/client-packet-capture' },
+  { name: 'cloudflare-one/email-security' },
+  { name: 'cloudflare-one/email-security/reference/how-es-detects-phish' },
+  { name: 'cloudflare-one/email-security/reference/dispositions-and-attributes' },
+  { name: 'cloudflare-one/email-security/reference/regional-processing' },
+  { name: 'cloudflare-one/email-security/phishguard' },
+  { name: 'cloudflare-one/email-security/retro-scan' },
+  { name: 'cloudflare-one/email-security/outbound-dlp' },
+  { name: 'cloudflare-one/email-security/setup' },
+  { name: 'cloudflare-one/email-security/setup/manage-domains' },
+  { name: 'cloudflare-one/email-security/settings/auto-moves' },
+  { name: 'cloudflare-one/email-security/submissions' },
+  { name: 'cloudflare-one/email-security/submissions/user-submissions' },
+  { name: 'cloudflare-one/email-security/submissions/team-submissions' },
+  { name: 'cloudflare-one/email-security/submissions/invalid-submissions' },
+  { name: 'cloudflare-one/email-security/investigation/search-email' },
+  { name: 'cloudflare-one/email-security/monitoring' },
   { name: 'r2' },
   { name: 'r2/api/s3/presigned-urls' },
   { name: 'r2/api/tokens' },
@@ -536,6 +552,11 @@ export const DOC_PAGE_OVERRIDES = {
   // stub — the actual "Data visibility" / "Remote captures" troubleshooting
   // content (with its own literal headings) lives in the partial.
   'cloudflare-one/insights/dex/troubleshooting': 'partials/cloudflare-one/troubleshooting/dex.mdx',
+  // email-security/reference/how-es-detects-phish.mdx renders
+  // <Render file="email-security/detect-phish" />, a thin stub — the actual
+  // attack-type taxonomy (with its own literal headings) lives in the partial.
+  'cloudflare-one/email-security/reference/how-es-detects-phish':
+    'partials/cloudflare-one/email-security/detect-phish.mdx',
 }
 
 /**

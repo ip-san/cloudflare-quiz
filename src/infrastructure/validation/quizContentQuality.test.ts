@@ -66,6 +66,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   bi: 'browser-isolation',
   cb: 'casb',
   dx: 'dex',
+  em: 'email-security',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -404,6 +405,22 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/insights/dex/diagnostics/',
   'cloudflare-one/insights/dex/diagnostics/speed-test/',
   'cloudflare-one/insights/dex/diagnostics/client-packet-capture/',
+  'cloudflare-one/email-security/',
+  'cloudflare-one/email-security/reference/how-es-detects-phish/',
+  'cloudflare-one/email-security/reference/dispositions-and-attributes/',
+  'cloudflare-one/email-security/reference/regional-processing/',
+  'cloudflare-one/email-security/phishguard/',
+  'cloudflare-one/email-security/retro-scan/',
+  'cloudflare-one/email-security/outbound-dlp/',
+  'cloudflare-one/email-security/setup/',
+  'cloudflare-one/email-security/setup/manage-domains/',
+  'cloudflare-one/email-security/settings/auto-moves/',
+  'cloudflare-one/email-security/submissions/',
+  'cloudflare-one/email-security/submissions/user-submissions/',
+  'cloudflare-one/email-security/submissions/team-submissions/',
+  'cloudflare-one/email-security/submissions/invalid-submissions/',
+  'cloudflare-one/email-security/investigation/search-email/',
+  'cloudflare-one/email-security/monitoring/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -846,6 +863,7 @@ describe('Quiz Content Quality', () => {
         'browser-isolation',
         'casb',
         'dex',
+        'email-security',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

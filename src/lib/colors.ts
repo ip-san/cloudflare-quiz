@@ -36,6 +36,7 @@ export const COLOR_MAP: Record<string, string> = {
   orchid: '#c084fc',
   turquoise: '#2dd4bf',
   periwinkle: '#818cf8',
+  wine: '#831843',
 }
 
 export function getColorHex(colorName: string): string {

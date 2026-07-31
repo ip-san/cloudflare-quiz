@@ -503,6 +503,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'エンドユーザーの接続不良の原因が端末・ネットワーク・Cloudflareのどこにあるかを切り分けられる',
     },
     {
+      id: 'email-security',
+      name: 'Email Security',
+      icon: '📧',
+      color: 'wine',
+      weight: 10,
+      description:
+        'フィッシング・BEC・なりすましを検知するEmail Security。デプロイモデル・disposition・PhishGuard・Retro Scan・Outbound DLP',
+      skillDescription: 'メールを介したフィッシング・BEC攻撃の検知の仕組みと運用フローを理解できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',
