@@ -32600,6 +32600,995 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gw-001",
+      "category": "gateway",
+      "difficulty": "beginner",
+      "question": "Cloudflare Gatewayが提供する3種類のポリシーと、従来のファイアウォールとの対応関係に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "DNSポリシーはドメインへの接続が確立される前にブロックするDNSレイヤーのフィルタリングに相当し、NetworkポリシーはIPアドレス・ポート・プロトコルで制御するLayer 4のステートフルファイアウォール(FWaaS)に相当し、HTTPポリシーはTLS復号とディープパケットインスペクションを行うLayer 7のアプリケーションファイアウォールに相当する"
+        },
+        {
+          "text": "DNSポリシーがTLS復号とディープパケットインスペクションを行うLayer 7のアプリケーションファイアウォールに相当し、HTTPポリシーが接続確立前にドメインをブロックするDNSレイヤーのフィルタリングに相当するという対応関係になっている",
+          "wrongFeedback": "説明が入れ替わっています。DNSポリシーはDNSレイヤー、HTTPポリシーはLayer 7に相当します。"
+        },
+        {
+          "text": "Networkポリシーは常にHTTPポリシーより後に評価されるという評価順序の性質によって定義されており、IPアドレス・ポート・プロトコルで制御するLayer 4相当の制御という位置づけ自体は存在しない",
+          "wrongFeedback": "NetworkポリシーはLayer 4のステートフルファイアウォール(FWaaS)に相当する独立した制御層です。評価順序の話とレイヤーの対応関係は別の観点です。"
+        },
+        {
+          "text": "DNS・Network・HTTPの3種類のポリシーはすべて同じレイヤーで動作するように設計されており、それぞれのポリシータイプ間に機能上の独立した違いは存在しない",
+          "wrongFeedback": "DNS・Network・HTTPはそれぞれDNSレイヤー、Layer 4、Layer 7という異なるレイヤーで動作します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "DNSポリシーはドメインへの接続確立前にブロックするDNSレイヤーのフィルタリング、NetworkポリシーはIPアドレス・ポート・プロトコルで制御するLayer 4のステートフルファイアウォール(FWaaS)、HTTPポリシーはTLS復号とディープパケットインスペクションを行うLayer 7のアプリケーションファイアウォールにそれぞれ相当します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/#how-gateway-relates-to-traditional-firewalls",
+      "hint": "「接続前にブロック」「パケット単位で制御」「アプリケーションの中身を検査」という粒度の違いを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "3種類のポリシーとレイヤーの対応",
+          "columns": [
+            {
+              "heading": "DNSポリシー",
+              "items": [
+                "DNSレイヤー",
+                "接続確立前にブロック"
+              ]
+            },
+            {
+              "heading": "Networkポリシー",
+              "items": [
+                "Layer 4(FWaaS)",
+                "IP・ポート・プロトコル"
+              ]
+            },
+            {
+              "heading": "HTTPポリシー",
+              "items": [
+                "Layer 7",
+                "TLS復号・DPI"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-002",
+      "category": "gateway",
+      "difficulty": "intermediate",
+      "question": "Gatewayへのトラフィック接続方式ごとに、どのポリシータイプが適用されるかに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "DNSリゾルバの設定だけを変更した場合でも、DNS・Network・HTTPのすべてのポリシーが適用される",
+          "wrongFeedback": "DNSリゾルバ設定のみでは、DNSポリシーだけが適用されます。Network・HTTPポリシーの適用にはCloudflare One Client(WARP)などの接続方式が必要です。"
+        },
+        {
+          "text": "Cloudflare One Client(WARP)で接続した場合はDNS・Network・HTTPのすべてのポリシーが適用されるのに対し、DNSリゾルバの設定のみを変更した場合はDNSポリシーのみが適用される"
+        },
+        {
+          "text": "PACファイル経由のプロキシエンドポイントで接続した場合、ブラウザのHTTPトラフィックだけでなくNetworkポリシーも適用される",
+          "wrongFeedback": "PACファイル経由のプロキシエンドポイントはブラウザのHTTPトラフィックのみが対象で、Networkポリシーは適用されません。"
+        },
+        {
+          "text": "接続方式に関わらず、常に同じ組み合わせのポリシーが適用されるため、接続方式を意識する必要はない",
+          "wrongFeedback": "接続方式によって適用されるポリシーの組み合わせは異なります。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare One Client(WARP)で接続した場合はDNS・Network・HTTPのすべてのポリシーが適用されます。一方、DNSリゾルバの設定のみを変更した場合はDNSポリシーのみが、PACファイル経由のプロキシエンドポイントの場合はブラウザのHTTPトラフィックのみが対象となります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/#choose-a-connection-method",
+      "hint": "端末全体を経由させる接続方式と、DNSやブラウザだけを経由させる接続方式の違いを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "接続方式と適用されるポリシー",
+          "rowHeader": "接続方式",
+          "colHeader": "適用ポリシー",
+          "rows": [
+            "Cloudflare One Client(WARP)",
+            "DNSリゾルバ設定",
+            "PACファイル(プロキシ)"
+          ],
+          "cols": [
+            "DNS",
+            "Network",
+            "HTTP"
+          ],
+          "cells": [
+            [
+              "Yes",
+              "Yes",
+              "Yes"
+            ],
+            [
+              "Yes",
+              "No",
+              "No"
+            ],
+            [
+              "No",
+              "No",
+              "Yes(ブラウザのみ)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-003",
+      "category": "gateway",
+      "difficulty": "intermediate",
+      "question": "DNSポリシーだけでドメインをブロックした場合の制約に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "対応するHTTPポリシーやNetworkポリシーがなくても、DNSポリシーだけで完全にそのドメインへのアクセスを防げる",
+          "wrongFeedback": "DNSポリシーとResolverポリシーは独立しており、対応するHTTP/Networkポリシーがない場合、宛先のIPアドレスを知っているユーザーはアクセスできてしまいます。"
+        },
+        {
+          "text": "DNSポリシーでブロックしたドメインは、IPアドレスを直接指定してアクセスしようとしても必ず拒否される",
+          "wrongFeedback": "IPアドレスを直接指定した場合、対応するHTTP/Networkポリシーがなければブロックされません。"
+        },
+        {
+          "text": "DNSポリシーとResolverポリシーは単独で機能するため、対応するHTTPポリシーを作成していない場合、宛先のIPアドレスを知っているユーザーはそのサイトへアクセスできてしまう"
+        },
+        {
+          "text": "DNSポリシーでのブロックは常にHTTPポリシーへ自動的に反映されるため、別途HTTPポリシーを作成する必要はない",
+          "wrongFeedback": "DNSポリシーとHTTPポリシーは別々に評価される独立したポリシービルダーであり、自動的に反映される仕組みはありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "DNSポリシーとResolverポリシーは単独(standalone)で機能します。対応するHTTPポリシーを作成していない場合、宛先のIPアドレスを直接知っているユーザーはDNSポリシーによるブロックを回避してそのサイトへアクセスできてしまいます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#priority-between-policy-builders",
+      "hint": "「名前を引けなくする」ことと「実際に接続できなくする」ことは同じではありません。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "DNSポリシー単独のブロックが回避される経路",
+          "steps": [
+            {
+              "text": "DNSポリシーでドメインをブロック"
+            },
+            {
+              "text": "対応するHTTPポリシーは未作成"
+            },
+            {
+              "text": "ユーザーが宛先IPを直接指定"
+            },
+            {
+              "text": "DNSポリシーを経由せずアクセス成立"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-004",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "一部のアプリケーションがGatewayのDNSブロックを回避してしまう既知の原因に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Gatewayは`53`番ポート以外で送信されたDNSクエリのみを評価し、標準の53番ポートで送信された通常のDNSクエリは自動的に許可されてしまう",
+          "wrongFeedback": "このような回避経路は文書化されていません。実際に文書化されている回避経路は、アプリケーションに組み込まれたフォールバックDNSサーバーへの問い合わせです。"
+        },
+        {
+          "text": "GatewayはIPv6で送信されたDNSクエリを評価対象外としているため、IPv6のみでクエリすれば必ず回避でき、これはGatewayの既知の仕様として文書化されている",
+          "wrongFeedback": "そのような仕様は文書化されていません。"
+        },
+        {
+          "text": "ユーザーがVPNを使わずに社外ネットワークへ接続した場合、DNSポリシー自体が完全に無効化されるという既知の回避経路が存在する",
+          "wrongFeedback": "そのような挙動は文書化されていません。"
+        },
+        {
+          "text": "WhatsAppやAndroid Studioなど一部のアプリケーションは、`8.8.8.8`のようなハードコードされたフォールバックDNSサーバーへの問い合わせを内蔵しており、Gatewayが主要なDNSクエリをブロックしてもこのフォールバック経由でDNSポリシーを回避できてしまう"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "WhatsAppやAndroid Studioなど一部のアプリケーションには、`8.8.8.8`のようなハードコードされたフォールバックDNSサーバーへ問い合わせる機能が内蔵されています。Gatewayが主要なDNSクエリをブロックしても、このフォールバック経由でDNSポリシーを回避されてしまうことがあります。緩和策として、そのフォールバック先へのTCP/UDPポート53をブロックするNetworkポリシーの作成が挙げられています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/dns-policies/#limitations",
+      "hint": "アプリ側に「もしダメだったらこっちに聞く」という予備の問い合わせ先が組み込まれている可能性を考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "フォールバックDNSによる回避経路",
+          "steps": [
+            {
+              "text": "アプリが主要なDNSクエリを送信"
+            },
+            {
+              "text": "Gatewayがポリシーに基づきブロック"
+            },
+            {
+              "text": "アプリ内蔵のフォールバックDNS(例: 8.8.8.8)へ問い合わせ"
+            },
+            {
+              "text": "Gatewayを経由せず名前解決が成立"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-005",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "Networkポリシーの「Network Override」アクションに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Network Overrideのオーバーライド先IPアドレスに到達できない場合、Gatewayは宛先の書き換えは行うもののその接続をログに記録せず、トラフィックはログに何も残らないまま失敗する"
+        },
+        {
+          "text": "Network Overrideのオーバーライド先IPアドレスに到達できない場合、Gatewayは自動的に元の宛先へフォールバックし、接続をそのまま許可する",
+          "wrongFeedback": "フォールバックは行われません。宛先を書き換えたまま、ログに記録されずに失敗します。"
+        },
+        {
+          "text": "Network Overrideは常にエラーログを記録するため、オーバーライド先への到達性の問題は容易に検知できる",
+          "wrongFeedback": "到達できない場合はログに記録されず、サイレントに失敗するため容易には検知できません。"
+        },
+        {
+          "text": "Network Overrideのオーバーライド先IPアドレスに到達できない場合、ユーザーの端末にエラーメッセージが表示され、管理者への通知も自動送信される",
+          "wrongFeedback": "そのような通知の仕組みはありません。ログにも残らずサイレントに失敗します。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Network Overrideのオーバーライド先IPアドレスに到達できない場合、Gatewayは宛先の書き換え自体は行いますが、その接続をログに記録しません。結果としてトラフィックはログに何も残らないままサイレントに失敗します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/network-policies/#actions",
+      "hint": "処理そのものが成立していても、その結果が記録として残らないケースがあることを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Network Overrideの到達性問題",
+          "steps": [
+            {
+              "text": "Network Overrideで宛先を書き換え"
+            },
+            {
+              "text": "書き換え先IPへ接続を試行"
+            },
+            {
+              "text": "到達できない"
+            },
+            {
+              "text": "ログに記録されずサイレントに失敗"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-006",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "他のHTTPポリシーとの優先順位の関係を踏まえると、HTTPポリシーの「Do Not Inspect」アクションに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Do Not InspectポリシーはAllow・Blockポリシーと同じ優先順位ルールに従い、ポリシー一覧の並び順(precedence)どおりに評価される",
+          "wrongFeedback": "Do Not Inspectはリスト内の位置に関わらず、常にすべてのAllow・Blockポリシーより先に評価されます。"
+        },
+        {
+          "text": "Do Not Inspectポリシーは、リスト内の位置(precedence)に関わらず常にすべてのAllow・Blockポリシーより先に評価され、一致した通信はログ記録・ブロック・DLP・AVスキャンの対象から外れる"
+        },
+        {
+          "text": "Do Not InspectポリシーはSNI以外の情報(URLパスなど)にも一致条件を設定でき、TLSのSNIとは無関係に評価される",
+          "wrongFeedback": "Do Not InspectポリシーはTLSヘッダー内のSNIに一致させる必要があります。"
+        },
+        {
+          "text": "Do Not Inspectに一致した通信も、Isolateポリシーが設定されていれば必ずリモートブラウザへ転送される",
+          "wrongFeedback": "Do Not Inspectに一致した通信はIsolateポリシーを含む他のすべてのHTTPポリシーをバイパスします。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Do Not Inspectポリシーは、ポリシー一覧内の位置(precedence)に関わらず、常にすべてのAllow・Blockポリシーより先に評価されます。一致した通信はログ記録・ブロック・DLP・AVスキャンの対象から外れ、Isolateポリシーを含む他のすべてのHTTPポリシーをバイパスします。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/#do-not-inspect",
+      "hint": "「並び順を無視して常に最優先で評価される」特別なアクションだと考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "HTTPポリシーの評価優先順位",
+          "items": [
+            {
+              "text": "Do Not Inspect(precedenceに関わらず最優先)"
+            },
+            {
+              "text": "Isolate"
+            },
+            {
+              "text": "Allow / Block / Do Not Scan"
+            },
+            {
+              "text": "DLP・AVスキャン・サンドボックス(ボディ検査)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-007",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "アプリケーションの認証方式によって挙動が変わりうることを踏まえると、TLS復号(TLS decryption)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "TLS復号を有効にしなくても、HTTPSトラフィックの完全なURL・ヘッダー・リクエストボディをGatewayが検査できる",
+          "wrongFeedback": "TLS復号を有効にしない限り、HTTPS暗号化内のURL・ヘッダー・リクエストボディはGatewayから見えません。"
+        },
+        {
+          "text": "mTLS(相互TLS認証)を使うアプリケーションも、TLS復号によって問題なく検査できる",
+          "wrongFeedback": "mTLSはTLS復号と互換性がありません。GatewayはオリジンへクライアントのTLS証明書を転送できないため、mTLSハンドシェイクが失敗します。回避にはDo Not Inspectポリシーの作成が必要です。"
+        },
+        {
+          "text": "Gatewayは復号したHTTPSトラフィックにポリシーを適用したうえで、ユーザー側の証明書で再暗号化する。証明書ピニングやmTLS認証、ESNI/ECHによるハンドシェイク暗号化を使うアプリケーションは、TLS復号と互換性がない"
+        },
+        {
+          "text": "証明書ピニングを使うアプリケーションでも、Cloudflareの証明書を端末にインストールしさえすれば常に問題なくTLS復号できる",
+          "wrongFeedback": "証明書ピニングを使うアプリはCloudflareの証明書を信頼しないため、証明書をインストールするだけでは解決しません。アプリへの証明書追加やDo Not Inspectポリシーなど別の対応が必要です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "TLS復号を有効にすると、GatewayはHTTPSトラフィックを復号してポリシーを適用したうえで、ユーザー側の証明書で再暗号化します。ただし証明書ピニング・mTLS認証・ESNI/ECHによるハンドシェイク暗号化を使うアプリケーションは、TLS復号と互換性がありません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/tls-decryption/#inspection-limitations",
+      "hint": "「復号してポリシーを適用してから再暗号化する」という仕組みが、そもそも成立しない通信方式があることを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "TLS復号の互換性",
+          "columns": [
+            {
+              "heading": "TLS復号と互換",
+              "items": [
+                "一般的なHTTPS通信"
+              ]
+            },
+            {
+              "heading": "TLS復号と非互換",
+              "items": [
+                "証明書ピニング",
+                "mTLS(相互TLS認証)",
+                "ESNI/ECH"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-008",
+      "category": "gateway",
+      "difficulty": "intermediate",
+      "question": "アンチウイルス(AV)スキャンにおける非スキャン対象ファイルのサイズ上限に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "非スキャン対象となるファイルサイズの上限はプランに関わらず一律で25MBに固定されており、Free・Pay-as-you-go・Enterpriseのいずれのプランでも同じ数値が適用される",
+          "wrongFeedback": "プランによって上限は異なります。Freeプランは15MB、Pay-as-you-goプランは25MB、Enterpriseプランは100MBです。"
+        },
+        {
+          "text": "非スキャン対象となるサイズ上限が最も大きいのはFreeプランであり、逆にEnterpriseプランが最も小さい上限しか持たないという逆転した関係になっている",
+          "wrongFeedback": "逆です。Enterpriseプランが最も大きい上限(100MB)を持ち、Freeプランが最も小さい上限(15MB)です。"
+        },
+        {
+          "text": "Do Not Scanポリシーに一致した通信であっても、ファイルサイズがプランごとの上限以下であれば必ずスキャンが実行される",
+          "wrongFeedback": "Do Not Scanに一致した場合、ファイルサイズやファイルタイプのサポート状況に関わらず一切スキャンされません。"
+        },
+        {
+          "text": "非スキャン対象となるファイルサイズの上限はプランによって異なり、Freeプランは15MB、Pay-as-you-goプランは25MB、Enterpriseプランは100MBを超えるファイルはスキャンされない"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "AVスキャンの対象外となるファイルサイズの上限はプランによって異なり、Freeプランは15MB、Pay-as-you-goプランは25MB、Enterpriseプランは100MBを超えるファイルはスキャンされません。また、Do Not Scanポリシーに一致した通信は、サイズやファイルタイプに関わらず一切スキャンされません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/antivirus-scanning/#non-scannable-files",
+      "hint": "上位プランほどスキャンできる範囲が広い(上限が大きい)、という関係を考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "非スキャン対象となるファイルサイズ上限",
+          "columns": [
+            {
+              "heading": "Free",
+              "items": [
+                "15MB超で非スキャン"
+              ]
+            },
+            {
+              "heading": "Pay-as-you-go",
+              "items": [
+                "25MB超で非スキャン"
+              ]
+            },
+            {
+              "heading": "Enterprise",
+              "items": [
+                "100MB超で非スキャン"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-009",
+      "category": "gateway",
+      "difficulty": "intermediate",
+      "question": "ファイルサンドボックス(file sandboxing)の挙動に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ファイルサンドボックスはすべてのプランで標準搭載されており、Enterpriseプランに限らず追加費用なしで誰でも利用できる機能として提供されている",
+          "wrongFeedback": "ファイルサンドボックスはZero Trust Enterpriseプランのアドオンとして提供される機能です。"
+        },
+        {
+          "text": "AVスキャンでマルウェアが検出されなかったダウンロードファイルのうち、初めて検出されたファイルはサンドボックス内で挙動を監視され、以降同じファイルが再度ダウンロードされた際には、その時の判定結果(許可/ブロック)がそのまま適用される"
+        },
+        {
+          "text": "サンドボックスは常にLinux環境でファイルを実行するよう設計されており、ネットワーク活動を監視する仕組みは持ち合わせていない",
+          "wrongFeedback": "サンドボックスはWindows OS環境でファイルを実行し、ネットワーク活動の監視(データ持ち出しの検知など)も行います。"
+        },
+        {
+          "text": "ファイルサンドボックスは、ファイルの拡張子だけを見て安全性を判定し、実際にファイルを実行して挙動を監視することはない",
+          "wrongFeedback": "実際にサンドボックス環境でファイルを実行し、その挙動(ネットワーク活動やカーネルレベルのアクション)を監視して判定します。拡張子だけを見て判定するものではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "AVスキャンでマルウェアが検出されなかったダウンロードファイルのうち、初めて検出されたファイルはサンドボックス(Windows OS環境)内で挙動を監視されます。悪意のある挙動が検出されなければファイルは解放され、以降同じファイルの再ダウンロード時には過去の許可/ブロック判定がそのまま適用されます。ファイルサンドボックスはZero Trust Enterpriseプランのアドオンです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/file-sandboxing/#sandbox-environment",
+      "hint": "初回は「実際に動かして確認」、2回目以降は「前回の結果を再利用」という流れを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ファイルサンドボックスの判定フロー",
+          "steps": [
+            {
+              "text": "AVスキャンでマルウェア未検出"
+            },
+            {
+              "text": "初回検出のファイルをサンドボックスで実行・監視"
+            },
+            {
+              "text": "悪意のある挙動がなければ許可"
+            },
+            {
+              "text": "同じファイルの再ダウンロードは過去の判定を再利用"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-010",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "Gatewayのポリシービルダー間の評価順序(priority between policy builders)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "評価順序は常にNetworkポリシー→HTTPポリシー→DNSポリシーの順に固定されており、DNSポリシーがすべてのポリシービルダーの中で最後に評価されるよう設計されている",
+          "wrongFeedback": "順序が誤りです。DNS関連のポリシー(事前解決セレクタ)が最初に評価され、HTTPポリシーが最後です。"
+        },
+        {
+          "text": "HTTP/3のトラフィックであっても、通常のトラフィックと全く同じ6段階(DNS事前解決→Resolver→DNS事後解決→Egress→Network→HTTP)がそのまま省略なく適用される",
+          "wrongFeedback": "HTTP/3トラフィックの場合は簡略化された「DNSポリシー→Networkポリシー→HTTPポリシー」という3段階の順序が適用されます。"
+        },
+        {
+          "text": "通常のトラフィックでは、DNSポリシー(事前解決セレクタ)→Resolverポリシー→DNSポリシー(事後解決セレクタ)→Egressポリシー→Networkポリシー→HTTPポリシーという順序で評価され、HTTP/3トラフィックの場合はDNSポリシー→Networkポリシー→HTTPポリシーという簡略化された順序が適用される"
+        },
+        {
+          "text": "Egressポリシーは常にNetworkポリシーより後に評価される",
+          "wrongFeedback": "Egressポリシーの方がNetworkポリシーより先(4番目、Networkポリシーは5番目)に評価されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "通常のトラフィックでは、DNSポリシー(事前解決セレクタ)→Resolverポリシー→DNSポリシー(事後解決セレクタ)→Egressポリシー→Networkポリシー→HTTPポリシーという6段階の順序で評価されます。HTTP/3トラフィックの場合は簡略化され、DNSポリシー→Networkポリシー→HTTPポリシーという3段階の順序が適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#priority-between-policy-builders",
+      "hint": "通常のトラフィックとHTTP/3トラフィックとで、評価される段階の数自体が異なることに注目しましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "通常トラフィックの評価順序(6段階)",
+          "steps": [
+            {
+              "text": "DNSポリシー(事前解決セレクタ)"
+            },
+            {
+              "text": "Resolverポリシー"
+            },
+            {
+              "text": "DNSポリシー(事後解決セレクタ)"
+            },
+            {
+              "text": "Egressポリシー"
+            },
+            {
+              "text": "Networkポリシー"
+            },
+            {
+              "text": "HTTPポリシー"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-011",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "変更前後で挙動が異なりうることを踏まえると、2025年7月14日に行われたGatewayの評価順序の変更に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "この変更により、アプリケーションレベルであるHTTPポリシーがネットワークレベルであるNetworkポリシーより先に評価されるようになり、接続を受け入れる前ではなく受け入れた後にネットワーク経路を検証するようになった",
+          "wrongFeedback": "逆です。この変更でNetworkレベルのポリシーがHTTPレベルのポリシーより先に評価されるようになりました。"
+        },
+        {
+          "text": "この変更は、HTTPポリシーを一切適用していないアカウントであっても、DNSポリシーやNetworkポリシーの挙動を含めてすべてのアカウントの挙動に等しく影響する",
+          "wrongFeedback": "この変更が影響するのは、アカウントでHTTPポリシーを適用している場合のみです。"
+        },
+        {
+          "text": "この変更後も、NetworkブロックポリシーとHTTPブロックポリシーの両方に一致した通信の挙動(ブロックページの表示有無)は変更前と全く同じである",
+          "wrongFeedback": "挙動が変わりました。変更前はHTTPポリシーのクライアント通知設定に従いブロックページが表示されることがありましたが、変更後はブロックページを表示せず、Networkポリシーのクライアント通知設定に従います。"
+        },
+        {
+          "text": "この変更により、Networkレベルのポリシーがアプリケーションレベル(HTTP)のポリシーより先に評価されるようになり、接続を受け入れる前にオリジンへのネットワーク経路を検証するようになった。この変更はHTTPポリシーを使用しているアカウントにのみ影響し、Network BlockとHTTPブロックの両方に一致した場合の挙動(ブロックページを表示せず、Networkポリシーのクライアント通知設定に従う)が変わった"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "2025年7月14日の変更により、Networkレベルのポリシーがアプリケーションレベル(HTTP)のポリシーより先に評価されるようになり、接続を受け入れる前にオリジンへのネットワーク経路が検証されるようになりました。この変更はHTTPポリシーを使用しているアカウントにのみ影響し、NetworkブロックとHTTPブロックの両方に一致した場合、ブロックページを表示せずNetworkポリシーのクライアント通知設定に従うという挙動に変わりました。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#priority-between-policy-builders",
+      "hint": "「どちらの通知設定に従うようになったか」という一点の違いに注目しましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Network Block + HTTP Block一致時の挙動",
+          "columns": [
+            {
+              "heading": "変更前",
+              "items": [
+                "ブロックページを表示することがある",
+                "HTTPポリシーの通知設定に従う"
+              ]
+            },
+            {
+              "heading": "変更後(2025-07-14〜)",
+              "items": [
+                "ブロックページを表示しない",
+                "Networkポリシーの通知設定に従う"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-012",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "GatewayがユーザーとGateway間、Gatewayと宛先サーバー間で確立する接続の仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Gatewayはユーザーとの接続とは独立した新しいTCP接続を宛先サーバーとの間に確立し、ユーザー側の送信元IP・ポートとは異なる新しい送信元IP・ポートを割り当てるため、ユーザー側のTCPハンドシェイクの詳細はオリジンとのハンドシェイクには含まれない"
+        },
+        {
+          "text": "Gatewayは宛先サーバーへの接続を確立する際、常にユーザーの元のTCPハンドシェイク情報(送信元IP・ポートなど)をそのままオリジンへ転送する",
+          "wrongFeedback": "Gatewayはユーザーとの接続とは独立した新しい接続を確立し、新しい送信元IP・ポートを割り当てます。ユーザー側のTCPハンドシェイクの詳細はオリジンへ転送されません。"
+        },
+        {
+          "text": "宛先サーバーへのTCP接続が失敗した場合でも、Gatewayはポリシーを適用したうえで接続を再試行する",
+          "wrongFeedback": "TCP接続が失敗した場合、Gatewayはポリシーを一切適用せず、ユーザーからの接続を再試行します。"
+        },
+        {
+          "text": "宛先サーバーへのTCP接続が失敗した通信は、Gatewayのアクティビティログとゼロトラストのネットワークセッションログの両方に必ず記録される",
+          "wrongFeedback": "失敗した接続はGatewayのアクティビティログには記録されません(ポリシーが評価されないため)が、ゼロトラストのネットワークセッションログには接続の成否に関わらず常に記録されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Gatewayはユーザーとの接続とは独立した新しいTCP接続を宛先サーバーとの間に確立し、新しい送信元IP・ポートを割り当てます。そのためユーザー側のTCPハンドシェイクの詳細はオリジンとのハンドシェイクには含まれません。TCP接続が失敗した場合はポリシーが一切適用されず、その失敗はGatewayのアクティビティログには残りませんが、ゼロトラストのネットワークセッションログには常に記録されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#connection-establishment",
+      "hint": "ユーザー〜Gateway間の接続と、Gateway〜オリジン間の接続は「別物」だと考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "Gatewayの接続確立の仕組み",
+          "actors": [
+            "ユーザー",
+            "Gateway",
+            "宛先サーバー"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "TCP接続を確立"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "新しい送信元IP・ポートで独立した接続を確立"
+            },
+            {
+              "from": 1,
+              "to": 1,
+              "text": "接続成功後にポリシーを評価"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-013",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "ポリシー評価とパケット送信のタイミングの違いを踏まえると、GatewayのTCP SYNパケットに関する既知の制約(ギャップ)として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "GatewayはNetworkポリシーやHTTPポリシーを評価してからTCP SYNパケットを宛先サーバーへ送信するため、ブロック対象の宛先へSYNパケットが届くことはない",
+          "wrongFeedback": "逆です。Gatewayはポリシーを評価する前に宛先へTCP SYNパケットを送信するため、ブロック対象の宛先であってもSYNパケット自体は届いてしまいます。"
+        },
+        {
+          "text": "GatewayはNetworkポリシーやHTTPポリシーを評価する前に宛先サーバーへTCP SYNパケットを送信するため、これらのポリシーだけでは最初のSYNパケットが宛先へ届くこと自体は防げず、パケットレベルで防ぐにはEnterprise限定のCloudflare Network Firewallが必要である"
+        },
+        {
+          "text": "TCP SYNパケットの送信を防ぐための機能は現時点で存在せず、すべてのプランでこの制約を回避する方法はない",
+          "wrongFeedback": "Enterpriseユーザー向けにCloudflare Network Firewallというパケットレベルでのフィルタリング機能が提供されています。"
+        },
+        {
+          "text": "Cloudflare Network FirewallはNetworkポリシーやHTTPポリシーの後に評価されるため、SYNパケットの送信自体を防ぐことはできない",
+          "wrongFeedback": "Cloudflare Network FirewallはEgressポリシーやTCP SYNの到達性チェックより前に評価されるパケットレベルの制御であり、SYNパケットの送信自体を防ぐことができます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "GatewayはNetworkポリシーやHTTPポリシーを評価する前に宛先サーバーへTCP SYNパケットを送信します。そのため、これらのポリシーだけでは最初のSYNパケットが宛先へ届くこと自体は防げません。パケットレベルで防ぐには、Enterpriseユーザー限定のCloudflare Network Firewallが必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#filter-tcp-syn-packets-with-cloudflare-network-firewall",
+      "hint": "「ポリシーで評価する」タイミングより先に、パケットそのものは既に送信されてしまっている、という時間差を考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "TCP SYN送信とポリシー評価の順序",
+          "actors": [
+            "Gateway",
+            "宛先サーバー"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "TCP SYNを送信(ポリシー評価前)"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "接続応答"
+            },
+            {
+              "from": 0,
+              "to": 0,
+              "text": "Network/HTTPポリシーを評価"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-014",
+      "category": "gateway",
+      "difficulty": "intermediate",
+      "question": "どのポリシーにも一致しなかったトラフィックに対するGatewayのデフォルトの挙動に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "どのポリシーにも一致しなかったトラフィックは、DNS・Network・HTTPのすべてのポリシービルダーにおいてデフォルトでブロックされるという制限的(Restrictive)な設計になっている",
+          "wrongFeedback": "デフォルトはブロックではなくAllow(許可)です。GatewayはデフォルトでPermissiveなモデルを採用しています。"
+        },
+        {
+          "text": "デフォルトの挙動を制限的(Restrictive)なモデルへ管理者が設定変更することはできない仕組みになっており、常に許可がデフォルトのまま固定され続ける",
+          "wrongFeedback": "各ポリシービルダーの最下位の優先順位にcatch-allのBlockポリシーを配置し、その上に個別のAllowポリシーを置くことで、制限的なモデルへ切り替えられます。"
+        },
+        {
+          "text": "DNS・Network・HTTPのいずれも、どのポリシーにも一致しなかった場合のデフォルトはAllow(許可)であり、GatewayはデフォルトでPermissive(許容的)なモデルを採用している。ただしHTTPポリシー設定でデフォルトのBlockアクションを構成している場合は、一致しなかったトラフィックがブロックされる"
+        },
+        {
+          "text": "HTTPポリシーのみ、どのポリシーにも一致しなかった場合のデフォルトを設定で変更することはできない",
+          "wrongFeedback": "HTTPポリシー設定でデフォルトのBlockアクションを構成でき、一致しなかったトラフィックをブロックするよう変更できます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "DNS・Network・HTTPのいずれも、どのポリシーにも一致しなかった場合のデフォルトはAllow(許可)であり、GatewayはデフォルトでPermissive(許容的)なモデルを採用しています。ただしHTTPポリシー設定でデフォルトのBlockアクションを構成している場合は、一致しなかったトラフィックがブロックされます。制限的なモデルへ切り替えるには、各ポリシービルダーの最下位にcatch-allのBlockポリシーを配置します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#default-behavior-when-no-policy-matches",
+      "hint": "「明示的に禁止しない限り許可する」という設計思想がベースになっていることを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ポリシー未一致時のデフォルト挙動",
+          "columns": [
+            {
+              "heading": "DNS",
+              "items": [
+                "Allow"
+              ]
+            },
+            {
+              "heading": "Network",
+              "items": [
+                "Allow"
+              ]
+            },
+            {
+              "heading": "HTTP",
+              "items": [
+                "Allow(設定でBlockに変更可)"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-015",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "Gatewayのポリシーの優先順位(order of precedence)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "優先順位は降順で評価される仕組みになっており、最も大きい数値を持つポリシーが他のどのポリシーよりも先に評価される",
+          "wrongFeedback": "昇順で評価され、最も小さい数値(最も低い優先順位番号)を持つポリシーが最初に評価されます。"
+        },
+        {
+          "text": "複数のポリシーが一致した場合、Gatewayはすべての一致したポリシーの内容を合成し、それらを組み合わせた結果として最終的なアクションを決定する",
+          "wrongFeedback": "合成は行われません。最初に一致したポリシーでただちに評価が停止し(first match)、それ以降のポリシーは適用されません。"
+        },
+        {
+          "text": "APIでポリシーを作成する際、優先順位を明示的に指定しない場合、常に優先順位1から割り当てられる",
+          "wrongFeedback": "優先順位1からではなく、1000から割り当てが始まります。新しいポリシーが追加されるたびに、その時点の最大値に1〜100のランダムな整数を加えた値になります。"
+        },
+        {
+          "text": "優先順位は昇順で評価され、最も小さい数値を持つポリシーが最初に評価される。最初に一致したポリシー(Allow/Block)でただちに評価が停止するfirst matchの原則に従い、APIで優先順位を明示指定しない場合は1000から割り当てが始まる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Gatewayのポリシーの優先順位は昇順で評価され、最も小さい数値を持つポリシーが最初に評価されます。最初に一致したポリシー(Allow/Block)でただちに評価が停止するfirst matchの原則に従い、APIで優先順位を明示指定しない場合は1000から割り当てが始まります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#order-of-precedence",
+      "hint": "評価がどちらの方向から始まり、一致した後にどう扱われるのか、2つの観点で考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "優先順位の評価(first match)",
+          "steps": [
+            {
+              "text": "優先順位1のポリシーから評価開始"
+            },
+            {
+              "text": "一致すればそのアクションを適用"
+            },
+            {
+              "text": "一致したら評価を即座に停止"
+            },
+            {
+              "text": "以降のポリシーは評価されない"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-016",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "DLPポリシーが関わる場合の評価順序の癖(DLP policy precedence)に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "Gatewayはまず最初に一致したHTTPポリシーに基づいてトラフィックをログに記録し、その後リクエストボディに対するDLPスキャンを実行するため、最初にAllowとしてログに記録された通信が、後続のDLP Blockポリシーによって実際にはブロックされるという矛盾した結果になることがある"
+        },
+        {
+          "text": "DLPポリシーは他のHTTPポリシーより常に先に評価されるため、最初にログへ記録される内容とその後の実際のアクションが食い違うことはない",
+          "wrongFeedback": "DLPによるボディの検査はHTTPポリシーの評価(Do Not Inspect→Isolate→Allow/Block/Do Not Scan)より後に行われるため、ログの内容と実際のアクションが食い違うことがあります。"
+        },
+        {
+          "text": "リクエストボディに対するDLPスキャンは、Do Not InspectポリシーやIsolateポリシーの評価よりも常に先に実行される",
+          "wrongFeedback": "DLPによるボディの検査はHTTPポリシー評価の最終ステップであり、Do Not InspectやIsolateの評価より後に実行されます。"
+        },
+        {
+          "text": "DLP Blockポリシーが後から通信をブロックした場合、Gatewayは最初に記録したログを自動的にBlockへ書き換える",
+          "wrongFeedback": "ログは書き換えられません。最初のAllowという判定がログに残ったまま、実際には後からブロックされるという矛盾が生じます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Gatewayはまず最初に一致したHTTPポリシーに基づいてトラフィックの可否をログに記録し、その後リクエストボディに対するDLPスキャンを実行します。このためfirst matchの原則により、最初にAllowとしてログに記録された通信が、後続のDLP Blockポリシーによって実際にはブロックされるという矛盾した結果になることがあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#dlp-policy-precedence",
+      "hint": "first matchの原則が、ボディ検査を伴うポリシーとどう組み合わさるかを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "DLPポリシーによるログとアクションのずれ",
+          "actors": [
+            "Gateway",
+            "ログ",
+            "DLPスキャン"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "HTTP Allowポリシーの一致をログに記録"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "text": "リクエストボディをDLPスキャン"
+            },
+            {
+              "from": 2,
+              "to": 0,
+              "text": "DLP Blockが一致し実際にはブロック"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-017",
+      "category": "gateway",
+      "difficulty": "intermediate",
+      "question": "Cloudflareがドメインに付与する分類(ドメインカテゴリ)の仕組みに関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "コンテンツカテゴリ・セキュリティリスク・セキュリティ脅威という3つの分類軸はすべて同じ手法(内部モデルのみ)によって決定される",
+          "wrongFeedback": "3つの分類軸はそれぞれ異なる手法で決定されます。コンテンツカテゴリは上流ベンダーの供給データ、セキュリティリスクはCloudflareの内部モデル、セキュリティ脅威は内部データ・機械学習・商用フィード・オープンソース脅威インテリジェンスの組み合わせです。"
+        },
+        {
+          "text": "分類のまだ付与されていないサブドメインは親ドメインのカテゴリを継承するが、Cloudflareが実際にそのサブドメインを分類した場合は、そのサブドメイン自身のカテゴリのみが適用される"
+        },
+        {
+          "text": "サブドメインは常に親ドメインとは無関係に個別のカテゴリが自動的に割り当てられ、親ドメインのカテゴリを継承することはない",
+          "wrongFeedback": "カテゴリが未付与のサブドメインは親ドメインのカテゴリを継承します。無関係というのは誤りです。"
+        },
+        {
+          "text": "セキュリティカテゴリとコンテンツカテゴリは同じ意味で使われる別名であり、実質的に同じ分類を指す",
+          "wrongFeedback": "セキュリティカテゴリ(Malware・Phishingなど)とコンテンツカテゴリ(Gambling・Educationなど)は異なる分類軸であり、別名ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "カテゴリがまだ付与されていないサブドメインは親ドメインのカテゴリを継承しますが、Cloudflareが実際にそのサブドメインを分類した場合は、そのサブドメイン自身のカテゴリのみが適用されます。コンテンツカテゴリ・セキュリティリスク・セキュリティ脅威はそれぞれ異なる手法で決定される独立した分類軸です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/domain-categories/#content-categories",
+      "hint": "「分類が未確定な間の暫定的な扱い」と「実際に分類が確定した後の扱い」を分けて考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "サブドメインのカテゴリ継承",
+          "steps": [
+            {
+              "text": "サブドメインが未分類の状態"
+            },
+            {
+              "text": "親ドメインのカテゴリを暫定的に継承"
+            },
+            {
+              "text": "Cloudflareがサブドメインを実際に分類"
+            },
+            {
+              "text": "サブドメイン自身のカテゴリのみが適用される"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gw-018",
+      "category": "gateway",
+      "difficulty": "advanced",
+      "question": "Resolverポリシー・Egressポリシーの利用条件と、専用Egress IP(dedicated egress IP)の同時接続数の上限に関する正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ResolverポリシーとEgressポリシーはどちらもすべてのプランで利用でき、専用Egress IPには同時接続数の上限は設定されていない",
+          "wrongFeedback": "どちらもEnterpriseプラン限定の機能です。また専用Egress IPには宛先IP・宛先ポートの組み合わせごとに同時接続数の上限が設定されています。"
+        },
+        {
+          "text": "専用Egress IPの同時接続数の上限は、宛先の組み合わせに関係なくアカウント全体で共有される1つの数値として設定されている",
+          "wrongFeedback": "上限は宛先IPと宛先ポートの一意な組み合わせごとに設定されます。アカウント全体で共有される単一の数値ではありません。"
+        },
+        {
+          "text": "ResolverポリシーとEgressポリシー(専用Egress IPを含む)はどちらもEnterpriseプラン限定の機能であり、専用Egress IPは宛先IPと宛先ポートの一意な組み合わせごとに最大4万件の同時接続をサポートする"
+        },
+        {
+          "text": "専用Egress IPはIPv4アドレスのみで構成され、IPv6アドレスの割り当ては行われない",
+          "wrongFeedback": "専用Egress IPはIPv4アドレスとIPv6アドレス範囲の両方で構成されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "ResolverポリシーとEgressポリシー(専用Egress IPを含む)はどちらもEnterpriseプラン限定の機能です。専用Egress IPは宛先IPと宛先ポートの一意な組み合わせごとに最大4万件の同時接続をサポートし、IPv4アドレスとIPv6アドレス範囲の両方で構成されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/egress-policies/dedicated-egress-ips/#concurrent-connections",
+      "hint": "どちらの機能も上位プラン限定であること、そして接続数の上限がどの単位で区切られているかを考えましょう。",
+      "tags": [
+        "gateway",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Resolver/Egressポリシーの利用条件",
+          "columns": [
+            {
+              "heading": "Resolverポリシー",
+              "items": [
+                "Enterprise限定",
+                "DNSクエリのカスタムルーティング"
+              ]
+            },
+            {
+              "heading": "Egressポリシー(専用Egress IP)",
+              "items": [
+                "Enterprise限定",
+                "宛先の組み合わせごとに最大4万接続"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

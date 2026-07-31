@@ -356,6 +356,24 @@ export const DOC_PAGES = [
   { name: 'client-side-security/reference/settings' },
   { name: 'client-side-security/alerts/alert-types' },
   { name: 'client-side-security/best-practices/handle-an-alert' },
+  { name: 'cloudflare-one/traffic-policies' },
+  { name: 'cloudflare-one/traffic-policies/get-started' },
+  { name: 'cloudflare-one/traffic-policies/get-started/dns' },
+  { name: 'cloudflare-one/traffic-policies/get-started/http' },
+  { name: 'cloudflare-one/traffic-policies/get-started/network' },
+  { name: 'cloudflare-one/traffic-policies/dns-policies' },
+  { name: 'cloudflare-one/traffic-policies/dns-policies/common-policies' },
+  { name: 'cloudflare-one/traffic-policies/http-policies' },
+  { name: 'cloudflare-one/traffic-policies/http-policies/tls-decryption' },
+  { name: 'cloudflare-one/traffic-policies/http-policies/antivirus-scanning' },
+  { name: 'cloudflare-one/traffic-policies/http-policies/file-sandboxing' },
+  { name: 'cloudflare-one/traffic-policies/network-policies' },
+  { name: 'cloudflare-one/traffic-policies/network-policies/protocol-detection' },
+  { name: 'cloudflare-one/traffic-policies/egress-policies' },
+  { name: 'cloudflare-one/traffic-policies/egress-policies/dedicated-egress-ips' },
+  { name: 'cloudflare-one/traffic-policies/order-of-enforcement' },
+  { name: 'cloudflare-one/traffic-policies/domain-categories' },
+  { name: 'cloudflare-one/traffic-policies/resolver-policies' },
   { name: 'r2' },
   { name: 'r2/api/s3/presigned-urls' },
   { name: 'r2/api/tokens' },
@@ -465,6 +483,9 @@ export const DOC_PAGE_OVERRIDES = {
   // works without an override, at the cost of thinner body prose.
   'cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/update-cloudflared':
     'partials/cloudflare-one/tunnel/update-cloudflared.mdx',
+  // order-of-enforcement.mdx is a thin `<Render file="gateway/order-of-enforcement" />`
+  // stub — the actual Gateway policy-evaluation-order reference lives in the partial.
+  'cloudflare-one/traffic-policies/order-of-enforcement': 'partials/cloudflare-one/gateway/order-of-enforcement.mdx',
 }
 
 /**

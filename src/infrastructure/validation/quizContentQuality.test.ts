@@ -61,6 +61,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   sp: 'speed',
   tn: 'tunnel',
   cx: 'client-side-security',
+  gw: 'gateway',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -335,6 +336,24 @@ const VALID_DOC_PAGES = [
   'client-side-security/reference/settings/',
   'client-side-security/alerts/alert-types/',
   'client-side-security/best-practices/handle-an-alert/',
+  'cloudflare-one/traffic-policies/',
+  'cloudflare-one/traffic-policies/get-started/',
+  'cloudflare-one/traffic-policies/get-started/dns/',
+  'cloudflare-one/traffic-policies/get-started/http/',
+  'cloudflare-one/traffic-policies/get-started/network/',
+  'cloudflare-one/traffic-policies/dns-policies/',
+  'cloudflare-one/traffic-policies/dns-policies/common-policies/',
+  'cloudflare-one/traffic-policies/http-policies/',
+  'cloudflare-one/traffic-policies/http-policies/tls-decryption/',
+  'cloudflare-one/traffic-policies/http-policies/antivirus-scanning/',
+  'cloudflare-one/traffic-policies/http-policies/file-sandboxing/',
+  'cloudflare-one/traffic-policies/network-policies/',
+  'cloudflare-one/traffic-policies/network-policies/protocol-detection/',
+  'cloudflare-one/traffic-policies/egress-policies/',
+  'cloudflare-one/traffic-policies/egress-policies/dedicated-egress-ips/',
+  'cloudflare-one/traffic-policies/order-of-enforcement/',
+  'cloudflare-one/traffic-policies/domain-categories/',
+  'cloudflare-one/traffic-policies/resolver-policies/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -772,6 +791,7 @@ describe('Quiz Content Quality', () => {
         'speed',
         'tunnel',
         'client-side-security',
+        'gateway',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

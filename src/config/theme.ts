@@ -453,6 +453,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'サードパーティスクリプト経由の情報窃取(Magecart型攻撃)を検知・防御できる',
     },
     {
+      id: 'gateway',
+      name: 'Gateway',
+      icon: '🧭',
+      color: 'sage',
+      weight: 10,
+      description:
+        'DNS・Network・HTTPの3種類のポリシーでトラフィックを検査・制御するSecure Web Gateway。評価順序、TLS復号、AVスキャン、Egressポリシー',
+      skillDescription: '組織のトラフィックをDNS/Network/HTTPの各層で適切にフィルタリングできる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',
