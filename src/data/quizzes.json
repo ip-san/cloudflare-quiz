@@ -40307,6 +40307,1042 @@
           ]
         }
       ]
+    },
+    {
+      "id": "wa-001",
+      "category": "waiting-room",
+      "difficulty": "beginner",
+      "question": "Cloudflare Waiting Roomがどのような課題を解決するプロダクトかを説明したものとして、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "チケット販売や商品ローンチなどのトラフィック急増時に、閾値を超えた分の訪問者を仮想的な待機列に留め、オリジンサーバーが過負荷でダウンするのを防ぐ"
+        },
+        {
+          "text": "HTTPリクエストをキャッシュし、オリジンへのリクエスト数そのものを恒常的に削減するCDNキャッシュ機能である",
+          "wrongFeedback": "恒常的なキャッシュによる負荷削減はCacheの役割です。Waiting Roomはトラフィックが閾値に近づいたときに超過分を待機列に送る機能であり、常時のキャッシュ機構ではありません。"
+        },
+        {
+          "text": "オリジンサーバーのIPアドレスを隠蔽し、DDoS攻撃からネットワーク層を保護することを主目的とするサービスである",
+          "wrongFeedback": "IPアドレスの隠蔽やネットワーク層のDDoS防御はSpectrumやMagic Transitが主目的とする機能です。Waiting Roomはトラフィックの流量制御(キューイング)が主目的です。"
+        },
+        {
+          "text": "オリジンへのリクエストを別のオリジンへ自動的に振り分けて負荷分散するロードバランシング機能である",
+          "wrongFeedback": "複数オリジンへの振り分けはLoad Balancingの役割です。Waiting Roomは訪問者を待機列に留めて流入を制御する機能で、オリジンを分散させるものではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Waiting Roomは、Webサイトへのトラフィックが事前に定義した閾値に近づいたとき、超過分の訪問者をカスタマイズ可能な仮想の待機室(待機列)へルーティングするプロダクトです。これにより顧客体験を維持しつつ、オリジンサーバーがリクエストで過負荷になることを防ぎます。チケット販売やセール、製品ローンチなど、需要が急増するイベントでの利用が典型例です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/",
+      "hint": "「超過分の訪問者をどう扱うか」という観点で選択肢を比較してみましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Waiting Roomの基本的な流れ",
+          "steps": [
+            {
+              "text": "訪問者がカバー対象ページへアクセス"
+            },
+            {
+              "text": "トラフィックが閾値に近いか判定"
+            },
+            {
+              "text": "閾値内なら直接オリジンへ",
+              "sub": "通常時"
+            },
+            {
+              "text": "閾値超過なら仮想待機室へ",
+              "sub": "急増時"
+            },
+            {
+              "text": "順番が来たらオリジンへ通過"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-002",
+      "category": "waiting-room",
+      "difficulty": "beginner",
+      "question": "Waiting Roomの主要な設定項目である`total active users`と`new users per minute`の関係を説明したものとして、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "両方とも1分あたりに新規追加するユーザー数を表す同義のパラメータであり、どちらか一方だけ設定すればよい",
+          "wrongFeedback": "`total active users`は同時アクティブセッション数の上限、`new users per minute`は1分あたりの新規流入の閾値であり、それぞれ異なる意味を持つ別個のパラメータです。"
+        },
+        {
+          "text": "`total active users`は`host/path`で許容する同時アクティブセッション数の上限、`new users per minute`はその`host/path`への1分あたりの新規流入の閾値であり、いずれも200より大きい値で、後者は前者以下に設定する必要がある"
+        },
+        {
+          "text": "`new users per minute`は`total active users`より常に大きい値でなければならず、超過した新規ユーザーは自動的に拒否されオリジンへは到達できなくなる",
+          "wrongFeedback": "`new users per minute`は`total active users`以下に設定する必要があり、大小関係が逆です。また超過分は拒否ではなく待機室でキューイングされます。"
+        },
+        {
+          "text": "いずれもTurnstileチャレンジに失敗したユーザーの割合を制御するためのパラメータである",
+          "wrongFeedback": "Turnstileチャレンジの失敗時の挙動を制御するのは`turnstile_action`などの別設定です。`total active users`と`new users per minute`はトラフィック量の閾値を表します。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`total active users`は対象の`host/path`で同時に許容するアクティブセッション数の上限で、`new users per minute`はその`host/path`への1分あたりの新規ユーザー流入の閾値です。両方とも200より大きい値である必要があり、`new users per minute`は`total active users`以下に設定します。目安として`total active users`はオリジンの処理能力の75%程度、`new users per minute`はピークトラフィックの100%程度に設定することが推奨されています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
+      "hint": "どちらが「同時アクティブ数」で、どちらが「1分あたりの流入」を表すかを整理しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "主要な閾値設定(API例)",
+          "filepath": "waiting-room設定(抜粋)",
+          "lines": [
+            {
+              "text": "total_active_users: 300",
+              "highlight": true
+            },
+            {
+              "text": "new_users_per_minute: 200",
+              "highlight": true
+            },
+            {
+              "text": "session_duration: 5"
+            },
+            {
+              "text": "queueing_method: \"fifo\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-003",
+      "category": "waiting-room",
+      "difficulty": "beginner",
+      "question": "Waiting Roomの`session duration`設定について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "待機室で待っている間の最大待機時間を表し、この時間を過ぎると強制的にオリジンへ通過させる",
+          "wrongFeedback": "待機室内での待機時間の上限を定める設定ではありません。`session duration`は、いったんオリジンに到達した訪問者が再び待機室を通らずに戻ってこられる時間の長さです。"
+        },
+        {
+          "text": "Turnstileチャレンジに成功してから待機室に入るまでの猶予時間を表す",
+          "wrongFeedback": "Turnstileチャレンジの成否に関する猶予時間ではありません。`session duration`はオリジン到達後の再訪問に関する設定です。"
+        },
+        {
+          "text": "1分から30分の範囲(デフォルト5分)で設定し、訪問者が対象の`host/path`を離れてから再び待機室を経由せずに直接戻れる時間の長さを表す(`session_duration`パラメータ)"
+        },
+        {
+          "text": "待機室ページ(`__cfwaitingroom`クッキー)が自動リフレッシュされる間隔を表し、デフォルトで20秒に固定されている",
+          "wrongFeedback": "自動リフレッシュの間隔(20秒)はセッションクッキーの更新間隔であり、`session duration`とは別の概念です。`session duration`は1〜30分の範囲で設定するオリジン再訪問の猶予時間です。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "`session duration`は1分から30分の範囲(デフォルト5分)で設定する値で、訪問者が対象の`host/path`にアクセスしてから、その時間内であれば再び待機室を経由せずに直接戻ってこられることを保証します。これにより同一トランザクション中に何度も待機室を通される体験を防ぐと同時に、セッションクッキーが失効すると新たな空きとしてカウントされるため、動的なアウトフローも実現します。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
+      "hint": "「待機室を出た後」に関する設定である点に注目しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "session durationの働き",
+          "actors": [
+            "訪問者",
+            "Waiting Room"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "初回アクセス(待機列に入る)"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "順番が来てオリジンへ通過"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "session duration内に再アクセス"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "待機室を経由せず直接通過"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-004",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "Waiting Roomの4つのキューイングメソッド(FIFO・Random・Passthrough・Reject)の挙動を対比したとき、正しい組み合わせはどれですか?",
+      "options": [
+        {
+          "text": "FIFOは訪問者をランダムに選んでオリジンへ通し、Randomは到着順に通す",
+          "wrongFeedback": "FIFOとRandomの説明が入れ替わっています。FIFOは到着順、Randomはランダムに選出してオリジンへ通します。"
+        },
+        {
+          "text": "Passthroughは全トラフィックを常に拒否し、Rejectは全トラフィックを常に素通りさせる",
+          "wrongFeedback": "PassthroughとRejectの説明が逆です。Passthroughは全トラフィックを即座に素通りさせ、Rejectは全トラフィックを拒否して静的ページを返します。"
+        },
+        {
+          "text": "Randomは早く並んだ訪問者ほど長く待つことを保証する方式であり、FIFOは在庫やサービスをより公平に配分する目的で使う",
+          "wrongFeedback": "説明が逆です。早く並んだ訪問者が長く待つ(=先に出られる)ことを保証するのはFIFOで、より公平な配分を目的とするのはRandomです。"
+        },
+        {
+          "text": "FIFOは到着順にオリジンへ通す方式、Randomは空きが出たときに訪問者をランダムに選んで通す方式、Passthroughは全トラフィックを即座に素通りさせる方式、Rejectは全トラフィックを拒否して静的ページを返す方式である"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "FIFOは待機室に入った順番(タイムスタンプ)に基づいて訪問者をオリジンへ通す方式で、先に並んだ人ほど早く抜けられます。Randomはアプリケーションに空きが出るたびに待機中の訪問者をランダムに選んで通す方式で、在庫やチケットなどをより公平に配分したい場合に向きます。Passthroughは`queueing_method`を`passthrough`に設定して全トラフィックを即座に素通りさせる方式で、閑散期の分析用途などに使われます。Rejectは全トラフィックを拒否して静的ページを返す方式で、メンテナンスやイベント専用エンドポイントに使われます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/queueing-methods/",
+      "hint": "「並んだ順」「ランダム」「素通り」「拒否」という4つのキーワードを対応付けてみましょう。",
+      "tags": [
+        "waiting-room",
+        "topic-queueing-methods"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "4つのキューイングメソッドの比較",
+          "columns": [
+            {
+              "heading": "FIFO",
+              "items": [
+                "到着順に通す",
+                "先着順を保証したい場合"
+              ]
+            },
+            {
+              "heading": "Random",
+              "items": [
+                "ランダムに選出",
+                "公平な配分をしたい場合"
+              ]
+            },
+            {
+              "heading": "Passthrough",
+              "items": [
+                "全トラフィックを素通り",
+                "平常時のトラフィック分析用"
+              ]
+            },
+            {
+              "heading": "Reject",
+              "items": [
+                "全トラフィックを拒否",
+                "メンテナンス・イベント専用時"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-005",
+      "category": "waiting-room",
+      "difficulty": "beginner",
+      "question": "Waiting Roomが利用する`__cfwaitingroom`クッキーの挙動について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "待機室で待っている間、クッキーの有効期限は常に5分に設定され、訪問者がタブを閉じずアプリケーションを離れない限り20秒ごとに自動更新される"
+        },
+        {
+          "text": "このクッキーは訪問者のIPアドレスとブラウザ情報のみを暗号化せずに保持し、待機列とは無関係に広告トラッキングに利用される",
+          "wrongFeedback": "`__cfwaitingroom`クッキーは暗号化されており、広告トラッキング用途ではなく待機列内の位置や再入場の許可を管理するために使われます。"
+        },
+        {
+          "text": "待機室が無効化(suspended)されている場合でも、このクッキーは毎回新規作成されオリジンへのリクエストごとに送信される",
+          "wrongFeedback": "待機室が無効化(suspended)されている間はトラフィックがそのままオリジンへ流れ、`__cfwaitingroom`クッキーは作成されません。"
+        },
+        {
+          "text": "クッキーの利用は任意であり、訪問者がクッキーを無効化していても待機列への参加や順番管理に影響はない",
+          "wrongFeedback": "Waiting Roomは`__cfwaitingroom`クッキーの利用を前提としており、能動的にキューイングしている間はクッキーを無効化した訪問者はそのhost/pathにアクセスできません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`__cfwaitingroom`クッキーは、待機室が有効かつキューイング対象のhost/pathへのアクセス時にのみ発行される暗号化されたクッキーです。待機室で待機している間は有効期限が常に5分に設定されますが、訪問者がタブを閉じたりアプリケーションを離れたりしない限り20秒ごとに自動更新されます。訪問者がアプリケーションに到達した後は、`session duration`で指定した時間の経過後にクッキーが失効します。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/waiting-room-cookie/",
+      "hint": "「待機中」と「アプリケーション到達後」でクッキーの有効期限がどう変わるかに注目しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "__cfwaitingroomクッキーのライフサイクル",
+          "actors": [
+            "訪問者",
+            "Waiting Room"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "初回アクセス→クッキー発行(5分)"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "20秒ごとに自動更新"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "順番が来てオリジンへ到達"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "session duration経過後に失効"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-006",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "待機室ページのカスタマイズに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "待機室ページは常にデフォルトの英語ページのみが表示され、HTML/CSSのカスタマイズや多言語対応はサポートされていない",
+          "wrongFeedback": "Default waiting roomでは日本語を含む複数言語から選択でき、Custom waiting roomではHTML/CSSを編集して独自のブランディングを施すことも可能です。"
+        },
+        {
+          "text": "Default waiting roomでは推定待機時間を表示する未装飾のページを言語選択のみで利用でき、Custom waiting roomではHTML/CSSを編集して独自のテンプレートを作成でき、推定待機時間を表示するには`<h2 id=\"time-remaining\">`を含むテンプレートのコードを残しておく必要がある"
+        },
+        {
+          "text": "カスタムHTMLテンプレートのアップロードにはファイルサイズの上限がなく、任意の大きさのHTMLファイルをインポートできる",
+          "wrongFeedback": "カスタムHTMLファイルのインポートには1,048,576バイト(1MB)というファイルサイズの上限があります。"
+        },
+        {
+          "text": "JSON応答(`json_response_enabled`)を有効にするトグルは、Custom waiting roomを選択した場合にのみ利用可能であり、Default waiting roomでは利用できない",
+          "wrongFeedback": "JSON応答(JSON Response)の有効化はDefault/Customいずれの待機室ページでも独立してトグルできる機能で、Custom waiting room限定の機能ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Waiting Roomの待機室ページには、未装飾で推定待機時間を表示するだけのDefault waiting roomと、HTML/CSSを自由に編集してブランディングできるCustom waiting roomがあります。カスタムテンプレートを使う場合、推定待機時間を表示し続けるには、テンプレートの`<main>`セクション内にある`<h2 id=\"time-remaining\">`を含む待機時間表示用コードを削除しないようにする必要があります。カスタムHTMLファイルのインポートには1MB(1,048,576バイト)のサイズ上限があります。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/customize-waiting-room/",
+      "hint": "「Default」と「Custom」でそれぞれ何ができるかを整理してみましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "待機室ページのカスタマイズ手順",
+          "steps": [
+            {
+              "text": "Customizationタブを選択"
+            },
+            {
+              "text": "Default waiting roomか Custom waiting roomかを選択"
+            },
+            {
+              "text": "Customの場合はHTML/CSSを編集・インポート",
+              "sub": "1MB上限"
+            },
+            {
+              "text": "推定待機時間コードを保持"
+            },
+            {
+              "text": "Preview waiting roomで確認"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-007",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "Waiting Roomの Events(スケジュールイベント)機能について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "イベントで設定した値は待機室本体の設定を恒久的に上書きし、`event_end_time`を過ぎた後も新しい値がそのまま残り続ける",
+          "wrongFeedback": "イベントで設定した値は、あくまでそのイベントの開始時刻から終了時刻までの期間だけ待機室のデフォルト設定を上書きするものであり、イベント終了後は元の設定に戻ります。"
+        },
+        {
+          "text": "1つの待機室に対して作成できるイベントの数に上限はなく、必要な数だけ並行してスケジュールできる",
+          "wrongFeedback": "1つの待機室に作成できるイベントには5件という上限があり、新しいイベントを作成するには既存のイベントを削除する必要があります。"
+        },
+        {
+          "text": "イベントは、特定の期間だけ`Total active users`や`Queueing Method`などの値を待機室のデフォルト設定から上書きするために使い、対象の待機室自体がEnabledでなければイベントは有効化されない"
+        },
+        {
+          "text": "イベントが重複する期間を設定したい場合は、同一の待機室内で複数のイベントを重ねて設定すればよい",
+          "wrongFeedback": "重複する期間のイベントを設定したい場合は、同一の待機室内で重ねるのではなく別の待機室を用意する必要があります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Eventsは、製品ローンチのような特定の期間だけ`Total active users`・`New users per minute`・`Session duration`・`Queueing Method`などを待機室のデフォルト設定から上書きするための機能です。イベントで明示的に設定しなかった項目はデフォルト設定を継承できます。イベントは対象の待機室自体がEnabledになっていないと有効化されず、1つの待機室に持てるイベント数は5件までという上限があります。イベント期間が重複する場合は同じ待機室内ではなく別の待機室を使う必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
+      "hint": "「恒久的な変更」なのか「期間限定の上書き」なのかに注目しましょう。",
+      "tags": [
+        "waiting-room",
+        "topic-events"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "イベントによる設定の上書き",
+          "steps": [
+            {
+              "text": "待機室のデフォルト設定を用意"
+            },
+            {
+              "text": "event_start_time / event_end_timeを指定"
+            },
+            {
+              "text": "期間中はイベント設定が優先",
+              "sub": "上限5件/待機室"
+            },
+            {
+              "text": "イベント終了後はデフォルト設定に復帰"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-008",
+      "category": "waiting-room",
+      "difficulty": "advanced",
+      "question": "イベントの`prequeue_start_time`(プリキューイング)を使って「くじ引き(ロッタリー)」方式を構築する場合の設定として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "`prequeue_start_time`は`event_start_time`より後の時刻でなければならず、イベント開始後にプリキューを始めることで遅れて来た訪問者を優先する",
+          "wrongFeedback": "`prequeue_start_time`は`event_start_time`より前の時刻である必要があり、`event_start_time`の少なくとも5分前でなければなりません。イベント開始後に設定することはできません。"
+        },
+        {
+          "text": "プリキュー期間中に到達した訪問者はFIFO順で確定的に並ばされ、`shuffle_at_event_start`を有効にしても順序は変化しない",
+          "wrongFeedback": "`shuffle_at_event_start`を`true`にすると、プリキュー期間中に到達した訪問者はイベント開始時にランダムにシャッフルされて順番が決まります。FIFOのまま固定されるわけではありません。"
+        },
+        {
+          "text": "プリキューイングを有効にすると、プリキュー期間中は新規訪問者だけでなく既存のアクティブセッションもそのまま通常のオリジンアクセスを継続できる",
+          "wrongFeedback": "プリキューイングを有効にすると、その期間中は新規ユーザーはプリキューへ送られます。既存のアクティブユーザーもプリキューへ回したい場合は、プリキュー期間をsession durationより長くし、Disable Session Renewalを併用する必要があります。"
+        },
+        {
+          "text": "`prequeue_start_time`は`event_start_time`の少なくとも5分前に設定し、`shuffle_at_event_start`を`true`にすることで、プリキュー期間中に到達した訪問者をイベント開始時にランダムな順番でオリジンへ通過させられる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "プリキューイングは`prequeue_start_time`を設定することで有効になり、この時刻は`event_start_time`より少なくとも5分前でなければなりません。`shuffle_at_event_start`を`true`にすると、プリキュー期間中に到達した訪問者はイベント開始時にランダムな順番で並び替えられます。これにより「早い者勝ち」ではなく、プリキュー期間内に来た全員に公平な当選チャンスを与える「くじ引き」方式を実現できます。既存のアクティブセッションもプリキューに含めたい場合は、プリキュー期間をsession durationより長くし、Disable Session Renewalを有効にする必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
+      "hint": "「いつプリキューを開始できるか」という時刻の制約と、`shuffle_at_event_start`の役割を確認しましょう。",
+      "tags": [
+        "waiting-room",
+        "topic-events"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "くじ引き(ロッタリー)方式のタイムライン",
+          "actors": [
+            "訪問者",
+            "Waiting Room"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "prequeue_start_time以降にアクセス"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "プリキューへ格納"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "event_start_time到達"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "shuffle_at_event_startでランダム並び替え"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-009",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "モバイルアプリやAPIなどの非ブラウザ環境向けに Waiting Room の JSON レスポンスモードを使う場合の説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "JSON応答を有効にすると、待機中でもTurnstileチャレンジがそのまま適用され、`cfWaitingRoom`オブジェクトにチャレンジ結果が含まれる",
+          "wrongFeedback": "JSON応答(非ブラウザ向け)ではTurnstileはサポートされておらず、無効化されます。チャレンジ結果が含まれることはありません。"
+        },
+        {
+          "text": "リクエストヘッダーに`Accept: application/json`を厳密に一致させて送信する必要があり、待機中は`refreshIntervalSeconds`ごとにクライアント側からリクエストを再送して順番を進める必要がある"
+        },
+        {
+          "text": "JSON応答モードではクッキーの送受信は不要で、クライアントはリクエストのたびに新しいセッションとして扱われても順番が保持される",
+          "wrongFeedback": "JSON応答モードでもクッキーの送受信は必須です。リクエストに前回取得したクッキーを含めないと新規ユーザーとして扱われ、待機列の末尾に回されてしまいます。"
+        },
+        {
+          "text": "JSON応答はすべてのプラン(Business以上)で標準的に利用でき、Advanced Waiting Roomのようなアドオンは不要である",
+          "wrongFeedback": "JSON応答モードはAdvanced Waiting Room customersのみがサポートする機能であり、標準のBusinessプランの基本待機室だけでは利用できません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "JSON応答を利用するには、リクエストヘッダーに`Accept: application/json`を(他の値を混在させず)厳密に一致させて送信する必要があります。待機中は`cfWaitingRoom`オブジェクトにJSONで待機情報が返されるため、クライアント(モバイルアプリやバックエンドサービス)は`refreshIntervalSeconds`で指定された間隔ごとにリクエストを再送し、待機列内での順番を進める必要があります。また、レスポンスヘッダーで受け取ったクッキーを次のリクエストに含める必要があり、これを怠ると新規ユーザーとして待機列の末尾に回されます。Turnstileはブラウザ向けのHTMLレスポンスでのみ有効で、JSON応答では無効化されます。この機能はAdvanced Waiting Room customer限定です。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/json-response/",
+      "hint": "ヘッダーの厳密な一致条件と、クライアント側が定期的に何をすべきかに注目しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "JSON応答モードのやり取り",
+          "actors": [
+            "モバイルアプリ",
+            "Waiting Room"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "Accept: application/json でリクエスト"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "cfWaitingRoomオブジェクトを返す"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "refreshIntervalSeconds後にクッキー付きで再送"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "順番到達でオリジンのレスポンスを返す"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-010",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "Waiting RoomをCloudflareのネットワーク上で動作させるための前提条件として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "待機室を有効にするだけで自動的にDNSレコードがオレンジクラウド(プロキシ)化されるため、事前のDNS設定は不要である",
+          "wrongFeedback": "待機室を作成しただけではDNSレコードは自動設定されません。対象のhostnameに対して、あらかじめプロキシ状態(オレンジクラウド)のDNSレコードか、プロキシモードのロードバランサーを用意しておく必要があります。"
+        },
+        {
+          "text": "Waiting RoomはCloudflareのCDNとは独立した別ネットワーク上で動作するため、CloudflareのCDNを利用していないゾーンでも単体で有効化できる",
+          "wrongFeedback": "Waiting Roomを利用するにはCloudflareのCDNが前提条件になっており、CDNを利用していないゾーンでは単体で有効化できません。"
+        },
+        {
+          "text": "対象のhostnameに対してプロキシ状態(オレンジクラウド)のDNSレコード、またはプロキシモードのロードバランサーを用意しておく必要があり、Waiting RoomはWorkersを基盤として構築されている"
+        },
+        {
+          "text": "訪問者のブラウザでJavaScriptを無効化していても、Waiting Roomの待機列管理やクッキー発行には一切影響しない",
+          "wrongFeedback": "Waiting Roomはクッキーの利用を前提としており、クッキーが無効化されているとキューイング中はアクセスできません。JavaScript無効化自体は必須条件ではありませんが、選択肢としては前提条件を正しく説明していません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Waiting Roomを機能させるには、対象のhostnameに対してプロキシ状態(オレンジクラウド)のDNSレコード、またはプロキシモードのロードバランサーを設定しておく必要があります。これらはWaiting Room作成時に自動設定されないため、事前に用意しておく必要があります。また、Waiting RoomはCloudflareのCDNを前提とし、グローバルなCloudflareのデータセンターで稼働するWorkers上に構築されています。リクエストは最寄りのデータセンターのWaiting Room Workerに到達し、そこでキューイングするかどうかが判定されます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/about/",
+      "hint": "「DNSレコードは自動設定されるか」「何の上に構築されているか」を確認しましょう。",
+      "tags": [
+        "waiting-room",
+        "topic-dns"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "Waiting Roomとedgeの関係",
+          "nodes": [
+            {
+              "id": "visitor",
+              "text": "訪問者"
+            },
+            {
+              "id": "dns",
+              "text": "プロキシ状態のDNS/LB"
+            },
+            {
+              "id": "worker",
+              "text": "Waiting Room Worker",
+              "sub": "最寄りのデータセンター"
+            },
+            {
+              "id": "origin",
+              "text": "オリジン"
+            }
+          ],
+          "edges": [
+            {
+              "from": "visitor",
+              "to": "dns"
+            },
+            {
+              "from": "dns",
+              "to": "worker"
+            },
+            {
+              "from": "worker",
+              "to": "origin",
+              "label": "空きがあれば通過"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-011",
+      "category": "waiting-room",
+      "difficulty": "beginner",
+      "question": "Waiting Roomのプラン提供に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Waiting RoomはFreeプランを含むすべてのCloudflareプランで標準搭載されており、追加のアドオン購入は一切必要ない",
+          "wrongFeedback": "Waiting RoomはFreeプランには含まれていません。基本的な待機室(1つ)はBusinessおよびEnterpriseプランに含まれ、追加機能を使うにはEnterpriseでAdvanced Waiting Roomを購入する必要があります。"
+        },
+        {
+          "text": "1つのゾーンで複数のプラン(基本のWaiting RoomとAdvanced Waiting Room)を同時に組み合わせて利用できる",
+          "wrongFeedback": "1ゾーンにつき利用できるWaiting Roomのプランは1つだけです。基本とAdvancedを同時に組み合わせることはできません。"
+        },
+        {
+          "text": "Advanced Waiting Roomのアドオンを購入すると、Freeプランのアカウントでもカスタマイズやイベント機能などすべての追加機能を利用できる",
+          "wrongFeedback": "Advanced Waiting RoomはEnterpriseプランの顧客が購入できるアドオンであり、Freeプランのアカウントで利用できるものではありません。"
+        },
+        {
+          "text": "基本的な待機室(1つ)はBusinessおよびEnterpriseプランに含まれており、カスタマイズやイベントなど一部の追加機能を利用するにはEnterpriseプランでAdvanced Waiting Roomを購入する必要がある"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "基本的な待機室は1つまで、BusinessおよびEnterpriseプランに含まれています。1ゾーンにつき利用できるWaiting Roomのプランは1つのみです。カスタム待機室ページ、JSON応答、Eventsなどの追加機能を利用するには、Enterpriseプランの顧客がAdvanced Waiting Roomを追加アドオンとして購入する必要があります。なお、Project Fair Shotの対象顧客も利用資格を得られます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/plans/",
+      "hint": "「基本の待機室」と「Advanced Waiting Room」がそれぞれどのプランで使えるかを整理しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "プランと利用可能な機能",
+          "columns": [
+            {
+              "heading": "Business",
+              "items": [
+                "基本の待機室を1つまで利用可"
+              ]
+            },
+            {
+              "heading": "Enterprise + Advanced Waiting Room",
+              "items": [
+                "カスタマイズ・イベント・JSON応答などの追加機能"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-012",
+      "category": "waiting-room",
+      "difficulty": "advanced",
+      "question": "Waiting RoomがWorkersとDurable Objectsを使ってどのようにキューイングを判定しているかについて、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "各データセンターのWaiting Room Workerが、管理者が定義した閾値とローカルに保持するWaiting Room stateだけを使ってその場で判定を行い、Durable Objectsのパイプラインを通じてWaiting Room stateが数秒ごとに世界中へ伝播されることで、追加のレイテンシをほぼ発生させずにグローバルに整合したキューイングを実現している"
+        },
+        {
+          "text": "すべてのリクエストは一旦単一の中央データセンターへ転送され、そこで同期的にキューイングを判定してから応答を返すため、地理的に離れた訪問者ほど大きなレイテンシが発生する",
+          "wrongFeedback": "Waiting Roomは中央集権的な同期判定ではなく、各データセンターのWorkerがローカルで判定を行う分散アーキテクチャです。これにより追加のレイテンシをほとんど発生させません。"
+        },
+        {
+          "text": "Waiting Room stateはリクエストのたびにDurable Objectsへ同期的に問い合わせて取得されるため、キューイングの判定には毎回オリジンへの往復と同等のレイテンシが発生する",
+          "wrongFeedback": "Waiting Room stateは同期的な毎リクエストの問い合わせではなく、数秒ごとにバックグラウンドで伝播されるスナップショットとしてローカルで保持されます。そのため追加レイテンシはほとんど発生しません。"
+        },
+        {
+          "text": "Waiting Room Workerは新規ユーザーの流入のみを監視し、`session duration`満了によるアウトフロー(空き枠の発生)は考慮せずに閾値判定を行う",
+          "wrongFeedback": "Waiting Room Workerはインフロー(新規流入)だけでなく、`session duration`満了によるアウトフロー(空き枠の発生)も考慮して動的にスロットを割り当てます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Waiting RoomはグローバルなCloudflareデータセンター群で動作するWorkersを基盤としています。リクエストは最寄りのデータセンターのWaiting Room Workerに到達し、そのWorkerが管理者定義の閾値(total active users・new users per minute)とローカルに保持するWaiting Room stateをもとにその場で判定を下します。Waiting Room stateは各データセンターごとに保持されつつ、Durable Objectsで構築されたパイプラインを通じて数秒ごとに世界中の変化が伝播されます。この設計により、リクエストごとに中央へ問い合わせる必要がなく、追加のレイテンシをほとんど発生させずに常時Waiting Roomを有効化できます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/about/",
+      "hint": "判定がどこ(中央か、各データセンターか)で行われ、グローバルな状態がどう伝播するかを整理しましょう。",
+      "tags": [
+        "waiting-room",
+        "topic-architecture"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Waiting Roomのアーキテクチャ",
+          "items": [
+            {
+              "text": "Waiting Room Worker(各データセンター)",
+              "sub": "ローカル判定・低レイテンシ"
+            },
+            {
+              "text": "Waiting Room state",
+              "sub": "各データセンターが保持するスナップショット"
+            },
+            {
+              "text": "Durable Objectsパイプライン",
+              "sub": "数秒ごとに世界中へ状態を伝播"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-013",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "キューイングメソッドを`Passthrough`に設定する運用として、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "`Passthrough`に設定すると待機室そのものが完全に無効化され、`total active users`などのトラフィック分析データも一切収集されなくなる",
+          "wrongFeedback": "`Passthrough`にしてもトラフィックの分析(total active users・new users per minute・time on originなど)は引き続き収集されます。待機室の分析機能ごと無効化されるわけではありません。"
+        },
+        {
+          "text": "平常時はトラフィックを即座にオリジンへ素通りさせつつ、トラフィックパターンの分析データを収集する目的で使い、イベント発生時だけキューイングメソッドを切り替える運用に向いている"
+        },
+        {
+          "text": "`Passthrough`はEventsの`prequeue_start_time`を設定した場合にのみ利用可能な特殊モードであり、通常の待機室設定には指定できない",
+          "wrongFeedback": "`Passthrough`はEvents専用の特殊モードではなく、通常の待機室のデフォルトの`queueing_method`としても指定できます。"
+        },
+        {
+          "text": "`Passthrough`に設定すると、待機中のユーザーにはTurnstileチャレンジが必ず表示されるようになる",
+          "wrongFeedback": "`Passthrough`は全トラフィックを素通りさせる設定であり待機自体が発生しないため、待機中のユーザー向けのTurnstileチャレンジが表示される場面はありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`queueing_method`を`Passthrough`に設定すると、全トラフィックが即座にオリジンへ素通りします。この状態でもtotal active users・new users per minute・time on originなどのトラフィック分析データは引き続き収集されるため、閾値設定を検討するための有用なテストとして利用できます。イベント機能と組み合わせ、平常時はPassthroughにしておき、需要が急増する期間だけEventsでキューイングメソッドをFIFOなどへ切り替える、という運用によく使われます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/queueing-methods/",
+      "hint": "「素通りさせつつ何を収集し続けるか」に注目しましょう。",
+      "tags": [
+        "waiting-room",
+        "topic-queueing-methods"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Passthroughの典型的な運用",
+          "steps": [
+            {
+              "text": "平常時: queueing_method = Passthrough",
+              "sub": "全トラフィックが素通り"
+            },
+            {
+              "text": "トラフィック分析データを収集"
+            },
+            {
+              "text": "イベント期間: キューイングメソッドを切替",
+              "sub": "例: FIFOやReject"
+            },
+            {
+              "text": "イベント終了後は元のPassthroughに復帰"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-014",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "待機や事前準備なしのメンテナンスページを、キューイング前後どちらにも待たせずにスケジュール配信したい場合の構成として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "`Reject`のキューイングメソッドで待機室を作成し、メンテナンス期間中だけ`Passthrough`のイベントを設定する",
+          "wrongFeedback": "この構成では平常時にすべてのトラフィックが拒否されてしまいます。求められているのは平常時に素通りさせ、メンテナンス期間中だけ拒否する構成です。"
+        },
+        {
+          "text": "`FIFO`のキューイングメソッドで待機室を作成し、メンテナンス期間中だけ`Random`のイベントを設定する",
+          "wrongFeedback": "FIFOとRandomはどちらも訪問者を待機列に並ばせる方式であり、待機やキューイングなしで即座に拒否したいメンテナンスページの要件を満たしません。"
+        },
+        {
+          "text": "`Passthrough`のキューイングメソッドで待機室を作成し、メンテナンス期間中だけ`Reject`のイベントを設定する"
+        },
+        {
+          "text": "`Random`のキューイングメソッドで待機室を作成し、メンテナンス期間中だけ`FIFO`のイベントを設定する",
+          "wrongFeedback": "RandomとFIFOはどちらも訪問者を待機列に並ばせる方式であり、待機やキューイングなしで即座に拒否したいメンテナンスページの要件を満たしません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "キューイング前後どちらにも訪問者を待たせずにメンテナンスページを配信するには、まず`Passthrough`のキューイングメソッドで待機室を作成し、平常時は全トラフィックを素通りさせます。その上で、メンテナンス期間に合わせて`Reject`のキューイングメソッドを指定したイベントを作成すると、その期間だけ全トラフィックが拒否され静的ページが返されます。イベント終了後は自動的に`Passthrough`の挙動に戻るため、メンテナンス期間の前後で訪問者が不要に待たされることがありません。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
+      "hint": "平常時とメンテナンス期間とで、キューイングメソッドがどのように切り替わるかを考えましょう。",
+      "tags": [
+        "waiting-room",
+        "topic-queueing-methods"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "スケジュールメンテナンスページの構成",
+          "steps": [
+            {
+              "text": "待機室: queueing_method = Passthrough"
+            },
+            {
+              "text": "平常時は全トラフィックがオリジンへ素通り"
+            },
+            {
+              "text": "イベント期間: queueing_method = Reject"
+            },
+            {
+              "text": "メンテナンス期間中は全トラフィックを拒否"
+            },
+            {
+              "text": "イベント終了後は自動的にPassthroughへ復帰"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-015",
+      "category": "waiting-room",
+      "difficulty": "advanced",
+      "question": "`disable_session_renewal`設定を`true`にした場合と`false`(デフォルト)にした場合の違いについて、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "`true`にすると訪問者は待機室を一切経由できなくなり、常にRejectと同じ挙動になる",
+          "wrongFeedback": "`disable_session_renewal`は待機列そのものを無効化する設定ではありません。オリジン到達後のセッションクッキーが更新され続けるかどうかを制御する設定です。"
+        },
+        {
+          "text": "`false`にすると訪問者のセッションクッキーはリクエストのたびに一切更新されなくなり、最初のsession duration経過時点で必ず待機列の末尾に戻される",
+          "wrongFeedback": "説明が逆です。`false`(デフォルト)ではリクエストのたびにセッションクッキーが更新され続けます。リクエストごとに更新されなくなるのは`true`にした場合です。"
+        },
+        {
+          "text": "`true`と`false`のいずれでも、有効化にはEnterpriseプランでの追加購入は不要であり、Businessプランの基本待機室でも標準的に利用できる",
+          "wrongFeedback": "`disable_session_renewal`はEnterprise顧客が購入した場合にのみ利用可能な設定であり、Businessプランの基本待機室では利用できません。"
+        },
+        {
+          "text": "`true`にすると訪問者はsession duration分の時間しかサイトを閲覧できず、その時間が経過するとアクティブなキューイングがあれば待機列の末尾に戻され、キューイングがなければ新規訪問者として新しいクッキーが発行される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "`disable_session_renewal`を`true`にすると、訪問者のセッションクッキーはリクエストのたびに更新されなくなり、最初にオリジンへ到達してからsession duration分の時間だけしかサイトを閲覧できなくなります。その時間が経過した時点でアクティブなキューイングが発生していれば待機列の末尾に回され、キューイングが発生していなければ新規訪問者として扱われ新しいクッキーが発行されます。デフォルトの`false`ではリクエストのたびにセッションクッキーの有効期限が更新され続けます。この設定はEnterprise顧客が購入した場合にのみ利用可能です。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/control-user-session/",
+      "hint": "「リクエストのたびに更新される」のはどちらの設定かを確認しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "disable_session_renewalの挙動",
+          "columns": [
+            {
+              "heading": "false(デフォルト)",
+              "items": [
+                "リクエストごとにクッキーを更新",
+                "閲覧時間は実質無制限"
+              ]
+            },
+            {
+              "heading": "true",
+              "items": [
+                "session duration経過で強制的に区切る",
+                "満了後は末尾に戻るか新規扱い"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-016",
+      "category": "waiting-room",
+      "difficulty": "advanced",
+      "question": "オリジンからのコマンドでユーザーのセッションを強制的に無効化する機能について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "ダッシュボードで\"Allow session termination via origin commands\"を有効にし、オリジンからのレスポンスに`Cf-Waiting-Room-Command: revoke`ヘッダーを付与すると、対応するユーザーのセッションが無効化され待機列の空きがより動的に生まれる"
+        },
+        {
+          "text": "この機能(`enabled_origin_commands`)はダッシュボードから常時デフォルトで有効になっており、追加の設定なしにオリジンからのすべてのレスポンスヘッダーを解析してセッションを無効化する",
+          "wrongFeedback": "この機能はデフォルトでは無効で、ダッシュボードで明示的に有効化するか、APIで`enabled_origin_commands`に`revoke`を含める必要があります。"
+        },
+        {
+          "text": "セッション無効化コマンドはリクエストヘッダーにのみ付与でき、レスポンスヘッダーに付与しても効果はない",
+          "wrongFeedback": "セッション無効化コマンドは、オリジンからのレスポンスヘッダーとして`Cf-Waiting-Room-Command: revoke`を返すことで機能します。リクエストヘッダーではありません。"
+        },
+        {
+          "text": "無効化されたセッション数を確認する手段は用意されておらず、GraphQL Analyticsからもrevokeされたセッションのメトリクスを取得できない",
+          "wrongFeedback": "無効化されたセッション数はWaiting Room AnalyticsのGraphQL APIから`sessionsRevoked`メトリクスとして取得できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "この機能を使うには、ダッシュボードで\"Allow session termination via origin commands\"を有効にするか、APIで`enabled_origin_commands`プロパティに`revoke`を含める必要があります。有効化後、オリジンからのレスポンスに`Cf-Waiting-Room-Command: revoke`ヘッダーを含めると、そのレスポンスに対応するユーザーのセッションが無効化されます。これにより待機列の空きがより動的に生まれ、スループットが向上する可能性があります。無効化されたセッション数はWaiting Room AnalyticsのGraphQL APIから`sessionsRevoked`メトリクスとして取得できます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/control-user-session/",
+      "hint": "コマンドを付与するのはリクエスト側かレスポンス側か、確認しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "セッション無効化コマンドの流れ",
+          "actors": [
+            "オリジン",
+            "Waiting Room",
+            "対象ユーザー"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "レスポンスに Cf-Waiting-Room-Command: revoke を付与"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "該当セッションを無効化"
+            },
+            {
+              "from": 1,
+              "to": 1,
+              "text": "sessionsRevokedメトリクスに計上"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-017",
+      "category": "waiting-room",
+      "difficulty": "intermediate",
+      "question": "Waiting RoomでTurnstileを併用する際の`turnstile_mode`と`turnstile_action`の役割について、正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "`turnstile_mode`はチャレンジ失敗時にログを取るか無限キューに送るかを決め、`turnstile_action`はウィジェットの表示形式(invisibleなど)を決める",
+          "wrongFeedback": "`turnstile_mode`と`turnstile_action`の役割が逆です。`turnstile_mode`がウィジェットの表示形式、`turnstile_action`がチャレンジ失敗時の挙動を決めます。"
+        },
+        {
+          "text": "`turnstile_mode`はウィジェットの表示形式(`off`・`invisible`・`visible_non_interactive`・`visible_managed`)を決め、`turnstile_action`はチャレンジに失敗した際に`log`と`infinite_queue`のどちらの挙動を取るかを決める"
+        },
+        {
+          "text": "Turnstileウィジェットは待機室ページだけでなく、JSON応答が有効な非ブラウザ向けのレスポンスにも同様に表示される",
+          "wrongFeedback": "Turnstileチャレンジはブラウザ向け(HTML)のレスポンスにのみ適用され、JSON応答では無効化されるため非ブラウザ向けには表示されません。"
+        },
+        {
+          "text": "`turnstile_mode`を`off`に設定しても、待機室自体は引き続きTurnstile統合を必須として要求するため無効化はできない",
+          "wrongFeedback": "`turnstile_mode`を`off`にすると、Turnstile統合そのものを完全に無効化できます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "`turnstile_mode`は、Turnstileウィジェットの表示形式を`off`・`invisible`・`visible_non_interactive`・`visible_managed`から選択する設定です(デフォルトは`invisible`)。`off`に設定すると統合自体を完全に無効化できます。`turnstile_action`は、訪問者がTurnstileチャレンジに失敗した場合の挙動を`log`と`infinite_queue`から選択する設定です(デフォルトは`log`)。なお、Turnstileはブラウザ向けのHTMLレスポンスにのみ適用され、JSON応答が有効な非ブラウザ向けのレスポンスでは無効化されます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
+      "hint": "「表示形式」を決めるのと「失敗時の挙動」を決めるのはそれぞれどちらの設定か整理しましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "Turnstile関連の設定項目",
+          "filepath": "waiting-room設定(抜粋)",
+          "lines": [
+            {
+              "text": "turnstile_mode: \"invisible\"",
+              "highlight": true
+            },
+            {
+              "text": "turnstile_action: \"log\"",
+              "highlight": true
+            },
+            {
+              "text": "json_response_enabled: false"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wa-018",
+      "category": "waiting-room",
+      "difficulty": "advanced",
+      "question": "JSON応答モードを利用する非ブラウザクライアントが、クッキーを正しく扱わなかった場合に何が起こるかを説明したものとして、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "クッキーを送信しなくても、Waiting Roomはリクエスト元のIPアドレスだけで同一訪問者と判定するため、待機列内の順番は保持され続ける",
+          "wrongFeedback": "Waiting Roomは訪問者の識別にIPアドレスではなく`__cfwaitingroom`クッキーを使います。クッキーを送らなければ同一訪問者とは判定されません。"
+        },
+        {
+          "text": "クッキーを送信し忘れた場合、直前のリクエストと同じ待機列の位置からやり直せるよう、Waiting Room側が自動的に前回のクッキーを補完してくれる",
+          "wrongFeedback": "Waiting Room側が前回のクッキーを自動的に補完することはありません。クッキーが含まれていない場合は新規ユーザーとして扱われます。"
+        },
+        {
+          "text": "リクエストにクッキーが含まれていない場合、Waiting Roomはそれを新規訪問者とみなしてレスポンスヘッダーで新しいクッキーを発行し、その結果その訪問者は待機列の末尾に置かれる"
+        },
+        {
+          "text": "クッキーの送信漏れが起きても、`refreshIntervalSeconds`ごとの再送さえ続けていれば、待機列内の位置は必ず維持される",
+          "wrongFeedback": "位置の維持には正しいクッキーの送受信が不可欠です。`refreshIntervalSeconds`ごとに再送を続けていても、クッキーが欠落していれば新規訪問者として末尾に回されてしまいます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Waiting Roomは`__cfwaitingroom`クッキーによって訪問者を識別し、待機列内の位置を管理しています。JSON応答を利用する非ブラウザクライアント(モバイルアプリやバックエンドサービスなど)は、レスポンスヘッダーで受け取ったクッキーを次のリクエストに含め続ける必要があります。リクエストにクッキーが含まれていない場合、Waiting Roomはそれを新規訪問者とみなして新しいクッキーを発行するため、その訪問者は待機列の末尾に置かれてしまいます。そのため非ブラウザ環境でWaiting Roomを利用する際は、クッキーの保持と送信を適切に行うクッキーマネージャーなどの実装が推奨されます。",
+      "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/json-response/",
+      "hint": "クッキーが欠落したリクエストを、Waiting Roomはどのような訪問者として扱うかを考えましょう。",
+      "tags": [
+        "waiting-room",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "クッキーの有無による扱いの違い",
+          "rowHeader": "状況",
+          "colHeader": "結果",
+          "rows": [
+            "クッキーを正しく送信",
+            "クッキーが欠落"
+          ],
+          "cols": [
+            "訪問者の判定",
+            "待機列内の位置"
+          ],
+          "cells": [
+            [
+              "既存の訪問者として継続",
+              "前回の位置を維持"
+            ],
+            [
+              "新規訪問者として扱われる",
+              "待機列の末尾に配置"
+            ]
+          ]
+        }
+      ]
     }
   ]
 }

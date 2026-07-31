@@ -69,6 +69,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   em: 'email-security',
   mw: 'magic-wan',
   sc: 'spectrum',
+  wa: 'waiting-room',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -453,6 +454,18 @@ const VALID_DOC_PAGES = [
   'spectrum/reference/analytics/',
   'spectrum/reference/settings-by-plan/',
   'spectrum/protocols-per-plan/',
+  'waiting-room/',
+  'waiting-room/about/',
+  'waiting-room/get-started/',
+  'waiting-room/how-to/create-waiting-room/',
+  'waiting-room/how-to/control-user-session/',
+  'waiting-room/how-to/customize-waiting-room/',
+  'waiting-room/how-to/json-response/',
+  'waiting-room/additional-options/create-events/',
+  'waiting-room/reference/queueing-methods/',
+  'waiting-room/reference/configuration-settings/',
+  'waiting-room/reference/waiting-room-cookie/',
+  'waiting-room/plans/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -898,6 +911,7 @@ describe('Quiz Content Quality', () => {
         'email-security',
         'magic-wan',
         'spectrum',
+        'waiting-room',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

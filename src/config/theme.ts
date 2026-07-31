@@ -533,6 +533,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'HTTP以外のTCP/UDPアプリケーションを、Spectrumを使って安全に公開・保護できる',
     },
     {
+      id: 'waiting-room',
+      name: 'Waiting Room',
+      icon: '🎫',
+      color: 'crimson',
+      weight: 10,
+      description:
+        'チケット販売や商品ローンチなどのトラフィック急増時に、閾値を超えた訪問者を仮想の待機室でキューイングしオリジンを保護するWaiting Room。設定項目・キューイングメソッド(FIFO/Random/Passthrough/Reject)・Events・プリキューイング・JSON応答モード',
+      skillDescription: '需要急増時のトラフィックを、Waiting Roomでキューイングしてオリジンを保護する設計ができる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

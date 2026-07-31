@@ -39,6 +39,7 @@ export const COLOR_MAP: Record<string, string> = {
   wine: '#831843',
   azure: '#0078d4',
   plum: '#a21caf',
+  crimson: '#be123c',
 }
 
 export function getColorHex(colorName: string): string {
