@@ -67,6 +67,7 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   cb: 'casb',
   dx: 'dex',
   em: 'email-security',
+  mw: 'magic-wan',
 }
 
 /** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
@@ -421,6 +422,22 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/email-security/submissions/invalid-submissions/',
   'cloudflare-one/email-security/investigation/search-email/',
   'cloudflare-one/email-security/monitoring/',
+  'cloudflare-wan/',
+  'cloudflare-wan/on-ramps/',
+  'cloudflare-wan/network-interconnect/',
+  'cloudflare-wan/reference/gre-ipsec-tunnels/',
+  'cloudflare-wan/configuration/how-to/configure-routes/',
+  'cloudflare-wan/reference/traffic-steering/',
+  'cloudflare-wan/reference/tunnel-health-checks/',
+  'magic-transit/',
+  'magic-transit/ddos/',
+  'magic-transit/on-demand/',
+  'magic-transit/how-to/advertise-prefixes/',
+  'magic-transit/reference/gre-ipsec-tunnels/',
+  'magic-transit/network-health/',
+  'cloudflare-network-firewall/',
+  'cloudflare-network-firewall/about/',
+  'cloudflare-network-firewall/reference/network-firewall-fields/',
   'pages/',
   'pages/configuration/build-caching/',
   'pages/configuration/build-configuration/',
@@ -864,6 +881,7 @@ describe('Quiz Content Quality', () => {
         'casb',
         'dex',
         'email-security',
+        'magic-wan',
       ])
       const missing = validCategoryIds.filter((c) => !OVERVIEW_EXCLUDED.has(c) && !categories.has(c))
       expect(missing, `欠落カテゴリ: ${missing.join(', ')}`).toEqual([])

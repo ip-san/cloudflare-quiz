@@ -38348,6 +38348,976 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mw-001",
+      "category": "magic-wan",
+      "difficulty": "beginner",
+      "question": "Cloudflare WAN(旧Magic WAN)がどのような課題を解決するプロダクトかを説明したものとして、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "MPLS回線やハブアンドスポーク型のルーティングを、Cloudflareのグローバルネットワークを経由したクラウドネイティブな経路に置き換え、拠点間トラフィックを最寄りのCloudflareデータセンターでインライン処理するサイト間接続サービスである"
+        },
+        {
+          "text": "エンドユーザーのブラウザとオリジンの間のHTTPトラフィックのみを対象に、WAFやキャッシュを適用するCDNサービスである",
+          "wrongFeedback": "Cloudflare WANはHTTPに限らずIPトラフィック全体を扱うサイト間接続サービスであり、CDNのHTTPキャッシュ・WAF機能とは役割が異なります。"
+        },
+        {
+          "text": "ユーザーの端末にインストールするクライアントソフトウェアのみを使って、個々のデバイスをZero Trustで保護する製品である",
+          "wrongFeedback": "デバイス単位のクライアント保護はCloudflare One Client(WARP)の役割です。Cloudflare WANは拠点(サイト)単位の接続を扱います。"
+        },
+        {
+          "text": "Cloudflare One全体のことを指す別名であり、Cloudflare WANという独立した製品は存在しない",
+          "wrongFeedback": "Cloudflare WANは単体のWAN-as-a-Serviceとして提供される独立した製品で、Cloudflare Oneはそれをアイデンティティ認識のセキュリティ機能で拡張したSASEプラットフォームです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare WAN(旧Magic WAN)は、MPLS回線やハブアンドスポーク型ルーティングを置き換え、拠点・オフィス・クラウドリソースをCloudflareのグローバルネットワーク経由で接続するサイト間接続サービスです。トラフィックは中央データセンターを経由せず、最寄りのCloudflareデータセンターでセキュリティポリシーが適用されます。Cloudflare WANはIPsec/GREトンネル、Cloudflare Network Interconnect(CNI)、Cloudflare One Applianceで拠点を接続する独立したWAN-as-a-Service製品であり、Cloudflare Oneはこれをアイデンティティ認識の機能で拡張したSASEプラットフォームです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/",
+      "hint": "MPLSのような専用回線・中央集約型の経路を、何に置き換えると説明されているかを考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Cloudflare WAN と Cloudflare One",
+          "columns": [
+            {
+              "heading": "Cloudflare WAN",
+              "items": [
+                "サイト間接続を提供するWAN-as-a-Service",
+                "IPsec・GRE・CNI・Applianceで拠点を接続"
+              ]
+            },
+            {
+              "heading": "Cloudflare One",
+              "items": [
+                "Cloudflare WANをID機能で拡張したSASE基盤",
+                "WARP・Access・GatewayなどZero Trustを含む"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-002",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Cloudflare WANへのオンランプ(接続経路)に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Cloudflare Network Interconnect(CNI)は、Cloudflare One Client(WARP)をインストールした個々の端末をオンランプとして扱うための仕組みである",
+          "wrongFeedback": "CNIはネットワークインフラ同士を直接接続するオンランプであり、個々の端末向けのWARPクライアントとは別の仕組みです。"
+        },
+        {
+          "text": "Cloudflare One Applianceによる自動接続、GRE/IPsecトンネルに対応したサードパーティ機器、専用線で接続するCloudflare Network Interconnect(CNI)、Cloudflare Tunnel、WARPなど複数のオンランプが用意されている"
+        },
+        {
+          "text": "オンランプとして利用できるのはCloudflare One Applianceのみであり、既存のルーターやファイアウォールを使ってGRE/IPsecトンネルを構成する方法は提供されていない",
+          "wrongFeedback": "GRE/IPsecトンネルに対応するサードパーティ機器を使ったオンランプも提供されています。Applianceが唯一の方法ではありません。"
+        },
+        {
+          "text": "Multi-Cloud Networkingは、オンプレミスのルーターにエージェントを常駐させてBGPピアリングを自動化する機能である",
+          "wrongFeedback": "Multi-Cloud Networkingはクラウドネットワークからのオンランプ作成を自動化する機能であり、オンプレミスルーターへのエージェント常駐が前提ではありません。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare WANへのオンランプには、IPトラフィックを自動接続・振り分けするCloudflare One Applianceのほか、GRE/IPsecトンネルに対応するサードパーティ機器、公衆インターネットを経由しない専用接続を提供するCloudflare Network Interconnect(CNI)、Cloudflare Tunnel、WARPなど複数の選択肢があります。クラウドリソースについてはMulti-Cloud Networkingでオンランプ作成を自動化できます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/on-ramps/",
+      "hint": "1つの方法に限定せず、機器の種類や接続手段ごとに複数の選択肢が用意されている点に注目しましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Cloudflare WANのオンランプ",
+          "items": [
+            {
+              "text": "Cloudflare One Appliance",
+              "sub": "自動接続・IPトラフィック振り分け"
+            },
+            {
+              "text": "サードパーティ機器(GRE/IPsec)",
+              "sub": "既存ルーター・ファイアウォール"
+            },
+            {
+              "text": "Cloudflare Network Interconnect",
+              "sub": "専用線で公衆インターネットを回避"
+            },
+            {
+              "text": "Cloudflare Tunnel / WARP",
+              "sub": "アウトバウンド接続・端末単位の接続"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-003",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Cloudflare WANが使うGREトンネルとIPsecトンネルの違いに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "GREはトラフィックを暗号化し送信元を認証するのに対し、IPsecはステートレスで暗号化を行わない",
+          "wrongFeedback": "説明が逆です。GREはステートレスで暗号化を行わず、IPsecがトラフィックを暗号化し送信元を認証します。"
+        },
+        {
+          "text": "GRE・IPsecともに、標準的なインターネット経路のMTU(1500バイト)に合わせてMSSを調整する必要はない",
+          "wrongFeedback": "どちらのプロトコルもカプセル化によりヘッダーが増えるため、標準MTU(1500バイト)に収まるようMSSを調整する必要があります。"
+        },
+        {
+          "text": "GREはステートレスでシンプルに設定できるが暗号化は行わない一方、IPsecはトラフィックを暗号化し送信元を認証するため、より高いセキュリティを提供する"
+        },
+        {
+          "text": "GRE・IPsecはいずれもCloudflareと顧客ネットワークの間に固定された1台のサーバー同士を結ぶ、Anycastを使わない伝統的なトンネル方式である",
+          "wrongFeedback": "Cloudflare WANはAnycast IPアドレスを使うモデルを採用しており、特定の1台のサーバーに固定されるわけではありません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "GREはステートレスで設定がシンプルですが暗号化を行いません。IPsecはトラフィックを暗号化し送信元を認証するため、より強固なセキュリティを提供します。どちらもカプセル化によってヘッダーが追加されるため、標準MTU(1500バイト)に収まるようMSSを調整する必要があります。またCloudflare WANはAnycast IPアドレスを使うモデルを採用しており、特定の1台のサーバーに固定されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/gre-ipsec-tunnels/#tunnels-and-encapsulation",
+      "hint": "「設定のしやすさ」と「セキュリティの強さ」のどちらを優先するかで使い分けが変わる、という軸で考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "GREトンネル と IPsecトンネル",
+          "columns": [
+            {
+              "heading": "GREトンネル",
+              "items": [
+                "ステートレスでシンプルに設定できる",
+                "暗号化は行わない"
+              ]
+            },
+            {
+              "heading": "IPsecトンネル",
+              "items": [
+                "トラフィックを暗号化し送信元を認証",
+                "より高いセキュリティを提供"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-004",
+      "category": "magic-wan",
+      "difficulty": "advanced",
+      "question": "Cloudflare WANのAnycastトンネルモデルにおいて、GREトンネルとIPsecトンネルがそれぞれどのようにAnycastと両立しているかに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "IPsecはステートレスなプロトコルであるため、どのCloudflareサーバーも事前のネゴシエーションなしにパケットを処理できる",
+          "wrongFeedback": "ステートレスでネゴシエーション不要なのはGREです。IPsecはステートフルで、IKEによるネゴシエーションが必要です。"
+        },
+        {
+          "text": "GREはIKE(Internet Key Exchange)を使ってCloudflareとルーター間でトンネルのネゴシエーションを行う",
+          "wrongFeedback": "IKEを使ってネゴシエーションを行うのはIPsecです。GREはステートレスでネゴシエーション自体を必要としません。"
+        },
+        {
+          "text": "IPsecトンネルはネゴシエーションを行った1台のCloudflareサーバーのみがそのトンネルのトラフィックを処理し続け、他のデータセンターのサーバーは処理できない",
+          "wrongFeedback": "ネゴシエーション後、トンネルの詳細情報は全Cloudflareデータセンターに伝播されるため、どのCloudflareサーバーでもそのIPsecトンネルのトラフィックを処理できます。"
+        },
+        {
+          "text": "GREはステートレスなためどのCloudflareサーバーも独立してパケットを処理できる一方、IPsecは1台のサーバーがIKEでトンネルを確立した後、鍵などのトンネル詳細情報を全データセンターに伝播することで、結果的にどのサーバーでもそのトンネルのトラフィックを処理できるようになる"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "GREはステートレスなプロトコルのため、どのCloudflareサーバーも他サーバーとの調整やネゴシエーションなしに独立してパケットを処理できます。一方IPsecはステートフルなため、顧客のルーターがIKE(Internet Key Exchange)を使って1台のCloudflareサーバーとの間でトンネルを確立しますが、その後トラフィックセレクタや鍵などのトンネル詳細情報が全Cloudflareデータセンターに伝播されるため、結果的にどのサーバーでもそのIPsecトンネルのトラフィックを処理できるようになります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/gre-ipsec-tunnels/#anycast",
+      "hint": "「最初から調整が不要な方式」と「最初は1台が交渉し、その後で情報を広める方式」という2段階の違いを考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "IPsecトンネルとAnycast",
+          "actors": [
+            "顧客ルーター",
+            "ネゴシエーションしたCloudflareサーバー",
+            "他の全Cloudflareデータセンター"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "IKEでIPsecトンネルのネゴシエーションを実施"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "鍵やトラフィックセレクタなどのトンネル詳細情報を伝播"
+            },
+            {
+              "from": 2,
+              "to": 0,
+              "text": "任意のCloudflareサーバーがトンネルのトラフィックを処理"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-005",
+      "category": "magic-wan",
+      "difficulty": "advanced",
+      "question": "Cloudflare WANのIPsecトンネルでIKEv2がトンネルを確立する際のステージに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "IKE_SA_INITでIKE SAのパラメータをネゴシエートして共有シークレットを導出した後、両ピアがRFC 9370に対応していればIKE_INTERMEDIATEでpost-quantum鍵交換を追加し、最後にIKE_AUTHで相互認証を行いIPsecトンネル(Child SA)を確立する"
+        },
+        {
+          "text": "IKE_AUTHが最初に実行され、相互認証が完了した後にIKE_SA_INITで共有シークレットを導出する",
+          "wrongFeedback": "順序が逆です。IKE_SA_INITが最初に実行され、共有シークレットの導出後にIKE_AUTHで相互認証を行います。"
+        },
+        {
+          "text": "IKE_INTERMEDIATEは両ピアの対応状況にかかわらず必ず実行される必須のステージであり、post-quantum鍵交換専用ではなく通常の鍵交換にも使われる",
+          "wrongFeedback": "IKE_INTERMEDIATEは両ピアがRFC 9370に対応している場合にのみ実行される、post-quantum鍵交換のためのステージです。"
+        },
+        {
+          "text": "IKE SAとChild SAは同一のセキュリティアソシエーションであり、両者は同じ暗号スイートのパラメータを共有する",
+          "wrongFeedback": "IKE SAとChild SAは別個のエンティティで、それぞれ独自のパラメータを持ちます。IKE SAはChild SAの確立・管理を担う制御プレーンです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "IKEv2は、まずIKE_SA_INITでIKE SAのパラメータをネゴシエートし共有シークレットを導出します。両ピアがRFC 9370(post-quantum鍵交換)に対応していれば、IKE_INTERMEDIATEでML-KEMを使った鍵交換を追加します。最後にIKE_AUTHで相互認証を行い、IKE SAを確立したうえでIPsecトンネルであるChild SAを確立します。IKE SAとChild SAはそれぞれ独自のパラメータを持つ別個のエンティティです。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/gre-ipsec-tunnels/#how-ikev2-establishes-an-ipsec-tunnel",
+      "hint": "「まず土台となる安全な通信路を作り、次に量子耐性を追加できるか確認し、最後に認証する」という順序を考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "IKEv2によるIPsecトンネル確立",
+          "steps": [
+            {
+              "text": "IKE_SA_INIT: IKE SAパラメータをネゴシエート"
+            },
+            {
+              "text": "(対応時)IKE_INTERMEDIATE: post-quantum鍵交換を追加"
+            },
+            {
+              "text": "IKE_AUTH: 相互認証してChild SAを確立"
+            },
+            {
+              "text": "必要に応じIKE SA/Child SAをRekey"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-006",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Cloudflare WANのIPsecトンネルにおけるroute-based VPNとpolicy-based VPNの使い分けに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "policy-based VPNが推奨されており、route-based VPNは非推奨のため使用すべきではない",
+          "wrongFeedback": "推奨は逆です。route-based VPNが推奨されており、policy-based VPNはやむを得ない場合に使う方式です。"
+        },
+        {
+          "text": "route-based VPNが推奨されている。policy-based VPNを使う場合、1つのChild SAにつきトラフィックセレクタの組は1セットのみで、1本のIPsecトンネルに含められるChild SAは約100個までという制約がある"
+        },
+        {
+          "text": "policy-based VPNを使う場合でも、Child SAの数に上限はなく無制限にポリシーを追加できる",
+          "wrongFeedback": "1本のIPsecトンネルに含められるChild SAは約100個までという上限があり、それに伴いポリシー数にも実質的な上限があります。"
+        },
+        {
+          "text": "route-based VPNとpolicy-based VPNのどちらを選んでも、ヘルスチェックのトラフィックセレクタへの対応要件に違いはない",
+          "wrongFeedback": "policy-based VPNでは、ポリシーがreply形式のヘルスチェックのトラフィックセレクタと一致している必要があります。一致しない場合、他のトラフィックと同様に破棄されます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare WANはroute-based VPNとpolicy-based VPNの両方をサポートしますが、route-based VPNを推奨しています。policy-based VPNを使わざるを得ない場合、1つのChild SAにつき1セットのみのトラフィックセレクタをサポートし、1本のIPsecトンネルに含められるChild SAは約100個までという制約があります。またポリシーはreply形式のヘルスチェックのトラフィックセレクタと一致している必要があり、一致しない場合はそのトンネルからの他のトラフィックと同様に破棄されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/gre-ipsec-tunnels/#route-based-vs-policy-based-vpns",
+      "hint": "「推奨される方式」と「制約付きでやむを得ず使う方式」という位置づけの違いを考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "route-based VPN と policy-based VPN",
+          "columns": [
+            {
+              "heading": "route-based VPN",
+              "items": [
+                "Cloudflareが推奨する方式"
+              ]
+            },
+            {
+              "heading": "policy-based VPN",
+              "items": [
+                "Child SAごとにトラフィックセレクタ1セットのみ",
+                "1トンネルのChild SA上限は約100個"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-007",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Cloudflare WANのVirtual Networkルーティングテーブルにおける、静的ルートとBGPで学習したルートの優先順位に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "BGPで学習したルートは常に静的ルートより優先され、プレフィックスと優先度が同じ場合もBGPルートが選ばれる",
+          "wrongFeedback": "プレフィックスと優先度が同じ場合、Cloudflareは静的ルートをBGPルートより優先します。"
+        },
+        {
+          "text": "BGPアドバタイズされたルートにはデフォルトの優先度が設定されず、必ず手動で優先度を指定しなければならない",
+          "wrongFeedback": "BGPがルートをアドバタイズすると、Cloudflareはデフォルトの優先度100で自動的にルーティングテーブルに追加します。"
+        },
+        {
+          "text": "BGPで学習したルートにはデフォルトで優先度100が自動的に設定されるが、同じプレフィックス・優先度の静的ルートが存在する場合は静的ルートが優先される"
+        },
+        {
+          "text": "優先度の数値が大きいルートほど優先され、複数の等コストルートがある場合はラウンドロビンでトラフィックが分配される",
+          "wrongFeedback": "優先度は数値が小さいほど高くなります。また複数の等コストルートがある場合はラウンドロビンではなくECMP(ハッシュベース)でトラフィックが分配されます。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "BGPがルートをアドバタイズすると、Cloudflareはデフォルトの優先度100でVirtual Networkルーティングテーブルに自動的に追加します。ただし同じプレフィックス・優先度を持つ静的ルートが存在する場合は、静的ルートが優先されます。優先度は数値が小さいほど高く、同じプレフィックス・優先度を持つ複数のBGPルートがある場合はECMPでトラフィックが分配されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/traffic-steering/#set-priority-for-bgp-routes",
+      "hint": "「自動で割り当てられるデフォルト値」と「手動設定と競合したときにどちらが勝つか」という2つの論点を分けて考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "静的ルート と BGPルート",
+          "columns": [
+            {
+              "heading": "静的ルート",
+              "items": [
+                "同じプレフィックス・優先度ならBGPルートより優先"
+              ]
+            },
+            {
+              "heading": "BGPルート",
+              "items": [
+                "デフォルト優先度100が自動設定",
+                "静的ルートと競合すると劣後"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-008",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Cloudflare WANのEqual-Cost Multi-Path(ECMP)ルーティングの挙動に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "ECMPは送信元IPアドレスのみをハッシュ計算に使い、宛先IPアドレスやポート番号は考慮しない",
+          "wrongFeedback": "ハッシュには送信元・宛先IPアドレスに加え、TCP/UDPパケットの場合は送信元・宛先ポートも使われます。"
+        },
+        {
+          "text": "同一セッション内のパケットであっても、パケットごとに異なるネクストホップ(トンネル)へランダムに振り分けられる",
+          "wrongFeedback": "同じ送信元・宛先を持つ同一セッションのパケットは同じハッシュ値になるため、同じネクストホップを使い続けます。"
+        },
+        {
+          "text": "ECMPは送信済みのトラフィック量を考慮して、まだ利用の少ないトンネルへ優先的にパケットを振り分ける帯域を意識したアルゴリズムである",
+          "wrongFeedback": "ECMPは各トンネルにすでに送信済みのトラフィック量を考慮しません。そのため高帯域の1本のTCPコネクションが同じトンネルに集中することがあります。"
+        },
+        {
+          "text": "送信元・宛先IPアドレス(TCP/UDPの場合は送信元・宛先ポートも含む)から計算したハッシュ値を等コストの経路数で割った余りによって経路が決まる確率的なアルゴリズムであり、同一フローのパケットは同じトンネルを使い続ける"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "ECMPは送信元・宛先IPアドレス(TCP/UDPパケットの場合は送信元・宛先ポートも含む)から計算したハッシュ値を、等コストのネクストホップ数で割った余り(モジュロ)によって経路を決定する確率的なアルゴリズムです。同一の送信元・宛先を持つセッションのパケットは同じハッシュ値になるため、同じネクストホップを使い続けます。ただしECMPはトンネルに送信済みの帯域量を考慮しないため、高帯域の1コネクションが特定のトンネルに偏ることがあります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/traffic-steering/#equal-cost-multi-path-routing",
+      "hint": "「毎回ランダムに選ぶ」のではなく、「同じ組み合わせなら毎回同じ計算結果になる」仕組みだと考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "ECMPによる経路決定",
+          "steps": [
+            {
+              "text": "送信元・宛先IP(+ポート)からハッシュ値を計算"
+            },
+            {
+              "text": "等コストの経路数でハッシュ値を割った余りを算出"
+            },
+            {
+              "text": "余りに対応するトンネルへ振り分け"
+            },
+            {
+              "text": "同一フローは同じ余りになり同じトンネルを継続利用"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-009",
+      "category": "magic-wan",
+      "difficulty": "beginner",
+      "question": "Cloudflare WANのトンネルヘルスチェックとエンドポイントヘルスチェックの違いに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "エンドポイントヘルスチェックは、トンネルの状態を監視しトラフィックのステアリング(経路選択)ロジックに直接反映される主要な指標として使われる",
+          "wrongFeedback": "トンネルの状態を監視しステアリングに使われるのはトンネルヘルスチェックです。エンドポイントヘルスチェックはトンネル選択のロジックには関与しません。"
+        },
+        {
+          "text": "トンネルヘルスチェックはCloudflareから自社ネットワークへの経路をルーティングするトンネル自体の状態を監視しステアリングに使われるのに対し、エンドポイントヘルスチェックはトンネルを経由しつつもより広いインターネット疎通性を把握するためのもので、トンネル選択には使われない"
+        },
+        {
+          "text": "トンネルヘルスチェック・エンドポイントヘルスチェックのいずれも、オンボーディング時に対象を指定する必要はなく自動的に検出されるため、事前にトンネルエンドポイントや監視対象IPアドレスを設定作業として登録する手順は存在しない",
+          "wrongFeedback": "どちらのヘルスチェックも、オンボーディング時にトンネルエンドポイントや対象IPアドレスを指定する必要があります。自動検出される仕組みではありません。"
+        },
+        {
+          "text": "エンドポイントヘルスチェックはCloudflareの顧客ネットワーク名前空間の内側からのみ発行され、境界ルーターより手前の顧客インフラの中でプローブが完結する",
+          "wrongFeedback": "逆です。エンドポイントヘルスチェックはCloudflareのグローバルネットワークサーバーが顧客ネットワーク名前空間の外側から発行し、境界ルーターを越えた先の対象まで届きます。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "トンネルヘルスチェックは、Cloudflareからあなたのネットワークへトラフィックをルーティングするトンネルそのものの状態を監視し、トラフィックステアリングに使われます。一方エンドポイントヘルスチェックは、Cloudflareの分散データセンターからあなたのオリジンネットワークまでの疎通性を評価するもので、トンネル上を流れますがトンネル選択やステアリングロジックには関与しません。エンドポイントヘルスチェックは顧客ネットワーク名前空間の外側からCloudflareグローバルネットワークサーバーによって発行されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/tunnel-health-checks/#types-of-health-checks",
+      "hint": "「経路選択に直接関わるチェック」と「疎通性の全体像を把握するためのチェック」という役割の違いを考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "トンネルヘルスチェック と エンドポイントヘルスチェック",
+          "columns": [
+            {
+              "heading": "トンネルヘルスチェック",
+              "items": [
+                "トンネル自体の状態を監視",
+                "トラフィックステアリングに使用"
+              ]
+            },
+            {
+              "heading": "エンドポイントヘルスチェック",
+              "items": [
+                "オリジンまでの疎通性を評価",
+                "トンネル選択には関与しない"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-010",
+      "category": "magic-wan",
+      "difficulty": "advanced",
+      "question": "Cloudflare WANのトンネル状態判定(healthy/degraded/down)に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "直近5分間で1回でもヘルスチェックが失敗すると、即座にdegraded状態へ遷移する",
+          "wrongFeedback": "degradedへの遷移には直近5分間で少なくとも2回、かつ失敗率0.1%以上という条件が必要で、1回の失敗だけでは遷移しません。"
+        },
+        {
+          "text": "down状態はdegraded状態より優先度が低い判定であり、down状態でもトラフィックはそのトンネルに送られ続ける",
+          "wrongFeedback": "down判定はdegraded判定より優先され、トンネルはhealthy・degraded・downのいずれか1つの状態になります。down状態のトンネルには優先度への大きなペナルティが加算されます。"
+        },
+        {
+          "text": "down状態は直近1秒間の少なくとも3サンプルすべてが失敗した場合に即座に遷移し、degraded状態より優先される判定で、down・degradedいずれの場合もルートを削除せず優先度に大きな値を加算するペナルティ方式が使われる"
+        },
+        {
+          "text": "一度down状態になったトンネルがhealthyに戻るには、直近30回のプローブのうち1回でも成功すればよい",
+          "wrongFeedback": "healthyへの復帰には直近30回のプローブの失敗率が0.1%未満である必要があり、1回の成功だけでは条件を満たしません。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "down状態は直近1秒間の少なくとも3サンプルのヘルスチェックがすべて失敗した場合に即座に遷移し、down判定はdegraded判定より優先されます(トンネルはhealthy・degraded・downのいずれか1つの状態になります)。Cloudflareはルートを削除する代わりに、degradedには500,000、downには1,000,000という大きな値を優先度に加算するペナルティ方式でトラフィックを迂回させます。この方式により冗長性が保たれ、トンネルが1本しかない顧客でも接続が維持されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/tunnel-health-checks/#tunnel-state-determination",
+      "hint": "状態が「悪化するときの速さ」と「回復するときの慎重さ」が非対称になっている、という設計思想を考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "cycle",
+          "label": "トンネル状態遷移",
+          "trigger": "ヘルスチェック結果",
+          "states": [
+            {
+              "text": "Healthy"
+            },
+            {
+              "text": "Degraded(優先度+500,000)"
+            },
+            {
+              "text": "Down(優先度+1,000,000)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-011",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Cloudflare Network Interconnect(CNI)をオンランプとして使うメリットに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "CNIは公衆インターネットを経由する点でIPsec/GREトンネルと同じであり、唯一の違いは暗号化の有無だけである",
+          "wrongFeedback": "CNIは公衆インターネットを経由せず、Cloudflareとの間に専用の直接接続を確立する点がIPsec/GREトンネルと異なります。"
+        },
+        {
+          "text": "CNIを使う場合、CloudflareのFirewallやルーティングなどのネットワークサービスは適用されず、単なる物理的な回線としてのみ機能する",
+          "wrongFeedback": "CNI経由のトラフィックにも、Firewall・ルーティング・トラフィック管理といった同じCloudflareネットワークサービスが適用されます。"
+        },
+        {
+          "text": "CNIはIPsec/GREトンネルよりレイテンシが安定するメリットはあるが、追加のセキュリティ層は提供しない",
+          "wrongFeedback": "CNIは共有インフラを経由しない専用接続であるため、公衆インターネット経路では得られない追加のセキュリティ層も提供するとされています。"
+        },
+        {
+          "text": "CNIは公衆インターネットを経由せず、Cloudflareとの間に専用の直接接続を提供する。低遅延・安定したスループットが必要な場合や公衆インターネットを完全に避けたい場合に有用な選択肢であり、Firewallやルーティングなど同じCloudflareネットワークサービスがそのトラフィックにも適用される"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Cloudflare Network Interconnect(CNI)は、顧客ネットワークとCloudflareの間に専用の直接接続を提供し、公衆インターネットを完全に経由しません。低遅延や安定したスループットが必要な場合、あるいは公衆インターネットを避けたい場合に有用な選択肢です。CNI経由のトラフィックにも、Firewall・ルーティング・トラフィック管理といった、他のオンランプと同じCloudflareネットワークサービスが適用されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/network-interconnect/",
+      "hint": "「専用線」という言葉から連想される、公衆インターネットとの違いを考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "CNI と 公衆インターネット経由のトンネル",
+          "nodes": [
+            {
+              "id": "customer",
+              "text": "顧客ネットワーク"
+            },
+            {
+              "id": "cni",
+              "text": "CNI(専用線)"
+            },
+            {
+              "id": "cf",
+              "text": "Cloudflareグローバルネットワーク"
+            },
+            {
+              "id": "public",
+              "text": "公衆インターネット"
+            }
+          ],
+          "edges": [
+            {
+              "from": "customer",
+              "to": "cni",
+              "label": "専用の直接接続"
+            },
+            {
+              "from": "cni",
+              "to": "cf"
+            },
+            {
+              "from": "customer",
+              "to": "public",
+              "label": "IPsec/GREトンネル",
+              "dashed": true
+            },
+            {
+              "from": "public",
+              "to": "cf",
+              "dashed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-012",
+      "category": "magic-wan",
+      "difficulty": "beginner",
+      "question": "Cloudflare WANとMagic Transitの役割の違いに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Cloudflare WANは拠点・オフィス・クラウドリソースをCloudflare経由で接続するサイト間接続サービスであるのに対し、Magic TransitはBGPでアドバタイズした顧客のIPプレフィックスをCloudflareのグローバルネットワークでDDoS攻撃から保護するサービスである"
+        },
+        {
+          "text": "Magic Transitは拠点間のサイト間接続を提供するWAN-as-a-Serviceであり、Cloudflare WANはDDoS攻撃からIPプレフィックスを保護するサービスである",
+          "wrongFeedback": "役割が入れ替わっています。サイト間接続を担うのはCloudflare WAN、IPプレフィックスをDDoSから保護するのはMagic Transitです。"
+        },
+        {
+          "text": "Cloudflare WANとMagic Transitはどちらもエンドユーザーのブラウザとオリジン間のHTTPトラフィックのみを対象とする",
+          "wrongFeedback": "両製品ともネットワーク層(L3/L4)のIPトラフィック全体を対象とし、HTTPに限定されません。"
+        },
+        {
+          "text": "Magic TransitはBYOIPなしでは一切利用できず、Cloudflareが所有するIPアドレスを保護対象にすることはできない",
+          "wrongFeedback": "/24のプレフィックス要件を満たさない小規模なネットワークを保護したい場合は、Cloudflare所有のIPアドレスを使う選択肢も提供されています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare WANは拠点・オフィス・クラウドリソースをCloudflareのグローバルネットワーク経由で接続するサイト間接続サービス(WAN-as-a-Service)です。一方Magic Transitは、BGPでアドバタイズした顧客のIPプレフィックス(BYOIP)をCloudflareのグローバルネットワークでDDoS攻撃から保護し、トラフィックアクセラレーションも提供するサービスです。/24のプレフィックス要件を満たさない場合は、Cloudflare所有のIPアドレスを使う選択肢もあります。両者は関連製品としてCloudflare Network FirewallやCNIを共有します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/magic-transit/",
+      "hint": "「拠点をつなぐこと」と「攻撃から守ること」という、それぞれが主眼を置く目的の違いを考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Cloudflare WAN と Magic Transit",
+          "columns": [
+            {
+              "heading": "Cloudflare WAN",
+              "items": [
+                "拠点間のサイト間接続(WAN-as-a-Service)",
+                "IPsec/GRE/CNI/Applianceで接続"
+              ]
+            },
+            {
+              "heading": "Magic Transit",
+              "items": [
+                "BGPアドバタイズしたIPプレフィックスをDDoSから保護",
+                "トラフィックアクセラレーションも提供"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-013",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Magic Transitにおける、トラフィックが通過するDDoS緩和レイヤーの実行順序に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Cloudflare Network Firewallによるパケットフィルタリングが最初に適用され、その後にDDoS managed rulesetsが適用される",
+          "wrongFeedback": "順序が逆です。DDoS managed rulesetsが最初に適用され、Cloudflare Network Firewallは最後に適用されます。"
+        },
+        {
+          "text": "DDoS managed rulesets、Advanced TCP Protection、Advanced DNS Protection、Cloudflare Network Firewallの順に適用される。DDoS managed rulesetsは常時有効で無効化できない"
+        },
+        {
+          "text": "Advanced TCP ProtectionとAdvanced DNS Protectionはオプションの追加機能であり、DDoS managed rulesetsより先に適用される",
+          "wrongFeedback": "Advanced TCP Protection・Advanced DNS ProtectionはDDoS managed rulesetsの後に適用されます。"
+        },
+        {
+          "text": "4つの緩和レイヤーはすべて並列に同時評価され、実行順序という概念は存在しない",
+          "wrongFeedback": "DDoS managed rulesets → Advanced TCP Protection → Advanced DNS Protection → Cloudflare Network Firewallという明確な実行順序が定義されています。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Magic Transitのトラフィックは、常時有効で無効化できないDDoS managed rulesets(L3/L4のDDoS攻撃を検知・緩和)、SYNフラッドなどを検知するAdvanced TCP Protection、DNS-over-UDPの異常を検知するAdvanced DNS Protection、そしてパケットレベルのカスタムルールを適用するCloudflare Network Firewallの順に処理されます。UDPベースのプロトコルを対象とするProgrammable Flow ProtectionはAdvanced DDoS Protectionレイヤーの中で動作します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/magic-transit/ddos/#execution-order",
+      "hint": "「常に有効で選択の余地がないレイヤー」が最初に来る、という考え方で順序を組み立ててみましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Magic TransitのDDoS緩和レイヤー実行順序",
+          "steps": [
+            {
+              "text": "DDoS managed rulesets(常時有効)"
+            },
+            {
+              "text": "Advanced TCP Protection"
+            },
+            {
+              "text": "Advanced DNS Protection"
+            },
+            {
+              "text": "Cloudflare Network Firewall"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-014",
+      "category": "magic-wan",
+      "difficulty": "intermediate",
+      "question": "Magic Transit on-demandによるプレフィックスアドバタイズに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "on-demandはBGP制御によるアドバタイズと組み合わせて使うことが前提の機能であり、単独では使用できない",
+          "wrongFeedback": "動的アドバタイズ(ダッシュボード・API経由)は、BGP制御によるアドバタイズを使うプレフィックスには対応していません。"
+        },
+        {
+          "text": "on-demandはCloudflareのリースIP(Cloudflare所有のIPアドレス)に対しても問題なく利用できる",
+          "wrongFeedback": "Magic Transit on-demandは、Cloudflareのリースアドレスと組み合わせて使うことはできません。"
+        },
+        {
+          "text": "攻撃発生時にプレフィックスのアドバタイズを有効化してCloudflareの保護を受け、インシデント解消後に無効化するという運用が一般的で、動的アドバタイズはBGP制御によるアドバタイズを使うプレフィックスには対応していない"
+        },
+        {
+          "text": "プレフィックスのアドバタイズ方法(on-demandか常時か)は、オンボーディング後にいつでも自由に切り替えられる",
+          "wrongFeedback": "希望するアドバタイズ方法(BGP制御か、ダッシュボード/APIによる動的アドバタイズか)はプレフィックスのオンボーディング時に指定します。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Magic Transit on-demandでは、攻撃発生時にダッシュボードまたはAPIからプレフィックスのアドバタイズを有効化してCloudflareの保護を受け、インシデントが解消したら無効化するという運用が一般的です。ダッシュボード/API経由の動的アドバタイズは、BGP制御によるアドバタイズを使うプレフィックスには対応していません。またon-demandはCloudflareのリースIPアドレスとは組み合わせて使えず、希望するアドバタイズ方法はプレフィックスのオンボーディング時に指定します。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/magic-transit/on-demand/",
+      "hint": "「平常時は止めておき、必要なときだけ有効にする」という運用の目的を考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "Magic Transit on-demandの運用",
+          "steps": [
+            {
+              "text": "攻撃を検知"
+            },
+            {
+              "text": "プレフィックスのアドバタイズを有効化"
+            },
+            {
+              "text": "Cloudflareがトラフィックを保護・緩和"
+            },
+            {
+              "text": "インシデント解消後にアドバタイズを無効化"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-015",
+      "category": "magic-wan",
+      "difficulty": "advanced",
+      "question": "Magic TransitでBGPプレフィックスのアドバタイズ・撤回を制御する複数の方式に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "利用できる制御方式はAddressing APIによる手動制御の1種類のみである",
+          "wrongFeedback": "Addressing APIのほか、Route Reflectorとのピアリング、Network Flow、Virtual NetworkルーティングテーブルへのBGPピアリングなど複数の方式があります。"
+        },
+        {
+          "text": "1つのプレフィックスに対して複数の制御方式を同時に併用することが推奨されている",
+          "wrongFeedback": "複数の制御方式を混在させると、アドバタイズ状態が競合し予測不能なルーティング動作を引き起こす可能性があるため、1つのプレフィックスには1つの制御方式のみを使うべきとされています。"
+        },
+        {
+          "text": "Network Flow(旧Magic Network Monitoring)は、ユーザーが指定したトラフィック閾値とは無関係に、常に一定間隔でプレフィックスをアドバタイズし続ける仕組みであり、閾値超過の検知とは連動していない",
+          "wrongFeedback": "Network Flowは、ユーザーが定義したトラフィック閾値の観測結果に基づいてプレフィックスを自動的にアドバタイズする仕組みです。一定間隔での機械的なアドバタイズではありません。"
+        },
+        {
+          "text": "Addressing APIによる手動制御、Route Reflectorとのピアリング、トラフィック閾値に基づき自動アドバタイズするNetwork Flow、BGPルートに連動するVirtual Networkルーティングテーブル制御という複数方式があり、1プレフィックスには1方式のみを使うべきとされている"
+        }
+      ],
+      "correctIndex": 3,
+      "explanation": "Magic Transitは、Addressing APIによる手動制御、Cloudflareのグローバルに分散したRoute Reflectorとのピアリング、ユーザーが定義したトラフィック閾値に基づいて自動アドバタイズするNetwork Flow(旧Magic Network Monitoring)、CNIやIPsec/GREトンネルで学習したBGPルートに連動してアドバタイズ・撤回を自動化するVirtual Networkルーティングテーブル制御という複数のプレフィックス制御方式を提供しています。複数の制御方式を混在させるとアドバタイズ状態が競合するため、1つのプレフィックスには1つの制御方式のみを使うべきとされています。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/magic-transit/how-to/advertise-prefixes/#bgp-prefix-advertisement-control-methods",
+      "hint": "「手動」「他社機器とのBGPピアリング」「トラフィック量に応じた自動化」「学習したルートとの連動」という4つの切り口で整理してみましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Magic Transitのプレフィックス制御方式",
+          "items": [
+            {
+              "text": "Addressing API",
+              "sub": "手動でアドバタイズ/撤回"
+            },
+            {
+              "text": "Route Reflectorピアリング",
+              "sub": "CloudflareのBGPセッション経由"
+            },
+            {
+              "text": "Network Flow",
+              "sub": "トラフィック閾値で自動アドバタイズ"
+            },
+            {
+              "text": "Virtual Networkルーティングテーブル連動",
+              "sub": "CNI/IPsec/GREのBGPルートに連動"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-016",
+      "category": "magic-wan",
+      "difficulty": "advanced",
+      "question": "Magic TransitでAS prependingを使って別プロバイダへトラフィックを移行する典型的な流れに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "最初はprepend 0でCloudflare経由をデフォルト優先度でアドバタイズし、次にasn_prepend_countを増やしてAS_PATHを長くし選ばれにくくする。その間に代替プロバイダから短いAS_PATHで同じプレフィックスをアドバタイズし始め、外部ネットワークを段階的に新しい経路へ移行させる"
+        },
+        {
+          "text": "asn_prepend_countの値を大きくするほど、その経路は外部ネットワークにより優先されやすくなり、Cloudflare経由の経路への移行が加速する",
+          "wrongFeedback": "逆です。AS_PATHへのASNのprepend回数(asn_prepend_count)が多いほど経路は長く見え、外部ネットワークからは選ばれにくくなります。"
+        },
+        {
+          "text": "asn_prepend_countはCloudflareのASN(13335)を最大10回までAS_PATHにprependでき、回数を増やすほど細かく優先度を調整できる",
+          "wrongFeedback": "asn_prepend_countが受け付ける値は0から3までで、AS13335を最大3回までprependできます。10回までではありません。"
+        },
+        {
+          "text": "AS prependingはBGPコミュニティを使う方法にのみ対応しており、APIから直接prepend回数を指定することはできない仕組みになっている",
+          "wrongFeedback": "AS prependingはAddressing APIのasn_prepend_countパラメータからも、BGPコミュニティ(13335:50101など)からも設定できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "AS prependingによるプロバイダ移行では、まずasn_prepend_count 0のデフォルト優先度でCloudflare経由のプレフィックスをアドバタイズします。次にasn_prepend_countを増やす(最大3まで)ことでAS_PATHを長くし、Cloudflare経由の経路を外部ネットワークから選ばれにくくします。その間に代替プロバイダから同じプレフィックスを短いAS_PATHでアドバタイズし始めることで、外部ネットワークは両方の経路を認識し、BGPポリシーに基づいて段階的に新しい経路へ切り替わっていきます。この設定はAPIのasn_prepend_countパラメータ、またはBGPコミュニティ(13335:50101など)から行えます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/magic-transit/how-to/advertise-prefixes/#use-the-api-to-set-as-prepends-on-a-bgp-prefix",
+      "hint": "「一気に切り替える」のではなく「徐々に不利にしながら並行稼働させる」移行の考え方に注目しましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "AS prependingによるプロバイダ移行",
+          "steps": [
+            {
+              "text": "初期状態: prepend 0でCloudflare経由をアドバタイズ"
+            },
+            {
+              "text": "Cloudflare経由の優先度を下げる: prepend回数を増やす"
+            },
+            {
+              "text": "代替プロバイダから短いAS_PATHでアドバタイズ開始"
+            },
+            {
+              "text": "外部ネットワークが段階的に新しい経路へ収束"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-017",
+      "category": "magic-wan",
+      "difficulty": "beginner",
+      "question": "Cloudflare Network Firewall(旧Magic Firewall)とWAF(Webアプリケーションファイアウォール)の役割の違いに関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Cloudflare Network FirewallはHTTPリクエストのURLパスやクエリ文字列を検査対象とし、WAFはIPアドレスやポート番号などパケットレベルの属性を検査対象とする",
+          "wrongFeedback": "役割が逆です。HTTPリクエストの内容を検査するのがWAFで、IPアドレスやポートなどパケットレベルの属性を検査するのがCloudflare Network Firewallです。"
+        },
+        {
+          "text": "Cloudflare Network Firewallはプロトコルやパケット長など、レイヤー3/4のパケットレベルの属性でトラフィックをフィルタリングするのに対し、WAFはHTTPリクエストの内容を検査するレイヤー7のファイアウォールであり、両者は検査するレイヤーが異なる"
+        },
+        {
+          "text": "Cloudflare Network FirewallとWAFはまったく同じルール言語を使い、同じ設定画面で一元的に管理される単一の製品である",
+          "wrongFeedback": "Cloudflare Network FirewallはWireshark構文に着想を得たCloudflare Rules languageを使う別製品で、WAFとは別のダッシュボード・設定体系を持ちます。"
+        },
+        {
+          "text": "Cloudflare Network Firewallは単体で購入可能な独立製品であり、Magic TransitやCloudflare WANとは無関係に提供される",
+          "wrongFeedback": "Cloudflare Network FirewallはMagic TransitまたはCloudflare WANの購入に付随して提供される機能です。"
+        }
+      ],
+      "correctIndex": 1,
+      "explanation": "Cloudflare Network Firewall(旧Magic Firewall)は、プロトコルやパケット長といったレイヤー3/4のパケットレベルの属性でトラフィックをフィルタリングするファイアウォールです。一方WAFはHTTPリクエストの内容を検査するレイヤー7のファイアウォールで、検査するレイヤーが異なります。Cloudflare Network Firewallは、Wireshark構文に着想を得たCloudflare Rules languageでルールを記述し、Magic TransitまたはCloudflare WANの購入に付随して提供されます。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-network-firewall/",
+      "hint": "「HTTPリクエストの中身を見る層」と「パケットの属性だけを見る層」という、どのレイヤーで判断するかの違いを考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Cloudflare Network Firewall と WAF",
+          "columns": [
+            {
+              "heading": "Cloudflare Network Firewall",
+              "items": [
+                "レイヤー3/4のパケット属性を検査",
+                "Magic Transit/Cloudflare WANに付随"
+              ]
+            },
+            {
+              "heading": "WAF",
+              "items": [
+                "レイヤー7のHTTPリクエストを検査",
+                "URLパス・クエリ文字列などを検査"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mw-018",
+      "category": "magic-wan",
+      "difficulty": "advanced",
+      "question": "Cloudflare Network Firewallを、CDNなどトラフィックをプロキシする他のCloudflareサービスと併用する際の注意点に関する説明として、正しいものはどれですか?",
+      "options": [
+        {
+          "text": "断片化された(フラグメント化された)パケットに対しても、フラグメント単位でファイアウォールルールを作成し個別に検査できる",
+          "wrongFeedback": "断片化されたパケットは検査前に完全なパケットへ再構成されるため、フラグメント単位でのファイアウォールルール作成はできません。"
+        },
+        {
+          "text": "送信元IPアドレスに基づくブロックルールは、CDNなどトラフィックをプロキシするサービスと併用した場合でも常に意図通りに機能する",
+          "wrongFeedback": "CDNなどのプロキシサービスと併用する場合、ルールはCloudflareが受信TCPコネクションを終端した後に評価されるため、送信元IPアドレスに基づくブロックルールが意図通りに機能しないことがあります。"
+        },
+        {
+          "text": "CDNやSpectrumのようにトラフィックをプロキシするサービスと併用する場合、ルールはCloudflareが受信TCPコネクションを終端した後に評価されるため送信元IPアドレスによるブロックが意図通りに機能しないことがあり、また断片化されたパケットは完全なパケットへ再構成されてから検査されるためフラグメント単位のルールは作成できない"
+        },
+        {
+          "text": "Cloudflare Network Firewallを有効にする場合、Cloudflareの公式IPアドレスからのトラフィックを許可リストに含める必要はない",
+          "wrongFeedback": "Cloudflareの公式IPアドレスを許可リストに含める必要があります。含めないと意図しない通信断が発生する可能性があります。"
+        }
+      ],
+      "correctIndex": 2,
+      "explanation": "Cloudflare Network FirewallをCDNやSpectrumのようにトラフィックをプロキシする他のCloudflareサービスと併用する場合、いくつか注意点があります。ルールはCloudflareが受信TCPコネクションを終端した後に評価されるため、送信元IPアドレスに基づくブロックルールが意図通りに機能しないことがあります。また断片化された(フラグメント化された)パケットは検査前に完全なパケットへ再構成されるため、フラグメント単位でのファイアウォールルールは作成できません。さらにCloudflareの公式IPアドレスを許可リストに含めておく必要があります。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-network-firewall/about/",
+      "hint": "「ルールが評価されるタイミング」と「パケットが検査される前に何が起きるか」という2つの注意点を分けて考えましょう。",
+      "tags": [
+        "magic-wan",
+        "practical"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "プロキシサービスとの併用時の注意点",
+          "steps": [
+            {
+              "text": "CDN/Spectrumが受信TCPコネクションを終端"
+            },
+            {
+              "text": "送信元IPベースのルールは終端後に評価され機能しないことがある"
+            },
+            {
+              "text": "断片化パケットは完全なパケットへ再構成"
+            },
+            {
+              "text": "再構成後に検査(フラグメント単位のルールは不可)"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

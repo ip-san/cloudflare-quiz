@@ -436,6 +436,22 @@ export const DOC_PAGES = [
   { name: 'cloudflare-one/email-security/submissions/invalid-submissions' },
   { name: 'cloudflare-one/email-security/investigation/search-email' },
   { name: 'cloudflare-one/email-security/monitoring' },
+  { name: 'cloudflare-wan' },
+  { name: 'cloudflare-wan/on-ramps' },
+  { name: 'cloudflare-wan/network-interconnect' },
+  { name: 'cloudflare-wan/reference/gre-ipsec-tunnels' },
+  { name: 'cloudflare-wan/configuration/how-to/configure-routes' },
+  { name: 'cloudflare-wan/reference/traffic-steering' },
+  { name: 'cloudflare-wan/reference/tunnel-health-checks' },
+  { name: 'magic-transit' },
+  { name: 'magic-transit/ddos' },
+  { name: 'magic-transit/on-demand' },
+  { name: 'magic-transit/how-to/advertise-prefixes' },
+  { name: 'magic-transit/reference/gre-ipsec-tunnels' },
+  { name: 'magic-transit/network-health' },
+  { name: 'cloudflare-network-firewall' },
+  { name: 'cloudflare-network-firewall/about' },
+  { name: 'cloudflare-network-firewall/reference/network-firewall-fields' },
   { name: 'r2' },
   { name: 'r2/api/s3/presigned-urls' },
   { name: 'r2/api/tokens' },
@@ -557,6 +573,21 @@ export const DOC_PAGE_OVERRIDES = {
   // attack-type taxonomy (with its own literal headings) lives in the partial.
   'cloudflare-one/email-security/reference/how-es-detects-phish':
     'partials/cloudflare-one/email-security/detect-phish.mdx',
+  // Cloudflare WAN (formerly Magic WAN) doc pages under cloudflare-wan/ are thin
+  // `<Render file="..." product="networking-services" />` stubs — the real prose
+  // (shared with Magic Transit's equivalent pages, parameterized per-product) lives
+  // in src/content/partials/networking-services/. Point fetch-docs.mjs at those
+  // partials directly so quiz-lint/quiz-fact-check have real text to validate against.
+  'cloudflare-wan': 'partials/networking-services/cloudflare-wan/overview.mdx',
+  'cloudflare-wan/on-ramps': 'partials/networking-services/cloudflare-wan/on-ramps.mdx',
+  'cloudflare-wan/network-interconnect': 'partials/networking-services/magic-cni.mdx',
+  'cloudflare-wan/reference/gre-ipsec-tunnels': 'partials/networking-services/reference/gre-ipsec-tunnels.mdx',
+  'cloudflare-wan/configuration/how-to/configure-routes': 'partials/networking-services/routing/configure-routes.mdx',
+  'cloudflare-wan/reference/traffic-steering': 'partials/networking-services/reference/traffic-steering.mdx',
+  'cloudflare-wan/reference/tunnel-health-checks': 'partials/networking-services/reference/tunnel-health-checks.mdx',
+  // magic-transit/reference/gre-ipsec-tunnels.mdx is the same thin Render stub as its
+  // Cloudflare WAN counterpart above; point it at the same shared partial.
+  'magic-transit/reference/gre-ipsec-tunnels': 'partials/networking-services/reference/gre-ipsec-tunnels.mdx',
 }
 
 /**

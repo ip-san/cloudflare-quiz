@@ -513,6 +513,16 @@ const cloudflareTheme: ThemeConfig = {
       skillDescription: 'メールを介したフィッシング・BEC攻撃の検知の仕組みと運用フローを理解できる',
     },
     {
+      id: 'magic-wan',
+      name: 'Cloudflare WAN・Magic Transit',
+      icon: '🛰️',
+      color: 'azure',
+      weight: 10,
+      description:
+        '拠点間をCloudflare経由で接続するCloudflare WAN(旧Magic WAN)と、BGPアドバタイズしたIPプレフィックスをDDoSから守るMagic Transit。GRE/IPsec/CNIオンランプ、BGPルーティング、Cloudflare Network Firewall(旧Magic Firewall)',
+      skillDescription: '拠点間接続とネットワーク層のDDoS防御をオンランプ・ルーティングの選択から設計できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',
