@@ -554,6 +554,17 @@ const cloudflareTheme: ThemeConfig = {
         'サードパーティツールをエッジで実行する仕組みを理解し、トリガー・アクション・同意管理を設計できる',
     },
     {
+      id: 'agents',
+      name: 'Agents',
+      icon: '🧠',
+      color: 'chartreuse',
+      weight: 10,
+      description:
+        'Durable Objectsを基盤に、状態・組み込みSQL・WebSocket・スケジューリングを備えたAIエージェントをホストするAgents。Agentクラス・routeAgentRequest・this.setState/this.sql・MCPクライアント統合・Sandbox・耐障害実行(Fibers)',
+      skillDescription:
+        '状態を持つAIエージェントを、Agentクラスの状態管理・スケジューリング・耐障害実行の仕組みを理解して設計できる',
+    },
+    {
       id: 'architecture',
       name: '設計・料金・制限',
       icon: '📐',

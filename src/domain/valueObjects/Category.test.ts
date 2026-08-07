@@ -153,6 +153,7 @@ describe('PREDEFINED_CATEGORIES', () => {
     expect(ids).toContain('spectrum')
     expect(ids).toContain('waiting-room')
     expect(ids).toContain('zaraz')
+    expect(ids).toContain('agents')
     expect(ids).toContain('architecture')
   })
 

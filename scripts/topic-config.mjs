@@ -558,6 +558,15 @@ export const DOC_PAGES = [
   { name: 'workers/wrangler/commands/workers' },
   { name: 'workers/wrangler/configuration' },
   { name: 'workers/wrangler/environments' },
+  { name: 'agents' },
+  { name: 'agents/runtime/agents-api' },
+  { name: 'agents/runtime/lifecycle/state' },
+  { name: 'agents/runtime/communication/websockets' },
+  { name: 'agents/runtime/communication/routing' },
+  { name: 'agents/runtime/execution/schedule-tasks' },
+  { name: 'agents/runtime/execution/durable-execution' },
+  { name: 'agents/tools/mcp' },
+  { name: 'agents/tools/sandbox' },
 ].map((p) => ({ ...p, url: `https://developers.cloudflare.com/${p.name}/` }))
 
 /**

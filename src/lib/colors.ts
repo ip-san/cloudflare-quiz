@@ -41,6 +41,7 @@ export const COLOR_MAP: Record<string, string> = {
   plum: '#a21caf',
   crimson: '#be123c',
   ochre: '#cc7722',
+  chartreuse: '#a3e635',
 }
 
 export function getColorHex(colorName: string): string {

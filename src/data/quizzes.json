@@ -42357,6 +42357,1036 @@
           ]
         }
       ]
+    },
+    {
+      "id": "at-001",
+      "category": "agents",
+      "difficulty": "beginner",
+      "question": "Cloudflare Agentsの説明として最も適切なものはどれですか?",
+      "options": [
+        {
+          "text": "耐久性のある識別子・組み込みSQLストレージ・リアルタイム接続・スケジュール実行・復旧可能な実行を備え、状態を持つAIエージェントをホストするためのランタイム"
+        },
+        {
+          "text": "ステートレスなWorkersスクリプトを、リクエストごとに毎回ゼロから初期化して実行するための仕組み",
+          "wrongFeedback": "Agentsはむしろその逆で、リクエストをまたいで状態や接続を保持し続けることを目的としています。"
+        },
+        {
+          "text": "サードパーティの広告・分析タグをエッジ側で実行してブラウザの負荷を減らすための機能",
+          "wrongFeedback": "これはZarazの説明です。AgentsはAIエージェントの実行基盤であり、タグマネージャーではありません。"
+        },
+        {
+          "text": "オリジンサーバーへのリクエストを地理的に近いデータセンターへ振り分けるロードバランシング機能",
+          "wrongFeedback": "これはLoad Balancingの説明です。Agentsは状態を持つAIエージェントをホストするランタイムです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Cloudflare Agentsは、耐久性のある識別子・エージェントごとに組み込まれたSQLストレージ・リアルタイム接続・スケジュール実行・(中断されても)復旧可能な実行を備えた、状態を持つAIエージェントをホストするためのランタイムです。Cloudflareのネットワーク上で数千万インスタンス規模までスケールするよう設計されています。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/",
+      "hint": "「状態を持つ(stateful)」という言葉がヒントです。",
+      "tags": [
+        "agents",
+        "topic-overview"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Agentインスタンスが備える機能",
+          "items": [
+            {
+              "text": "耐久性のある識別子",
+              "sub": "ユーザーIDやメールアドレスなどで一意に特定"
+            },
+            {
+              "text": "組み込みSQLストレージ",
+              "sub": "`this.sql`でインスタンスごとに永続化"
+            },
+            {
+              "text": "リアルタイム接続",
+              "sub": "WebSocketでクライアントと同期"
+            },
+            {
+              "text": "スケジュール実行",
+              "sub": "`this.schedule`で遅延・cron実行"
+            },
+            {
+              "text": "復旧可能な実行",
+              "sub": "中断されても状態を失わない"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-002",
+      "category": "agents",
+      "difficulty": "beginner",
+      "question": "Cloudflare AgentsでAgentクラスを定義し、Workerの`fetch`ハンドラからリクエストを振り分ける最も基本的な実装はどれですか?",
+      "options": [
+        {
+          "text": "`class MyAgent extends Agent<Env, State> {...}` でAgentクラスを定義し、`fetch`ハンドラ内で`routeAgentRequest(request, env)`を呼び出してリクエストを適切なAgentインスタンスへルーティングする"
+        },
+        {
+          "text": "`class MyAgent extends DurableObject` でAgentを定義し、`wrangler.jsonc`の`routes`フィールドにAgentのURLパターンを直接列挙する",
+          "wrongFeedback": "Agentsは専用の`Agent`基底クラスを提供しており、`routeAgentRequest()`が自動的にURLからインスタンスを解決するため、`routes`への手動列挙は不要です。"
+        },
+        {
+          "text": "`export default { agent: MyAgent }` のようにAgentクラスをexportするだけで、Cloudflareが自動的にURLを割り当てる",
+          "wrongFeedback": "`fetch`ハンドラ内で`routeAgentRequest()`を明示的に呼び出す実装が必要です。exportするだけでは動作しません。"
+        },
+        {
+          "text": "AgentはPages Functionsの`_middleware.ts`内でのみ定義でき、Workers単体では利用できない",
+          "wrongFeedback": "AgentはWorkers上で動作する仕組みであり、Pages Functions限定ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Agentは`Agent<Env, State>`を継承したクラスとして定義します。Worker側の`fetch`ハンドラでは`await routeAgentRequest(request, env)`を呼び出し、戻り値がなければ404を返すのが基本パターンです。`routeAgentRequest()`がリクエストURLを解析し、対応するAgentインスタンスへ自動的にルーティングします。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/agents-api/",
+      "hint": "Agent専用の基底クラスと、ルーティング用の関数が用意されています。",
+      "tags": [
+        "agents",
+        "topic-agent-class"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "リクエストからAgentインスタンスへのルーティング",
+          "steps": [
+            {
+              "text": "クライアントがWorkerのURLにリクエストを送信"
+            },
+            {
+              "text": "fetchハンドラが`routeAgentRequest(request, env)`を呼び出す"
+            },
+            {
+              "text": "URLからAgent名・インスタンス名を解析",
+              "sub": "kebab-caseのクラス名にマッチ"
+            },
+            {
+              "text": "対応するAgentインスタンスへリクエストを転送"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-003",
+      "category": "agents",
+      "difficulty": "beginner",
+      "question": "AgentクラスのinitialStateプロパティの役割として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "新規に作成されたAgentインスタンスが最初に使う既定の状態を定義するもので、既に永続化された状態を持つ既存インスタンスはSQLiteに保存された状態を代わりに読み込む"
+        },
+        {
+          "text": "すべてのAgentインスタンスに対して毎回強制的に適用される固定値であり、`this.setState()`で上書きしても次回アクセス時にリセットされる",
+          "wrongFeedback": "initialStateは新規インスタンスの既定値にすぎません。`setState()`で更新した状態はSQLiteに永続化され、リセットされません。"
+        },
+        {
+          "text": "Workerの環境変数(`env`)を初期化するためのフィールドであり、Agentの状態(`state`)とは無関係",
+          "wrongFeedback": "initialStateは`this.state`の既定値を定義するものです。環境変数は`this.env`で別途アクセスします。"
+        },
+        {
+          "text": "クライアント側のReactコンポーネントでのみ使用され、サーバー側のAgentクラスでは無視される",
+          "wrongFeedback": "initialStateはサーバー側のAgentクラスで定義するプロパティです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "initialStateは新規に作成されたAgentインスタンスが最初に使う既定の状態を定義します。適用は遅延的に行われ、新規インスタンスはinitialStateを使い、既に永続化された状態を持つ既存インスタンスはSQLiteに保存された状態を読み込みます。initialStateを定義しない場合、`this.state`は`undefined`を返します。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
+      "hint": "「新規インスタンス」と「既存インスタンス」で挙動が異なる点がポイントです。",
+      "tags": [
+        "agents",
+        "topic-state"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "initialStateが使われるかどうか",
+          "columns": [
+            {
+              "heading": "新規のAgentインスタンス",
+              "items": [
+                "initialStateの値を使用",
+                "`this.state`がそのまま既定値になる"
+              ]
+            },
+            {
+              "heading": "既存のAgentインスタンス",
+              "items": [
+                "SQLiteに永続化済みの状態を読み込む",
+                "initialStateは使用されない"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-004",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "Agent内で`this.setState(newState)`を呼び出したときに起きることとして正しい組み合わせはどれですか?",
+      "options": [
+        {
+          "text": "新しい状態をSQLiteに保存し、接続中の全WebSocketクライアントへ変更をブロードキャストし、その後`onStateChanged()`コールバックを発火させる"
+        },
+        {
+          "text": "`this.setState()`で保存した内容はメモリ上にのみ保持され、Agentインスタンスが再起動すると失われる",
+          "wrongFeedback": "`setState()`で保存された状態はSQLiteに永続化されるため、再起動やハイバネーションを挟んでも保持されます。"
+        },
+        {
+          "text": "`this.setState()`を呼んでも接続中のクライアントには通知されず、クライアント側が明示的にポーリングして最新状態を取得する必要がある",
+          "wrongFeedback": "`setState()`は接続中の全クライアントへ自動的に変更をブロードキャストします。ポーリングは不要です。"
+        },
+        {
+          "text": "`this.setState()`には状態の型の制約がなく、関数やDurable Objectインスタンスなど任意のJavaScriptオブジェクトをそのまま保存できる",
+          "wrongFeedback": "状態はJSONシリアライズ可能である必要があり、関数や循環参照を含むオブジェクトは保存できません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`this.setState()`は(1)新しい状態をSQLiteへ保存し、(2)接続中の全WebSocketクライアントへ変更をブロードキャストし、(3)最後に`onStateChanged()`コールバックを発火させます。状態はJSONシリアライズ可能である必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
+      "hint": "「永続化」「同期」「コールバック」の3段階の処理が行われます。",
+      "tags": [
+        "agents",
+        "topic-state"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "`setState()`実行時の処理順序",
+          "steps": [
+            {
+              "text": "`this.setState(newState)`を呼び出す"
+            },
+            {
+              "text": "新しい状態をAgentインスタンスのSQLiteに保存"
+            },
+            {
+              "text": "接続中の全WebSocketクライアントへ変更をブロードキャスト"
+            },
+            {
+              "text": "`onStateChanged(state, source)`コールバックが発火"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-005",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "Agentのライフサイクルフック`onStateChanged(state, source)`のsource引数について正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "サーバー側(Agent自身)が`setState()`を呼んだ場合は文字列`\"server\"`になり、クライアントが状態を更新した場合はそのクライアントのConnectionオブジェクトになる"
+        },
+        {
+          "text": "sourceは常にHTTPリクエストのオブジェクトであり、WebSocket経由の更新では常に`null`になる",
+          "wrongFeedback": "sourceは更新元を示す値で、サーバー発の更新では文字列`\"server\"`、クライアント発の更新ではConnectionオブジェクトになります。HTTPリクエストオブジェクトではありません。"
+        },
+        {
+          "text": "sourceは更新のタイムスタンプを表す数値であり、状態がいつ変更されたかを判定するために使う",
+          "wrongFeedback": "sourceは更新元(サーバーかクライアントか)を示す値であり、タイムスタンプではありません。"
+        },
+        {
+          "text": "sourceは常に`\"client\"`固定の文字列であり、どのクライアントが更新したかまでは判別できない",
+          "wrongFeedback": "クライアント発の更新では、固定文字列ではなく、そのクライアントを表すConnectionオブジェクトが渡されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`onStateChanged(state, source)`のsourceは、更新がどこから来たかを示します。Agent自身が`setState()`を呼んだ場合はサーバー起点と分かるよう文字列`\"server\"`が渡され、クライアントが状態を更新した場合はそのクライアントに対応するConnectionオブジェクトが渡されます。sourceが`\"server\"`のときに早期リターンすることで、自分自身の更新に反応してしまう無限ループを防ぐのが一般的なパターンです。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
+      "hint": "「自分自身が発生させた更新に反応してしまう無限ループ」を防ぐために使われる値です。",
+      "tags": [
+        "agents",
+        "topic-state"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "sourceの値による違い",
+          "columns": [
+            {
+              "heading": "source === \"server\"",
+              "items": [
+                "Agent自身が`setState()`を呼んだ場合",
+                "自己更新への反応を避けるため早期returnするのが定石"
+              ]
+            },
+            {
+              "heading": "sourceがConnectionオブジェクト",
+              "items": [
+                "クライアントが`setState()`を呼んだ場合",
+                "どの接続からの更新かを識別できる"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-006",
+      "category": "agents",
+      "difficulty": "advanced",
+      "question": "Agentの`validateStateChange(nextState, source)`メソッドの用途として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "状態の永続化・ブロードキャストが行われる前に同期的に実行され、内部でエラーをthrowすると、その状態更新を拒否できる"
+        },
+        {
+          "text": "状態が永続化された後に非同期で実行される検証フックであり、拒否してもすでに保存された状態は元に戻らない",
+          "wrongFeedback": "`validateStateChange`は永続化・ブロードキャストの前に同期的に実行されるため、throwすれば更新前に拒否できます。事後の非同期フックではありません。"
+        },
+        {
+          "text": "クライアント側のReactコンポーネント内でのみ定義でき、サーバー側のAgentクラスでは無視される",
+          "wrongFeedback": "`validateStateChange`はサーバー側のAgentクラスに定義するメソッドです。"
+        },
+        {
+          "text": "TypeScriptの型を実行時に検証するための自動生成コードであり、開発者が明示的に実装する必要はない",
+          "wrongFeedback": "`validateStateChange`は開発者が明示的に実装するメソッドで、業務ロジック上の妥当性(例: スコアが負にならないか)を検証するために使います。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`validateStateChange(nextState, source)`は、状態の永続化・ブロードキャストが行われる前に同期的に呼ばれます。内部でエラーをthrowすると、その状態更新は拒否され、SQLiteへの保存やクライアントへのブロードキャストは行われません。不正な値(例: スコアが負の数)を弾くバリデーションロジックの実装に使います。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
+      "hint": "「保存される前」に実行され、throwすると更新そのものを止められます。",
+      "tags": [
+        "agents",
+        "topic-state"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "`validateStateChange`による更新拒否の流れ",
+          "actors": [
+            "クライアント/サーバー",
+            "Agent",
+            "SQLite"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "`setState(nextState)`を呼び出す"
+            },
+            {
+              "from": 1,
+              "to": 1,
+              "text": "`validateStateChange(nextState, source)`を同期実行"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "検証を通過した場合のみSQLiteへ保存"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "throwされた場合は更新を拒否",
+              "dashed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-007",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "Agent内の`this.sql`について正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "各Agentインスタンスに組み込まれたSQLiteデータベースへ、タグ付きテンプレートリテラルの形でクエリを実行するためのAPIで、`${}`内の値をプレースホルダとして安全に埋め込める"
+        },
+        {
+          "text": "全Agentインスタンスが共有する単一のD1データベースへ接続するためのバインディングであり、インスタンスごとにデータは分離されない",
+          "wrongFeedback": "`this.sql`は各Agentインスタンスに個別に組み込まれたSQLiteデータベースであり、D1のようにインスタンス間で共有されるデータベースではありません。"
+        },
+        {
+          "text": "SQL文を文字列として直接結合して実行するAPIであり、値の埋め込みには文字列連結を使う必要がある",
+          "wrongFeedback": "`this.sql`はタグ付きテンプレートリテラルとして値を安全にバインドする仕組みであり、文字列連結ではありません。"
+        },
+        {
+          "text": "`this.sql`は`this.state`を自動的にテーブル化したビューであり、開発者が独自にテーブルを作成することはできない",
+          "wrongFeedback": "開発者は`CREATE TABLE`などを自分で実行でき、`this.state`とは独立したテーブルを自由に定義できます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`this.sql`は、各Agentインスタンスに個別に組み込まれたSQLiteデータベースへアクセスするためのAPIです。タグ付きテンプレートリテラルとして呼び出し、`${}`内の値はプレースホルダとして安全にバインドされます。`this.state`とは別に、メッセージ履歴のような大きなデータの保存先として使うことが推奨されています。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
+      "hint": "テンプレートリテラルの`${}`部分は自動的にプレースホルダとしてバインドされます。",
+      "tags": [
+        "agents",
+        "topic-sql"
+      ],
+      "diagrams": [
+        {
+          "type": "terminal",
+          "label": "`this.sql`の呼び出し例",
+          "lines": [
+            {
+              "type": "command",
+              "text": "this.sql`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name TEXT)`"
+            },
+            {
+              "type": "response",
+              "text": "Agentインスタンス専用のSQLiteにテーブルを作成"
+            },
+            {
+              "type": "command",
+              "text": "this.sql`SELECT * FROM users WHERE id = ${id}`"
+            },
+            {
+              "type": "response",
+              "text": "${id}は安全にプレースホルダとしてバインドされる"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-008",
+      "category": "agents",
+      "difficulty": "beginner",
+      "question": "AgentがWebSocket接続を処理する際のライフサイクルフックの組み合わせとして正しいものはどれですか?",
+      "options": [
+        {
+          "text": "`onConnect(connection, ctx)`で接続確立時の処理を行い、`onMessage(connection, message)`でクライアントからのメッセージを受信し、`onClose(connection, code, reason, wasClean)`で切断時の処理を行う"
+        },
+        {
+          "text": "`onOpen()`で接続を確立し、`onData()`でメッセージを受信し、`onDisconnect()`で切断を検知する",
+          "wrongFeedback": "Agentsのフック名は`onConnect`/`onMessage`/`onClose`であり、`onOpen`/`onData`/`onDisconnect`という名前のフックは提供されていません。"
+        },
+        {
+          "text": "WebSocket接続は`onRequest(request)`ハンドラの中だけで完結して処理され、専用のライフサイクルフックは存在しない",
+          "wrongFeedback": "Agentsは`onConnect`/`onMessage`/`onClose`など専用のWebSocketライフサイクルフックを提供しています。"
+        },
+        {
+          "text": "`onConnect(connection, ctx)`は接続の確立時ではなく、クライアントが最初にメッセージを送った直後にのみ呼ばれる",
+          "wrongFeedback": "`onConnect`はWebSocket接続が確立した時点で呼ばれ、最初のメッセージ送信を待つ必要はありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "AgentのWebSocket処理は、接続確立時に呼ばれる`onConnect(connection, ctx)`、メッセージ受信時に呼ばれる`onMessage(connection, message)`、切断時に呼ばれる`onClose(connection, code, reason, wasClean)`という3つの主要なライフサイクルフックで構成されます。ctxには認証などに使える元のリクエスト情報も含まれます。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
+      "hint": "接続・メッセージ受信・切断のそれぞれに対応するフックがあります。",
+      "tags": [
+        "agents",
+        "topic-websockets"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "WebSocket関連のライフサイクルフック",
+          "items": [
+            {
+              "text": "`onConnect(connection, ctx)`",
+              "sub": "WebSocket接続の確立時に発火"
+            },
+            {
+              "text": "`onMessage(connection, message)`",
+              "sub": "クライアントからのメッセージ受信時に発火"
+            },
+            {
+              "text": "`onClose(connection, code, reason, wasClean)`",
+              "sub": "接続切断時に発火"
+            },
+            {
+              "text": "`onError(connection, error)`",
+              "sub": "接続ごとのエラー発生時に発火"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-009",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "Agentの`this.broadcast()`メソッドの動作として正しい説明はどれですか?",
+      "options": [
+        {
+          "text": "接続中の全WebSocketクライアントへメッセージを送信するメソッドで、第2引数に接続IDの配列を渡すと、そのIDを除外して送信できる"
+        },
+        {
+          "text": "指定した1つのクライアントにのみメッセージを送るメソッドで、全クライアントへの一斉送信には`getConnections()`をループする以外の方法がない",
+          "wrongFeedback": "`broadcast()`はまさに全クライアントへの一斉送信のためのメソッドです。特定の接続を除外するオプションも用意されています。"
+        },
+        {
+          "text": "メッセージをキューに蓄積し、次回Agentインスタンスが起動したタイミングでまとめて送信する",
+          "wrongFeedback": "`broadcast()`は呼び出した時点で接続中の全クライアントへ即座に送信します。"
+        },
+        {
+          "text": "HTTPのServer-Sent Events(SSE)接続専用のメソッドであり、WebSocket接続には使用できない",
+          "wrongFeedback": "`broadcast()`はWebSocket接続に対して使うメソッドです。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`this.broadcast()`は接続中の全WebSocketクライアントへメッセージを送信します。第2引数に接続ID(`connection.id`)の配列を渡すことで、特定の接続を送信対象から除外できます。例えば「誰かが参加した」という通知を、その本人以外の全員へ送るといった用途に使えます。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
+      "hint": "第2引数で「送らない相手」を指定できます。",
+      "tags": [
+        "agents",
+        "topic-websockets"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "`broadcast()`による送信の仕組み",
+          "nodes": [
+            {
+              "id": "agent",
+              "text": "Agentインスタンス"
+            },
+            {
+              "id": "c1",
+              "text": "クライアントA"
+            },
+            {
+              "id": "c2",
+              "text": "クライアントB"
+            },
+            {
+              "id": "c3",
+              "text": "クライアントC(送信元)"
+            }
+          ],
+          "edges": [
+            {
+              "from": "agent",
+              "to": "c1",
+              "label": "broadcast()で送信"
+            },
+            {
+              "from": "agent",
+              "to": "c2",
+              "label": "broadcast()で送信"
+            },
+            {
+              "from": "c3",
+              "to": "agent",
+              "label": "除外対象としてIDを指定",
+              "dashed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-010",
+      "category": "agents",
+      "difficulty": "advanced",
+      "question": "AgentインスタンスがDurable Objectのハイバネーション(非アクティブによる一時停止)を挟んだ際に、そのまま保持される情報はどれですか?",
+      "options": [
+        {
+          "text": "`this.state`に保存された状態、WebSocket接続ごとに`connection.setState()`で設定した状態、`this.sql`に保存されたSQLiteのデータ"
+        },
+        {
+          "text": "Agentクラスのメンバー変数として保持していたインメモリの一時変数や、`setInterval`/`setTimeout`で登録したタイマー",
+          "wrongFeedback": "インメモリの変数やタイマーはハイバネーションを挟むと失われます。ハイバネーションを越えて保持されるのは`this.state`・接続の状態・SQLiteのデータです。"
+        },
+        {
+          "text": "何も保持されず、ハイバネーション後は必ずinitialStateから再初期化される",
+          "wrongFeedback": "`this.state`や`this.sql`に保存されたデータはハイバネーションを越えて保持されるため、initialStateから毎回再初期化されるわけではありません。"
+        },
+        {
+          "text": "WebSocket接続そのものは維持されるが、接続に紐づく`uri`や`tags`などのメタデータは消去される",
+          "wrongFeedback": "`connection.uri`や`tags`などの接続メタデータはハイバネーションを挟んでも保持されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Agentインスタンスがハイバネーションを挟んでも、`this.state`に保存された状態、WebSocket接続ごとに`connection.setState()`で設定した状態、`this.sql`に保存されたSQLiteのデータは保持されます。一方で、クラスのメンバー変数として保持しているだけのインメモリの一時変数や、`setInterval`/`setTimeout`で登録したタイマーは失われるため、永続化が必要なデータは状態かSQLiteに保存する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
+      "hint": "「SQLiteや状態に保存されているか」と「メモリ上だけに置かれているか」で明暗が分かれます。",
+      "tags": [
+        "agents",
+        "topic-hibernation"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "ハイバネーションを越えて保持されるか",
+          "columns": [
+            {
+              "heading": "保持される",
+              "items": [
+                "`this.state`(SQLiteに永続化)",
+                "`connection.setState()`で設定した接続ごとの状態",
+                "`this.sql`に保存したSQLiteのデータ"
+              ]
+            },
+            {
+              "heading": "失われる",
+              "items": [
+                "クラスのインメモリ変数",
+                "`setInterval`/`setTimeout`のタイマー"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-011",
+      "category": "agents",
+      "difficulty": "beginner",
+      "question": "`routeAgentRequest()`が使うデフォルトのURLルーティング規則として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "`https://your-worker.workers.dev/agents/{agent名}/{インスタンス名}` という形式で、Agentクラス名はkebab-caseに変換されて(元の名前とkebab-case版の両方に)マッチする"
+        },
+        {
+          "text": "`https://your-worker.workers.dev/{インスタンス名}` という形式で、Agent名を含めずインスタンス名のみでルーティングされる",
+          "wrongFeedback": "デフォルトのルーティングパターンには`/agents/`というプレフィックスとAgent名の両方が含まれます。"
+        },
+        {
+          "text": "Agentクラスにデコレータで明示的にURLパターンを指定しない限り、`routeAgentRequest()`は常にルーティングに失敗する",
+          "wrongFeedback": "`routeAgentRequest()`は`/agents/{agent名}/{インスタンス名}`という規約に基づいて自動的にルーティングするため、デコレータでの明示的な指定は不要です。"
+        },
+        {
+          "text": "Agentクラス名はそのままcamelCaseの文字列としてURLに使われ、kebab-caseへの変換は行われない",
+          "wrongFeedback": "Agentクラス名は自動的にkebab-caseに変換されてURLにマッチします。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`routeAgentRequest()`のデフォルトのルーティング規約は`/agents/{agent名}/{インスタンス名}`です。例えば`ChatRoom`というAgentクラスは`/agents/chat-room/...`にマッピングされます。ルーターは元のクラス名とkebab-case変換後の両方にマッチするようになっています。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
+      "hint": "PascalCaseのクラス名はURL上ではどう表記されるかを考えましょう。",
+      "tags": [
+        "agents",
+        "topic-routing"
+      ],
+      "diagrams": [
+        {
+          "type": "config",
+          "label": "URLルーティング規約",
+          "filepath": "デフォルトのルーティングパターン",
+          "lines": [
+            {
+              "text": "https://your-worker.workers.dev"
+            },
+            {
+              "text": "  /agents/{agent名: kebab-case}",
+              "highlight": true
+            },
+            {
+              "text": "  /{インスタンス名}",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-012",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "`routeAgentRequest()`と`getAgentByName()`の使い分けとして最も適切な説明はどれですか?",
+      "options": [
+        {
+          "text": "`routeAgentRequest()`はクライアントからのHTTPリクエストURLを解析してAgentへ自動的にルーティングするために使い、`getAgentByName()`はサーバー側のコードから特定の名前のAgentインスタンスを取得してRPC呼び出しやリクエスト転送を行うために使う"
+        },
+        {
+          "text": "`routeAgentRequest()`はWebSocket接続専用、`getAgentByName()`はHTTPリクエスト専用というように、プロトコルの違いで使い分ける",
+          "wrongFeedback": "使い分けの基準はプロトコルではなく、「URLベースの自動ルーティングか」「サーバーコードから明示的にインスタンスを取得するか」という点です。"
+        },
+        {
+          "text": "`getAgentByName()`は非推奨のAPIであり、`routeAgentRequest()`に統合されたため現在は使用できない",
+          "wrongFeedback": "`getAgentByName()`は現行のAPIとして提供されており、サーバー側からAgentインスタンスを取得する用途で使われます。"
+        },
+        {
+          "text": "両者はまったく同じ処理を行うエイリアスであり、どちらを呼び出しても結果は変わらない",
+          "wrongFeedback": "`routeAgentRequest()`はURLからのルーティング、`getAgentByName()`は名前指定でのインスタンス取得という異なる役割を持ちます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`routeAgentRequest()`はクライアントから届いたHTTPリクエストのURLを解析し、対応するAgentインスタンスへ自動的にルーティングするための関数です。一方`getAgentByName()`は、サーバー側のコードから特定の名前空間・インスタンス名を指定してAgentインスタンスを取得し、RPC呼び出しやリクエストの転送(`basePath`を使ったカスタムルーティングなど)を行いたい場合に使います。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
+      "hint": "「クライアントのURLから自動で」なのか「サーバー側コードから明示的に」なのかがポイントです。",
+      "tags": [
+        "agents",
+        "topic-routing"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "2つのAPIの使い分け",
+          "steps": [
+            {
+              "text": "クライアントからのリクエスト → `routeAgentRequest(request, env)`",
+              "sub": "URLを解析して自動ルーティング"
+            },
+            {
+              "text": "サーバー側コード → `getAgentByName(namespace, name)`",
+              "sub": "名前を指定してインスタンスを取得"
+            },
+            {
+              "text": "取得したインスタンスに対してRPC呼び出しや`agent.fetch()`で転送"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-013",
+      "category": "agents",
+      "difficulty": "beginner",
+      "question": "Agentインスタンスの命名パターンに関する説明として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "ユーザーごとに一意のインスタンス名(例: user-abc123)を使えばユーザー専用の状態を持つAgentになり、複数ユーザーで同じインスタンス名(例: general)を共有すればチャットルームのような共有状態のAgentになる"
+        },
+        {
+          "text": "1つのWorkerにつきAgentインスタンスは常に1つしか作成できず、複数ユーザーは必ず同じインスタンスを共有する",
+          "wrongFeedback": "インスタンス名を変えることで、ユーザーごとに専用のインスタンス、共有のインスタンス、アプリ全体で単一のシングルトンなど、複数のパターンを使い分けられます。"
+        },
+        {
+          "text": "インスタンス名はAgentクラスの定義時にハードコードする必要があり、実行時に動的に決めることはできない",
+          "wrongFeedback": "セッションIDやドキュメントIDなど、実行時のコンテキストから動的にインスタンス名を決めることもできます。"
+        },
+        {
+          "text": "同じインスタンス名を指定しても、リクエストのたびに毎回まったく新しい状態のインスタンスが作成される",
+          "wrongFeedback": "同じインスタンス名でアクセスすると、既存のAgentインスタンス(と永続化された状態)が再利用されます。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Agentのインスタンス名の付け方によって、ユーザーごとに専用の状態を持たせる(例: `user-abc123`)、複数ユーザーで状態を共有する「部屋」的な使い方をする(例: `general`というチャットルーム)、アプリ全体で1つだけのシングルトンとして扱う(例: `default`)など、様々な設計パターンを実現できます。セッションIDやドキュメントIDなど、実行時のコンテキストから動的にインスタンス名を決めることも可能です。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
+      "hint": "インスタンス名の付け方そのものが設計パターンになります。",
+      "tags": [
+        "agents",
+        "topic-routing"
+      ],
+      "diagrams": [
+        {
+          "type": "hierarchy",
+          "label": "Agentインスタンスの命名パターン",
+          "items": [
+            {
+              "text": "ユーザー専用パターン",
+              "sub": "例: user-abc123(ユーザーごとに状態が分離)"
+            },
+            {
+              "text": "共有ルームパターン",
+              "sub": "例: general(複数ユーザーで同じインスタンスを共有)"
+            },
+            {
+              "text": "シングルトンパターン",
+              "sub": "例: default(アプリ全体で1インスタンス)"
+            },
+            {
+              "text": "動的命名パターン",
+              "sub": "セッションIDやドキュメントIDから生成"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-014",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "Agentの`this.schedule()`メソッドで指定できるスケジュール方式の組み合わせとして正しいものはどれですか?",
+      "options": [
+        {
+          "text": "秒数を指定した遅延実行、Dateオブジェクトを指定した日時実行、cron文字列を指定した定期実行の3種類に対応し、一定間隔での繰り返し実行には別途`this.scheduleEvery()`を使う"
+        },
+        {
+          "text": "cron文字列による定期実行のみに対応しており、指定した秒数後や特定の日時に1回だけ実行するような使い方はできない",
+          "wrongFeedback": "`this.schedule()`は秒数指定の遅延実行やDateオブジェクトによる日時指定の1回実行にも対応しています。"
+        },
+        {
+          "text": "スケジュールされたタスクはAgentインスタンスのメモリ上のタイマーとして管理されるため、インスタンスが再起動すると失われる",
+          "wrongFeedback": "スケジュールされたタスクはSQLiteのテーブルに保存され、Durable Objectの`alarm`を使って正しいタイミングでAgentを起こす仕組みになっているため、再起動をまたいでも失われません。"
+        },
+        {
+          "text": "`this.scheduleEvery()`を含め、スケジュール可能なタスクの件数に上限はなく無制限に登録できる",
+          "wrongFeedback": "実用上、1Agentあたり数万件程度が目安とされており、無制限ではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "`this.schedule()`は、秒数を指定した遅延実行(`this.schedule(60, \"taskName\", payload)`)、Dateオブジェクトを指定した日時実行、cron文字列を指定した定期実行の3つの方式に対応しています。一定間隔での繰り返し実行には別途`this.scheduleEvery()`を使います。スケジュールされたタスクはSQLiteのテーブルに保存されて実行順に処理され、Durable Objectの`alarm`を使って正しいタイミングでAgentインスタンスを起こす仕組みで実現されています。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
+      "hint": "「1回だけ」「日時指定」「cron」の何種類の方式に、`this.schedule()`自体は対応しているかを考えましょう。",
+      "tags": [
+        "agents",
+        "topic-scheduling"
+      ],
+      "diagrams": [
+        {
+          "type": "matrix",
+          "label": "`this.schedule()`のスケジュール方式",
+          "rowHeader": "指定方法",
+          "colHeader": "内容",
+          "rows": [
+            "秒数(delaySeconds)",
+            "Dateオブジェクト",
+            "cron文字列"
+          ],
+          "cols": [
+            "用途",
+            "備考"
+          ],
+          "cells": [
+            [
+              "指定秒数後に1回実行",
+              "例: this.schedule(60, taskName, payload)"
+            ],
+            [
+              "指定した日時に1回実行",
+              "例: this.schedule(targetDate, taskName, payload)"
+            ],
+            [
+              "定期的に繰り返し実行",
+              "デフォルトで冪等(同一パラメータの再登録は既存分を返す)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-015",
+      "category": "agents",
+      "difficulty": "advanced",
+      "question": "Agentの`this.schedule()`でcron文字列によるスケジュールを、同じタスク名・同じcron式で再度登録するとどうなりますか?",
+      "options": [
+        {
+          "text": "デフォルトで冪等(idempotent)に扱われ、重複したスケジュールが新たに作られるのではなく、既存のスケジュールがそのまま返される"
+        },
+        {
+          "text": "常に新しいスケジュールとして追加登録され、同じ条件のジョブが実行のたびに増え続ける",
+          "wrongFeedback": "cronスケジュールはデフォルトで冪等に扱われるため、同一パラメータでの再登録は重複を生みません。"
+        },
+        {
+          "text": "エラーがthrowされ、同じタスク名・cron式でのスケジュール登録自体が禁止される",
+          "wrongFeedback": "エラーにはならず、既存のスケジュールがそのまま返される形で処理されます。"
+        },
+        {
+          "text": "既存のスケジュールが自動的にキャンセルされ、cronスケジュールそのものが無効化される",
+          "wrongFeedback": "既存のスケジュールは維持されたまま返されるだけで、キャンセルや無効化は行われません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "Agentのcronスケジュールはデフォルトで冪等に扱われます。同じタスク名・同じパラメータで`this.schedule()`を再度呼び出しても、重複したスケジュールが新規作成されるのではなく、既存のスケジュールがそのまま返されます。これにより、デプロイのたびにスケジュール登録コードが再実行されても、ジョブが際限なく増殖することを防げます。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
+      "hint": "デプロイのたびに同じスケジュール登録コードが再実行されても、ジョブが増殖しないようにする仕組みです。",
+      "tags": [
+        "agents",
+        "topic-scheduling"
+      ],
+      "diagrams": [
+        {
+          "type": "sequence",
+          "label": "cronスケジュールの冪等性",
+          "actors": [
+            "デプロイ処理",
+            "Agent",
+            "スケジュールテーブル(SQLite)"
+          ],
+          "messages": [
+            {
+              "from": 0,
+              "to": 1,
+              "text": "this.schedule(\"0 8 * * *\", \"dailyDigest\", payload)を実行(1回目)"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "text": "新規スケジュールとして登録"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "text": "再デプロイ後、同じ内容で再度呼び出し(2回目)"
+            },
+            {
+              "from": 1,
+              "to": 0,
+              "text": "新規作成せず、既存のスケジュールをそのまま返す"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-016",
+      "category": "agents",
+      "difficulty": "advanced",
+      "question": "AgentのFibers(`runFiber()`による耐障害実行)とWorkflowsの使い分けとして、公式ドキュメントが示す指針はどれですか?",
+      "options": [
+        {
+          "text": "Agent自身の実行の一部として行う処理(LLM呼び出しの継続やストリーミング処理の再開など)には Fibers を使い、Agentから独立して動作しステップごとのリトライやマルチステップのオーケストレーションが必要な処理には Workflows を使う"
+        },
+        {
+          "text": "FibersとWorkflowsは完全に同じ機能であり、どちらを使っても実装上の違いは一切ない",
+          "wrongFeedback": "ドキュメントは「Agent自身の実行の一部かどうか」で使い分けを明確に区別しています。"
+        },
+        {
+          "text": "Fibersは常にWorkflowsより低機能な下位互換機能であり、Workflowsが使える場面では常にWorkflowsを優先すべきとされている",
+          "wrongFeedback": "ドキュメントは優劣ではなく用途の違いとして説明しており、Agent自身の実行の一部として行う処理にはFibersが適しています。"
+        },
+        {
+          "text": "Fibersはクライアント側(ブラウザ)で実行される仕組みであり、Workflowsはサーバー側(Cloudflareのエッジ)で実行される仕組みという実行場所の違いを表す",
+          "wrongFeedback": "FibersもWorkflowsもどちらもサーバー側(Cloudflareのエッジ)で実行される仕組みであり、実行場所の違いではありません。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "公式ドキュメントは、「Agentから独立して動作し、ステップごとのリトライやマルチステップのオーケストレーションが必要な処理にはWorkflowsを使う。Fibersは、Agent自身の実行の一部である処理のために使う」と説明しています。例えば、LLMへのリクエスト中にAgentインスタンスが退避(eviction)された場合でも、`runFiber()`で登録した処理はチェックポイント(`stash()`)から`onFiberRecovered()`で再開できます。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/durable-execution/",
+      "hint": "「Agent自身の処理の一部かどうか」が使い分けの基準です。",
+      "tags": [
+        "agents",
+        "topic-durable-execution"
+      ],
+      "diagrams": [
+        {
+          "type": "comparison",
+          "label": "Fibers と Workflows の使い分け",
+          "columns": [
+            {
+              "heading": "Fibers(runFiber)",
+              "items": [
+                "Agent自身の実行の一部として行う処理",
+                "`stash()`でチェックポイントを保存",
+                "`onFiberRecovered()`から再開"
+              ]
+            },
+            {
+              "heading": "Workflows",
+              "items": [
+                "Agentから独立して動作",
+                "ステップごとのリトライに対応",
+                "マルチステップのオーケストレーション向け"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-017",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "Cloudflare AgentsにおけるMCP(Model Context Protocol)対応の説明として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "`addMcpServer()`を使って外部のMCPサーバーに接続し、そのサーバーが公開するツールを`this.mcp.getAITools()`で取得してAI SDKのモデル呼び出しに渡す、MCPクライアントとしての機能が提供されている"
+        },
+        {
+          "text": "AgentクラスをそのままMCPサーバーとして公開する専用の`McpAgent`クラスが提供されており、Agent自身をMCPサーバー化するのが主なユースケースである",
+          "wrongFeedback": "Agentのドキュメントで説明されているのはMCPクライアントとしての機能(`addMcpServer()`)であり、Agent自身をMCPサーバーとして構築する場合は別のMCPサーバー向けドキュメントを参照する必要があります。"
+        },
+        {
+          "text": "MCPはAgentの状態同期プロトコルの内部実装であり、開発者が直接呼び出すAPIは提供されていない",
+          "wrongFeedback": "MCPはモデルにツールを提供するためのプロトコルで、開発者は`addMcpServer()`や`this.mcp.getAITools()`を明示的に呼び出して利用します。"
+        },
+        {
+          "text": "MCPサーバーへの接続にはOAuth認証を使うことができず、事前共有の固定APIキーのみがサポートされている",
+          "wrongFeedback": "OAuthフローによる認証や、カスタムヘッダーを使ったBearerトークン認証もサポートされています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "AgentsにおけるMCP対応は、外部のMCPサーバーに接続する「MCPクライアント」としての機能です。`addMcpServer()`で外部のMCPサーバーに接続してツールを検出し、`this.mcp.getAITools()`で取得したツールをAI SDKの`generateText()`などに渡してモデルに使わせます。接続情報はAgentのSQLストレージに永続化され、OAuthフローやカスタムヘッダーによる認証もサポートされています。Agent自身をMCPサーバーとして構築したい場合は、別途MCPサーバー向けのドキュメントを参照する必要があります。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/tools/mcp/",
+      "hint": "「Agentが外部のMCPサーバーに接続する側」なのか「Agent自身がMCPサーバーになる側」なのかを区別しましょう。",
+      "tags": [
+        "agents",
+        "topic-mcp"
+      ],
+      "diagrams": [
+        {
+          "type": "flow",
+          "label": "AgentからMCPサーバーのツールを使うまでの流れ",
+          "steps": [
+            {
+              "text": "`addMcpServer(serverUrl)`で外部のMCPサーバーに接続"
+            },
+            {
+              "text": "接続先が公開するツールを検出",
+              "sub": "接続情報はAgentのSQLストレージに永続化"
+            },
+            {
+              "text": "`this.mcp.getAITools()`でツール一覧を取得"
+            },
+            {
+              "text": "AI SDKの`generateText()`などにツールを渡してモデルが呼び出せるようにする"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "at-018",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "question": "AgentsのSandboxツールに関する説明として正しいものはどれですか?",
+      "options": [
+        {
+          "text": "Cloudflare Containersを基盤としており、Agentのコード(Worker isolate)とは分離された環境でPythonやNode.jsのコード実行・ファイル操作・シェルコマンドを行うためのTypeScript APIを提供する"
+        },
+        {
+          "text": "Sandboxは`this.sql`と同じくSQLiteベースの機能であり、コンテナは一切使用せずWorker isolateの中だけで完結する",
+          "wrongFeedback": "SandboxはCloudflare Containersを基盤としており、Agentのコードが動くWorker isolateとは分離された実行環境を提供します。"
+        },
+        {
+          "text": "Sandboxで生成したファイルやログは自動的に`this.state`に保存され、Agentの状態と完全に一体化して管理される",
+          "wrongFeedback": "ドキュメントでは、ユーザーに見える進捗やメタデータには`this.state`を使い、ワークスペースのファイル・生成コード・ログなどはSandboxのファイルシステム側に保持することが推奨されています。"
+        },
+        {
+          "text": "SandboxはPythonのみに対応しており、Node.jsやシェルコマンドの実行はサポートされていない",
+          "wrongFeedback": "SandboxはPython・Node.js・シェルコマンド・パッケージマネージャーなど複数の実行手段に対応しています。"
+        }
+      ],
+      "correctIndex": 0,
+      "explanation": "SandboxはCloudflare Containersを基盤とした機能で、Agentのコードが実行されるWorker isolateとは分離された環境で、Python・Node.js・シェルコマンド・パッケージマネージャーなどを実行するためのTypeScript APIを提供します。`getSandbox()`でSandbox(Durable Object)を取得し、`writeFile()`や`exec()`などのメソッドでファイル操作やコマンド実行を行います。ユーザーに見える進捗やメタデータは`this.state`に、ワークスペースのファイルやログなどはSandbox側のファイルシステムに保持するという役割分担が推奨されています。",
+      "referenceUrl": "https://developers.cloudflare.com/agents/tools/sandbox/",
+      "hint": "Agentのコードが動く場所と、コードを実行させる場所は分離されています。",
+      "tags": [
+        "agents",
+        "topic-sandbox"
+      ],
+      "diagrams": [
+        {
+          "type": "network",
+          "label": "AgentとSandboxの関係",
+          "nodes": [
+            {
+              "id": "agent",
+              "text": "Agent(Worker isolate)",
+              "sub": "getSandbox()で取得"
+            },
+            {
+              "id": "sandbox",
+              "text": "Sandbox",
+              "sub": "Cloudflare Containers上で動作"
+            },
+            {
+              "id": "fs",
+              "text": "ワークスペースのファイルシステム"
+            }
+          ],
+          "edges": [
+            {
+              "from": "agent",
+              "to": "sandbox",
+              "label": "exec()/writeFile()などのAPI呼び出し"
+            },
+            {
+              "from": "sandbox",
+              "to": "fs",
+              "label": "ファイル操作・コマンド実行"
+            },
+            {
+              "from": "sandbox",
+              "to": "agent",
+              "label": "stdout/stderr/exit codeを返却",
+              "dashed": true
+            }
+          ]
+        }
+      ]
     }
   ]
 }
