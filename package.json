@@ -32,6 +32,9 @@
     "quiz:cross-check": "node scripts/quiz-cross-check.mjs",
     "docs:fetch": "node scripts/fetch-docs.mjs",
     "docs:fetch:status": "node scripts/fetch-docs.mjs --status",
+    "playtest:resolve": "node scripts/playtest-resolve.mjs",
+    "playtest:apply": "node scripts/playtest-apply.mjs",
+    "playtest:coverage": "node scripts/playtest-coverage.mjs",
     "generate-icons": "node scripts/generate-icons.mjs",
     "prepare": "husky"
   },
