@@ -3376,7 +3376,7 @@
           "wrongFeedback": "デフォルトではローカルのシミュレートされたD1に接続します。本番データに接続するには`--remote`フラグが必要です。"
         },
         {
-          "text": "毎回メモリ上に空のデータベースが作られ、Worker終了時にすべてのデータが破棄される",
+          "text": "毎回メモリ上に空のデータベースが作られ、`.wrangler/state`は使われずWorker終了時にすべてのデータが破棄される",
           "wrongFeedback": "実際は`.wrangler/state`配下にファイルとして永続化されるため、再起動してもデータは保持されます。"
         },
         {
@@ -3787,7 +3787,7 @@
       "question": "Workers から R2 バケットにアクセスする最も基本的で推奨される方法はどれですか？",
       "options": [
         {
-          "text": "常にS3互換APIエンドポイントにHTTPリクエストを送り、アクセスキーで署名する",
+          "text": "常にS3互換APIエンドポイントにHTTPリクエストを送り、`Authorization`ヘッダーに含めたアクセスキーで署名する",
           "wrongFeedback": "S3互換APIは外部アプリケーションからのアクセスや既存S3ツールの流用に有用ですが、Workers内から使う最も基本的な方法はバインディングです。"
         },
         {
@@ -4822,7 +4822,7 @@
       "question": "Cloudflare Queues の基本的なメッセージフローとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Consumer Worker がキューにメッセージを直接書き込み、Producer がそれを取得する",
+          "text": "Consumer Worker が`send()`でキューに直接メッセージを書き込み、Producer がそれを取得する",
           "wrongFeedback": "役割が逆です。メッセージを書き込むのが Producer、受け取って処理するのが Consumer です。"
         },
         {
@@ -9626,7 +9626,7 @@
           "text": "wrangler CLIの r2 サブコマンド（`wrangler r2 bucket create` や `wrangler r2 object put` など）を使う"
         },
         {
-          "text": "curlコマンドでR2の内部管理APIに直接アクセスする（公式には非公開の手段）",
+          "text": "`curl`コマンドでR2の内部管理APIに直接アクセスする（公式には非公開の手段）",
           "wrongFeedback": "R2にcurlで直接アクセスするにはS3互換APIの署名処理を自分で実装する必要があり手軽ではありません。公式CLIツールのwranglerを使うのが最も手軽です。"
         }
       ],
@@ -10602,7 +10602,7 @@
           "wrongFeedback": "`wrangler pages deploy` はどのCI/CD環境やローカル環境からでも実行でき、GitHub Actionsに限定されません。"
         },
         {
-          "text": "Pages はGit連携以外のデプロイ方法をサポートしていない",
+          "text": "Pages に`wrangler pages deploy`のようなCLIコマンドは存在せず、Git連携以外のデプロイ方法をサポートしていない",
           "wrongFeedback": "`wrangler pages deploy` コマンドを使ったDirect Uploadにより、Git連携なしでもデプロイできます。"
         },
         {
@@ -18149,7 +18149,7 @@
       ],
       "correctIndex": 0,
       "explanation": "Cloudflare Realtime SFU経由のDataChannelは一方向のみで、パブリッシャーからサブスクライバーへの送信専用です。これは、SFUが複数のサブスクライバーに対してどのSessionへデータを送り返すべきかを判断できないためです。双方向の通信が必要な場合は、送信方向ごとに2つの別々のDataChannelを用意します。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/datachannels/#unidirectional-datachannels",
+      "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/datachannels/#default-direction-publisher-to-subscribers",
       "hint": "大勢に向けて一斉送信する仕組みで、送り返す先を1つに絞れない場合はどうなるか考えましょう。",
       "tags": [
         "realtime",
@@ -22011,7 +22011,7 @@
       ],
       "correctIndex": 2,
       "explanation": "Accessアプリケーションに少なくとも1つのAllowポリシーがある場合は、発行された`CF_Authorization`クッキーをJWTの有効期限内であれば再利用できます。しかし、Service Authポリシーしか設定されていない場合は、クッキーを再利用できないため、リクエストのたびにサービストークンのヘッダー(`CF-Access-Client-Id`・`CF-Access-Client-Secret`)を送信し直す必要があります。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#subsequent-requests",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#request",
       "hint": "「Allowポリシーがあるかないか」で、発行されたクッキーを使い回せるかどうかが変わることを考えましょう。",
       "tags": [
         "zero-trust-access",
