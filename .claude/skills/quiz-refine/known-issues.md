@@ -245,3 +245,18 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 必要がある。今回はpx-*(18問)で発見した観点が、既存176問に遡及すると45%という無視できない規模で該当した
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
+
+## 2026-08-13 /quality-loop 定期実行 — Step 0 flagged 31件の再検証（差分なし）
+
+- `src/data/quizzes.json` に未コミット変更がなかったため、incremental モードは Step 0（quiz-lint/cross-check/fact-check）
+  で `status: "flagged"` の31問（correct-too-long 17件、difficulty mismatch 4件、fact-check未検出語 11問）を対象とした
+- 全件、既存の本ファイルの記載（correct-too-long/difficulty mismatchの精読済み結論、fact-checkの
+  「誤答選択肢のみに登場する未検出用語は正常」というルール）と一致することを確認。ドキュメントキャッシュ
+  （`.claude/tmp/docs/`）は前回検証時から更新していないため新たなdocドリフトは原理的に発生し得ないが、
+  A-1（正解妥当性）のスポットチェックとして kv-012（`workers__runtime-apis__cache.md` の413エラー/Set-Cookie除外の記述）、
+  dq-011（`durable-objects__api__namespace.md` の idFromName/newUniqueId のレイテンシ差の記述）、
+  kv-018（`cache__advanced-configuration__cache-reserve.md` の「30日、アクセスでリセット」の記述）の3件を
+  実際にgrepで再照合し、いずれも完全一致を確認した
+- 修正なし。既知の非アクション項目であることを再確認しただけの回。次回以降、この31件が再度flagされても
+  同じ結論になる可能性が高いため、`/quiz-refine --full` のような能動的な全問スキャン（このファイルで未言及の
+  問題を含む）を別途検討する価値がある
