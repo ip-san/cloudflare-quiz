@@ -7,9 +7,14 @@ import { expect, type Page, test } from '@playwright/test'
  *  1. the app lands on the right screen, AND
  *  2. the address bar ends up at the expected URL (auto-rewrite vs. stable).
  *
- * Welcome + tutorial localStorage flags are set via addInitScript so that
- * React skips the onboarding modals on the very first render — otherwise
- * the initial URL intent fires underneath a welcome overlay.
+ * Welcome + tutorial localStorage flags are set via addInitScript in most
+ * tests below purely to keep them focused on the URL sync behavior itself
+ * (not onboarding). A shared link takes priority over onboarding even for a
+ * true first-time visitor with no localStorage flags at all — see the
+ * dedicated "first-time visitor" test at the end of this file, which
+ * regression-guards that (App.tsx computes `showWelcome`/`showTutorial`
+ * from both the seen-flag AND whether the initial URL carries a
+ * `parseUrlIntent`-recognized intent).
  */
 
 async function waitForNotLoading(page: Page) {
@@ -128,5 +133,21 @@ test.describe('URL sharing', () => {
     await waitForNotLoading(page)
     await expect(page.getByRole('button', { name: 'メニューを開く' })).toBeVisible({ timeout: 10000 })
     await expect(page).toHaveURL(/\/(\?)?$/)
+  })
+})
+
+test.describe('URL sharing — first-time visitor (no localStorage flags)', () => {
+  // Regression test: a visitor who has never opened the app before must still land
+  // directly on a shared question, not get routed into the welcome screen (whose
+  // "今すぐ1問だけ試す" button would then start an unrelated random question and
+  // overwrite the deep-link session).
+  test('?q=<id> reaches the shared question directly, bypassing welcome/tutorial', async ({ page }) => {
+    await page.goto('/?q=wk-001')
+    await waitForNotLoading(page)
+
+    await expect(page.getByText(/🔍 共有された問題/)).toBeVisible({ timeout: 10000 })
+    const bar = page.getByRole('progressbar', { name: '問題の進捗' })
+    await expect(bar).toHaveAttribute('aria-valuemax', '1')
+    await expect(page).toHaveURL(/\?q=wk-001/)
   })
 })

@@ -85,8 +85,14 @@ export default function App() {
       openReaderWithFilter: state.openReaderWithFilter,
     }))
   )
-  const [showWelcome, setShowWelcome] = useState(() => !hasSeenWelcome())
-  const [showTutorial, setShowTutorial] = useState(() => !hasSeenTutorial())
+  // A shareable URL (?q=, ?ids=, ?category=, ?scenario=, ?mode=, ?view=...) takes priority
+  // over first-run onboarding: a visitor following a shared link should land on that content
+  // even if they've never opened the app before, not get routed into the welcome/tutorial
+  // flow (which would also race with — and overwrite — the deep-link session; see the
+  // `dispatchedRef` effect below).
+  const hasUrlIntent = useRef(parseUrlIntent(window.location.search) !== null).current
+  const [showWelcome, setShowWelcome] = useState(() => !hasSeenWelcome() && !hasUrlIntent)
+  const [showTutorial, setShowTutorial] = useState(() => !hasSeenTutorial() && !hasUrlIntent)
   const [microQuizTip, setMicroQuizTip] = useState<string | null>(null)
 
   // Clear micro-quiz tip when returning to menu
