@@ -83,6 +83,41 @@
         "outcome": "friction",
         "at": "2026-08-15"
       }
+    ],
+    "ag-011": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-012": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-013": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-15"
+      }
     ]
   }
 }
