@@ -13,6 +13,41 @@
         "outcome": "friction",
         "at": "unstamped"
       }
+    ],
+    "ac-003": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped"
+      }
+    ],
+    "ac-007": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped"
+      }
+    ],
+    "ac-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped"
+      }
+    ],
+    "ac-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped"
+      }
+    ],
+    "ac-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped"
+      }
     ]
   }
 }

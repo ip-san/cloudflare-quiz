@@ -92,6 +92,8 @@ bun run quiz:fact-check             # 環境変数・CLIコマンド・設定キ
 - コミット時は Husky の pre-commit フックが lint-staged（biome）と変更ファイルの vitest、および `quizzes.json` 変更時は `quiz:check` / `quiz:lint` を自動実行します。
 - CI（`.github/workflows/deploy.yml`）は PR 作成時に typecheck/lint/test/`quiz:check` をブロッキングで実行し、`quiz-lint`/`quiz-cross-check` の結果を非ブロッキングで可視化します。
 - Claude Code から `/quiz-refine` を実行すると、上記スクリプトの出力とドキュメントキャッシュを踏まえて question/explanation/選択肢を1問ずつ検証・修正します（`.claude/skills/quiz-refine/`）。`/quality-loop` はコードレビューとクイズ検証、最終ゲート（`bun run check`）を一括実行します（`.claude/skills/quality-loop/`）。
+- `/playtest` は模擬ユーザーエージェントが実 PWA をブラウザ操作でプレイし、分かりにくさ・学びにくさを専門家チームが検証してから改善するゲートです。`--progressive` で全問を1問ずつ計画的にカバーし、進捗は `.claude/playtest-coverage.json` に記録されます（`.claude/skills/playtest/`）。
+- `/generate-quiz-data` は公式ドキュメントから新カテゴリの問題を生成するスキルです。安全のためモデルからの自律呼び出しは無効化されており、人が明示的に実行する必要があります（`.claude/skills/generate-quiz-data/`）。
 
 ### 技術スタック
 

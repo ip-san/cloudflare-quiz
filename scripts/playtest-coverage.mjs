@@ -130,8 +130,18 @@ function main() {
       console.log(`marked ${a} [${b}] ${c}`)
       break
     case 'mark-batch': {
-      const items = JSON.parse(fs.readFileSync(a, 'utf8'))
-      for (const it of items) recordOne(store, it.id, it.persona, it.outcome)
+      const raw = JSON.parse(fs.readFileSync(a, 'utf8'))
+      // Accepts either a plain [{id, persona, outcome}] array, or a
+      // requests-<persona>.json file with a top-level `persona` and a
+      // `played: [{id, outcome}]` array (the user-simulator's native output
+      // shape). `outcome: "ok"` is normalized to "clean".
+      const items = Array.isArray(raw)
+        ? raw
+        : (raw.played || []).map((p) => ({ id: p.id, persona: raw.persona, outcome: p.outcome }))
+      for (const it of items) {
+        const outcome = it.outcome === 'ok' ? 'clean' : it.outcome
+        recordOne(store, it.id, it.persona, outcome)
+      }
       saveStore(store)
       console.log(`marked ${items.length} items`)
       break
