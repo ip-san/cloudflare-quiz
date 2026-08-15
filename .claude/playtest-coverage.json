@@ -48,6 +48,41 @@
         "outcome": "clean",
         "at": "unstamped"
       }
+    ],
+    "ac-018": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-007": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-008": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-15"
+      }
+    ],
+    "ag-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-15"
+      }
     ]
   }
 }
