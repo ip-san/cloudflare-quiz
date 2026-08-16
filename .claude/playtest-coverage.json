@@ -153,6 +153,41 @@
         "outcome": "clean",
         "at": "2026-08-16"
       }
+    ],
+    "ai-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-16"
+      }
+    ],
+    "ai-013": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-16"
+      }
+    ],
+    "ai-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-16"
+      }
+    ],
+    "ai-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-16"
+      }
+    ],
+    "ai-016": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-16"
+      }
     ]
   }
 }
