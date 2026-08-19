@@ -82,6 +82,13 @@ export interface HierarchyDiagram {
   type: 'hierarchy'
   label?: string | undefined
   items: DiagramItem[]
+  /**
+   * items の並びが本当に優先順位・強弱を表すときだけ true にする。
+   * true: ピラミッド描画+「高優先/低優先」ラベル付き。
+   * false/未指定(既定): 順序に意味のない列挙・包含構造として、
+   * 優先度を示唆しない均一なリストで描画される。
+   */
+  ranked?: boolean | undefined
 }
 
 export interface FlowDiagram {

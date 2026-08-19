@@ -87,6 +87,9 @@ const HierarchyDiagramSchema = z.object({
   type: z.literal('hierarchy'),
   label: z.string().optional(),
   items: z.array(DiagramItemSchema).min(2).max(10),
+  // items の並びが本当に優先順位を表すときだけ true(既定 false)。
+  // false のときは優先度ラベルなしの均一リストとして描画される。
+  ranked: z.boolean().optional(),
 })
 
 const FlowDiagramSchema = z.object({

@@ -123,7 +123,7 @@ node scripts/fetch-docs.mjs agents agents/runtime/agents-api agents/runtime/life
 
 | タイプ | 用途 | フィールド |
 |--------|------|----------|
-| `hierarchy` | 重要度・優先順位（ピラミッド型） | `items: [{text, sub}]` |
+| `hierarchy` | 縦並びリスト。既定は順序に意味のない列挙・包含構造（均一カード）。**本当に優先順位がある場合のみ** `ranked: true` でピラミッド型+高優先/低優先ラベルになる | `items: [{text, sub}]`, `ranked?` |
 | `flow` | 時系列・手順・パイプライン | `steps: [{text, sub}]` |
 | `cycle` | 循環状態遷移 | `trigger`, `states: [{text, sub}]` |
 | `comparison` | 比較・対照（2〜4カラム） | `columns: [{heading, items}]` |
@@ -141,7 +141,7 @@ node scripts/fetch-docs.mjs agents agents/runtime/agents-api agents/runtime/life
 **タイプの使い分けガイド（迷った場合の優先）:**
 
 - 接続関係 → `network` / 時系列メッセージ → `sequence`（複数アクター間） / 手順 → `flow`（単一プロセス）
-- 包含・上書き関係 → `layer` / 重要度順 → `hierarchy` / 概念の重なり → `venn`
+- 包含・上書き関係 → `layer` / 縦並びの列挙 → `hierarchy`（優先順位が本当にあるときだけ `ranked: true`） / 概念の重なり → `venn`
 - 並列処理 → `swimlane` / 2軸グリッド → `matrix` / カラム比較 → `comparison`
 - ディレクトリ構造 → `tree` / 計算式・内訳 → `formula`
 

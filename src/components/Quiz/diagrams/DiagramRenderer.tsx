@@ -18,7 +18,7 @@ import { VennDiagram } from './VennDiagram'
 function SingleDiagram({ diagram }: { diagram: DiagramData }) {
   switch (diagram.type) {
     case 'hierarchy':
-      return <HierarchyDiagram label={diagram.label} items={diagram.items} />
+      return <HierarchyDiagram label={diagram.label} items={diagram.items} ranked={diagram.ranked} />
     case 'flow':
       return <FlowDiagram label={diagram.label} steps={diagram.steps} />
     case 'cycle':

@@ -246,6 +246,20 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
 
+## 2026-08-19 hierarchy図の全数監査 — 優先度表示の系統的誤用を`ranked`フラグで解消
+
+- playtest(ag-014/015)で発見した「HierarchyDiagramが常に『▲高優先/低優先▼』ラベル+ピラミッド描画を行う」
+  問題について、hierarchy型全95件のラベル・itemsを全数確認した。**本当に優先順位を表すのは4件のみ**
+  (ch-008 キャッシュ設定の優先順位 / cs-010 証明書タイプの優先順位 / gw-006 HTTPポリシー評価優先順位 /
+  wf-012 パラノイアレベルの積み上げ)。残り91件は順序に意味のない列挙(「主なメソッド」「構成要素」等)や
+  包含構造(lb-001, wp-002, ct-003等)で、優先度ラベルは事実に反していた
+- データを91件書き換えるのではなく、スキーマ・描画側に `ranked?: boolean`(既定false)を追加して解決:
+  ranked=true のときだけピラミッド+優先度ラベル+重要度グラデーション、それ以外は均一な縦リスト描画。
+  上記4件のみ quizzes.json に `"ranked": true` を付与
+- **今後 hierarchy を使う場合**: 優先順位・強弱が本当にある場合のみ `ranked: true` を付ける
+  (generate-quiz-data/SKILL.md のタイプ表にも反映済み)。包含・階層構造なら ranked なしの hierarchy か
+  layer / tree を検討
+
 ## 2026-08-19 /quality-loop 定期実行 — Step 0 flagged 21件+fact-check未検出19件の再検証（差分なし）
 
 - `src/data/quizzes.json` に未コミット変更がなかったため、incremental モードは Step 0（quiz-lint/cross-check/fact-check）
