@@ -606,8 +606,8 @@ const cloudflareTheme: ThemeConfig = {
     },
     {
       iconColor: 'text-green-500',
-      title: 'あなたのペースで成長',
-      desc: 'スマホでいつでも学習。毎日少しずつで、着実にスキルアップ',
+      title: '個人開発の強い味方',
+      desc: '無料枠で作って公開するまでの知識が身につく。あなたのプロダクトを後押しします',
     },
   ],
   storagePrefix: 'cloudflare-quiz',
@@ -797,7 +797,7 @@ const cloudflareTheme: ThemeConfig = {
       realWorldExample: '例:「読み書きの頻度」「永続性」「同時実行の要否」の3点で使うサービスを判断できます',
     },
   },
-  scenarioModeDescription: '実務シナリオに沿って Cloudflare を学ぶ',
+  scenarioModeDescription: '個人開発から実務まで、ストーリーに沿って Cloudflare を学ぶ',
   tutorialSlides: [
     {
       title: 'Cloudflare とは',

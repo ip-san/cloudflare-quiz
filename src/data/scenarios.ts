@@ -27,46 +27,6 @@ export interface ScenarioData {
 
 export const SCENARIOS: readonly ScenarioData[] = [
   {
-    id: 'scenario-first-site',
-    title: '会社サイトをCloudflareに載せる日',
-    description: 'DNS・SSL・キャッシュ——導入初日に必ず通る3つの関門',
-    icon: '🌐',
-    difficulty: 'beginner',
-    steps: [
-      {
-        type: 'narrative',
-        text: '「サイトが重い、あとセキュリティも気になる」——上司の一言で、会社のWordPressサイトをCloudflareに載せることになった。ネームサーバーの切り替えは完了。ダッシュボードにはDNSレコードの一覧と、レコードごとにオレンジ色の雲のアイコンが並んでいる。\n\nこのオレンジクラウド、オンにするかどうかで挙動が全く変わるらしい。まずはここを理解しないと始まらない。',
-      },
-      { type: 'question', questionId: 'dn-003' },
-      {
-        type: 'narrative',
-        text: 'プロキシの意味は分かった。ふと見ると、Webサーバーに向いているAレコードが1つだけグレークラウド(DNS-only)のまま残っている。「動いてるからいいか」と放置したくなるが——ここに落とし穴がある。',
-      },
-      { type: 'question', questionId: 'dn-007' },
-      {
-        type: 'narrative',
-        text: 'レコードをプロキシ済みにした。次はHTTPS化だ。SSL/TLS設定を開くと暗号化モードの選択肢が並んでいる。「Flexibleなら証明書の用意が要らなくて簡単」という記事を見かけたが、先輩は「Flexibleは罠だから気をつけろ」と言っていた。どういうことだろう？',
-      },
-      { type: 'question', questionId: 'sl-002' },
-      {
-        type: 'narrative',
-        text: 'なるほど、ブラウザに鍵マークが出ていても、エッジからオリジンまでが平文では意味が薄い。ちゃんとオリジン側にも証明書を置いて、検証まで行うFull (strict)を目指そう。ではオリジンに置く証明書には何が求められる？',
-      },
-      { type: 'question', questionId: 'sl-004' },
-      {
-        type: 'narrative',
-        text: 'HTTPS化が完了した。最後に、そもそもの目的だった「サイトが重い」への対策——CDNキャッシュだ。Cloudflareを通しただけで何がキャッシュされるようになったのか、確認しておこう。',
-      },
-      { type: 'question', questionId: 'ch-001' },
-      {
-        type: 'narrative',
-        text: '導入初日が終わった。DNSはプロキシ済み、通信は端から端まで暗号化、静的アセットはエッジから配信。翌朝、上司から「サイト速くなったね」とSlackが来た。オレンジクラウドの意味を知っているかどうか——それだけでこの結果の意味の理解度が全く違う。',
-      },
-    ],
-    completionMessage:
-      'Cloudflare導入初日を完走！プロキシ(オレンジクラウド)の意味、Flexibleの罠とFull (strict)への道、デフォルトキャッシュの範囲——導入時に必ず通る判断を一通り体験しました。',
-  },
-  {
     id: 'scenario-first-worker',
     title: '週末で作る、はじめてのWorkers API',
     description: 'wrangler login からデプロイまで、Workers開発の一連の流れ',
@@ -112,124 +72,84 @@ export const SCENARIOS: readonly ScenarioData[] = [
       'はじめてのWorkers APIを公開しました！wrangler login → init → dev → バインディング設定 → deploy——この流れはWorkers開発の基本形として、どんなプロジェクトでも繰り返し使います。',
   },
   {
-    id: 'scenario-cache-miss',
-    title: '同じURLなのにキャッシュが効かない',
-    description: 'キャッシュヒット率の急落をCache Keyの理解で解決する',
-    icon: '📦',
+    id: 'scenario-pages-blog',
+    title: 'ブログに動的機能を足したくなった',
+    description: 'Pagesの自動デプロイからFunctions・独自ドメインまで',
+    icon: '📝',
+    difficulty: 'beginner',
+    steps: [
+      {
+        type: 'narrative',
+        text: '静的サイトジェネレーターで作った技術ブログを、Cloudflare Pagesで公開している。GitHubにpushするだけで公開される手軽さが気に入っているが、その裏で何が起きているのかは実はよく分かっていない。まず仕組みを押さえよう。',
+      },
+      { type: 'question', questionId: 'pg-002' },
+      {
+        type: 'narrative',
+        text: 'デザインを大きく変えたブランチを作った。本番に出す前に、実際のURLで表示を確認して友人に感想をもらいたい。Pagesにはそのための仕組みが最初から備わっている。',
+      },
+      { type: 'question', questionId: 'pg-003' },
+      {
+        type: 'narrative',
+        text: 'デザイン刷新も無事マージ。次は読者からの感想を受け取る「お問い合わせフォーム」が欲しくなった。静的サイトだが、Pagesにはサーバー側のコードを追加する仕組みがある。`functions/` ディレクトリにファイルを置くと、どのURLで動くのか？',
+      },
+      { type: 'question', questionId: 'pg-004' },
+      {
+        type: 'narrative',
+        text: 'フォームの送信内容はKVに保存することにした。Pages FunctionsからKVを使うには、バインディングや環境変数をどこでどう設定する？',
+      },
+      { type: 'question', questionId: 'pg-009' },
+      {
+        type: 'narrative',
+        text: 'フォームが動いた。最後の仕上げに、`*.pages.dev` のままだったURLを、取得済みの独自ドメインに変えたい。カスタムドメインの設定はどう行う？',
+      },
+      { type: 'question', questionId: 'pg-008' },
+      {
+        type: 'narrative',
+        text: '独自ドメインのブログに、プレビューで確認済みの新デザインと、お問い合わせフォーム。「静的サイトだから」と諦めていた機能が、リポジトリにファイルを足すだけで動いた。次は何を作ろうか。',
+      },
+    ],
+    completionMessage:
+      'ブログが一段階進化しました！Git連携の自動デプロイ、プレビューデプロイ、Pages Functions、バインディング設定、カスタムドメイン——静的サイトを育てる定番の道筋を体験しました。',
+  },
+  {
+    id: 'scenario-storage-choice',
+    title: '個人開発、DBどれにする問題',
+    description: 'KV・D1・Durable Objects・R2——習慣トラッカーを題材に使い分けを整理',
+    icon: '🗃️',
     difficulty: 'intermediate',
     steps: [
       {
         type: 'narrative',
-        text: '月曜の朝会で嫌な報告が上がった。「先週からオリジンサーバーの負荷が3倍になっています」。Cloudflareのアナリティクスを見ると、確かにキャッシュヒット率が80%台から30%台まで落ちている。\n\nまずは1リクエストを取り出して調べよう。レスポンスヘッダーの `cf-cache-status` に `BYPASS` という値が出ている。これは何を意味する？',
+        text: '習慣トラッカーアプリを個人開発することにした。Cloudflareのストレージ製品を調べると、KV・D1・Durable Objects・R2と選択肢が多く、どれに何を置くべきか分からなくなってきた。\n\nデータの種類ごとに整理しよう。まずはアプリの設定値——機能フラグやテーマ設定のような、頻繁には変わらないが世界中から読まれるデータだ。',
       },
-      { type: 'question', questionId: 'ch-017' },
+      { type: 'question', questionId: 'kv-001' },
       {
         type: 'narrative',
-        text: 'BYPASSの意味が分かったところで、そもそもCloudflareがレスポンスをキャッシュ「しない」と判断する条件を整理しておきたい。オリジン側の設定が原因のこともあるからだ。',
+        text: '次は本丸の習慣記録データ。「ユーザーごとの達成履歴を週別・月別に集計」「習慣と記録をテーブルで結合」——リレーショナルな集計クエリが必要になりそうだ。',
       },
-      { type: 'question', questionId: 'ch-002' },
+      { type: 'question', questionId: 'd1-002' },
       {
         type: 'narrative',
-        text: '調べを進めると、原因の一端が見えてきた。先週マーケティングチームがメール施策を打ち、すべてのリンクに `?utm_campaign=...&utm_source=...` が付いていたのだ。URLのパスは同じでも、クエリ文字列が1文字でも違えば別のキャッシュエントリになる——デフォルトのキャッシュキーがどう構成されているか、正確に理解しよう。',
+        text: '将来的には「友達と同じ習慣に一緒に取り組む」機能も夢見ている。複数ユーザーの操作をリアルタイムに同期する必要が出てきたとき、KVでは足りない場面とは？',
       },
-      { type: 'question', questionId: 'ch-010' },
+      { type: 'question', questionId: 'dq-002' },
       {
         type: 'narrative',
-        text: '犯人はデフォルトキャッシュキーに含まれるクエリ文字列だった。utmパラメータはコンテンツに影響しないのだから、キャッシュキーから無視させればいい。カスタムキャッシュキーのクエリ文字列設定には、どんな選択肢がある？',
+        text: 'ここまでの整理を、一度全体像として固めておきたい。設定・履歴・リアルタイム状態・画像(プロフィールアイコンなど)——データの種類ごとに最適なストレージを選ぶ判断基準は？',
       },
-      { type: 'question', questionId: 'ch-011' },
+      { type: 'question', questionId: 'r2-011' },
       {
         type: 'narrative',
-        text: 'Cache Ruleでカスタムキャッシュキーを設定する方針が決まった。ついでに、キャッシュ対象の制御(Cache Eligibility)の仕組みも押さえておこう。',
+        text: '設計が決まった。設定はKV、記録はD1、リアルタイム同期は将来Durable Objects、画像はR2。まずはD1から手を動かそう。データベースを作ってWorkerから使えるようにする手順は？',
       },
-      { type: 'question', questionId: 'ch-004' },
+      { type: 'question', questionId: 'd1-003' },
       {
         type: 'narrative',
-        text: 'ルールを書き始めると、既に別のCache Ruleが存在することに気づいた。同じリクエストに複数のルールがマッチしたら、どちらが勝つ？これを知らないと、せっかくのルールが「効いているつもり」になる。',
-      },
-      { type: 'question', questionId: 'ch-007' },
-      {
-        type: 'narrative',
-        text: 'デプロイから1時間。キャッシュヒット率のグラフが80%台に戻っていくのをチームで眺めた。「同じURLなのにキャッシュが効かない」の裏には、ほぼ必ずキャッシュキーの理解不足がある。次に同じグラフを見たら、まず `cf-cache-status` とクエリ文字列を疑おう。',
+        text: '`wrangler d1 create habit-tracker` ——最初のテーブルを作った瞬間、漠然としていたアプリが急に現実味を帯びた。ストレージ選びに正解を出せるようになれば、個人開発の設計で迷う時間は大きく減る。あとは作るだけだ。',
       },
     ],
     completionMessage:
-      'キャッシュヒット率の急落を解決！cf-cache-statusでの診断、デフォルトキャッシュキーの構成、クエリ文字列の制御、複数ルールの優先順位——キャッシュトラブルの定石を一通り体験しました。',
-  },
-  {
-    id: 'scenario-under-attack',
-    title: '攻撃が来た。5分で防波堤を築く',
-    description: 'WAF・レート制限・Under Attackモードの実戦投入',
-    icon: '🛡️',
-    difficulty: 'intermediate',
-    steps: [
-      {
-        type: 'narrative',
-        text: '水曜の15時、監視アラートが鳴った。ログインエンドポイントへのリクエストが平常時の100倍。パスワードリスト攻撃のようだ。幸い、サイトはCloudflareを通している。\n\n落ち着いて対処するために、まずCloudflare WAFが持っている道具を整理しよう。',
-      },
-      { type: 'question', questionId: 'wf-001' },
-      {
-        type: 'narrative',
-        text: '道具は3つ。まずはカスタムルールで攻撃元を止めたい。ルールにはBlockやChallengeなどのアクションがあるが、「終端アクション(terminating action)」という概念を理解していないと、ルールの並び順で事故る。',
-      },
-      { type: 'question', questionId: 'wf-003' },
-      {
-        type: 'narrative',
-        text: 'ブロックルールを書いた。ところでBlockアクションが返すHTTPステータスコードは何番だろう？監視ダッシュボードでブロックの効果を確認するのに必要だ。',
-      },
-      { type: 'question', questionId: 'wf-007' },
-      {
-        type: 'narrative',
-        text: '単発のブロックだけでは、攻撃元がIPを変えてくるいたちごっこになる。「一定時間内のリクエスト数」で自動的に制限するレート制限ルールを組もう。カウントの単位に `IP` と `IP with NAT support` があるが、この違いを知らないと正規ユーザーを巻き込む。',
-      },
-      { type: 'question', questionId: 'wf-014' },
-      {
-        type: 'narrative',
-        text: "攻撃はまだ続いている。最後の切り札として、ログイン画面を含む管理系のパスだけ「I'm Under Attack」モードにしたい。サイト全体ではなく特定の条件でだけ設定を変えるには、どうすればいい？",
-      },
-      { type: 'question', questionId: 'ru-016' },
-      {
-        type: 'narrative',
-        text: '16時前、攻撃のグラフは沈静化した。ブロックルール、レート制限、部分的なUnder Attackモード——3層の防波堤を15分で築けたのは、平時に道具の場所を知っていたからだ。インシデント対応の速さは、事前の理解の深さで決まる。',
-      },
-    ],
-    completionMessage:
-      '攻撃を撃退しました！終端アクションの概念、Blockのステータスコード、レート制限のカウント単位、Configuration Rulesでの部分的なUnder Attackモード——実戦で効く防御の組み立てを体験しました。',
-  },
-  {
-    id: 'scenario-prod-incident',
-    title: '本番のWorkerが壊れた夜',
-    description: 'ログ調査 → 切り分け → ロールバック → 再発防止',
-    icon: '🚨',
-    difficulty: 'advanced',
-    steps: [
-      {
-        type: 'narrative',
-        text: '金曜21時。夕方にデプロイしたWorkerの新バージョンで、エラー率が急上昇しているとアラートが来た。デプロイしたのは自分だ。\n\nまずは状況を見たい。本番のWorkerで今まさに起きているエラーを、リアルタイムで見るには？',
-      },
-      { type: 'question', questionId: 'wr-010' },
-      {
-        type: 'narrative',
-        text: 'ログは流れ始めた。特定のパスで例外が出ている。ただ、慌てて「コードのバグだ」と決めつけるのは危険だ。エラー率急上昇の原因を切り分けるとき、どういう順序で考えるべきか。',
-      },
-      { type: 'question', questionId: 'ar-017' },
-      {
-        type: 'narrative',
-        text: '切り分けの結果、夕方のデプロイが原因である可能性が濃厚になった。深夜にバグを直してテストするより、まず正常だった直前のデプロイに戻すのが定石だ。最速の手段は？',
-      },
-      { type: 'question', questionId: 'wr-012' },
-      {
-        type: 'narrative',
-        text: 'ロールバック完了、エラー率は平常に戻った。週明け、ポストモーテムで「ログを見始めるまでに時間がかかった」ことが課題に挙がった。次のインシデントに備えて、Workersの観測性(observability)の仕組みを整えておこう。',
-      },
-      { type: 'question', questionId: 'ar-007' },
-      {
-        type: 'narrative',
-        text: '振り返れば、対応の流れは4手だった——tail でログを見る、思い込みを排して切り分ける、直前バージョンへ戻す、観測性を平時に整える。障害対応の実力は、ツールの知識と手順の身体化で決まる。金曜の夜にそれを実感した。',
-      },
-    ],
-    completionMessage:
-      '本番インシデントを収束させました！wrangler tailでのリアルタイムログ、エラーの切り分けの考え方、即時ロールバック、観測性の整備——障害対応の一連の流れを体験しました。',
+      'ストレージ設計が完成！設定はKV・集計はD1・リアルタイムはDurable Objects・ファイルはR2——「どれに何を置くか」の判断軸は、どんなアプリを作るときにも使い回せます。',
   },
   {
     id: 'scenario-raspi-tunnel',
@@ -310,86 +230,6 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       '転送量の不安から解放されました！R2の料金上の特徴、Wranglerでのバケット操作、公開設定、既存データの移行、無料枠——個人開発の財布を守るストレージ選びを体験しました。',
-  },
-  {
-    id: 'scenario-storage-choice',
-    title: '個人開発、DBどれにする問題',
-    description: 'KV・D1・Durable Objects・R2——習慣トラッカーを題材に使い分けを整理',
-    icon: '🗃️',
-    difficulty: 'intermediate',
-    steps: [
-      {
-        type: 'narrative',
-        text: '習慣トラッカーアプリを個人開発することにした。Cloudflareのストレージ製品を調べると、KV・D1・Durable Objects・R2と選択肢が多く、どれに何を置くべきか分からなくなってきた。\n\nデータの種類ごとに整理しよう。まずはアプリの設定値——機能フラグやテーマ設定のような、頻繁には変わらないが世界中から読まれるデータだ。',
-      },
-      { type: 'question', questionId: 'kv-001' },
-      {
-        type: 'narrative',
-        text: '次は本丸の習慣記録データ。「ユーザーごとの達成履歴を週別・月別に集計」「習慣と記録をテーブルで結合」——リレーショナルな集計クエリが必要になりそうだ。',
-      },
-      { type: 'question', questionId: 'd1-002' },
-      {
-        type: 'narrative',
-        text: '将来的には「友達と同じ習慣に一緒に取り組む」機能も夢見ている。複数ユーザーの操作をリアルタイムに同期する必要が出てきたとき、KVでは足りない場面とは？',
-      },
-      { type: 'question', questionId: 'dq-002' },
-      {
-        type: 'narrative',
-        text: 'ここまでの整理を、一度全体像として固めておきたい。設定・履歴・リアルタイム状態・画像(プロフィールアイコンなど)——データの種類ごとに最適なストレージを選ぶ判断基準は？',
-      },
-      { type: 'question', questionId: 'r2-011' },
-      {
-        type: 'narrative',
-        text: '設計が決まった。設定はKV、記録はD1、リアルタイム同期は将来Durable Objects、画像はR2。まずはD1から手を動かそう。データベースを作ってWorkerから使えるようにする手順は？',
-      },
-      { type: 'question', questionId: 'd1-003' },
-      {
-        type: 'narrative',
-        text: '`wrangler d1 create habit-tracker` ——最初のテーブルを作った瞬間、漠然としていたアプリが急に現実味を帯びた。ストレージ選びに正解を出せるようになれば、個人開発の設計で迷う時間は大きく減る。あとは作るだけだ。',
-      },
-    ],
-    completionMessage:
-      'ストレージ設計が完成！設定はKV・集計はD1・リアルタイムはDurable Objects・ファイルはR2——「どれに何を置くか」の判断軸は、どんなアプリを作るときにも使い回せます。',
-  },
-  {
-    id: 'scenario-pages-blog',
-    title: 'ブログに動的機能を足したくなった',
-    description: 'Pagesの自動デプロイからFunctions・独自ドメインまで',
-    icon: '📝',
-    difficulty: 'beginner',
-    steps: [
-      {
-        type: 'narrative',
-        text: '静的サイトジェネレーターで作った技術ブログを、Cloudflare Pagesで公開している。GitHubにpushするだけで公開される手軽さが気に入っているが、その裏で何が起きているのかは実はよく分かっていない。まず仕組みを押さえよう。',
-      },
-      { type: 'question', questionId: 'pg-002' },
-      {
-        type: 'narrative',
-        text: 'デザインを大きく変えたブランチを作った。本番に出す前に、実際のURLで表示を確認して友人に感想をもらいたい。Pagesにはそのための仕組みが最初から備わっている。',
-      },
-      { type: 'question', questionId: 'pg-003' },
-      {
-        type: 'narrative',
-        text: 'デザイン刷新も無事マージ。次は読者からの感想を受け取る「お問い合わせフォーム」が欲しくなった。静的サイトだが、Pagesにはサーバー側のコードを追加する仕組みがある。`functions/` ディレクトリにファイルを置くと、どのURLで動くのか？',
-      },
-      { type: 'question', questionId: 'pg-004' },
-      {
-        type: 'narrative',
-        text: 'フォームの送信内容はKVに保存することにした。Pages FunctionsからKVを使うには、バインディングや環境変数をどこでどう設定する？',
-      },
-      { type: 'question', questionId: 'pg-009' },
-      {
-        type: 'narrative',
-        text: 'フォームが動いた。最後の仕上げに、`*.pages.dev` のままだったURLを、取得済みの独自ドメインに変えたい。カスタムドメインの設定はどう行う？',
-      },
-      { type: 'question', questionId: 'pg-008' },
-      {
-        type: 'narrative',
-        text: '独自ドメインのブログに、プレビューで確認済みの新デザインと、お問い合わせフォーム。「静的サイトだから」と諦めていた機能が、リポジトリにファイルを足すだけで動いた。次は何を作ろうか。',
-      },
-    ],
-    completionMessage:
-      'ブログが一段階進化しました！Git連携の自動デプロイ、プレビューデプロイ、Pages Functions、バインディング設定、カスタムドメイン——静的サイトを育てる定番の道筋を体験しました。',
   },
   {
     id: 'scenario-ai-budget',
@@ -477,51 +317,6 @@ export const SCENARIOS: readonly ScenarioData[] = [
       '速度改善を完走！Observatoryでの計測、RUMと合成テストの使い分け、Early Hints、HTTP/3、圧縮——「体感の不満を計測で特定して順に削る」定石を体験しました。',
   },
   {
-    id: 'scenario-launch-day',
-    title: 'グッズ販売開始まで、あと10分',
-    description: 'Waiting Roomでアクセス殺到を捌き、Load Balancingで冗長化する',
-    icon: '🎫',
-    difficulty: 'intermediate',
-    steps: [
-      {
-        type: 'narrative',
-        text: '推しのコラボグッズの限定販売を、自分たちのECサイトで行うことになった。SNSでの告知は既に拡散中。前回の販売では開始直後にサーバーが落ち、「買えなかった」の声で溢れた苦い記憶がある。\n\n今回はCloudflareのWaiting Roomを使う。そもそもこの製品は何を解決してくれるのか。',
-      },
-      { type: 'question', questionId: 'wa-001' },
-      {
-        type: 'narrative',
-        text: '「サイトを落とさず、あふれた人には順番を待ってもらう」——これだ。設定画面を開くと `total active users` と `new users per minute` という2つの数値を求められた。この2つの関係を理解していないと、絞りすぎ・緩すぎの事故になる。',
-      },
-      { type: 'question', questionId: 'wa-002' },
-      {
-        type: 'narrative',
-        text: '数値は決めた。次は「待たせ方」だ。先着順にするか、ランダムにするか——キューイングメソッドは4種類あり、それぞれ性格が違う。',
-      },
-      { type: 'question', questionId: 'wa-004' },
-      {
-        type: 'narrative',
-        text: '販売は明日の20時ちょうどに開始する。それまでは通常運用で、開始時刻きっかりに待機室を有効にしたい。手動でスイッチを切り替えるのは怖い。スケジュール実行の仕組みはある？',
-      },
-      { type: 'question', questionId: 'wa-007' },
-      {
-        type: 'narrative',
-        text: '入口の対策は整った。次はオリジン側だ。今回はサーバーを2台用意した。Cloudflareで負荷分散を組むにあたり、Load Balancingの構成要素とその階層関係をまず整理しよう。',
-      },
-      { type: 'question', questionId: 'lb-001' },
-      {
-        type: 'narrative',
-        text: '構成を組んだ。最後の確認——もし販売中に1台目が落ちたら2台目に流れてほしい。そして1台目が復旧したとき、トラフィックはどう戻るのか？',
-      },
-      { type: 'question', questionId: 'lb-004' },
-      {
-        type: 'narrative',
-        text: '当日20時。アクセスは想定の3倍来たが、サイトは落ちず、待機室の推定待ち時間が表示され、SNSには「ちゃんと並べる」という好意的な声が流れた。完売まで90分、サーバーのグラフは終始安定していた。備えは裏切らない。',
-      },
-    ],
-    completionMessage:
-      '販売イベントを乗り切りました！Waiting Roomの役割と流量設計、キューイングメソッド、スケジュールイベント、Load Balancingの構成とフェイルオーバー——アクセス殺到への備えを一通り体験しました。',
-  },
-  {
     id: 'scenario-scraper',
     title: 'スクレイパーと戦う夜',
     description: 'ボットスコアを理解し、守るべきボットと止めるべきボットを見分ける',
@@ -607,6 +402,176 @@ export const SCENARIOS: readonly ScenarioData[] = [
       'SaaS化の第一歩を完了！Cloudflare for SaaSの目的、fallback origin、2つの検証、切り替え判断、そしてWorkers for Platformsによるマルチテナントコード実行——プラットフォーム事業者の技術基盤を体験しました。',
   },
   {
+    id: 'scenario-first-site',
+    title: '会社サイトをCloudflareに載せる日',
+    description: 'DNS・SSL・キャッシュ——導入初日に必ず通る3つの関門',
+    icon: '🌐',
+    difficulty: 'beginner',
+    steps: [
+      {
+        type: 'narrative',
+        text: '「サイトが重い、あとセキュリティも気になる」——上司の一言で、会社のWordPressサイトをCloudflareに載せることになった。ネームサーバーの切り替えは完了。ダッシュボードにはDNSレコードの一覧と、レコードごとにオレンジ色の雲のアイコンが並んでいる。\n\nこのオレンジクラウド、オンにするかどうかで挙動が全く変わるらしい。まずはここを理解しないと始まらない。',
+      },
+      { type: 'question', questionId: 'dn-003' },
+      {
+        type: 'narrative',
+        text: 'プロキシの意味は分かった。ふと見ると、Webサーバーに向いているAレコードが1つだけグレークラウド(DNS-only)のまま残っている。「動いてるからいいか」と放置したくなるが——ここに落とし穴がある。',
+      },
+      { type: 'question', questionId: 'dn-007' },
+      {
+        type: 'narrative',
+        text: 'レコードをプロキシ済みにした。次はHTTPS化だ。SSL/TLS設定を開くと暗号化モードの選択肢が並んでいる。「Flexibleなら証明書の用意が要らなくて簡単」という記事を見かけたが、先輩は「Flexibleは罠だから気をつけろ」と言っていた。どういうことだろう？',
+      },
+      { type: 'question', questionId: 'sl-002' },
+      {
+        type: 'narrative',
+        text: 'なるほど、ブラウザに鍵マークが出ていても、エッジからオリジンまでが平文では意味が薄い。ちゃんとオリジン側にも証明書を置いて、検証まで行うFull (strict)を目指そう。ではオリジンに置く証明書には何が求められる？',
+      },
+      { type: 'question', questionId: 'sl-004' },
+      {
+        type: 'narrative',
+        text: 'HTTPS化が完了した。最後に、そもそもの目的だった「サイトが重い」への対策——CDNキャッシュだ。Cloudflareを通しただけで何がキャッシュされるようになったのか、確認しておこう。',
+      },
+      { type: 'question', questionId: 'ch-001' },
+      {
+        type: 'narrative',
+        text: '導入初日が終わった。DNSはプロキシ済み、通信は端から端まで暗号化、静的アセットはエッジから配信。翌朝、上司から「サイト速くなったね」とSlackが来た。オレンジクラウドの意味を知っているかどうか——それだけでこの結果の意味の理解度が全く違う。',
+      },
+    ],
+    completionMessage:
+      'Cloudflare導入初日を完走！プロキシ(オレンジクラウド)の意味、Flexibleの罠とFull (strict)への道、デフォルトキャッシュの範囲——導入時に必ず通る判断を一通り体験しました。',
+  },
+  {
+    id: 'scenario-cache-miss',
+    title: '同じURLなのにキャッシュが効かない',
+    description: 'キャッシュヒット率の急落をCache Keyの理解で解決する',
+    icon: '📦',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '月曜の朝会で嫌な報告が上がった。「先週からオリジンサーバーの負荷が3倍になっています」。Cloudflareのアナリティクスを見ると、確かにキャッシュヒット率が80%台から30%台まで落ちている。\n\nまずは1リクエストを取り出して調べよう。レスポンスヘッダーの `cf-cache-status` に `BYPASS` という値が出ている。これは何を意味する？',
+      },
+      { type: 'question', questionId: 'ch-017' },
+      {
+        type: 'narrative',
+        text: 'BYPASSの意味が分かったところで、そもそもCloudflareがレスポンスをキャッシュ「しない」と判断する条件を整理しておきたい。オリジン側の設定が原因のこともあるからだ。',
+      },
+      { type: 'question', questionId: 'ch-002' },
+      {
+        type: 'narrative',
+        text: '調べを進めると、原因の一端が見えてきた。先週マーケティングチームがメール施策を打ち、すべてのリンクに `?utm_campaign=...&utm_source=...` が付いていたのだ。URLのパスは同じでも、クエリ文字列が1文字でも違えば別のキャッシュエントリになる——デフォルトのキャッシュキーがどう構成されているか、正確に理解しよう。',
+      },
+      { type: 'question', questionId: 'ch-010' },
+      {
+        type: 'narrative',
+        text: '犯人はデフォルトキャッシュキーに含まれるクエリ文字列だった。utmパラメータはコンテンツに影響しないのだから、キャッシュキーから無視させればいい。カスタムキャッシュキーのクエリ文字列設定には、どんな選択肢がある？',
+      },
+      { type: 'question', questionId: 'ch-011' },
+      {
+        type: 'narrative',
+        text: 'Cache Ruleでカスタムキャッシュキーを設定する方針が決まった。ついでに、キャッシュ対象の制御(Cache Eligibility)の仕組みも押さえておこう。',
+      },
+      { type: 'question', questionId: 'ch-004' },
+      {
+        type: 'narrative',
+        text: 'ルールを書き始めると、既に別のCache Ruleが存在することに気づいた。同じリクエストに複数のルールがマッチしたら、どちらが勝つ？これを知らないと、せっかくのルールが「効いているつもり」になる。',
+      },
+      { type: 'question', questionId: 'ch-007' },
+      {
+        type: 'narrative',
+        text: 'デプロイから1時間。キャッシュヒット率のグラフが80%台に戻っていくのをチームで眺めた。「同じURLなのにキャッシュが効かない」の裏には、ほぼ必ずキャッシュキーの理解不足がある。次に同じグラフを見たら、まず `cf-cache-status` とクエリ文字列を疑おう。',
+      },
+    ],
+    completionMessage:
+      'キャッシュヒット率の急落を解決！cf-cache-statusでの診断、デフォルトキャッシュキーの構成、クエリ文字列の制御、複数ルールの優先順位——キャッシュトラブルの定石を一通り体験しました。',
+  },
+  {
+    id: 'scenario-launch-day',
+    title: 'グッズ販売開始まで、あと10分',
+    description: 'Waiting Roomでアクセス殺到を捌き、Load Balancingで冗長化する',
+    icon: '🎫',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '推しのコラボグッズの限定販売を、自分たちのECサイトで行うことになった。SNSでの告知は既に拡散中。前回の販売では開始直後にサーバーが落ち、「買えなかった」の声で溢れた苦い記憶がある。\n\n今回はCloudflareのWaiting Roomを使う。そもそもこの製品は何を解決してくれるのか。',
+      },
+      { type: 'question', questionId: 'wa-001' },
+      {
+        type: 'narrative',
+        text: '「サイトを落とさず、あふれた人には順番を待ってもらう」——これだ。設定画面を開くと `total active users` と `new users per minute` という2つの数値を求められた。この2つの関係を理解していないと、絞りすぎ・緩すぎの事故になる。',
+      },
+      { type: 'question', questionId: 'wa-002' },
+      {
+        type: 'narrative',
+        text: '数値は決めた。次は「待たせ方」だ。先着順にするか、ランダムにするか——キューイングメソッドは4種類あり、それぞれ性格が違う。',
+      },
+      { type: 'question', questionId: 'wa-004' },
+      {
+        type: 'narrative',
+        text: '販売は明日の20時ちょうどに開始する。それまでは通常運用で、開始時刻きっかりに待機室を有効にしたい。手動でスイッチを切り替えるのは怖い。スケジュール実行の仕組みはある？',
+      },
+      { type: 'question', questionId: 'wa-007' },
+      {
+        type: 'narrative',
+        text: '入口の対策は整った。次はオリジン側だ。今回はサーバーを2台用意した。Cloudflareで負荷分散を組むにあたり、Load Balancingの構成要素とその階層関係をまず整理しよう。',
+      },
+      { type: 'question', questionId: 'lb-001' },
+      {
+        type: 'narrative',
+        text: '構成を組んだ。最後の確認——もし販売中に1台目が落ちたら2台目に流れてほしい。そして1台目が復旧したとき、トラフィックはどう戻るのか？',
+      },
+      { type: 'question', questionId: 'lb-004' },
+      {
+        type: 'narrative',
+        text: '当日20時。アクセスは想定の3倍来たが、サイトは落ちず、待機室の推定待ち時間が表示され、SNSには「ちゃんと並べる」という好意的な声が流れた。完売まで90分、サーバーのグラフは終始安定していた。備えは裏切らない。',
+      },
+    ],
+    completionMessage:
+      '販売イベントを乗り切りました！Waiting Roomの役割と流量設計、キューイングメソッド、スケジュールイベント、Load Balancingの構成とフェイルオーバー——アクセス殺到への備えを一通り体験しました。',
+  },
+  {
+    id: 'scenario-under-attack',
+    title: '攻撃が来た。5分で防波堤を築く',
+    description: 'WAF・レート制限・Under Attackモードの実戦投入',
+    icon: '🛡️',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '水曜の15時、監視アラートが鳴った。ログインエンドポイントへのリクエストが平常時の100倍。パスワードリスト攻撃のようだ。幸い、サイトはCloudflareを通している。\n\n落ち着いて対処するために、まずCloudflare WAFが持っている道具を整理しよう。',
+      },
+      { type: 'question', questionId: 'wf-001' },
+      {
+        type: 'narrative',
+        text: '道具は3つ。まずはカスタムルールで攻撃元を止めたい。ルールにはBlockやChallengeなどのアクションがあるが、「終端アクション(terminating action)」という概念を理解していないと、ルールの並び順で事故る。',
+      },
+      { type: 'question', questionId: 'wf-003' },
+      {
+        type: 'narrative',
+        text: 'ブロックルールを書いた。ところでBlockアクションが返すHTTPステータスコードは何番だろう？監視ダッシュボードでブロックの効果を確認するのに必要だ。',
+      },
+      { type: 'question', questionId: 'wf-007' },
+      {
+        type: 'narrative',
+        text: '単発のブロックだけでは、攻撃元がIPを変えてくるいたちごっこになる。「一定時間内のリクエスト数」で自動的に制限するレート制限ルールを組もう。カウントの単位に `IP` と `IP with NAT support` があるが、この違いを知らないと正規ユーザーを巻き込む。',
+      },
+      { type: 'question', questionId: 'wf-014' },
+      {
+        type: 'narrative',
+        text: "攻撃はまだ続いている。最後の切り札として、ログイン画面を含む管理系のパスだけ「I'm Under Attack」モードにしたい。サイト全体ではなく特定の条件でだけ設定を変えるには、どうすればいい？",
+      },
+      { type: 'question', questionId: 'ru-016' },
+      {
+        type: 'narrative',
+        text: '16時前、攻撃のグラフは沈静化した。ブロックルール、レート制限、部分的なUnder Attackモード——3層の防波堤を15分で築けたのは、平時に道具の場所を知っていたからだ。インシデント対応の速さは、事前の理解の深さで決まる。',
+      },
+    ],
+    completionMessage:
+      '攻撃を撃退しました！終端アクションの概念、Blockのステータスコード、レート制限のカウント単位、Configuration Rulesでの部分的なUnder Attackモード——実戦で効く防御の組み立てを体験しました。',
+  },
+  {
     id: 'scenario-one-person-it',
     title: 'ひとり情シス、Webフィルタリングを任される',
     description: 'Cloudflare Gatewayで会社のネットワークを守る最初の一歩',
@@ -645,5 +610,40 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'Webフィルタリング導入を完了！Gatewayの3つのポリシー階層、接続方式と適用範囲、ドメインカテゴリ、DNSブロックの限界、デフォルト挙動——Zero Trustの入り口となるSWG導入を体験しました。',
+  },
+  {
+    id: 'scenario-prod-incident',
+    title: '本番のWorkerが壊れた夜',
+    description: 'ログ調査 → 切り分け → ロールバック → 再発防止',
+    icon: '🚨',
+    difficulty: 'advanced',
+    steps: [
+      {
+        type: 'narrative',
+        text: '金曜21時。夕方にデプロイしたWorkerの新バージョンで、エラー率が急上昇しているとアラートが来た。デプロイしたのは自分だ。\n\nまずは状況を見たい。本番のWorkerで今まさに起きているエラーを、リアルタイムで見るには？',
+      },
+      { type: 'question', questionId: 'wr-010' },
+      {
+        type: 'narrative',
+        text: 'ログは流れ始めた。特定のパスで例外が出ている。ただ、慌てて「コードのバグだ」と決めつけるのは危険だ。エラー率急上昇の原因を切り分けるとき、どういう順序で考えるべきか。',
+      },
+      { type: 'question', questionId: 'ar-017' },
+      {
+        type: 'narrative',
+        text: '切り分けの結果、夕方のデプロイが原因である可能性が濃厚になった。深夜にバグを直してテストするより、まず正常だった直前のデプロイに戻すのが定石だ。最速の手段は？',
+      },
+      { type: 'question', questionId: 'wr-012' },
+      {
+        type: 'narrative',
+        text: 'ロールバック完了、エラー率は平常に戻った。週明け、ポストモーテムで「ログを見始めるまでに時間がかかった」ことが課題に挙がった。次のインシデントに備えて、Workersの観測性(observability)の仕組みを整えておこう。',
+      },
+      { type: 'question', questionId: 'ar-007' },
+      {
+        type: 'narrative',
+        text: '振り返れば、対応の流れは4手だった——tail でログを見る、思い込みを排して切り分ける、直前バージョンへ戻す、観測性を平時に整える。障害対応の実力は、ツールの知識と手順の身体化で決まる。金曜の夜にそれを実感した。',
+      },
+    ],
+    completionMessage:
+      '本番インシデントを収束させました！wrangler tailでのリアルタイムログ、エラーの切り分けの考え方、即時ロールバック、観測性の整備——障害対応の一連の流れを体験しました。',
   },
 ]
