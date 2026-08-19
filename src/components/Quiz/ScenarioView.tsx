@@ -2,6 +2,7 @@ import { ArrowRight, BookOpen } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { QuizCard } from '@/components/Quiz/QuizCard'
+import { QuizText } from '@/components/Quiz/QuizText'
 import { locale } from '@/config/locale'
 import { SCENARIOS, type ScenarioData } from '@/data/scenarios'
 import { useQuizStore } from '@/stores/quizStore'
@@ -15,7 +16,9 @@ function ScenarioNarrative({ text, onNext, stepLabel }: { text: string; onNext: 
           <BookOpen className="h-4 w-4" />
           {stepLabel}
         </div>
-        <p className="mb-6 text-base leading-relaxed text-stone-700 dark:text-stone-300">{text}</p>
+        <p className="mb-6 text-base leading-relaxed text-stone-700 dark:text-stone-300">
+          <QuizText text={text} />
+        </p>
         <button
           onClick={onNext}
           className="tap-highlight flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3.5 text-sm font-semibold text-white transition-transform active:scale-[0.97] dark:bg-blue-700"

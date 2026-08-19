@@ -71,14 +71,14 @@ test.describe('URL sharing', () => {
     await expect(page).toHaveURL(/\?mode=scenario$/)
   })
 
-  // Cloudflare Codex Quiz ships with SCENARIOS = [] at launch (src/data/scenarios.ts),
-  // so no scenario id can resolve yet — parseUrlIntent rejects any ?scenario= value.
-  // Re-enable once scenario content exists.
-  test.skip('?scenario=<id> starts that scenario and keeps the scenario URL', async ({ page }) => {
-    await page.goto('/?scenario=scenario-onboard')
+  test('?scenario=<id> starts that scenario and keeps the scenario URL', async ({ page }) => {
+    await page.goto('/?scenario=scenario-first-site')
     await waitForNotLoading(page)
+    // The opening narrative must actually render (scenario title appears in the step label) —
+    // guards against the intent resolving but the scenario view silently failing to mount.
+    await expect(page.getByText(/会社サイトをCloudflareに載せる日/)).toBeVisible({ timeout: 10000 })
     // The URL must NOT be rewritten to ?q=... — the scenario flow is the share unit
-    await expect(page).toHaveURL(/\?scenario=scenario-onboard$/, { timeout: 10000 })
+    await expect(page).toHaveURL(/\?scenario=scenario-first-site$/, { timeout: 10000 })
   })
 
   test('?view=progress opens the progress dashboard', async ({ page }) => {
