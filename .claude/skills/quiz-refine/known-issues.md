@@ -246,6 +246,23 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
 
+## 2026-08-19 /quality-loop 定期実行 — Step 0 flagged 21件+fact-check未検出19件の再検証（差分なし）
+
+- `src/data/quizzes.json` に未コミット変更がなかったため、incremental モードは Step 0（quiz-lint/cross-check/fact-check）
+  で `status: "flagged"` の21問（correct-too-long 17件、difficulty mismatch 4件）と、fact-check未検出語19件
+  （9問: wr-005/008/010/011/013/016/017, ct-017, d1-013）を対象とした
+- correct-too-long/difficulty mismatchは前回(2026-08-13)から1件も増減なく、既存の精読済み結論と一致
+- fact-check未検出19件は全件、該当する不正解選択肢(`options[]`のうち`correctIndex`と異なるインデックス)にのみ
+  出現することをスクリプトで確認（正解選択肢・explanationには一切登場しない）→「実在しないコマンドを誤答に
+  使う意図的パターン」に該当し非アクション
+- **d1-013のみ、正解選択肢(`wrangler d1 export --output=...` / `wrangler d1 execute`)自体がfact-check未検出**
+  だったため、本ファイル冒頭の「D1のサブコマンド一覧は静的ソースが存在せず個別に手動確認すること」に従い
+  `https://developers.cloudflare.com/d1/wrangler-commands/` をlive fetchして確認。`d1 export`(`--output`必須、
+  `--local`/`--remote`/`--table`/`--no-schema`/`--no-data`)と`d1 execute`(`--command`/`--file`/`--local`/`--remote`)
+  は共に実在するコマンドで正解記述と一致。一方、不正解選択肢が使う`wrangler d1 backup restore`は非実在
+  （実際にはpoint-in-time復元は`d1 time-travel restore`という別名で提供されており、正解を「実在しないコマンド名の
+  誤答」から正しく区別できる良い distractor であることも確認できた）。d1-013は事実正確性の観点で問題なし
+
 ## 2026-08-13 /quality-loop 定期実行 — Step 0 flagged 31件の再検証（差分なし）
 
 - `src/data/quizzes.json` に未コミット変更がなかったため、incremental モードは Step 0（quiz-lint/cross-check/fact-check）
