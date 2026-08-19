@@ -231,4 +231,209 @@ export const SCENARIOS: readonly ScenarioData[] = [
     completionMessage:
       '本番インシデントを収束させました！wrangler tailでのリアルタイムログ、エラーの切り分けの考え方、即時ロールバック、観測性の整備——障害対応の一連の流れを体験しました。',
   },
+  {
+    id: 'scenario-raspi-tunnel',
+    title: '自宅のラズパイを世界に公開する',
+    description: '固定IPなし・ポート開放なしで自宅アプリを公開し、家族だけに見せる',
+    icon: '🏠',
+    difficulty: 'beginner',
+    steps: [
+      {
+        type: 'narrative',
+        text: '自宅のRaspberry Piで家族写真の共有アプリを動かしている。実家の親にも見せたいが、ここで壁にぶつかった。自宅回線に固定IPはなく、ルーターのポート開放はセキュリティが怖くてやりたくない。\n\n調べると、Cloudflare Tunnelなら両方の問題を回避できるらしい。どういう仕組みでそれが可能になっているのか、まず接続の方向を理解しよう。',
+      },
+      { type: 'question', questionId: 'tn-001' },
+      {
+        type: 'narrative',
+        text: '仕組みは分かった。これなら自宅ネットワークに穴を開けずに済む。早速ラズパイに `cloudflared` をインストールした。CLIでトンネルを作る手順は？',
+      },
+      { type: 'question', questionId: 'tn-004' },
+      {
+        type: 'narrative',
+        text: 'トンネルができた。次は `photos.example.com` のような覚えやすいアドレスでアクセスできるようにしたい。トンネルとDNSをどう紐付ける？',
+      },
+      { type: 'question', questionId: 'tn-006' },
+      {
+        type: 'narrative',
+        text: 'URLでアクセスできるようになった——が、このままでは世界中の誰でも家族写真を見られてしまう。インターネットに公開しつつ、アクセスできる人を制限したい。VPNを自前で立てるのは大げさだ。Cloudflareにはそのための仕組みがある。',
+      },
+      { type: 'question', questionId: 'ac-001' },
+      {
+        type: 'narrative',
+        text: 'Cloudflare Accessで守れそうだ。では実際に、このトンネル経由のアプリをAccessの背後に置くには、何をどの順で設定すればいい？',
+      },
+      { type: 'question', questionId: 'ac-009' },
+      {
+        type: 'narrative',
+        text: '設定完了。実家の親には「このURLを開いてメールアドレスを入れるだけ」と伝えた。固定IPなし、ポート開放なし、VPNなし——自宅のラズパイが、家族だけの写真館になった。サーバー代は電気代だけだ。',
+      },
+    ],
+    completionMessage:
+      '自宅サーバーの安全な公開を達成！Tunnelの接続の仕組み、トンネル作成、DNSルーティング、Accessによる保護——個人開発の定番構成「Tunnel + Access」を一通り体験しました。',
+  },
+  {
+    id: 'scenario-r2-egress',
+    title: '画像が増えてサーバー代が怖い',
+    description: 'ポートフォリオの画像をR2へ移し、転送量の不安から解放される',
+    icon: '💸',
+    difficulty: 'beginner',
+    steps: [
+      {
+        type: 'narrative',
+        text: '写真ポートフォリオサイトが少しバズった。嬉しい悲鳴——のはずが、頭をよぎるのは「このままアクセスが増えたら転送量の請求はいくらになる？」という不安。高解像度の写真は1枚数MBある。\n\nクラウドのオブジェクトストレージを比較していると、個人開発者の間でCloudflare R2の名前をよく見かける。料金面での最大の特徴は何だったか。',
+      },
+      { type: 'question', questionId: 'r2-002' },
+      {
+        type: 'narrative',
+        text: 'これなら「バズるほど請求が怖い」構造から抜け出せそうだ。早速試したい。Workersのコードを書く前に、まずコマンドラインでバケットを作って手元の写真を数枚アップロードしてみたい。',
+      },
+      { type: 'question', questionId: 'r2-013' },
+      {
+        type: 'narrative',
+        text: 'アップロードできた。次は、この写真たちをサイトから参照できるように、インターネットに公開したい。R2のオブジェクトを誰でもアクセスできるようにする一般的な方法は？',
+      },
+      { type: 'question', questionId: 'r2-004' },
+      {
+        type: 'narrative',
+        text: '新しい写真はR2に置くとして、問題は今のストレージに溜まった数千枚の既存写真だ。1枚ずつ手でアップロードし直すのは現実的ではない。Cloudflareは他社ストレージからの移行を支援する仕組みを用意している。',
+      },
+      { type: 'question', questionId: 'r2-016' },
+      {
+        type: 'narrative',
+        text: '移行の目処が立った。最後に、そもそも今の規模なら無料でどこまで行けるのかを確認しておこう。R2の無料利用枠はどうなっている？',
+      },
+      { type: 'question', questionId: 'r2-012' },
+      {
+        type: 'narrative',
+        text: '計算してみると、今のアクセス規模なら保存も配信もほぼ無料枠に収まりそうだ。「バズったらどうしよう」が「バズっても大丈夫」に変わった。安心して次の作品をアップロードできる。',
+      },
+    ],
+    completionMessage:
+      '転送量の不安から解放されました！R2の料金上の特徴、Wranglerでのバケット操作、公開設定、既存データの移行、無料枠——個人開発の財布を守るストレージ選びを体験しました。',
+  },
+  {
+    id: 'scenario-storage-choice',
+    title: '個人開発、DBどれにする問題',
+    description: 'KV・D1・Durable Objects・R2——習慣トラッカーを題材に使い分けを整理',
+    icon: '🗃️',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '習慣トラッカーアプリを個人開発することにした。Cloudflareのストレージ製品を調べると、KV・D1・Durable Objects・R2と選択肢が多く、どれに何を置くべきか分からなくなってきた。\n\nデータの種類ごとに整理しよう。まずはアプリの設定値——機能フラグやテーマ設定のような、頻繁には変わらないが世界中から読まれるデータだ。',
+      },
+      { type: 'question', questionId: 'kv-001' },
+      {
+        type: 'narrative',
+        text: '次は本丸の習慣記録データ。「ユーザーごとの達成履歴を週別・月別に集計」「習慣と記録をテーブルで結合」——リレーショナルな集計クエリが必要になりそうだ。',
+      },
+      { type: 'question', questionId: 'd1-002' },
+      {
+        type: 'narrative',
+        text: '将来的には「友達と同じ習慣に一緒に取り組む」機能も夢見ている。複数ユーザーの操作をリアルタイムに同期する必要が出てきたとき、KVでは足りない場面とは？',
+      },
+      { type: 'question', questionId: 'dq-002' },
+      {
+        type: 'narrative',
+        text: 'ここまでの整理を、一度全体像として固めておきたい。設定・履歴・リアルタイム状態・画像(プロフィールアイコンなど)——データの種類ごとに最適なストレージを選ぶ判断基準は？',
+      },
+      { type: 'question', questionId: 'r2-011' },
+      {
+        type: 'narrative',
+        text: '設計が決まった。設定はKV、記録はD1、リアルタイム同期は将来Durable Objects、画像はR2。まずはD1から手を動かそう。データベースを作ってWorkerから使えるようにする手順は？',
+      },
+      { type: 'question', questionId: 'd1-003' },
+      {
+        type: 'narrative',
+        text: '`wrangler d1 create habit-tracker` ——最初のテーブルを作った瞬間、漠然としていたアプリが急に現実味を帯びた。ストレージ選びに正解を出せるようになれば、個人開発の設計で迷う時間は大きく減る。あとは作るだけだ。',
+      },
+    ],
+    completionMessage:
+      'ストレージ設計が完成！設定はKV・集計はD1・リアルタイムはDurable Objects・ファイルはR2——「どれに何を置くか」の判断軸は、どんなアプリを作るときにも使い回せます。',
+  },
+  {
+    id: 'scenario-pages-blog',
+    title: 'ブログに動的機能を足したくなった',
+    description: 'Pagesの自動デプロイからFunctions・独自ドメインまで',
+    icon: '📝',
+    difficulty: 'beginner',
+    steps: [
+      {
+        type: 'narrative',
+        text: '静的サイトジェネレーターで作った技術ブログを、Cloudflare Pagesで公開している。GitHubにpushするだけで公開される手軽さが気に入っているが、その裏で何が起きているのかは実はよく分かっていない。まず仕組みを押さえよう。',
+      },
+      { type: 'question', questionId: 'pg-002' },
+      {
+        type: 'narrative',
+        text: 'デザインを大きく変えたブランチを作った。本番に出す前に、実際のURLで表示を確認して友人に感想をもらいたい。Pagesにはそのための仕組みが最初から備わっている。',
+      },
+      { type: 'question', questionId: 'pg-003' },
+      {
+        type: 'narrative',
+        text: 'デザイン刷新も無事マージ。次は読者からの感想を受け取る「お問い合わせフォーム」が欲しくなった。静的サイトだが、Pagesにはサーバー側のコードを追加する仕組みがある。`functions/` ディレクトリにファイルを置くと、どのURLで動くのか？',
+      },
+      { type: 'question', questionId: 'pg-004' },
+      {
+        type: 'narrative',
+        text: 'フォームの送信内容はKVに保存することにした。Pages FunctionsからKVを使うには、バインディングや環境変数をどこでどう設定する？',
+      },
+      { type: 'question', questionId: 'pg-009' },
+      {
+        type: 'narrative',
+        text: 'フォームが動いた。最後の仕上げに、`*.pages.dev` のままだったURLを、取得済みの独自ドメインに変えたい。カスタムドメインの設定はどう行う？',
+      },
+      { type: 'question', questionId: 'pg-008' },
+      {
+        type: 'narrative',
+        text: '独自ドメインのブログに、プレビューで確認済みの新デザインと、お問い合わせフォーム。「静的サイトだから」と諦めていた機能が、リポジトリにファイルを足すだけで動いた。次は何を作ろうか。',
+      },
+    ],
+    completionMessage:
+      'ブログが一段階進化しました！Git連携の自動デプロイ、プレビューデプロイ、Pages Functions、バインディング設定、カスタムドメイン——静的サイトを育てる定番の道筋を体験しました。',
+  },
+  {
+    id: 'scenario-ai-budget',
+    title: '無料枠でAIアプリを出したい',
+    description: 'Workers AIで作り、AI Gatewayで課金の暴発を防ぐ',
+    icon: '🤖',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '「冷蔵庫の余り物からレシピを提案するAI」という個人開発ネタを思いついた。ただしAI APIの従量課金は、個人の財布には正直怖い。\n\nCloudflareにはエッジで推論を実行できるWorkers AIがある。まずその特徴から確認しよう。',
+      },
+      { type: 'question', questionId: 'ai-001' },
+      {
+        type: 'narrative',
+        text: '良さそうだ。早速Workerから使えるようにセットアップする。設定ファイルにはどう書く？',
+      },
+      { type: 'question', questionId: 'ai-002' },
+      {
+        type: 'narrative',
+        text: 'レシピ生成が動いた。ただ、長いレシピの生成完了まで画面が無反応なのは体験が悪い。ChatGPTのように、生成されたそばから文字を表示したい。',
+      },
+      { type: 'question', questionId: 'ai-013' },
+      {
+        type: 'narrative',
+        text: '体験は良くなった。次は公開前の最大の不安——「バズって使われすぎたら請求はどうなる？」に手を打つ。AIリクエストの通り道に置いて、キャッシュや制限をかけられるレイヤーがあると聞いた。',
+      },
+      { type: 'question', questionId: 'ai-004' },
+      {
+        type: 'narrative',
+        text: 'AI Gatewayを通す構成にした。特に欲しいのは「月の支出がこの額を超えたら止める」という保険だ。その役割を担う機能は？',
+      },
+      { type: 'question', questionId: 'ag-003' },
+      {
+        type: 'narrative',
+        text: '上限額を設定した。では実際にその予算に達したとき、アプリへのリクエストはどうなるのか——ユーザーへの見え方に関わるので、挙動を正確に知っておきたい。',
+      },
+      { type: 'question', questionId: 'ag-009' },
+      {
+        type: 'narrative',
+        text: 'これで「最悪でも月◯円まで」という安心を手に入れた。個人開発のAIアプリは、作る技術と同じくらい「暴発させない仕組み」が大事だ。安心してSNSで公開告知を打てる。',
+      },
+    ],
+    completionMessage:
+      'AIアプリを安全に公開できる構成が完成！Workers AIのセットアップ、ストリーミング応答、AI Gatewayによるコスト管理——「バズっても財布が壊れない」個人開発AIの定石を体験しました。',
+  },
 ]
