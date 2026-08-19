@@ -436,4 +436,214 @@ export const SCENARIOS: readonly ScenarioData[] = [
     completionMessage:
       'AIアプリを安全に公開できる構成が完成！Workers AIのセットアップ、ストリーミング応答、AI Gatewayによるコスト管理——「バズっても財布が壊れない」個人開発AIの定石を体験しました。',
   },
+  {
+    id: 'scenario-slow-site',
+    title: '「サイトが遅い」の犯人を探せ',
+    description: '思い込みではなく計測から始める、表示速度改善の定石',
+    icon: '🐢',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '運営しているレシピサイトに「スマホだと表示が遅い」という感想が届いた。自分のPCでは一瞬で開くのに——。\n\n体感談だけで画像圧縮だのコード分割だのに手を出す前に、まず計測だ。CloudflareダッシュボードにはObservatoryという速度計測ツールがある。どんなデータソースで測ってくれるのか？',
+      },
+      { type: 'question', questionId: 'sp-001' },
+      {
+        type: 'narrative',
+        text: '計測には2つの方式があると分かった。「自分のPCでは速い」のに「ユーザーは遅い」と感じる——このギャップを見つけるには、どちらの方式でしか取れない指標が鍵になる。',
+      },
+      { type: 'question', questionId: 'sp-002' },
+      {
+        type: 'narrative',
+        text: '計測の結果、最初のレスポンスを待つ時間と、CSS・フォントの読み込みがボトルネックだと判明した。オリジンがHTMLを生成している間、ブラウザをただ待たせておくのはもったいない。Cloudflareにはこの待ち時間を活用する機能がある。',
+      },
+      { type: 'question', questionId: 'sp-009' },
+      {
+        type: 'narrative',
+        text: 'もう一段の改善として、通信プロトコル自体も見直したい。モバイル回線のようにパケットロスが起きやすい環境で効果を発揮する、最新のHTTPプロトコルは何が違う？',
+      },
+      { type: 'question', questionId: 'sp-015' },
+      {
+        type: 'narrative',
+        text: '仕上げに転送サイズだ。テキスト系のアセットはCloudflareが自動で圧縮して配信してくれるが、その圧縮方式はプランによって異なる。自分のプランでは何が使われている？',
+      },
+      { type: 'question', questionId: 'sp-017' },
+      {
+        type: 'narrative',
+        text: '数日後、再計測すると、スマホでの表示開始が目に見えて速くなっていた。感想をくれたユーザーに「直したよ」と返信できた。「遅い」と言われたらまず計測、そして待ち時間・プロトコル・転送量の順に削る——この手順はどのサイトでも同じだ。',
+      },
+    ],
+    completionMessage:
+      '速度改善を完走！Observatoryでの計測、RUMと合成テストの使い分け、Early Hints、HTTP/3、圧縮——「体感の不満を計測で特定して順に削る」定石を体験しました。',
+  },
+  {
+    id: 'scenario-launch-day',
+    title: 'グッズ販売開始まで、あと10分',
+    description: 'Waiting Roomでアクセス殺到を捌き、Load Balancingで冗長化する',
+    icon: '🎫',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '推しのコラボグッズの限定販売を、自分たちのECサイトで行うことになった。SNSでの告知は既に拡散中。前回の販売では開始直後にサーバーが落ち、「買えなかった」の声で溢れた苦い記憶がある。\n\n今回はCloudflareのWaiting Roomを使う。そもそもこの製品は何を解決してくれるのか。',
+      },
+      { type: 'question', questionId: 'wa-001' },
+      {
+        type: 'narrative',
+        text: '「サイトを落とさず、あふれた人には順番を待ってもらう」——これだ。設定画面を開くと `total active users` と `new users per minute` という2つの数値を求められた。この2つの関係を理解していないと、絞りすぎ・緩すぎの事故になる。',
+      },
+      { type: 'question', questionId: 'wa-002' },
+      {
+        type: 'narrative',
+        text: '数値は決めた。次は「待たせ方」だ。先着順にするか、ランダムにするか——キューイングメソッドは4種類あり、それぞれ性格が違う。',
+      },
+      { type: 'question', questionId: 'wa-004' },
+      {
+        type: 'narrative',
+        text: '販売は明日の20時ちょうどに開始する。それまでは通常運用で、開始時刻きっかりに待機室を有効にしたい。手動でスイッチを切り替えるのは怖い。スケジュール実行の仕組みはある？',
+      },
+      { type: 'question', questionId: 'wa-007' },
+      {
+        type: 'narrative',
+        text: '入口の対策は整った。次はオリジン側だ。今回はサーバーを2台用意した。Cloudflareで負荷分散を組むにあたり、Load Balancingの構成要素とその階層関係をまず整理しよう。',
+      },
+      { type: 'question', questionId: 'lb-001' },
+      {
+        type: 'narrative',
+        text: '構成を組んだ。最後の確認——もし販売中に1台目が落ちたら2台目に流れてほしい。そして1台目が復旧したとき、トラフィックはどう戻るのか？',
+      },
+      { type: 'question', questionId: 'lb-004' },
+      {
+        type: 'narrative',
+        text: '当日20時。アクセスは想定の3倍来たが、サイトは落ちず、待機室の推定待ち時間が表示され、SNSには「ちゃんと並べる」という好意的な声が流れた。完売まで90分、サーバーのグラフは終始安定していた。備えは裏切らない。',
+      },
+    ],
+    completionMessage:
+      '販売イベントを乗り切りました！Waiting Roomの役割と流量設計、キューイングメソッド、スケジュールイベント、Load Balancingの構成とフェイルオーバー——アクセス殺到への備えを一通り体験しました。',
+  },
+  {
+    id: 'scenario-scraper',
+    title: 'スクレイパーと戦う夜',
+    description: 'ボットスコアを理解し、守るべきボットと止めるべきボットを見分ける',
+    icon: '🕷️',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '丹精込めて書いたレビュー記事が、他のサイトに丸ごと転載されているのを見つけた。アクセスログを見ると、深夜に機械的な間隔で全ページを巡回するアクセスがある。スクレイパーだ。\n\nCloudflareのBot対策は1つではない。まず、どんな製品ラインナップがあるのか整理しよう。',
+      },
+      { type: 'question', questionId: 'bt-001' },
+      {
+        type: 'narrative',
+        text: '製品の全体像は掴めた。これらの土台になっているのが「ボットスコア」——リクエストごとに付く、人間らしさの点数だ。値の範囲と意味を正確に知らないと、ルールの向きを逆に書く事故が起きる。',
+      },
+      { type: 'question', questionId: 'bt-007' },
+      {
+        type: 'narrative',
+        text: '無料のBot Fight Modeは既に有効にしてある。一段上のSuper Bot Fight Modeにすると、何が増えるのか？',
+      },
+      { type: 'question', questionId: 'bt-003' },
+      {
+        type: 'narrative',
+        text: 'ここで手が止まった。ボットを片っ端からブロックすると、検索エンジンのクローラーまで巻き込んでしまわないか？検索流入はこのサイトの生命線だ。Cloudflareが「良いボット」をどう見分けているのか知っておきたい。',
+      },
+      { type: 'question', questionId: 'bt-016' },
+      {
+        type: 'narrative',
+        text: '検索エンジンは守られると分かって一安心。最後に、もっと細かい制御がしたくなったときのために——Workerのコードの中からボットスコアを読んで、独自のロジックを書く方法も確認しておこう。',
+      },
+      { type: 'question', questionId: 'bt-011' },
+      {
+        type: 'narrative',
+        text: '対策を入れて一週間。深夜の機械的な巡回はチャレンジに阻まれ、検索エンジンのクロールは今まで通り、検索順位も無事だ。「全部ブロック」ではなく「見分けて通す」——ボット対策の本質はここにある。',
+      },
+    ],
+    completionMessage:
+      'スクレイパー対策を完了！Bot対策製品の全体像、ボットスコアの読み方、SBFMの追加機能、Verified botの仕組み、Workersでの独自制御——「見分けて通す」ボット対策を体験しました。',
+  },
+  {
+    id: 'scenario-indie-saas',
+    title: '個人開発がSaaSになった日',
+    description: '「独自ドメインで使いたい」の声に、Cloudflare for SaaSで応える',
+    icon: '🚀',
+    difficulty: 'advanced',
+    steps: [
+      {
+        type: 'narrative',
+        text: '個人開発で作ったブログ作成サービスに、じわじわとユーザーが付いてきた。そしてついに、有料化を後押しする要望が届いた——「自分のドメイン(blog.customer.com)で使いたい」。\n\n顧客のドメインを自分のインフラで安全に受けるのは、実は大仕事だ。Cloudflareにはまさにこのための製品がある。',
+      },
+      { type: 'question', questionId: 'cs-001' },
+      {
+        type: 'narrative',
+        text: 'Cloudflare for SaaSを使うことにした。構成を調べると「fallback origin」という要素が中心にある。これは何の役割を果たす？',
+      },
+      { type: 'question', questionId: 'cs-002' },
+      {
+        type: 'narrative',
+        text: '顧客のカスタムホスト名を追加すると、2種類の「検証」が走るという。何と何を検証しているのか——ここを理解していないと、顧客への案内メールが書けない。',
+      },
+      { type: 'question', questionId: 'cs-004' },
+      {
+        type: 'narrative',
+        text: '最初の顧客がDNS設定を済ませたと連絡をくれた。「もう切り替えて大丈夫？」と聞かれたが、こちら側では何を確認してからGOを出すべきか。',
+      },
+      { type: 'question', questionId: 'cs-003' },
+      {
+        type: 'narrative',
+        text: '独自ドメイン対応は軌道に乗った。次の要望はさらに大胆だ——「テーマを自分のコードでカスタマイズしたい」。他人のコードを自分のインフラで安全に実行する仕組みとして、CloudflareにはWorkers for Platformsがある。まず目的から。',
+      },
+      { type: 'question', questionId: 'wp-001' },
+      {
+        type: 'narrative',
+        text: '顧客ごとのコードはdispatch namespaceに入れるとして、リクエストが来たとき「どの顧客のコードを実行するか」を捌く層が必要になる。その役割を担うのは？',
+      },
+      { type: 'question', questionId: 'wp-003' },
+      {
+        type: 'narrative',
+        text: '「顧客のドメインで、顧客のコードが、自分のプラットフォーム上で動く」——個人開発だったものが、アーキテクチャだけ見れば立派なSaaSになった。次の課題は料金プランの設計だが、それはまた別の物語。',
+      },
+    ],
+    completionMessage:
+      'SaaS化の第一歩を完了！Cloudflare for SaaSの目的、fallback origin、2つの検証、切り替え判断、そしてWorkers for Platformsによるマルチテナントコード実行——プラットフォーム事業者の技術基盤を体験しました。',
+  },
+  {
+    id: 'scenario-one-person-it',
+    title: 'ひとり情シス、Webフィルタリングを任される',
+    description: 'Cloudflare Gatewayで会社のネットワークを守る最初の一歩',
+    icon: '🧑‍💻',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        type: 'narrative',
+        text: '社員20人の会社で「PCに詳しいから」という理由で情シス係を兼務することになった。最初のミッションは、フィッシング被害が出かけたのを受けての「怪しいサイトへのアクセスを会社として防ぐ仕組み」だ。\n\n調べた結果、Cloudflare Gatewayを使うことにした。まず、Gatewayが提供するポリシーの種類と、従来のファイアウォールとの関係を整理する。',
+      },
+      { type: 'question', questionId: 'gw-001' },
+      {
+        type: 'narrative',
+        text: 'ポリシーは3階層あると分かった。次に大事なのは「社員のトラフィックをどうやってGatewayに通すか」だ。接続方式によって、適用できるポリシーの種類が変わるという。',
+      },
+      { type: 'question', questionId: 'gw-002' },
+      {
+        type: 'narrative',
+        text: '全社のPCにWARPクライアントを配ることにした。ブロック対象は「ギャンブル」「マルウェア配布」のようなカテゴリ単位で指定できるらしい。このドメイン分類はどういう仕組みで付いている？',
+      },
+      { type: 'question', questionId: 'gw-017' },
+      {
+        type: 'narrative',
+        text: 'まず手軽なDNSポリシーでカテゴリブロックを設定した。ただ、ドキュメントを読むと「DNSブロックだけ」には限界があるらしい。何ができて、何がすり抜けるのか。',
+      },
+      { type: 'question', questionId: 'gw-003' },
+      {
+        type: 'narrative',
+        text: 'HTTPポリシーも併用する方針にした。最後に確認しておきたいのが「どのポリシーにも引っかからなかった通信」の扱いだ。デフォルトで通るのか、止まるのか——これを知らずに運用を始めるのは怖い。',
+      },
+      { type: 'question', questionId: 'gw-014' },
+      {
+        type: 'narrative',
+        text: '導入から1ヶ月。フィッシングメールのリンクを踏んでしまった社員がいたが、Gatewayのブロックページが表示されて事なきを得た。「PCに詳しい人」から「会社を守った人」へ。ひとり情シスの評価が、少し上がった。',
+      },
+    ],
+    completionMessage:
+      'Webフィルタリング導入を完了！Gatewayの3つのポリシー階層、接続方式と適用範囲、ドメインカテゴリ、DNSブロックの限界、デフォルト挙動——Zero Trustの入り口となるSWG導入を体験しました。',
+  },
 ]
