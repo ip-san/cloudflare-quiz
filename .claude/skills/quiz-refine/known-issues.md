@@ -246,6 +246,43 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
 
+## 2026-08-21 /quiz-refine — playtest変更問題4件+図監査concern2件を検証、ag-018の図追従漏れを修正
+
+**検証対象の選び方**: `git diff`が空だったが、flagged 32件は2日前(08-19)に検証済みで docs キャッシュも
+quizzes.json も無変更のため再検証をスキップ。代わりに「**前回のquiz-refine以降に内容が変わったが
+A-J検証を受けていない問題**」を対象にした(playtest経由の ag-010/014/015/018)。差分ベースの incremental は
+`git diff`(未コミット)だけでなく「前回検証以降のコミット」も見るべき — 同じ状況では `git log <last-refine>..HEAD`
+で対象を拾うこと
+
+**A(事実正確性): 6問すべて docs と完全一致、修正不要**
+- ag-010: `ai-gateway/features/dynamic-routing` L36「Rate Limit: number of requests quotas (per your key,
+  per period), switches to fallback」/ L37「Budget Limit: cost quotas」/ L34「Percentage: probabilistic,
+  A/B testing and gradual rollouts」— 08-15にplaytest経由で追記した「確率的振り分けはPercentageの役割」の
+  注記も L34 と完全一致
+- ag-014: `worker-binding-methods` L103-108 の6パラメータ表と全一致(`id`は`_required_`、`skipCache`は
+  `boolean`、`cacheTtl`は秒数)。08-16に hierarchy→comparison へ変えた図のグループ分け(キャッシュ制御/
+  ログ制御)も、docs のリンク先(caching vs logging/custom-metadata)と一致
+- ag-015: L130「All properties in the second argument are optional」/ L146「Retrieves details」/
+  L156-158「Pass an optional provider name」と全一致
+- ag-018: L19-29 + footnote2「On the free plan, the log storage limit applies to total logs across all
+  gateways in your account」で正解の核心を裏取り
+- **bi-009 は図監査(08-19)の C:concern が false positive**: 図の4項目は
+  `remote-browser-isolation/known-limitations` L24-27 の「Website compatibility」節の**完全なリスト**
+  (Webcam/mic・WebGL・Netflix&Spotify・H.265)。正解選択肢がそのうち3つを問い、図が4つ目(WebGL)も示すのは
+  ミスマッチではなく「図が解説を補完して完全な知識を与える」意図した設計
+- **ct-009 も false positive**: 「課金額=稼働時間×リソース使用量」の単純化式は、`containers/pricing` L16
+  の課金単位が GiB-second / vCPU-second / GB-second である以上「時間×リソース」そのもの。かつ図の`sub`が
+  「メモリ/ディスクは容量ベース、CPUはアクティブ使用ベース」と L25 の区別を明示しており厳密性も確保済み
+
+**修正1件(ag-018, diagrams)**: 08-16に正解軸を「25MB/1か月/5件の丸暗記」から「ログ保存件数のプラン別
+スコープ差」へ組み替えた際、**図が旧正解の数値3点セットのまま残っていた**(explanation の主題と図の主題が
+ズレる = 直前に問われた論点が図にない)。既存図を消さずに、正解の論点を可視化する comparison を
+`diagrams[0]` として追加し、マーカーを2箇所に配置(`{{diagram:0}}`=ログ保存のプラン別スコープ、
+`{{diagram:1}}`=その他の主な制限値)。事実の追加・変更なし
+
+**教訓**: 正解の軸を組み替える修正をしたら、**diagrams が旧軸のまま取り残されていないか必ず確認する**。
+playtest-apply.mjs は単一フィールド単位で適用するため、explanation を変えても図は自動追従しない
+
 ## 2026-08-19 解説図の教育的品質サンプリング監査(15問・タイプ層化) — weak 0件
 
 - 「回答後の解説図として機能しているか」を4基準(A正解支援/B付加価値/C整合性/D粒度)で
