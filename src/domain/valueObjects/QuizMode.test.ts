@@ -166,8 +166,8 @@ describe('QuizMode Value Object', () => {
 })
 
 describe('PREDEFINED_QUIZ_MODES', () => {
-  it('should have 12 predefined modes', () => {
-    expect(PREDEFINED_QUIZ_MODES).toHaveLength(12)
+  it('should have 13 predefined modes', () => {
+    expect(PREDEFINED_QUIZ_MODES).toHaveLength(13)
   })
 
   it('every QuizModeId except custom must have a PREDEFINED entry', () => {

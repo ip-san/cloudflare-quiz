@@ -18,6 +18,7 @@ export type QuizModeId =
   | 'scenario'
   | 'practical'
   | 'trivia'
+  | 'indie'
 
 export interface QuizModeProps {
   readonly id: QuizModeId
@@ -45,6 +46,7 @@ export const ALL_MODE_IDS: readonly QuizModeId[] = [
   'scenario',
   'practical',
   'trivia',
+  'indie',
 ] as const
 
 export class QuizMode {
@@ -219,6 +221,16 @@ export const PREDEFINED_QUIZ_MODES: QuizMode[] = [
     questionCount: 20,
     timeLimit: null,
     shuffleQuestions: true,
+    shuffleOptions: false,
+  }),
+  QuizMode.create({
+    id: 'indie',
+    name: '個人開発コース',
+    description: 'つくる→公開→独自ドメイン→コスト→運用の順に40問',
+    icon: '🚀',
+    questionCount: null,
+    timeLimit: null,
+    shuffleQuestions: false,
     shuffleOptions: false,
   }),
   QuizMode.create({

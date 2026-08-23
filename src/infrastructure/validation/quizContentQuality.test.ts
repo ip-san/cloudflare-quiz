@@ -629,6 +629,8 @@ const VALID_TAG_PATTERNS = [
   /^topic-[a-z]+(-[a-z]+)*$/,
   /^practical$/,
   /^trivia$/,
+  /^indie$/,
+  /^indie-\d+$/,
   new RegExp(`^(${validCategoryIds.join('|')})$`),
 ]
 
@@ -881,6 +883,59 @@ describe('Quiz Content Quality', () => {
         .filter((q) => (q.tags ?? []).includes('practical') && (q.tags ?? []).includes('trivia'))
         .map((q) => q.id)
       expect(violations, `practical と trivia が同時に付与: ${violations.join(', ')}`).toEqual([])
+    })
+  })
+
+  describe('個人開発コースのタグ品質', () => {
+    const indieQuizzes = quizzes.filter((q) => (q.tags ?? []).includes('indie'))
+
+    it('indie タグ付き問題が30問以上あること', () => {
+      expect(indieQuizzes.length).toBeGreaterThanOrEqual(30)
+    })
+
+    it('すべての indie 問題に順序タグがあること', () => {
+      const missing = indieQuizzes
+        .filter((q) => !(q.tags ?? []).some((t: string) => /^indie-\d+$/.test(t)))
+        .map((q) => q.id)
+      expect(missing, `順序タグがない: ${missing.join(', ')}`).toEqual([])
+    })
+
+    it('順序タグに重複がないこと', () => {
+      const orderTags = indieQuizzes.flatMap((q) => (q.tags ?? []).filter((t: string) => /^indie-\d+$/.test(t)))
+      const duplicates = orderTags.filter((t: string, i: number) => orderTags.indexOf(t) !== i)
+      expect(duplicates, `重複タグ: ${duplicates.join(', ')}`).toEqual([])
+    })
+
+    // 個人開発コースの存在意義は「企業・情シス向けのノイズを外す」こと。
+    // 個人開発者がまず必要としないカテゴリが混ざったら設計が崩れているサイン。
+    it('企業・情シス向けカテゴリが混ざっていないこと', () => {
+      const ENTERPRISE_ONLY = new Set([
+        'magic-wan',
+        'spectrum',
+        'casb',
+        'dex',
+        'email-security',
+        'browser-isolation',
+        'data-loss-prevention',
+        'gateway',
+        'workers-for-platforms',
+        'cloudflare-for-saas',
+        'api-shield',
+        'load-balancing',
+        'waiting-room',
+        'client-side-security',
+        'workers-vpc',
+        'pipelines',
+      ])
+      const violations = indieQuizzes
+        .filter((q) => ENTERPRISE_ONLY.has(q.category))
+        .map((q) => `${q.id}(${q.category})`)
+      expect(violations, `企業向けカテゴリが混入: ${violations.join(', ')}`).toEqual([])
+    })
+
+    it('初級中心の構成であること（初級が半数以上）', () => {
+      const beginners = indieQuizzes.filter((q) => q.difficulty === 'beginner').length
+      expect(beginners * 2).toBeGreaterThanOrEqual(indieQuizzes.length)
     })
   })
 

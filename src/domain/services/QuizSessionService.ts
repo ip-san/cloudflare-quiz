@@ -297,6 +297,22 @@ export class QuizSessionService {
       if (filtered.length > 0) questions = filtered
     }
 
+    // 個人開発コース: `indie` タグ付きの問題だけを、`indie-NNN` の順序どおりに出題する。
+    // 全体像モードと違いチャプター導入画面は挟まず、つくる→データ→公開→独自ドメイン→
+    // コスト→運用という一本道のコースとして流す。
+    if (config.mode === 'indie') {
+      const filtered = questions.filter((q) => q.tags.includes('indie'))
+      if (filtered.length > 0) {
+        questions = filtered.sort((a, b) => {
+          const getOrder = (q: Question): number => {
+            const orderTag = q.tags.find((t) => /^indie-\d+$/.test(t))
+            return orderTag ? Number.parseInt(orderTag.replace('indie-', ''), 10) : 999
+          }
+          return getOrder(a) - getOrder(b)
+        })
+      }
+    }
+
     // For overview mode, filter to tagged questions and sort by order tag
     if (config.mode === 'overview') {
       questions = questions.filter((q) => q.tags.includes('overview'))

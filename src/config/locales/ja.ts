@@ -358,6 +358,7 @@ export const ja: LocaleConfig = {
       scenario: '実践シナリオ',
       practical: '実務即戦力',
       trivia: '上級トリビア',
+      indie: '個人開発コース',
     },
     sessionLabel: (index) => `セッション${index}`,
     noHistory: 'まだセッション履歴がありません',
