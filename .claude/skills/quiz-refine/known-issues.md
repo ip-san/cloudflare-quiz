@@ -246,6 +246,54 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
 
+## 2026-08-24 docsキャッシュ16日ぶり更新でドキュメントドリフトを検出 — critical 2件を修正
+
+**発端**: `/quality-loop` の Step 0 で `fetch-docs.mjs --status` を確認したところ **537/539ページが
+期限切れ(16.4日経過)**。それまでの検証は全て古いキャッシュに対して行われており、A-1が最重要とする
+「doc ドリフト(Cloudflare側の仕様変更で正解が静かに古くなる)」が原理的に見えない状態だった。
+539ページを再取得したところ、更新前は0件だったURLアンカー検証が**6件のリンク切れ**を検出し、
+うち2件は**正解そのものが事実誤りになっている critical** だった
+
+**教訓(運用ルール)**: `quiz:lint:url` / `quiz:fact-check` が「0件」でも、それは
+**キャッシュが新しいことを前提にした0件**でしかない。`/quality-loop` や `/quiz-refine` の Step 0 では
+必ず `node scripts/fetch-docs.mjs --status` でキャッシュ鮮度を確認し、期限切れが多数なら
+先に `docs:fetch` を回すこと。キャッシュが古いまま「指摘0件」を根拠に「差分なし」と結論づけてはならない
+
+**critical 1: rt-011(Realtime SFU DataChannels)— 正解が事実誤りに**
+- 旧正解「SFU経由のDataChannelは一方向のみで、サブスクライバーからパブリッシャーへ送り返すことはできない」
+- 現行docs `realtime/sfu/datachannels` に `## Return to publisher (canReply)` が新設され、
+  L164「Set `canReply: true` when one subscriber needs to respond on the same channel」、
+  L177「`canReply` applies only to `location: "remote"` DataChannels and defaults to `false`」、
+  L178「At most one subscriber can have reply access for each publisher DataChannel」、
+  L180「The publisher receives the replies. Other subscribers do not」
+- → **真の正解が選択肢に存在しない状態**(A-1の最重要ケース)。正解・全wrongFeedback・explanation・hint・
+  図(network に返信経路を追加)を現行仕様に書き換え、referenceUrl も `#return-to-publisher-canreply` へ
+
+**critical 2: as-004(API Shield Schema Validation)— 問題の前提ごと廃止**
+- 旧問題は「アクション(`Log`/`Block`/`None`)」を問うていたが、現行docsにこの3アクションの記述が**皆無**。
+  ライブページでも確認 → **Schema Validation 2.0** へ移行し、旧モデルは
+  `/api-shield/reference/classic-schema-validation/` に「Classic」として分離されていた
+- 現行モデル(L24-30): アップロードで**常時オン(always-on)の検出**が生成され、
+  「The detection does not mitigate traffic by itself」。`cf.schema_validation.uploaded.violated` を
+  条件にした**WAFカスタムルールで強制**して初めて緩和される(検出と緩和の分離)
+- → 設問文ごと現行モデルの理解を問う内容へ全面書き換え。**as-006 も正解文に「設定された`Log`や`Block`
+  アクションも適用されない」という旧モデル依存の記述**があり、同時に修正(ボディサイズ上限の数値
+  1KB/8KB/8KB/128KB 自体は L128-136 と一致しており変更不要)
+
+**アンカーのみのドリフト2件(内容は現行docsと一致、URL修正のみ)**
+- rt-012: `#subscriber-acknowledgment-gate-waitforack` → `#wait-for-subscriber-readiness-waitforack`
+  (waitForAckの挙動自体は L98-104 と完全一致)
+- as-003: `#process` → `#configure-an-uploaded-schema`(「APIやTerraform経由では操作を別途追加」は
+  L36 と一致)
+
+**lint の偽陽性を根治(ct-018 / as-008)**
+- Cloudflareは見出しをリネームしても旧アンカーを `<span id="immediate-rollouts"></span>` や
+  `<a id="add-validation-by-uploading-a-schema" />` として**互換用に残す**ことがある。
+  `extractDocAnchors()` は `#` 見出ししか見ていなかったため、これらが全てリンク切れに見えていた
+- → `<span|a|div ... id="...">` を拾う正規表現を追加。6件→4件に減り、ct-018・as-008 は誤検知と確定
+  (as-008 は結果的に有効だったが、内容の裏取りは実施済み: L99「For custom logic, use
+  `cf.api_gateway.fallthrough_detected`」)
+
 ## 2026-08-21 /quiz-refine — playtest変更問題4件+図監査concern2件を検証、ag-018の図追従漏れを修正
 
 **検証対象の選び方**: `git diff`が空だったが、flagged 32件は2日前(08-19)に検証済みで docs キャッシュも

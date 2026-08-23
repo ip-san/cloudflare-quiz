@@ -264,6 +264,18 @@ function extractDocAnchors() {
       headingAnchors.add(match[1])
     }
 
+    // When Cloudflare renames a heading they often leave the previous anchor
+    // behind as an explicit HTML target (`<span id="old-name"></span>` or
+    // `<a id="old-name" />`) so existing deep links keep working. Those ids
+    // are real anchors on the live page but are invisible to the `#` heading
+    // scan above, so collect them too — otherwise every intentionally
+    // preserved compat anchor reads as a broken link.
+    const explicitIdRegex = /<(?:span|a|div)\s[^>]*\bid=["']([^"']+)["']/g
+    // biome-ignore lint/suspicious/noAssignInExpressions: idiomatic regex exec loop
+    while ((match = explicitIdRegex.exec(content)) !== null) {
+      headingAnchors.add(match[1])
+    }
+
     // Some pages generate all headings at build time (no markdown or
     // component source to extract from) — merge in anchors that were
     // manually verified against the live page HTML. See
