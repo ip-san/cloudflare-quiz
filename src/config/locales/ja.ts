@@ -534,6 +534,9 @@ export const ja: LocaleConfig = {
     nextButton: '次へ',
     difficultyLabels: { beginner: '初級', intermediate: '中級', advanced: '上級' },
     questionStats: (total, answered) => `${total}問 · ${answered}/${total}回答済み`,
+    nextStepsTitle: '次の一歩 — 実際に手を動かしてみる',
+    openDocs: '公式ドキュメントを開く',
+    copyCommand: (command) => `コマンドをコピー: ${command}`,
   },
 
   categoryPicker: {

@@ -34,6 +34,53 @@ describe('Scenarios', () => {
     }
   })
 
+  describe('nextSteps（完走後の次の一歩）', () => {
+    const withSteps = SCENARIOS.filter((s) => s.nextSteps && s.nextSteps.length > 0)
+
+    it('個人開発トラックの主要シナリオに nextSteps があること', () => {
+      expect(withSteps.length).toBeGreaterThanOrEqual(5)
+    })
+
+    it('各 nextStep に label があり、command か docUrl の少なくとも一方を持つこと', () => {
+      for (const s of withSteps) {
+        for (const step of s.nextSteps ?? []) {
+          expect(step.label, `${s.id}: label がない`).toBeTruthy()
+          expect(
+            Boolean(step.command) || Boolean(step.docUrl),
+            `${s.id} / "${step.label}": command と docUrl の両方がない（何をすればいいか辿れない）`
+          ).toBe(true)
+        }
+      }
+    })
+
+    it('docUrl はすべて developers.cloudflare.com を指すこと', () => {
+      const bad: string[] = []
+      for (const s of withSteps) {
+        for (const step of s.nextSteps ?? []) {
+          if (step.docUrl && !step.docUrl.startsWith('https://developers.cloudflare.com/')) {
+            bad.push(`${s.id}: ${step.docUrl}`)
+          }
+        }
+      }
+      expect(bad, `公式ドキュメント以外へのリンク: ${bad.join(', ')}`).toEqual([])
+    })
+
+    // 存在しないコマンドを載せると、学習者が実際に叩いて詰まる。
+    // 実在を保証できる形（wrangler / cloudflared / npm create cloudflare）に限定する。
+    it('command は実在が確認できるCLIのものだけであること', () => {
+      const ALLOWED_PREFIXES = ['npx wrangler ', 'npm create cloudflare', 'cloudflared ']
+      const bad: string[] = []
+      for (const s of withSteps) {
+        for (const step of s.nextSteps ?? []) {
+          if (step.command && !ALLOWED_PREFIXES.some((p) => step.command?.startsWith(p))) {
+            bad.push(`${s.id}: ${step.command}`)
+          }
+        }
+      }
+      expect(bad, `想定外のコマンド: ${bad.join(', ')}`).toEqual([])
+    })
+  })
+
   it('all scenarios have a completionMessage', () => {
     for (const scenario of SCENARIOS) {
       expect(scenario.completionMessage, `${scenario.id} missing completionMessage`).toBeTruthy()

@@ -15,6 +15,22 @@ export interface ScenarioStep {
   readonly questionId?: string
 }
 
+/**
+ * シナリオ完走後の「次の一歩」
+ *
+ * 知識で終わらせず、実際に手を動かすところまで繋ぐための導線。
+ * `command` に書くコマンドは**実在するものだけ**（公式ドキュメントで裏取り済み）。
+ * 存在しないコマンドを書くと、学習者が詰まって信頼を失う。
+ */
+export interface ScenarioNextStep {
+  /** 何をするか（動詞で終える） */
+  readonly label: string
+  /** 実行するコマンド（任意） */
+  readonly command?: string
+  /** 公式ドキュメントへのリンク（任意） */
+  readonly docUrl?: string
+}
+
 export interface ScenarioData {
   readonly id: string
   readonly title: string
@@ -23,6 +39,8 @@ export interface ScenarioData {
   readonly difficulty: 'beginner' | 'intermediate' | 'advanced'
   readonly steps: readonly ScenarioStep[]
   readonly completionMessage: string
+  /** 完走後に提示する実践アクション（1〜3個） */
+  readonly nextSteps?: readonly ScenarioNextStep[]
 }
 
 export const SCENARIOS: readonly ScenarioData[] = [
@@ -70,6 +88,15 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'はじめてのWorkers APIを公開しました！wrangler login → init → dev → バインディング設定 → deploy——この流れはWorkers開発の基本形として、どんなプロジェクトでも繰り返し使います。',
+    nextSteps: [
+      {
+        label: '実際にWorkerプロジェクトを作る',
+        command: 'npm create cloudflare@latest',
+        docUrl: 'https://developers.cloudflare.com/workers/get-started/guide/',
+      },
+      { label: 'ローカルで動かす', command: 'npx wrangler dev' },
+      { label: '世界に公開する', command: 'npx wrangler deploy' },
+    ],
   },
   {
     id: 'scenario-pages-blog',
@@ -110,6 +137,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'ブログが一段階進化しました！Git連携の自動デプロイ、プレビューデプロイ、Pages Functions、バインディング設定、カスタムドメイン——静的サイトを育てる定番の道筋を体験しました。',
+    nextSteps: [
+      {
+        label: 'GitHubリポジトリをPagesに接続する',
+        docUrl: 'https://developers.cloudflare.com/pages/get-started/git-integration/',
+      },
+      {
+        label: 'functions/ にAPIを1つ置いてみる',
+        docUrl: 'https://developers.cloudflare.com/pages/functions/get-started/',
+      },
+    ],
   },
   {
     id: 'scenario-storage-choice',
@@ -150,6 +187,11 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'ストレージ設計が完成！設定はKV・集計はD1・リアルタイムはDurable Objects・ファイルはR2——「どれに何を置くか」の判断軸は、どんなアプリを作るときにも使い回せます。',
+    nextSteps: [
+      { label: 'D1データベースを作る', command: 'npx wrangler d1 create my-database' },
+      { label: 'KV namespaceを作る', command: 'npx wrangler kv namespace create MY_KV' },
+      { label: 'R2バケットを作る', command: 'npx wrangler r2 bucket create my-bucket' },
+    ],
   },
   {
     id: 'scenario-raspi-tunnel',
@@ -190,6 +232,14 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       '自宅サーバーの安全な公開を達成！Tunnelの接続の仕組み、トンネル作成、DNSルーティング、Accessによる保護——個人開発の定番構成「Tunnel + Access」を一通り体験しました。',
+    nextSteps: [
+      { label: 'cloudflaredを認証する', command: 'cloudflared tunnel login' },
+      { label: 'トンネルを作る', command: 'cloudflared tunnel create my-tunnel' },
+      {
+        label: 'Accessでアクセスできる人を絞る',
+        docUrl: 'https://developers.cloudflare.com/cloudflare-one/access-controls/policies/',
+      },
+    ],
   },
   {
     id: 'scenario-r2-egress',
@@ -230,6 +280,14 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       '転送量の不安から解放されました！R2の料金上の特徴、Wranglerでのバケット操作、公開設定、既存データの移行、無料枠——個人開発の財布を守るストレージ選びを体験しました。',
+    nextSteps: [
+      { label: 'R2バケットを作る', command: 'npx wrangler r2 bucket create my-bucket' },
+      {
+        label: 'ファイルを1つ置いてみる',
+        command: 'npx wrangler r2 object put my-bucket/hello.txt --file=./hello.txt',
+      },
+      { label: '無料枠早見表でコスト感を確認する', docUrl: 'https://developers.cloudflare.com/r2/pricing/#free-tier' },
+    ],
   },
   {
     id: 'scenario-ai-budget',
@@ -275,6 +333,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'AIアプリを安全に公開できる構成が完成！Workers AIのセットアップ、ストリーミング応答、AI Gatewayによるコスト管理——「バズっても財布が壊れない」個人開発AIの定石を体験しました。',
+    nextSteps: [
+      {
+        label: 'Workers AIをプロジェクトにバインドする',
+        docUrl: 'https://developers.cloudflare.com/workers-ai/get-started/workers-wrangler/',
+      },
+      {
+        label: 'AI GatewayでSpend limitを設定する',
+        docUrl: 'https://developers.cloudflare.com/ai-gateway/features/spend-limits/',
+      },
+    ],
   },
   {
     id: 'scenario-slow-site',

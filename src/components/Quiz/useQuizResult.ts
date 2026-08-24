@@ -33,6 +33,8 @@ export interface UseQuizResultReturn {
   hintsUsedCount: number
   isReviewMode: boolean
   hasWrongAnswers: boolean
+  /** シナリオ完走時の締めくくり表示に使う（scenario モード以外は null） */
+  activeScenarioId: string | null
 
   // Handlers
   handleRetry: () => void
@@ -50,6 +52,7 @@ export function useQuizResult(): UseQuizResultReturn {
     sessionWrongAnswers,
     userProgress,
     getCategoryStats,
+    activeScenarioId,
   } = useQuizStore(
     useShallow((state) => ({
       sessionState: state.sessionState,
@@ -60,6 +63,7 @@ export function useQuizResult(): UseQuizResultReturn {
       sessionWrongAnswers: state.sessionWrongAnswers,
       userProgress: state.userProgress,
       getCategoryStats: state.getCategoryStats,
+      activeScenarioId: state.activeScenarioId,
     }))
   )
 
@@ -134,6 +138,7 @@ export function useQuizResult(): UseQuizResultReturn {
     hintsUsedCount,
     isReviewMode,
     hasWrongAnswers,
+    activeScenarioId,
 
     // Handlers
     handleRetry,

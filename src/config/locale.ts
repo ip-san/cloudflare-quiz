@@ -560,6 +560,9 @@ export interface LocaleConfig {
     readonly nextButton: string
     readonly difficultyLabels: Record<string, string>
     readonly questionStats: (total: number, answered: number) => string
+    readonly nextStepsTitle: string
+    readonly openDocs: string
+    readonly copyCommand: (command: string) => string
   }
 
   // === Category Picker ===

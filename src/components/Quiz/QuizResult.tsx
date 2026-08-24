@@ -13,6 +13,7 @@ import { DailyGoalBadge, StreakMilestoneBadge } from './overlays/StreakMilestone
 import { CertificateGenerator } from './result/CertificateGenerator'
 import { NextRecommendation } from './result/NextRecommendation'
 import { PersonalBest } from './result/PersonalBest'
+import { ScenarioCompletion } from './result/ScenarioCompletion'
 import { ScoreRing } from './result/ScoreRing'
 import { ShareImageGenerator } from './result/ShareImageGenerator'
 import { SkillsAcquired } from './result/SkillsAcquired'
@@ -44,6 +45,7 @@ export function QuizResult() {
     hintsUsedCount,
     isReviewMode,
     hasWrongAnswers,
+    activeScenarioId,
 
     // Handlers
     handleRetry,
@@ -125,6 +127,12 @@ export function QuizResult() {
           className={noMotion || showContent ? 'opacity-100' : 'opacity-0'}
           style={{ transition: noMotion ? 'none' : 'opacity 0.3s ease-out' }}
         >
+          {/* Scenario wrap-up — completionMessage + 実際に手を動かす次の一歩。
+              シナリオを完走したときだけ表示する。 */}
+          {sessionConfig.mode === 'scenario' && activeScenarioId && (
+            <ScenarioCompletion scenarioId={activeScenarioId} />
+          )}
+
           {/* Next recommendation — single unified CTA */}
           {!isReviewMode && !isFirstSession && <NextRecommendation mode={sessionConfig.mode} percentage={percentage} />}
 
