@@ -390,6 +390,15 @@ export interface LocaleConfig {
     readonly allPages: string
   }
 
+  // === Free Tier Table ===
+  readonly freeTier: {
+    readonly title: string
+    readonly subtitle: string
+    readonly intro: string
+    readonly officialDocs: string
+    readonly disclaimer: string
+  }
+
   // === Streak Banner ===
   readonly streakBanner: {
     readonly milestones: {

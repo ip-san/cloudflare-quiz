@@ -104,6 +104,15 @@ test.describe('URL sharing', () => {
     await expect(savedBtn).toHaveClass(/bg-stone-700/)
   })
 
+  test('?view=freetier opens the free-tier reference', async ({ page }) => {
+    await page.goto('/?view=freetier')
+    await waitForNotLoading(page)
+    await expect(page.getByRole('heading', { name: '無料枠早見表' })).toBeVisible({ timeout: 10000 })
+    // 表の中身が実際に描画されていること（見出しだけの空ページで通らないように）
+    await expect(page.getByRole('heading', { name: 'Workers', exact: true })).toBeVisible()
+    await expect(page).toHaveURL(/\?view=freetier$/)
+  })
+
   test('?view=tutorial opens the tutorial screen', async ({ page }) => {
     await page.goto('/?view=tutorial')
     await waitForNotLoading(page)

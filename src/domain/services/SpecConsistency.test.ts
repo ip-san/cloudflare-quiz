@@ -414,6 +414,7 @@ describe('Spec Consistency: URL sharing coverage', () => {
     'result',
     'progress',
     'reader',
+    'freeTier',
     'scenarioSelect',
     'studyFirst',
     'tutorial',

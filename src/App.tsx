@@ -26,6 +26,9 @@ const ProgressDashboard = lazy(() =>
 const ExplanationReader = lazy(() =>
   import('@/components/Reader/ExplanationReader').then((m) => ({ default: m.ExplanationReader }))
 )
+const FreeTierTable = lazy(() =>
+  import('@/components/Reader/FreeTierTable').then((m) => ({ default: m.FreeTierTable }))
+)
 const ScenarioList = lazy(() => import('@/components/Quiz/ScenarioView').then((m) => ({ default: m.ScenarioList })))
 const ScenarioView = lazy(() => import('@/components/Quiz/ScenarioView').then((m) => ({ default: m.ScenarioView })))
 const StudyFirstView = lazy(() =>
@@ -262,6 +265,12 @@ export default function App() {
             <ExplanationReader />
           </Suspense>
         )
+      case 'freeTier':
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <FreeTierTable />
+          </Suspense>
+        )
       case 'scenarioSelect':
         return (
           <Suspense fallback={<LoadingSpinner />}>
@@ -293,6 +302,7 @@ export default function App() {
       menu: '#FAF9F5',
       progress: '#FAF9F5',
       reader: '#FAF9F5',
+      freeTier: '#FAF9F5',
       result: '#FAF9F5',
       scenarioSelect: '#FAF9F5',
       studyFirst: '#FAF9F5',

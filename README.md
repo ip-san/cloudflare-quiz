@@ -40,6 +40,7 @@ Cloudflare をプロダクト開発に活かせるようになるための学習
 - 間隔反復（SRS）による復習リマインド通知
 - 進捗ダッシュボード（カテゴリ別正答率、マスタリーレベル、学習履歴、ストリーク）
 - 問題検索・解説リーダー
+- **無料枠早見表**: 主要サービス（Workers / KV / D1 / R2 / AI Gateway）の無料枠を1画面で確認。数値は `bun run verify:free-tier` が公式ドキュメントのキャッシュと機械照合するため、Cloudflare 側の変更で静かに陳腐化しない
 - URL 共有（特定の問題・カテゴリ・モードへ直接リンク可能）
 
 ### PWA
@@ -71,7 +72,7 @@ bun run quiz:check             # クイズデータの整合性チェック（ID
 bun run quiz:randomize          # correctIndex の偏り解消
 bun run quiz:stats               # クイズデータの統計表示
 
-bun run check                     # 品質ゲート一式（typecheck + lint + test + quiz:check + quiz:lint:dry）
+bun run check                     # 品質ゲート一式（typecheck + lint + test + quiz:check + quiz:lint:dry + verify:free-tier）
 
 bun run generate-icons             # public/icons/ のアイコンを build/icon.svg から再生成
 ```
@@ -84,6 +85,7 @@ bun run generate-icons             # public/icons/ のアイコンを build/icon
 bun run quiz:lint                  # バッククォート不足を自動修正 + 用語/distractor/difficulty をレポート
 bun run quiz:lint:dry              # 自動修正せずレポートのみ（CI・pre-commit で使用）
 bun run quiz:cross-check           # 問題間の矛盾（数値の食い違い等）を検出
+bun run verify:free-tier           # 無料枠早見表の数値をドキュメントキャッシュと照合（`check` に統合済み）
 
 bun run docs:fetch                 # developers.cloudflare.com のMarkdownソースをローカルにキャッシュ
 bun run quiz:lint:url               # referenceUrl の見出しアンカーをキャッシュと照合（要 docs:fetch）

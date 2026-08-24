@@ -14,6 +14,7 @@ import {
   Moon,
   RefreshCw,
   Sun,
+  Wallet,
   X,
 } from 'lucide-react'
 import { KeyboardShortcutHelp } from '@/components/Layout/KeyboardShortcutHelp'
@@ -275,6 +276,12 @@ export function MenuHeader({
                   label={locale.reader.title}
                   sublabel={`${totalQuestions}${locale.common.questionSuffix}の${locale.reader.subtitle}`}
                   onClick={() => handleMenuAction(() => setViewState('reader'))}
+                />
+                <MenuItem
+                  icon={<Wallet className="h-4.5 w-4.5" />}
+                  label={locale.freeTier.title}
+                  sublabel={locale.freeTier.subtitle}
+                  onClick={() => handleMenuAction(() => setViewState('freeTier'))}
                 />
               </MenuSection>
 

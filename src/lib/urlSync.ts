@@ -23,13 +23,15 @@ import { PREDEFINED_CATEGORIES } from '@/domain/valueObjects/Category'
 import { ALL_MODE_IDS, type QuizModeId } from '@/domain/valueObjects/QuizMode'
 import type { ViewState } from '@/stores/utils'
 
-export type ViewIntentTarget = 'progress' | 'reader' | 'study' | 'result' | 'tutorial'
+export type ViewIntentTarget = 'progress' | 'reader' | 'freetier' | 'study' | 'result' | 'tutorial'
 
 /** Map a `?view=...` target to the store's ViewState identifier. */
 export function viewTargetToViewState(target: ViewIntentTarget): ViewState {
   switch (target) {
     case 'study':
       return 'studyFirst'
+    case 'freetier':
+      return 'freeTier'
     default:
       return target
   }
@@ -48,7 +50,7 @@ export type UrlIntent =
 const CATEGORY_IDS = new Set(PREDEFINED_CATEGORIES.map((c) => c.id))
 const SCENARIO_IDS = new Set(SCENARIOS.map((s) => s.id))
 const SHAREABLE_MODES = new Set<QuizModeId>(ALL_MODE_IDS.filter((m) => m !== 'category' && m !== 'custom'))
-const VIEW_TARGETS = new Set<ViewIntentTarget>(['progress', 'reader', 'study', 'result', 'tutorial'])
+const VIEW_TARGETS = new Set<ViewIntentTarget>(['progress', 'reader', 'freetier', 'study', 'result', 'tutorial'])
 
 export function parseUrlIntent(search: string): UrlIntent {
   const params = new URLSearchParams(search)
@@ -197,6 +199,7 @@ export function buildUrlSearch(state: AppUrlState): string {
     return readerInitialFilter ? `?view=reader&filter=${encodeURIComponent(readerInitialFilter)}` : '?view=reader'
   }
 
+  if (viewState === 'freeTier') return '?view=freetier'
   if (viewState === 'progress') return '?view=progress'
   if (viewState === 'studyFirst') return '?view=study'
   if (viewState === 'result') return '?view=result'

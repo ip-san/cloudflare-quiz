@@ -42,6 +42,7 @@ export type ViewState =
   | 'result'
   | 'progress'
   | 'reader'
+  | 'freeTier'
   | 'scenarioSelect'
   | 'studyFirst'
   | 'tutorial'
