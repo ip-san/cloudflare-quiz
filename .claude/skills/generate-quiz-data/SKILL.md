@@ -131,7 +131,7 @@ node scripts/fetch-docs.mjs agents agents/runtime/agents-api agents/runtime/life
 | `config` | 設定ファイル例 | `filepath`, `lines: [{text, highlight?}]` |
 | `network` | 接続関係・アーキテクチャ（ボックス＆アロー） | `nodes: [{id, text, sub}]`, `edges: [{from, to, label, dashed?}]` |
 | `sequence` | アクター間メッセージの時系列 | `actors: [string]`, `messages: [{from, to, text, dashed?}]` |
-| `layer` | 入れ子の包含関係（外側が上書き） | `layers: [{text, sub}]` |
+| `layer` | 入れ子の階層。既定は包含・スタック構成・データフロー（上書きの含意なし）。**外側が内側を実際に上書きする関係のときだけ** `overrides: true` で「外側が上書き / ベース」ラベルが付く | `layers: [{text, sub}]`, `overrides?` |
 | `swimlane` | 並列処理のタイムライン | `lanes: [{name, segments: [{start, end, text}]}]`, `totalSteps?` |
 | `venn` | 集合の重なり・概念の共通点（2〜3集合） | `sets: [{text, items?}]`, `intersectionLabel?` |
 | `matrix` | 2D Feature×条件グリッド（✓/✗/テキスト） | `rows: [string]`, `cols: [string]`, `cells: [[string]]`, `rowHeader?`, `colHeader?` |
@@ -141,7 +141,7 @@ node scripts/fetch-docs.mjs agents agents/runtime/agents-api agents/runtime/life
 **タイプの使い分けガイド（迷った場合の優先）:**
 
 - 接続関係 → `network` / 時系列メッセージ → `sequence`（複数アクター間） / 手順 → `flow`（単一プロセス）
-- 包含・上書き関係 → `layer` / 縦並びの列挙 → `hierarchy`（優先順位が本当にあるときだけ `ranked: true`） / 概念の重なり → `venn`
+- 入れ子の包含 → `layer`（外側が内側を本当に上書きするときだけ `overrides: true`） / 縦並びの列挙 → `hierarchy`（優先順位が本当にあるときだけ `ranked: true`） / 概念の重なり → `venn`
 - 並列処理 → `swimlane` / 2軸グリッド → `matrix` / カラム比較 → `comparison`
 - ディレクトリ構造 → `tree` / 計算式・内訳 → `formula`
 

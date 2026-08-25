@@ -1,5 +1,6 @@
 import { locale } from '@/config/locale'
 import { BaseDiagram } from './BaseDiagram'
+import { DiagramEndLabels } from './DiagramEndLabels'
 
 interface HierarchyDiagramProps {
   label?: string | undefined
@@ -117,13 +118,7 @@ export function HierarchyDiagram({ label, items, ranked = false }: HierarchyDiag
           {/* Priority indicator — only for genuinely ranked lists in compact mode
               (long-content cards don't read as a pyramid) */}
           {ranked && !hasLongContent && (
-            <div
-              className="mt-1.5 flex items-center justify-between text-[10px] text-stone-500 dark:text-stone-500"
-              aria-hidden="true"
-            >
-              <span>{locale.diagrams.highPriority}</span>
-              <span>{locale.diagrams.lowPriority}</span>
-            </div>
+            <DiagramEndLabels left={locale.diagrams.highPriority} right={locale.diagrams.lowPriority} />
           )}
         </>
       )}

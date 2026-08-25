@@ -177,8 +177,7 @@ const LayerDiagramSchema = z.object({
   type: z.literal('layer'),
   label: z.string().optional(),
   layers: z.array(DiagramItemSchema).min(2).max(8),
-  // 外側が内側を上書きする関係のときだけ true(既定 false)。
-  // false のときは上書きを示唆するラベルなしで描画される。
+  // 意味は domain/valueObjects/Diagram.ts が正典（zod は形だけを担う）
   overrides: z.boolean().optional(),
 })
 

@@ -39,8 +39,14 @@ export interface ScenarioData {
   readonly difficulty: 'beginner' | 'intermediate' | 'advanced'
   readonly steps: readonly ScenarioStep[]
   readonly completionMessage: string
-  /** 完走後に提示する実践アクション（1〜3個） */
-  readonly nextSteps?: readonly ScenarioNextStep[]
+  /**
+   * 完走後に提示する実践アクション（1〜3個）。
+   *
+   * optional にしない。「次の一歩が無いシナリオ」は読み物で終わってしまい、
+   * このアプリの目的（手を動かすところまで繋ぐ）を満たさないため、
+   * 型の時点で必須にして消費側から `?? []` 系の防御コードを消す。
+   */
+  readonly nextSteps: readonly ScenarioNextStep[]
 }
 
 export const SCENARIOS: readonly ScenarioData[] = [

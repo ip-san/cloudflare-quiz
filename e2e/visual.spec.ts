@@ -9,8 +9,9 @@ import { expect, type Page, test } from '@playwright/test'
  * それらは「エラーも出さず0件成功」で終わっていた（設定だけが残った空撃ち状態）。
  *
  * welcome + menu: 全デバイスで実行（固定レイアウト）
- * quiz + reader + freeTier: desktop のみ（可変コンテンツのため、モバイル分まで
+ * diagram + reader + freeTier: desktop のみ（可変コンテンツのため、モバイル分まで
  * 撮ると問題追加のたびに差分が出て運用できなくなる）
+ * クイズ回答画面は撮らない——理由は下の「クイズ回答画面を撮らない理由」を参照。
  *
  * 実行: bun run test:e2e
  * ベースライン更新: bunx playwright test --update-snapshots

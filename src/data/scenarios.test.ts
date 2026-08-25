@@ -35,14 +35,15 @@ describe('Scenarios', () => {
   })
 
   describe('nextSteps（完走後の次の一歩）', () => {
-    // nextSteps を持つものだけに絞り込んではいけない。絞ると「nextSteps を消したシナリオ」が
-    // 以降の検査対象から黙って外れる。全シナリオを平坦化して、どの検査も取りこぼさない形にする。
-    const allSteps = SCENARIOS.flatMap((s) => (s.nextSteps ?? []).map((step) => ({ scenarioId: s.id, step })))
+    // 全シナリオの step を1度だけ平坦化する。検査ごとに「nextSteps を持つシナリオ」へ
+    // 絞り込む書き方をすると、nextSteps を消したシナリオが以降の検査から黙って外れる。
+    const STEPS = SCENARIOS.flatMap((s) => s.nextSteps.map((step) => ({ ...step, where: s.id })))
+    const report = (bad: typeof STEPS) => bad.map((s) => `${s.where}: ${s.label}`)
 
     // シナリオの価値は「知識で終わらせず手を動かすところまで繋ぐ」ことにある。
     // 1本でも次の一歩が無いと、そのシナリオだけ読み物で終わってしまう。
     it('すべてのシナリオに nextSteps があること', () => {
-      const missing = SCENARIOS.filter((s) => !s.nextSteps || s.nextSteps.length === 0).map((s) => s.id)
+      const missing = SCENARIOS.filter((s) => s.nextSteps.length === 0).map((s) => s.id)
       expect(missing, `次の一歩が無いシナリオ: ${missing.join(', ')}`).toEqual([])
     })
 
@@ -51,7 +52,7 @@ describe('Scenarios', () => {
     it('同一シナリオ内で nextStep の label が重複しないこと', () => {
       const dup: string[] = []
       for (const s of SCENARIOS) {
-        const labels = (s.nextSteps ?? []).map((step) => step.label)
+        const labels = s.nextSteps.map((step) => step.label)
         for (const label of labels.filter((l, i) => labels.indexOf(l) !== i)) {
           dup.push(`${s.id}: "${label}"`)
         }
@@ -60,20 +61,13 @@ describe('Scenarios', () => {
     })
 
     it('各 nextStep に label があり、command か docUrl の少なくとも一方を持つこと', () => {
-      for (const { scenarioId, step } of allSteps) {
-        expect(step.label, `${scenarioId}: label がない`).toBeTruthy()
-        expect(
-          Boolean(step.command) || Boolean(step.docUrl),
-          `${scenarioId} / "${step.label}": command と docUrl の両方がない（何をすればいいか辿れない）`
-        ).toBe(true)
-      }
+      const bad = STEPS.filter((s) => !s.label || !(s.command || s.docUrl))
+      expect(report(bad), `label か導線（command / docUrl）が欠けている: ${report(bad).join(', ')}`).toEqual([])
     })
 
     it('docUrl はすべて developers.cloudflare.com を指すこと', () => {
-      const bad = allSteps
-        .filter(({ step }) => step.docUrl && !step.docUrl.startsWith('https://developers.cloudflare.com/'))
-        .map(({ scenarioId, step }) => `${scenarioId}: ${step.docUrl}`)
-      expect(bad, `公式ドキュメント以外へのリンク: ${bad.join(', ')}`).toEqual([])
+      const bad = STEPS.filter((s) => s.docUrl && !s.docUrl.startsWith('https://developers.cloudflare.com/'))
+      expect(report(bad), `公式ドキュメント以外へのリンク: ${report(bad).join(', ')}`).toEqual([])
     })
 
     // 存在しないコマンドを載せると、学習者が実際に叩いて詰まる。
@@ -82,10 +76,8 @@ describe('Scenarios', () => {
       // `curl` は POSIX 環境に標準で入っている前提で許可する。
       // Cloudflare 固有のコマンドは公式ドキュメントで実在を確認したものだけ。
       const ALLOWED_PREFIXES = ['npx wrangler ', 'npm create cloudflare', 'cloudflared ', 'curl ']
-      const bad = allSteps
-        .filter(({ step }) => step.command && !ALLOWED_PREFIXES.some((p) => step.command?.startsWith(p)))
-        .map(({ scenarioId, step }) => `${scenarioId}: ${step.command}`)
-      expect(bad, `想定外のコマンド: ${bad.join(', ')}`).toEqual([])
+      const bad = STEPS.filter(({ command }) => command && !ALLOWED_PREFIXES.some((p) => command.startsWith(p)))
+      expect(report(bad), `想定外のコマンド: ${report(bad).join(', ')}`).toEqual([])
     })
   })
 

@@ -71,7 +71,7 @@ export function ScenarioCompletion({ scenarioId }: { scenarioId: string }) {
       </div>
       <p className="text-sm text-stone-700 leading-relaxed dark:text-stone-300">{scenario.completionMessage}</p>
 
-      {scenario.nextSteps && scenario.nextSteps.length > 0 && (
+      {scenario.nextSteps.length > 0 && (
         <div className="mt-4">
           <p className="mb-2 font-semibold text-stone-500 text-xs">{locale.scenario.nextStepsTitle}</p>
           <ul className="space-y-2">
