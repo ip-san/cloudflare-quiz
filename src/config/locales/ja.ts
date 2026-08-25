@@ -124,7 +124,8 @@ export const ja: LocaleConfig = {
     generating: '生成中...',
     download: '証明書をダウンロード',
     noCertificates: '修了証はまだありません',
-    eligibilityHint: 'AI活用レベルが学習者以上に到達、または全体像モード 70%+ / 実力テスト 80%+ で発行されます',
+    eligibilityHint:
+      'エッジ活用レベルが「エッジ学習者」以上に到達、または全体像モード 70%+ / 実力テスト 80%+ で発行されます',
     earnedCount: (count) => `獲得した修了証（${count}件）`,
   },
 
@@ -391,9 +392,9 @@ export const ja: LocaleConfig = {
 
   streakBanner: {
     milestones: {
-      day100: 'あなたはチームのAI推進を牽引できる存在です',
-      day60: '2ヶ月の積み重ね。チームメンバーに学びを共有してみましょう',
-      day30: '1ヶ月達成！後輩にAI活用を教えてみませんか',
+      day100: 'あなたはチームのCloudflare活用を牽引できる存在です',
+      day60: '2ヶ月の積み重ね。チームにCloudflareの知見を共有してみましょう',
+      day30: '1ヶ月達成！学んだWorkersの使い方を誰かに教えてみませんか',
       day14: '2週間連続！習慣が定着してきました',
       day7: '1週間連続！良い調子です',
       day3: '3日連続！この調子で続けましょう',
@@ -492,7 +493,7 @@ export const ja: LocaleConfig = {
     bookmarkSaving: (count) => `${count}問を保存済み`,
     bookmarkEmpty: '後で学ぶ',
     bookmarkHint: 'クイズ中に🔖をタップで保存できます',
-    progressDesc: '統計・推移・AI活用レベル',
+    progressDesc: '統計・推移・エッジ活用レベル',
     readFirstLabel: '読んでから解く',
     readFirstDesc: '解説を読んでからクイズに挑戦',
     lightMode: 'ライトモード',

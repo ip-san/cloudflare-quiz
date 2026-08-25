@@ -18,7 +18,9 @@ function CopyableCommand({
   return (
     <button
       onClick={() => onCopy(command)}
-      aria-label={locale.scenario.copyCommand(command)}
+      // コピー後はラベルも切り替える。アイコンだけの変化では、スクリーンリーダー
+      // 利用者にコピーできたかどうかが伝わらない（Feedback.tsx と同じ扱い）。
+      aria-label={copied ? locale.common.copied : locale.scenario.copyCommand(command)}
       className="tap-highlight mt-1.5 flex w-full items-center gap-2 rounded-lg bg-stone-100 px-2.5 py-1.5 text-left dark:bg-stone-800"
     >
       <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-mono text-[11px] text-stone-700 dark:text-stone-200">
@@ -27,7 +29,7 @@ function CopyableCommand({
       {copied ? (
         <Check className="h-3.5 w-3.5 shrink-0 text-green-500" />
       ) : (
-        <Copy className="h-3.5 w-3.5 shrink-0 text-stone-400" />
+        <Copy className="h-3.5 w-3.5 shrink-0 text-stone-500 dark:text-stone-400" />
       )}
     </button>
   )

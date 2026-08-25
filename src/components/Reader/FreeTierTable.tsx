@@ -16,7 +16,7 @@ export function FreeTierTable() {
   const { setViewState } = useQuizStore(useShallow((state) => ({ setViewState: state.setViewState })))
 
   return (
-    <div className="min-h-dvh bg-cf-bg pb-16">
+    <div className="min-h-dvh bg-cf-surface pb-16">
       <header className={headerStyles.sticky}>
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
           <button
@@ -38,12 +38,17 @@ export function FreeTierTable() {
             <section key={svc.id} className="rounded-2xl bg-white p-4 shadow-xs dark:bg-stone-800">
               <div className="mb-1 flex items-center gap-2">
                 <span className="text-xl">{svc.icon}</span>
-                <h2 className="font-bold text-base text-cf-ink">{svc.name}</h2>
+                <h2 id={`freetier-${svc.id}`} className="font-bold text-base text-cf-ink">
+                  {svc.name}
+                </h2>
               </div>
               <p className="mb-3 text-stone-500 text-xs">{svc.summary}</p>
 
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
+                {/* テーブルにアクセシブルな名前を与える。スクリーンリーダーの
+                    テーブル移動では直前の見出しが文脈として読まれないため、
+                    どのサービスの表かが分からなくなる。 */}
+                <table aria-labelledby={`freetier-${svc.id}`} className="w-full border-collapse text-sm">
                   <tbody>
                     {svc.items.map((item) => (
                       <tr key={item.label} className="border-stone-100 border-b last:border-0 dark:border-stone-700/60">

@@ -996,16 +996,40 @@ const CONTINUATION_CHAR = /[ぁ-んァ-ヴa-zA-Z0-9々ー一-龯]/
 const MID_WORD_LATIN = /[A-Za-z]$/
 const HIERARCHY_TEXT_MAX = 40
 
+/**
+ * 日本語で「文が続いている」ことを示す語尾。
+ *
+ * 助詞（を・に・で・と・の・が・は…）や接続形（〜して・〜され）で終わっていれば、
+ * その step は文の途中で切れている。逆に体言止め（「実行」「更新」）や
+ * 終止形（「する」「呼ぶ」「維持」）で終わっていれば、text は完結していて
+ * sub は独立した補足ラベルとみなせる。
+ */
+const JA_CONTINUATION_ENDING = /(?:[をにでとがはへやのも]|し?て|さ?れ|り|_)$/
+
 function isMidSentenceSplit(text, sub) {
   if (!text || !sub) return false
   const lastChar = text.slice(-1)
   const subFirst = sub.charAt(0)
   if (SENTENCE_ENDERS.has(lastChar)) return false
   if (!CONTINUATION_CHAR.test(subFirst)) return false
-  // strict: long text (>15) ending in kana/kanji and sub starting in kana/kanji = sentence cut
-  // strict: text ending in latin char and sub starting in latin = word cut (e.g. "permissionMod"+"e")
-  if (MID_WORD_LATIN.test(lastChar) && /^[A-Za-z]/.test(subFirst)) return true
-  if (text.length > 15 && /[ぁ-んァ-ヴ一-龯]/.test(lastChar) && /[ぁ-んァ-ヴ一-龯]/.test(subFirst)) return true
+  // 英単語がsub側に割られている（例: "permissionMod" + "e"）。
+  // sub が大文字で始まる場合は新しい語の始まり（"wrangler deploy" + "Cloudflareへ公開"）
+  // なので分断ではない。単語の途中で切れた続きは小文字になる。
+  if (MID_WORD_LATIN.test(lastChar) && /^[a-z]/.test(subFirst)) return true
+  // 日本語の文が途中で切れている。
+  // 「text末尾もsub先頭も日本語」だけを条件にすると、sub が短い注記
+  // （「どちらか早い方」「例: FIFOやReject」）である正常なケースまで全部拾ってしまう
+  // （2026-08-25にCFの756問へ適用したところ28件中28件が誤検知だった）。
+  // そのため text が接続を示す語尾で終わっている場合に限定する。
+  if (
+    text.length > 15 &&
+    JA_CONTINUATION_ENDING.test(text) &&
+    /[ぁ-んァ-ヴ一-龯]/.test(subFirst) &&
+    // 「〜を実行」「〜に接続」のような体言止めは完結しているので除外
+    !/[一-龯ー]$/.test(text)
+  ) {
+    return true
+  }
   return false
 }
 
@@ -1034,8 +1058,15 @@ function checkDiagramText() {
       }
       if (d.type === 'hierarchy' && Array.isArray(d.items)) {
         d.items.forEach((it, ii) => {
-          const len = (it.text || '').length
-          if (len > HIERARCHY_TEXT_MAX) {
+          const label = it.text || ''
+          const len = label.length
+          // 40字制限の狙いは「読みにくい長文ラベル」を弾くこと。
+          // 関数シグネチャやヘッダー値の列挙のようなコード表記は、折り返さず
+          // そのまま見せた方が読みやすいので対象外にする
+          // （例: `onClose(connection, code, reason, wasClean)` /
+          //   Cache-Control: private/no-store/no-cache/max-age=0）。
+          const isCodeLike = /^`.*`$/.test(label) || /^[A-Za-z-]+: \S+$/.test(label)
+          if (len > HIERARCHY_TEXT_MAX && !isCodeLike) {
             longHits.push({
               id: q.id,
               category: q.category,
