@@ -1004,9 +1004,17 @@ const HIERARCHY_TEXT_MAX = 40
  * 終止形（「する」「呼ぶ」「維持」）で終わっていれば、text は完結していて
  * sub は独立した補足ラベルとみなせる。
  */
-const JA_CONTINUATION_ENDING = /(?:[をにでとがはへやのも]|し?て|さ?れ|り|_)$/
+const JA_CONTINUATION_ENDING = /(?:[をにでとがはへやのも]|し?て|さ?れ|ため|から|ので|ながら|つつ|ても|でも|_)$/
 
-function isMidSentenceSplit(text, sub) {
+/**
+ * sub がこれらで始まっていれば、text からの続きであることがほぼ確定する
+ * （「〜をプロキシー」+「してオリジンへ転送」のように、text 側の語尾では
+ * 判定できないケースを拾うための補助シグナル）。
+ * 756問に適用して該当0件＝正常なsubがこの形で始まることは無いと確認済み。
+ */
+const JA_CONTINUATION_SUB = /^(?:して|され|した|しま|になっ|により|ながら|つつ)/
+
+export function isMidSentenceSplit(text, sub) {
   if (!text || !sub) return false
   const lastChar = text.slice(-1)
   const subFirst = sub.charAt(0)
@@ -1015,21 +1023,33 @@ function isMidSentenceSplit(text, sub) {
   // 英単語がsub側に割られている（例: "permissionMod" + "e"）。
   // sub が大文字で始まる場合は新しい語の始まり（"wrangler deploy" + "Cloudflareへ公開"）
   // なので分断ではない。単語の途中で切れた続きは小文字になる。
-  if (MID_WORD_LATIN.test(lastChar) && /^[a-z]/.test(subFirst)) return true
+  // さらに、続きが空白を含む＝複数語なら独立したラベル
+  // （"wrangler dev" + "development server on port 8787"）であって分断ではない。
+  // 単語の途中が切れたのなら、続きは空白を挟まない1語になるはず。
+  if (MID_WORD_LATIN.test(lastChar) && /^[a-z]/.test(subFirst) && !/\s/.test(sub.trim())) return true
+  // sub 側が接続形で始まっていれば、text の語尾に関係なく続きだと分かる
+  if (JA_CONTINUATION_SUB.test(sub)) return true
+
   // 日本語の文が途中で切れている。
   // 「text末尾もsub先頭も日本語」だけを条件にすると、sub が短い注記
   // （「どちらか早い方」「例: FIFOやReject」）である正常なケースまで全部拾ってしまう
   // （2026-08-25にCFの756問へ適用したところ28件中28件が誤検知だった）。
   // そのため text が接続を示す語尾で終わっている場合に限定する。
-  if (
-    text.length > 15 &&
-    JA_CONTINUATION_ENDING.test(text) &&
-    /[ぁ-んァ-ヴ一-龯]/.test(subFirst) &&
-    // 「〜を実行」「〜に接続」のような体言止めは完結しているので除外
-    !/[一-龯ー]$/.test(text)
-  ) {
+  // sub が短い独立ラベル（「通常時」「急増時」「どちらか早い方」）なら、
+  // text が助詞で終わっていても分断ではない。分断された後半は普通もっと長い。
+  const subIsShortLabel = sub.length <= 6
+
+  // 体言止め（「〜を実行」「〜に接続」）は JA_CONTINUATION_ENDING に
+  // そもそも一致しないので、追加の除外条件は要らない
+  // （以前あった !/[一-龯ー]$/ は、接続語尾に漢字も長音も含まれないため
+  //  常に true になる死んだ条件だった）。
+  if (!subIsShortLabel && JA_CONTINUATION_ENDING.test(text) && /[ぁ-んァ-ヴ一-龯]/.test(subFirst)) {
     return true
   }
+
+  // 【既知の限界】漢字の複合語が割れているケース（"…の注意" + "点を確認する"）は
+  // 検出できない。判定には形態素解析が要るため、誤検知ゼロを優先して追わない。
+  // 図の読みやすさは最終的に目視で担保する。
   return false
 }
 
@@ -1116,48 +1136,54 @@ function checkDiagramText() {
 }
 
 // === Main ===
-const command = process.argv[2]
-switch (command) {
-  case 'randomize':
-    randomize()
-    break
-  case 'stats':
-    stats()
-    break
-  case 'coverage':
-    await coverage()
-    break
-  case 'check':
-    check()
-    break
-  case 'search':
-    search()
-    break
-  case 'edit':
-    edit()
-    break
-  case 'merge-proposals':
-    mergeProposals()
-    break
-  case 'section-coverage':
-    sectionCoverage()
-    break
-  case 'overlap':
-    overlap()
-    break
-  case 'check-diagram-text':
-    checkDiagramText()
-    break
-  case 'check-ellipsis':
-    checkEllipsis()
-    break
-  case 'ellipsis-report':
-    ellipsisReport()
-    break
-  default:
-    console.log('Usage: node scripts/quiz-utils.mjs <command>')
-    console.log(
-      'Commands: randomize, stats, coverage, check, search, edit, merge-proposals, section-coverage, overlap, check-ellipsis, ellipsis-report, check-diagram-text'
-    )
-    process.exit(1)
-}
+// CLI として直接実行されたときだけコマンドを処理する。
+// テストから判定関数を import するだけで process.exit(1) されないようにするため。
+const isDirectRun = process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))
+const command = isDirectRun ? process.argv[2] : '__imported__'
+if (command === '__imported__') {
+  // no-op: import 経由。副作用を起こさない
+} else
+  switch (command) {
+    case 'randomize':
+      randomize()
+      break
+    case 'stats':
+      stats()
+      break
+    case 'coverage':
+      await coverage()
+      break
+    case 'check':
+      check()
+      break
+    case 'search':
+      search()
+      break
+    case 'edit':
+      edit()
+      break
+    case 'merge-proposals':
+      mergeProposals()
+      break
+    case 'section-coverage':
+      sectionCoverage()
+      break
+    case 'overlap':
+      overlap()
+      break
+    case 'check-diagram-text':
+      checkDiagramText()
+      break
+    case 'check-ellipsis':
+      checkEllipsis()
+      break
+    case 'ellipsis-report':
+      ellipsisReport()
+      break
+    default:
+      console.log('Usage: node scripts/quiz-utils.mjs <command>')
+      console.log(
+        'Commands: randomize, stats, coverage, check, search, edit, merge-proposals, section-coverage, overlap, check-ellipsis, ellipsis-report, check-diagram-text'
+      )
+      process.exit(1)
+  }

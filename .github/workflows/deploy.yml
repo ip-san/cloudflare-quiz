@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        task: [typecheck, lint, test, validate]
+        task: [typecheck, lint, test, validate, architecture]
     steps:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
@@ -38,9 +38,16 @@ jobs:
       - name: test
         if: matrix.task == 'test'
         run: bun run test
+      # 個別スクリプトを直に書くと、package.json 側に検査を足したときに
+      # CI が追従せず「ローカルでは通るがCIでは検査されていない」状態になる
+      # （実際 check-ellipsis / check-diagram-text がそうなっていた）。
+      # npm script 経由に統一して、検査の追加が自動でCIにも効くようにする。
       - name: validate
         if: matrix.task == 'validate'
-        run: node scripts/quiz-utils.mjs check
+        run: bun run quiz:check
+      - name: architecture
+        if: matrix.task == 'architecture'
+        run: bun run check:architecture
 
   # Advisory quiz-content review (backtick/terminology/distractor/difficulty
   # lint + cross-question contradiction check). Both scripts always exit 0
