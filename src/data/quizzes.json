@@ -2746,7 +2746,7 @@
           "wrongFeedback": "Workerが停止するわけではありません。206 Partial Contentなど一部の条件でput()が拒否されることはありますが、Worker全体の実行が止まるわけではありません。"
         },
         {
-          "text": "レスポンスにSet-Cookieヘッダーが含まれている場合、あるいはCache-Controlがno-store等でキャッシュを禁止している場合はキャッシュされない(後者は413エラーになる)"
+          "text": "レスポンスにSet-Cookieヘッダーが含まれる場合はキャッシュされず、Cache-Controlがキャッシュを禁じている場合やレスポンスが大きすぎる場合はput()が413エラーを返す"
         },
         {
           "text": "POSTリクエストに対するレスポンスは常に自動的にキャッシュされ、除外する方法はない",
@@ -2758,7 +2758,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "公式ドキュメントによると、Set-Cookieヘッダーを含むレスポンスは「一意なデータを含む可能性がある」ため常にキャッシュされません。また、Cache-Controlが`private`、`no-store`、`no-cache`、`max-age=0`等でキャッシュを禁止している場合、`put()`は413エラーを返します。Set-Cookieを含めたい場合は事前にヘッダーを削除するか、`Cache-Control: private=Set-Cookie`を設定する必要があります。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "公式ドキュメントによると、Set-Cookieヘッダーを含むレスポンスは「一意なデータを含む可能性がある」ため常にキャッシュされません。Set-Cookieを含めたままキャッシュしたい場合は、事前にそのヘッダーを削除するか、`Cache-Control: private=Set-Cookie`を設定する必要があります。\n{{diagram:0}}\nまた`put()`は、Cache-Controlがキャッシュを禁じている場合、またはレスポンスが大きすぎる場合に413エラーを返します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
       "hint": "特定のユーザー専用の応答を、他の人にも配ってしまったらどうなるか考えましょう。",
       "tags": [
@@ -2803,7 +2803,7 @@
               "heading": "キャッシュされない",
               "items": [
                 "Set-Cookieヘッダーあり",
-                "no-store等の禁止ディレクティブ",
+                "Cache-Controlがキャッシュを禁止している",
                 "GET以外のメソッド"
               ]
             }
@@ -2982,7 +2982,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`wrangler d1 create <name>` を実行するとD1データベースが作成され、`database_id` などのバインディング情報が出力されます。これを `wrangler.toml` の `[[d1_databases]]` セクションに追記することで、Worker内から `env.DB` のようにアクセスできるようになります。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "`wrangler d1 create <name>` を実行するとD1データベースが作成され、`database_id` などのバインディング情報が出力されます。これを `wrangler.toml` の `[[d1_databases]]` セクションに追記することで、Worker内から `env.DB` のようにアクセスできるようになります(作成時に「Would you like Wrangler to add it on your behalf?」と聞かれるので、Yesを選べば追記まで自動で行われます)。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/get-started/",
       "hint": "作成コマンドの出力結果を設定ファイルに反映する、という2段階の作業が必要です。",
       "tags": [
@@ -24692,7 +24692,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "フォールスルールールは、Endpoint Managementに登録された既知のエンドポイントに一致しないリクエストに対するキャッチオール(受け皿)ルールです。すべてのエンドポイントをEndpoint Managementに登録しておくことで、開発チームが把握していないレガシー・ゾンビエンドポイントへの攻撃を防げます。`cf.api_gateway.fallthrough_detected`フィールドを使えば、このロジックをカスタムルールに組み込み、独自の条件と組み合わせることもできます。\n{{diagram:0}}",
+      "explanation": "フォールスルールールは、Endpoint Management(現在のダッシュボードでは **Web Assets > Operations**)に登録された既知のオペレーションに一致しないリクエストへの、キャッチオール(受け皿)ルールです。すべてのエンドポイントを登録しておくことで、開発チームが把握していないレガシー・ゾンビエンドポイントへの攻撃を防げます。`cf.api_gateway.fallthrough_detected`フィールドを使えば、このロジックをカスタムルールに組み込み、独自の条件と組み合わせることもできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#add-validation-by-adding-a-fallthrough-rule",
       "hint": "「登録されているものに一致した場合」ではなく「一致しなかった場合」に発動するルールだと考えましょう。",
       "tags": [
