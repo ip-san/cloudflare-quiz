@@ -177,6 +177,9 @@ const LayerDiagramSchema = z.object({
   type: z.literal('layer'),
   label: z.string().optional(),
   layers: z.array(DiagramItemSchema).min(2).max(8),
+  // 外側が内側を上書きする関係のときだけ true(既定 false)。
+  // false のときは上書きを示唆するラベルなしで描画される。
+  overrides: z.boolean().optional(),
 })
 
 const SwimlaneLaneSchema = z.object({

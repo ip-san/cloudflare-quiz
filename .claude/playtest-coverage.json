@@ -188,6 +188,76 @@
         "outcome": "clean",
         "at": "2026-08-16"
       }
+    ],
+    "ac-005": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
+    ],
+    "ac-006": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
+    ],
+    "ac-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "2026-08-25"
+      }
+    ],
+    "ac-013": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
+    ],
+    "ac-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
+    ],
+    "ar-001": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
+    ],
+    "ar-006": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
+    ],
+    "ar-007": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-25"
+      }
+    ],
+    "ar-008": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
+    ],
+    "ar-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-25"
+      }
     ]
   }
 }

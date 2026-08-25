@@ -9,14 +9,19 @@ interface LayerItem {
 interface LayerDiagramProps {
   label?: string | undefined
   layers: LayerItem[]
+  /** 外側が内側を上書きする関係のときだけ true（既定 false） */
+  overrides?: boolean | undefined
 }
 
 /**
  * レイヤー図 — 入れ子の包含関係を視覚表現
- * Settings スコープ、CLAUDE.md 読み込み優先度、Sandbox 制御に最適。
- * 外側ほど優先度が高い（上書きする）。
+ *
+ * overrides=true のときだけ「外側が上書き / ベース」ラベルを添える。
+ * 設定スコープの優先順位のように、外側が内側を実際に上書きする関係のためのもの。
+ * それ以外（スタック構成・データフロー・包含関係）では上書きの含意が誤りになるため
+ * ラベルを出さない。
  */
-export function LayerDiagram({ label, layers }: LayerDiagramProps) {
+export function LayerDiagram({ label, layers, overrides = false }: LayerDiagramProps) {
   if (layers.length === 0) return null
 
   // Colors from outermost (highest priority) to innermost
@@ -94,14 +99,16 @@ export function LayerDiagram({ label, layers }: LayerDiagramProps) {
             </svg>
           </div>
 
-          {/* Priority indicator */}
-          <div
-            className="mt-1.5 flex items-center justify-between text-[10px] text-stone-500 dark:text-stone-500"
-            aria-hidden="true"
-          >
-            <span>{locale.diagrams.outerOverrides}</span>
-            <span>{locale.diagrams.innerBase}</span>
-          </div>
+          {/* Priority indicator — 実際に上書き関係があるときだけ */}
+          {overrides && (
+            <div
+              className="mt-1.5 flex items-center justify-between text-[10px] text-stone-500 dark:text-stone-500"
+              aria-hidden="true"
+            >
+              <span>{locale.diagrams.outerOverrides}</span>
+              <span>{locale.diagrams.innerBase}</span>
+            </div>
+          )}
         </>
       )}
     </BaseDiagram>

@@ -34,7 +34,7 @@ function SingleDiagram({ diagram }: { diagram: DiagramData }) {
     case 'sequence':
       return <SequenceDiagram label={diagram.label} actors={diagram.actors} messages={diagram.messages} />
     case 'layer':
-      return <LayerDiagram label={diagram.label} layers={diagram.layers} />
+      return <LayerDiagram label={diagram.label} layers={diagram.layers} overrides={diagram.overrides} />
     case 'swimlane':
       return <SwimlaneDiagram label={diagram.label} lanes={diagram.lanes} totalSteps={diagram.totalSteps} />
     case 'venn':

@@ -141,6 +141,13 @@ export interface LayerDiagram {
   type: 'layer'
   label?: string | undefined
   layers: DiagramItem[]
+  /**
+   * layers の外側が内側を「上書きする」関係のときだけ true にする。
+   * true: 「外側が上書き / ベース」ラベル付きで描画。
+   * false/未指定(既定): 包含・スタック・データフローとして、
+   * 上書きを示唆しないラベルなしで描画される。
+   */
+  overrides?: boolean | undefined
 }
 
 export interface SwimlaneDiagram {
