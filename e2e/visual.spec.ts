@@ -99,47 +99,14 @@ test.describe('Visual Regression', () => {
   const desktopOnly = (testInfo: { project: { name: string } }, what: string) =>
     test.skip(testInfo.project.name !== 'visual-desktop', `${what} snapshot tracked on desktop only`)
 
-  test('quiz screen — light mode', async ({ page }, testInfo) => {
-    desktopOnly(testInfo, 'quiz')
-    await prepareDeepLink(page, '/?q=wk-003')
-    await page.getByRole('progressbar', { name: '問題の進捗' }).waitFor({ timeout: 10000 })
-    await page.waitForTimeout(300)
-    await expect(page).toHaveScreenshot('quiz-light.png', { maxDiffPixelRatio: DIFF_RATIO })
-  })
-
-  test('quiz screen — dark mode', async ({ page }, testInfo) => {
-    desktopOnly(testInfo, 'quiz')
-    await prepareDeepLink(page, '/?q=wk-003')
-    await page.getByRole('progressbar', { name: '問題の進捗' }).waitFor({ timeout: 10000 })
-    await page.evaluate(() => document.documentElement.classList.add('dark'))
-    await page.waitForTimeout(300)
-    await expect(page).toHaveScreenshot('quiz-dark.png', { maxDiffPixelRatio: DIFF_RATIO })
-  })
-
-  test('quiz explanation with terminal diagram — light mode', async ({ page }, testInfo) => {
-    desktopOnly(testInfo, 'explanation')
-    await prepareDeepLink(page, '/?q=wk-003')
-    await page.getByRole('progressbar', { name: '問題の進捗' }).waitFor({ timeout: 10000 })
-    // 回答すると解説と図が出る
-    await page.locator('[role="option"], [role="radio"], [role="checkbox"]').first().click()
-    await page.getByRole('button', { name: '回答する' }).click()
-    // ターミナル図の枠が出るまで待つ
-    await page.locator('.bg-stone-900').first().waitFor({ timeout: 10000 })
-    await page.waitForTimeout(500)
-    await expect(page).toHaveScreenshot('quiz-explanation-light.png', { maxDiffPixelRatio: DIFF_RATIO })
-  })
-
-  test('quiz explanation with terminal diagram — dark mode', async ({ page }, testInfo) => {
-    desktopOnly(testInfo, 'explanation')
-    await prepareDeepLink(page, '/?q=wk-003')
-    await page.getByRole('progressbar', { name: '問題の進捗' }).waitFor({ timeout: 10000 })
-    await page.locator('[role="option"], [role="radio"], [role="checkbox"]').first().click()
-    await page.getByRole('button', { name: '回答する' }).click()
-    await page.locator('.bg-stone-900').first().waitFor({ timeout: 10000 })
-    await page.evaluate(() => document.documentElement.classList.add('dark'))
-    await page.waitForTimeout(500)
-    await expect(page).toHaveScreenshot('quiz-explanation-dark.png', { maxDiffPixelRatio: DIFF_RATIO })
-  })
+  /**
+   * 【クイズ回答画面を撮らない理由】
+   * `quiz:randomize` が選択肢の並びをシャッフルするため、問題を1問直すだけで
+   * 全問の選択肢順が変わり、クイズ画面のスナップショットは必ず差分になる。
+   * 「常に落ちる検査」は誰も見なくなるので撮らない。
+   * 解説と図のレンダリングは reader 画面のスナップショットでカバーしている
+   * （こちらは選択肢を並べないので安定する）。
+   */
 
   test('reader screen — light mode', async ({ page }, testInfo) => {
     desktopOnly(testInfo, 'reader')

@@ -383,6 +383,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       '速度改善を完走！Observatoryでの計測、RUMと合成テストの使い分け、Early Hints、HTTP/3、圧縮——「体感の不満を計測で特定して順に削る」定石を体験しました。',
+    nextSteps: [
+      {
+        label: '自分のサイトの速度を実際に計測する',
+        docUrl: 'https://developers.cloudflare.com/speed/observatory/run-speed-test/',
+      },
+      {
+        label: 'Early Hints を有効にして体感を縮める',
+        docUrl: 'https://developers.cloudflare.com/cache/advanced-configuration/early-hints/',
+      },
+    ],
   },
   {
     id: 'scenario-scraper',
@@ -423,6 +433,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'スクレイパー対策を完了！Bot対策製品の全体像、ボットスコアの読み方、SBFMの追加機能、Verified botの仕組み、Workersでの独自制御——「見分けて通す」ボット対策を体験しました。',
+    nextSteps: [
+      {
+        label: 'まず無料のBot Fight Modeを入れてみる',
+        docUrl: 'https://developers.cloudflare.com/bots/get-started/bot-fight-mode/',
+      },
+      {
+        label: 'Bot Analyticsでどんなボットが来ているか見る',
+        docUrl: 'https://developers.cloudflare.com/bots/bot-analytics/',
+      },
+    ],
   },
   {
     id: 'scenario-indie-saas',
@@ -468,6 +488,17 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'SaaS化の第一歩を完了！Cloudflare for SaaSの目的、fallback origin、2つの検証、切り替え判断、そしてWorkers for Platformsによるマルチテナントコード実行——プラットフォーム事業者の技術基盤を体験しました。',
+    nextSteps: [
+      {
+        label: 'カスタムホスト名を1つ作って動きを確かめる',
+        docUrl: 'https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/',
+      },
+      {
+        label: 'Workers for Platforms のテンプレートから始める',
+        docUrl:
+          'https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/get-started/configuration/',
+      },
+    ],
   },
   {
     id: 'scenario-first-site',
@@ -508,6 +539,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'Cloudflare導入初日を完走！プロキシ(オレンジクラウド)の意味、Flexibleの罠とFull (strict)への道、デフォルトキャッシュの範囲——導入時に必ず通る判断を一通り体験しました。',
+    nextSteps: [
+      {
+        label: 'DNSレコードをプロキシ済み(オレンジクラウド)にする',
+        docUrl: 'https://developers.cloudflare.com/dns/proxy-status/',
+      },
+      {
+        label: '暗号化モードを Full (strict) にする',
+        docUrl: 'https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/',
+      },
+    ],
   },
   {
     id: 'scenario-cache-miss',
@@ -553,6 +594,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'キャッシュヒット率の急落を解決！cf-cache-statusでの診断、デフォルトキャッシュキーの構成、クエリ文字列の制御、複数ルールの優先順位——キャッシュトラブルの定石を一通り体験しました。',
+    nextSteps: [
+      {
+        label: 'cf-cache-status を実際に見てみる',
+        command: 'curl -sI https://example.com/ | grep -i cf-cache-status',
+      },
+      {
+        label: 'Cache Rules でキャッシュキーを調整する',
+        docUrl: 'https://developers.cloudflare.com/cache/how-to/cache-rules/settings/',
+      },
+    ],
   },
   {
     id: 'scenario-launch-day',
@@ -598,6 +649,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       '販売イベントを乗り切りました！Waiting Roomの役割と流量設計、キューイングメソッド、スケジュールイベント、Load Balancingの構成とフェイルオーバー——アクセス殺到への備えを一通り体験しました。',
+    nextSteps: [
+      {
+        label: '販売前に待機室を作っておく',
+        docUrl: 'https://developers.cloudflare.com/waiting-room/get-started/',
+      },
+      {
+        label: '開始時刻に合わせてイベントをスケジュールする',
+        docUrl: 'https://developers.cloudflare.com/waiting-room/additional-options/create-events/',
+      },
+    ],
   },
   {
     id: 'scenario-under-attack',
@@ -638,6 +699,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       '攻撃を撃退しました！終端アクションの概念、Blockのステータスコード、レート制限のカウント単位、Configuration Rulesでの部分的なUnder Attackモード——実戦で効く防御の組み立てを体験しました。',
+    nextSteps: [
+      {
+        label: 'WAFカスタムルールを1本書いてみる',
+        docUrl: 'https://developers.cloudflare.com/waf/custom-rules/',
+      },
+      {
+        label: 'ログインURLにレート制限をかける',
+        docUrl: 'https://developers.cloudflare.com/waf/rate-limiting-rules/',
+      },
+    ],
   },
   {
     id: 'scenario-one-person-it',
@@ -678,6 +749,16 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       'Webフィルタリング導入を完了！Gatewayの3つのポリシー階層、接続方式と適用範囲、ドメインカテゴリ、DNSブロックの限界、デフォルト挙動——Zero Trustの入り口となるSWG導入を体験しました。',
+    nextSteps: [
+      {
+        label: 'まずDNSポリシーでカテゴリブロックを試す',
+        docUrl: 'https://developers.cloudflare.com/cloudflare-one/traffic-policies/dns-policies/common-policies/',
+      },
+      {
+        label: '端末をWARPで接続してHTTPポリシーも効かせる',
+        docUrl: 'https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/warp/deployment/',
+      },
+    ],
   },
   {
     id: 'scenario-prod-incident',
@@ -713,5 +794,13 @@ export const SCENARIOS: readonly ScenarioData[] = [
     ],
     completionMessage:
       '本番インシデントを収束させました！wrangler tailでのリアルタイムログ、エラーの切り分けの考え方、即時ロールバック、観測性の整備——障害対応の一連の流れを体験しました。',
+    nextSteps: [
+      { label: '本番のログをリアルタイムで見る', command: 'npx wrangler tail' },
+      { label: '直前のバージョンへ即座に戻す', command: 'npx wrangler rollback' },
+      {
+        label: '平時にWorkers Logsを有効にしておく',
+        docUrl: 'https://developers.cloudflare.com/workers/observability/logs/workers-logs/',
+      },
+    ],
   },
 ]

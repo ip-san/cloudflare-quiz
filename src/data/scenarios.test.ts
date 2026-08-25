@@ -37,8 +37,11 @@ describe('Scenarios', () => {
   describe('nextSteps（完走後の次の一歩）', () => {
     const withSteps = SCENARIOS.filter((s) => s.nextSteps && s.nextSteps.length > 0)
 
-    it('個人開発トラックの主要シナリオに nextSteps があること', () => {
-      expect(withSteps.length).toBeGreaterThanOrEqual(5)
+    // シナリオの価値は「知識で終わらせず手を動かすところまで繋ぐ」ことにある。
+    // 1本でも次の一歩が無いと、そのシナリオだけ読み物で終わってしまう。
+    it('すべてのシナリオに nextSteps があること', () => {
+      const missing = SCENARIOS.filter((s) => !s.nextSteps || s.nextSteps.length === 0).map((s) => s.id)
+      expect(missing, `次の一歩が無いシナリオ: ${missing.join(', ')}`).toEqual([])
     })
 
     it('各 nextStep に label があり、command か docUrl の少なくとも一方を持つこと', () => {
@@ -68,7 +71,9 @@ describe('Scenarios', () => {
     // 存在しないコマンドを載せると、学習者が実際に叩いて詰まる。
     // 実在を保証できる形（wrangler / cloudflared / npm create cloudflare）に限定する。
     it('command は実在が確認できるCLIのものだけであること', () => {
-      const ALLOWED_PREFIXES = ['npx wrangler ', 'npm create cloudflare', 'cloudflared ']
+      // `curl` は POSIX 環境に標準で入っている前提で許可する。
+      // Cloudflare 固有のコマンドは公式ドキュメントで実在を確認したものだけ。
+      const ALLOWED_PREFIXES = ['npx wrangler ', 'npm create cloudflare', 'cloudflared ', 'curl ']
       const bad: string[] = []
       for (const s of withSteps) {
         for (const step of s.nextSteps ?? []) {
