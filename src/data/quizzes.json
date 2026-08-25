@@ -16940,8 +16940,8 @@
           "text": "OpenAIやAnthropicなど複数のAIプロバイダーへのリクエストを、各プロバイダー自身のAPIキーを用意することなくCloudflareにチャージしたクレジットで支払い、単一のCloudflare請求にまとめる"
         },
         {
-          "text": "Workers AI(`@cf/`から始まるモデル)の利用料金も含めて、すべてUnified Billingのクレジットから差し引かれる",
-          "wrongFeedback": "Workers AIモデルはUnified Billing経由では課金されず、通常のWorkers AI料金で別途課金されます。Unified Billingが対象とするのはサードパーティプロバイダーのモデルです。"
+          "text": "Workers AI(`@cf/`から始まるモデル)は、ゲートウェイ側の設定なしで自動的にUnified Billingのクレジットから差し引かれる",
+          "wrongFeedback": "Workers AIもクレジットで支払えますが、自動ではありません。ゲートウェイの「Workers AI Billing」設定を「Unified billing」に変更して初めて、そのゲートウェイ経由のリクエストがクレジットから差し引かれます。"
         },
         {
           "text": "複数のAIプロバイダーの料金プランを比較し、最も安いプロバイダーへ自動的にリクエストを振り分ける機能",
@@ -16949,7 +16949,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Unified Billingは、OpenAIやAnthropicなど複数のAIプロバイダーへのリクエストを、各プロバイダー自身のAPIキーを用意することなく、事前にチャージしたCloudflareのクレジットで支払い、単一のCloudflare請求にまとめる機能です。購入したクレジットには5%の手数料がかかりますが、推論そのものの単価にはプロバイダーの料金がそのまま適用されます。`@cf/`から始まるWorkers AIモデルはUnified Billingの対象外で、通常のWorkers AI料金が適用されます。\n{{diagram:0}}",
+      "explanation": "Unified Billingは、OpenAIやAnthropicなど複数のAIプロバイダーへのリクエストを、各プロバイダー自身のAPIキーを用意することなく、事前にチャージしたCloudflareのクレジットで支払い、単一のCloudflare請求にまとめる機能です。購入したクレジットには5%の手数料がかかりますが、推論そのものの単価にはプロバイダーの料金がそのまま適用されます。\n{{diagram:0}}\nWorkers AI(`@cf/`から始まるモデル)も対象です。ただし自動ではなく、ゲートウェイの「Workers AI Billing」設定を「Unified billing」にして初めて、そのゲートウェイ経由のWorkers AIリクエストが前払いクレジットからリアルタイムで差し引かれます。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/unified-billing/",
       "hint": "複数のプロバイダーそれぞれに個別のAPIキーや請求書を持たずに済む方法を考えましょう。",
       "tags": [
