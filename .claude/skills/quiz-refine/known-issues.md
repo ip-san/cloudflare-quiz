@@ -246,6 +246,68 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
 
+## 2026-08-26 3ペルソナ同時プレイテスト — ag-016 の正解がドキュメント改定で誤りに（blocker）
+
+**ag-016（AI Gateway × Workers AI の課金）: 正解が事実誤りになっていた。**
+旧正解は「Workers AIモデルはUnified Billingの対象外で、クレジットから差し引かれない」。
+しかし現行docs `ai-gateway/features/unified-billing` L28・L77 は真逆で、
+「ゲートウェイの **Workers AI Billing** 設定を **Unified billing** にすれば、
+そのゲートウェイ経由のWorkers AIリクエストは前払いクレジットからリアルタイムで差し引かれる」。
+→ 設問文ごと「クレジットでWorkers AIを払うには何が必要か」を問う形に全面書き換え。
+  個人開発者にとって重要な「前払いクレジットがあれば本来Workers Paidが要るモデルも使える」
+  という利点も解説に加えた。
+→ **ドキュメントドリフトは2回目**（前回は rt-011 の canReply、as-004 の Schema Validation 2.0）。
+  Cloudflareは機能追加で「できなかったことができるように」なるため、
+  「〜できない」「〜の対象外」と書いた問題は特に腐りやすい。定期的な docs:fetch + 再検証が要る。
+
+**beginner ペルソナ（6/200）で初めて拾えた「解説の分かりにくさ」**
+正解できることと腑に落ちることは別、という指摘が具体的に出た:
+- ag-001: 難易度 beginner なのに REST API・provider-native endpoints・ヘッダー名・
+  バインディング・APIトークンが一度に登場 → **intermediate へ変更**。
+  機械検出（初級問題に重い概念が3種以上）でも756問中この1問が突出していた
+- ac-008 / ac-011: `IdP` が一度も展開されないまま繰り返し登場 → 初出で
+  「Identity Provider＝Google WorkspaceやOktaなど、ログインを預かる認証サービス」と展開
+- ac-009: 「オリジン」「Cloudflare Tunnel」が未説明のまま前提知識化 → 補足を追加し、
+  個人開発の文脈（固定IPもポート開放も要らずに自宅サーバーを公開できる）に接続
+
+**見送った指摘（判断を記録）**: ai-004/012/016/017 は内容がAI Gatewayなのにカテゴリが
+`ai-vectorize`。ただし ID プレフィックス `ai-` → `ai-vectorize` は
+`quizContentQuality.test.ts` の規約で、カテゴリだけ変えるとテストが落ちる（実際に落ちた）。
+ID を変えると共有URL `?q=ai-012` と playtest カバレッジ記録が壊れるため、**現状維持**とする。
+これらは ai-gateway カテゴリが存在する前に作られた歴史的経緯によるもの。
+
+**解説の質の定量スキャン結果（756問）**: 解説が80字未満=0問、400字超=0問で長さは適切。
+「解説が正解選択肢のほぼ丸写し」は dl-016 の1問のみで、これは書き直した。
+なお「『なぜ』を示す語が無い」という機械検出は472問を挙げたが、実例を見ると
+wk-012（CPU時間 vs 壁時計時間の対比）のようにきちんと説明しており**誤検知**。
+日本語の説明は特定の接続語なしでも因果を表せるため、この観点は機械検出に向かない。
+
+## 2026-08-26 「出典のない断定」の横展開検証 — ac-012 は例外、他32問は全て裏取りできた
+
+ac-012（出典のない条件分岐の断定）が他にも潜んでいないか、756問を機械的に絞り込んで全数照合した。
+
+**絞り込み方（再現可能）**: explanation を次の3パターンで検索し、延べ32問を抽出。
+- 絶対的な断定: `/(必ず|常に|一切|決して|永久に)[^。]{0,40}(できません|されません|ありません)/` → 6件
+- 排他的な断定: `/のみ[^。]{0,40}(できます|できません|有効|無効)/` → 24件
+- 条件分岐の断定: `/場合は[^。]{0,60}(できます|できません|必要があります|されます)。?[^。]{0,40}(しかし|一方|ただし)/` → 2件
+
+**結果: 32件すべてが referenceUrl 先の原文と一致**。代表例（すべてキャッシュの行番号付きで確認）:
+- kv-012 → `workers/runtime-apis/cache` L76「Responses with Set-Cookie headers are never cached」
+- ac-003 → `access-controls/policies` L61「requests are not logged」
+- dn-004 → `dns/.../ttl` L20「This value cannot be edited」
+- gw-008 → `antivirus-scanning` L51「nothing is scanned, regardless of file size」
+- bi-014 → `remote-browser-isolation/setup` L12「no traffic is isolated until you have added an Isolate policy」
+- zr-017 → `zaraz/reference/settings` L92「an estimate, and therefore cannot be guaranteed to be always accurate」
+- ob-017 → `analytics-engine/limits` L16「up to twenty blobs, twenty doubles, and one index」
+- wf-006 → `rules-language/actions` L153「Only available on Enterprise plans」
+- bt-008/bt-010 → `bots/concepts/bot-score` L21・L43
+- as-011 → `jwt-validation` L118「only operates on JWTs sent in client request headers or cookies」
+- lb-007 → `geo-steering` L123「only available to Enterprise customers and only accessible via the API」
+
+**結論**: ac-012 は例外的な1件であり、体系的な問題ではなかった。この検証自体が
+「1件見つかったパターンを全体に展開して、体系的な問題か例外かを切り分ける」手順として有効だったので、
+今後 playtest で個別の欠陥が出たときも同じ流れ（パターン化 → 機械抽出 → 全数照合）を踏むこと。
+
 ## 2026-08-25 playtest — reviewerペルソナ初投入で「出典のない断定」を検出、layer図の誤ラベルも修正
 
 **reviewer(上級)は0/223で一度も検証されていなかった。** 初回5問で1件、他ペルソナでは出なかった

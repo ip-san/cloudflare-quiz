@@ -258,6 +258,111 @@
         "outcome": "clean",
         "at": "2026-08-25"
       }
+    ],
+    "ac-017": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "ag-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "2026-08-26"
+      }
+    ],
+    "ag-017": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "ai-011": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "ai-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "2026-08-26"
+      }
+    ],
+    "ac-004": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "ac-008": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-26"
+      }
+    ],
+    "ac-009": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-26"
+      }
+    ],
+    "ac-011": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-26"
+      }
+    ],
+    "ag-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-26"
+      }
+    ],
+    "ar-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "ar-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "ar-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "ar-016": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-26"
+      }
+    ],
+    "as-003": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-26"
+      }
     ]
   }
 }
