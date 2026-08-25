@@ -1,3 +1,7 @@
+import { execFileSync } from 'node:child_process'
+import { symlinkSync, unlinkSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { isMidSentenceSplit } from '../quiz-utils.mjs'
 
@@ -54,5 +58,37 @@ describe('isMidSentenceSplit', () => {
 
   it('句点で終わっていれば分断ではない', () => {
     expect(isMidSentenceSplit('リクエストをオリジンへ転送する。', '補足の説明がここに続く')).toBe(false)
+  })
+})
+
+/**
+ * CLI としての起動経路の回帰テスト。
+ *
+ * 「テストから import しても副作用を起こさない」ための判定を入れた際、
+ * シンボリックリンク経由で起動すると何も実行せず exit 0 で終わる
+ * （= コマンドが無言で失敗する）バグを作り込んだことがある。
+ * Node はエントリの import.meta.url を realpath 化するが process.argv[1] は
+ * しないため、両者を素朴に比較すると一致しないのが原因だった。
+ */
+describe('CLI 起動判定', () => {
+  it('シンボリックリンク経由でもコマンドが実行される', () => {
+    const link = join(tmpdir(), `quiz-utils-link-${process.pid}.mjs`)
+    try {
+      symlinkSync(resolve('scripts/quiz-utils.mjs'), link)
+      const out = execFileSync('node', [link, 'check-diagram-text'], { encoding: 'utf8' })
+      // 無言で終わらず、実際に検査結果を出していること
+      expect(out).toContain('Diagram Text Shape Check')
+    } finally {
+      try {
+        unlinkSync(link)
+      } catch {
+        /* ignore */
+      }
+    }
+  })
+
+  it('通常のパス指定でもコマンドが実行される', () => {
+    const out = execFileSync('node', ['scripts/quiz-utils.mjs', 'check-diagram-text'], { encoding: 'utf8' })
+    expect(out).toContain('Diagram Text Shape Check')
   })
 })

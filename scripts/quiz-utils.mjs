@@ -19,7 +19,7 @@
  *   node scripts/quiz-utils.mjs ellipsis-report   # 修正用 triage JSON 生成
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'fs'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -1023,9 +1023,14 @@ export function isMidSentenceSplit(text, sub) {
   // 英単語がsub側に割られている（例: "permissionMod" + "e"）。
   // sub が大文字で始まる場合は新しい語の始まり（"wrangler deploy" + "Cloudflareへ公開"）
   // なので分断ではない。単語の途中で切れた続きは小文字になる。
-  // さらに、続きが空白を含む＝複数語なら独立したラベル
-  // （"wrangler dev" + "development server on port 8787"）であって分断ではない。
-  // 単語の途中が切れたのなら、続きは空白を挟まない1語になるはず。
+  //
+  // sub が複数語なら独立したラベルとみなす。
+  // ただしこれは厳密な判別ではない:
+  //   "wrangler dev"    + "development server on port 8787" → 正常
+  //   "Set the propert" + "y of the request must match"     → 本当は分断
+  // この2つは形が同じで機械的に区別できない。CLIコマンド名を sub に置く用法が
+  // 多いデータなので、誤検知を出さない側に倒している。英語の分断は日本語ほど
+  // 起きにくく、起きても目視で気づきやすい。
   if (MID_WORD_LATIN.test(lastChar) && /^[a-z]/.test(subFirst) && !/\s/.test(sub.trim())) return true
   // sub 側が接続形で始まっていれば、text の語尾に関係なく続きだと分かる
   if (JA_CONTINUATION_SUB.test(sub)) return true
@@ -1035,8 +1040,12 @@ export function isMidSentenceSplit(text, sub) {
   // （「どちらか早い方」「例: FIFOやReject」）である正常なケースまで全部拾ってしまう
   // （2026-08-25にCFの756問へ適用したところ28件中28件が誤検知だった）。
   // そのため text が接続を示す語尾で終わっている場合に限定する。
-  // sub が短い独立ラベル（「通常時」「急増時」「どちらか早い方」）なら、
-  // text が助詞で終わっていても分断ではない。分断された後半は普通もっと長い。
+  // sub が短い独立ラベル（「通常時」「急増時」）なら、text が助詞で終わっていても
+  // 分断ではない。分断された後半は普通もっと長い。
+  //
+  // トレードオフ: この閾値により「〜を有効にして」+「おく」のような短い分断も
+  // 見逃す。ただし実データで短いsubは全て正常なラベルだったため、誤検知を出して
+  // 検査ごと信用されなくなるより、短い分断を目視に委ねる方を選んでいる。
   const subIsShortLabel = sub.length <= 6
 
   // 体言止め（「〜を実行」「〜に接続」）は JA_CONTINUATION_ENDING に
@@ -1138,7 +1147,19 @@ function checkDiagramText() {
 // === Main ===
 // CLI として直接実行されたときだけコマンドを処理する。
 // テストから判定関数を import するだけで process.exit(1) されないようにするため。
-const isDirectRun = process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))
+// Node はエントリモジュールの import.meta.url を realpath 化するが、process.argv[1] は
+// 打たれたパスのまま残す。resolve() は realpath ではないので、スクリプトがシンボリック
+// リンク経由で起動されると両者が一致せず「何もせず exit 0」という最悪の無言failに
+// なっていた（`ln -s .../quiz-utils.mjs /tmp/x.mjs && node /tmp/x.mjs stats` で再現）。
+// 両辺を realpath に揃えて比較する。
+function toRealPath(p) {
+  try {
+    return realpathSync(resolve(p))
+  } catch {
+    return resolve(p)
+  }
+}
+const isDirectRun = process.argv[1] && toRealPath(process.argv[1]) === toRealPath(fileURLToPath(import.meta.url))
 const command = isDirectRun ? process.argv[2] : '__imported__'
 if (command === '__imported__') {
   // no-op: import 経由。副作用を起こさない

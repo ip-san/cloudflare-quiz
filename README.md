@@ -94,8 +94,24 @@ bun run quiz:fact-check             # 環境変数・CLIコマンド・設定キ
 
 - `quiz:lint` / `quiz:cross-check` はネットワーク不要で、常に exit code 0（構造検証ではなく人手レビュー支援のため、自動でビルドを落とさない）。
 - `quiz:lint:url` / `quiz:fact-check` は `docs:fetch` で取得したキャッシュ（`.claude/tmp/docs/`, gitignore 済み）が必要。ドキュメントの見出し構造（MDXコンポーネント使用ページ等）によっては誤検知することがあるため、レビューの参考情報として扱ってください。
-- コミット時は Husky の pre-commit フックが lint-staged（biome）と変更ファイルの vitest、および `quizzes.json` 変更時は `quiz:check` / `quiz:lint` を自動実行します。
-- CI（`.github/workflows/deploy.yml`）は PR 作成時に typecheck/lint/test/`quiz:check` をブロッキングで実行し、`quiz-lint`/`quiz-cross-check` の結果を非ブロッキングで可視化します。
+- コミット時は Husky の pre-commit フックが lint-staged（biome）と変更ファイルの vitest、および `quizzes.json` 変更時は `quiz:check` / `quiz:lint:dry` を自動実行します。
+
+#### どの検査がどこで走るか
+
+検査を足したのに実行経路が無く「動いているつもりで何も検証していない」状態を防ぐため、対応を明示します。CI と pre-commit は個別スクリプトを直に叩かず npm script を経由するので、`package.json` に検査を足せば自動で両方に効きます。
+
+| 検査 | `bun run check` | CI | pre-commit | 備考 |
+|---|:---:|:---:|:---:|---|
+| typecheck / lint / test | ✓ | ✓ | 変更分のみ | |
+| `quiz:check`（構造・途中切れ・図のtext/sub） | ✓ | ✓ | quizzes.json 変更時 | |
+| `quiz:lint:dry` | ✓ | 非ブロッキングで可視化 | quizzes.json 変更時 | 常に exit 0（人手判断が要るため） |
+| `check:architecture`（DDDレイヤー依存） | ✓ | ✓ | — | |
+| `verify:free-tier` | ✓ | **走らない（意図的）** | — | 判定に `.claude/tmp/docs/` のキャッシュが要る。CI にキャッシュは無く、追加しても常にスキップされて空撃ちになるため入れていない。ドキュメント更新の追従は `docs:fetch` 後にローカルで回す運用 |
+| `check:bundle` | — | ✓（build ジョブ） | — | ビルド成果物が要るため、`dist/` を作った直後の build ジョブで実行する |
+| `test:e2e`（視覚回帰含む） | — | 走らない | — | スナップショットが OS 依存（`-darwin`）。ローカル専用 |
+
+#### Claude Code 連携
+
 - Claude Code から `/quiz-refine` を実行すると、上記スクリプトの出力とドキュメントキャッシュを踏まえて question/explanation/選択肢を1問ずつ検証・修正します（`.claude/skills/quiz-refine/`）。`/quality-loop` はコードレビューとクイズ検証、最終ゲート（`bun run check`）を一括実行します（`.claude/skills/quality-loop/`）。
 - `/playtest` は模擬ユーザーエージェントが実 PWA をブラウザ操作でプレイし、分かりにくさ・学びにくさを専門家チームが検証してから改善するゲートです。`--progressive` で全問を1問ずつ計画的にカバーし、進捗は `.claude/playtest-coverage.json` に記録されます（`.claude/skills/playtest/`）。
 - `/generate-quiz-data` は公式ドキュメントから新カテゴリの問題を生成するスキルです。安全のためモデルからの自律呼び出しは無効化されており、人が明示的に実行する必要があります（`.claude/skills/generate-quiz-data/`）。

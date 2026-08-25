@@ -77,6 +77,9 @@ jobs:
       - run: bun run build
         env:
           VITE_GTM_ID: ${{ secrets.VITE_GTM_ID }}
+      # ビルド成果物が要るのでここで検査する（check ジョブでは dist/ が無い）。
+      # 初期ロードの肥大を回帰として検知するためのガード。
+      - run: bun run check:bundle
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
