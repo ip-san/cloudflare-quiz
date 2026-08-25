@@ -107,7 +107,7 @@ bun run quiz:fact-check             # 環境変数・CLIコマンド・設定キ
 | `quiz:lint:dry` | ✓ | 非ブロッキングで可視化 | quizzes.json 変更時 | 常に exit 0（人手判断が要るため） |
 | `check:architecture`（DDDレイヤー依存） | ✓ | ✓ | — | |
 | `verify:free-tier` | ✓ | **走らない（意図的）** | — | 判定に `.claude/tmp/docs/` のキャッシュが要る。CI にキャッシュは無く、追加しても常にスキップされて空撃ちになるため入れていない。ドキュメント更新の追従は `docs:fetch` 後にローカルで回す運用 |
-| `check:bundle` | — | ✓（build ジョブ） | — | ビルド成果物が要るため、`dist/` を作った直後の build ジョブで実行する |
+| `check:bundle` | — | ✓ | — | ビルド成果物が要るので check ジョブ内でビルドしてから実行する（deploy 前の build ジョブは push 限定で PR に効かないため） |
 | `test:e2e`（視覚回帰含む） | — | 走らない | — | スナップショットが OS 依存（`-darwin`）。ローカル専用 |
 
 #### Claude Code 連携

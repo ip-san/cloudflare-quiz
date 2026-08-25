@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        task: [typecheck, lint, test, validate, architecture]
+        task: [typecheck, lint, test, validate, architecture, bundle]
     steps:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
@@ -48,6 +48,12 @@ jobs:
       - name: architecture
         if: matrix.task == 'architecture'
         run: bun run check:architecture
+      # バンドルサイズはビルド成果物が要る。deploy 前の build ジョブは
+      # push/workflow_dispatch 限定なので、PR でも肥大を検知できるよう
+      # ここでもビルドして検査する。
+      - name: bundle
+        if: matrix.task == 'bundle'
+        run: bun run build && bun run check:bundle
 
   # Advisory quiz-content review (backtick/terminology/distractor/difficulty
   # lint + cross-question contradiction check). Both scripts always exit 0
@@ -77,9 +83,6 @@ jobs:
       - run: bun run build
         env:
           VITE_GTM_ID: ${{ secrets.VITE_GTM_ID }}
-      # ビルド成果物が要るのでここで検査する（check ジョブでは dist/ が無い）。
-      # 初期ロードの肥大を回帰として検知するためのガード。
-      - run: bun run check:bundle
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
