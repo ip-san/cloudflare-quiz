@@ -17,7 +17,7 @@
  *   node scripts/fetch-docs.mjs workers d1   # 指定ページのみ取得（name で指定）
  */
 
-import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { DOC_PAGE_OVERRIDES, DOC_PAGES, docPageToFilename, WRANGLER_COMMAND_TAG_SOURCE } from './topic-config.mjs'
@@ -37,18 +37,84 @@ const MAX_AGE_HOURS = 24 * 14 // 2 weeks
  */
 async function fetchMarkdown(name) {
   const override = DOC_PAGE_OVERRIDES[name]
-  const candidates = override
-    ? [`${CONTENT_BASE}/${override}`]
-    : [`${CONTENT_BASE}/docs/${name}/index.mdx`, `${CONTENT_BASE}/docs/${name}.mdx`]
+  // override は「優先」であって「排他」ではない。上流がパーシャルを移動すると
+  // override 先が 404 になり、そのページだけ取得が恒常的に失敗して
+  // キャッシュが古い内容のまま凍りつく（実際に18件中11件がこの状態だった。
+  // しかも --status では [OK] に見えるため気づけない）。通常パスへ落ちるようにして
+  // 自己修復させる。<Render> 展開が入った今、多くの override は本来不要でもある。
+  const defaults = [`${CONTENT_BASE}/docs/${name}/index.mdx`, `${CONTENT_BASE}/docs/${name}.mdx`]
+  const candidates = override ? [`${CONTENT_BASE}/${override}`, ...defaults] : defaults
   for (const url of candidates) {
     try {
       const res = await fetch(url)
-      if (res.ok) return normalizeWranglerComponents(await res.text())
+      if (res.ok) {
+        const raw = normalizeWranglerComponents(await res.text())
+        return await expandPartials(raw, name.split('/')[0])
+      }
     } catch {
       // try next candidate
     }
   }
   return null
+}
+
+/**
+ * `<Render file="..." product="..." />` を実体に展開する。
+ *
+ * docs は本文のかなりの部分を src/content/partials/ に切り出しており、
+ * `.mdx` ソースをそのまま保存すると、その部分がタグのままキャッシュされる。
+ * するとキャッシュを grep した検証は「その記述は docs に存在しない」と
+ * 誤って結論しうる（実測で 535ページ中187ページ・756問中265問が該当した）。
+ * 「参照先を確認したが無かった」と「そもそも見えていなかった」は
+ * 区別できないので、取得時に展開して穴を無くす。
+ *
+ * DOC_PAGE_OVERRIDES はこの問題をページ単位で回避してきた仕組みで、
+ * 展開が入っても引き続き有効（ナビゲーションスタブ対策として別の役割を持つ）。
+ */
+const PARTIAL_CACHE = new Map()
+const RENDER_TAG = /<Render\s+file="([^"]+)"(?:\s+product="([^"]+)")?[^>]*\/>/g
+const MAX_PARTIAL_DEPTH = 3
+
+async function fetchPartial(product, file) {
+  const key = `${product}/${file}`
+  if (PARTIAL_CACHE.has(key)) return PARTIAL_CACHE.get(key)
+  let text = null
+  try {
+    const res = await fetch(`${CONTENT_BASE}/partials/${key}.mdx`)
+    if (res.ok) text = await res.text()
+  } catch {
+    // 取得できないパーシャルはタグのまま残す（黙って消さない）
+  }
+  PARTIAL_CACHE.set(key, text)
+  return text
+}
+
+/** パーシャル冒頭の frontmatter と import 行を落とす（本文だけを埋め込む） */
+function partialBody(text) {
+  return text
+    .replace(/^---\n[\s\S]*?\n---\n/, '')
+    .replace(/^import\s+\{[^}]*\}\s+from\s+["'][^"']*["'];?\s*$/gm, '')
+    .trim()
+}
+
+async function expandPartials(markdown, fallbackProduct, depth = 0, seen = new Set()) {
+  if (depth >= MAX_PARTIAL_DEPTH) return markdown
+  const tags = [...markdown.matchAll(RENDER_TAG)]
+  if (tags.length === 0) return markdown
+
+  let out = markdown
+  for (const [raw, file, product] of tags) {
+    const prod = product ?? fallbackProduct
+    if (!prod) continue
+    const key = `${prod}/${file}`
+    if (seen.has(key)) continue // 自己参照・循環でも止まるようにする
+    const body = await fetchPartial(prod, file)
+    if (body == null) continue
+    const expanded = await expandPartials(partialBody(body), prod, depth + 1, new Set([...seen, key]))
+    // 置換文字列の `$&` などが特殊解釈されないよう関数形式で渡す
+    out = out.replace(raw, () => expanded)
+  }
+  return out
 }
 
 /**
@@ -134,6 +200,35 @@ function status() {
   }
 
   console.log(`\n${ok} OK, ${expired} expired/empty, ${missing} missing (of ${DOC_PAGES.length})`)
+  reportUnexpandedPartials(cachedFiles)
+}
+
+/**
+ * 展開されずに残った `<Render>` を報告する。
+ *
+ * ここを黙って通すと、キャッシュを grep した検証が「記述が無い」と誤判定し、
+ * 正しいクイズを「ドリフト」として書き換えてしまう。見えていない範囲は
+ * 見えていないと明示する。
+ */
+function reportUnexpandedPartials(cachedFiles) {
+  const affected = []
+  for (const filename of cachedFiles) {
+    const text = readFileSync(resolve(DOCS_DIR, filename), 'utf8')
+    const count = (text.match(RENDER_TAG) ?? []).length
+    if (count > 0) affected.push({ filename, count })
+  }
+  if (affected.length === 0) {
+    console.log('\nUnexpanded partials: none (全ページの本文が grep 可能)')
+    return
+  }
+  const total = affected.reduce((n, a) => n + a.count, 0)
+  console.log(`\n⚠️  Unexpanded <Render> partials: ${affected.length} pages, ${total} occurrences`)
+  console.log('   これらのページは本文の一部がキャッシュに入っていない。')
+  console.log('   該当ページを referenceUrl にする問題の「記述なし」判定は信用しないこと。')
+  for (const a of affected.slice(0, 10)) {
+    console.log(`   - ${a.filename} (${a.count})`)
+  }
+  if (affected.length > 10) console.log(`   ... and ${affected.length - 10} more`)
 }
 
 const args = process.argv.slice(2)
