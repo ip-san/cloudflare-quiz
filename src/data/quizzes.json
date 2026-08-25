@@ -3471,10 +3471,10 @@
         },
         {
           "text": "D1はSQLiteそのものなので、他のRDBMSと同様に任意の箇所で`BEGIN`と`COMMIT`を自由に発行し、長時間のトランザクションを維持できる",
-          "wrongFeedback": "D1は分散環境で動作するため、クライアントから複数リクエストをまたぐ長時間の明示的トランザクションはサポートされていません。"
+          "wrongFeedback": "D1は auto-commit で動作し、すべてのクエリが暗黙のトランザクション内で実行されます。ユーザークエリ側からこの挙動を変えることはできないため、任意の箇所で`BEGIN`/`COMMIT`を発行して長時間トランザクションを保持する使い方はできません。"
         },
         {
-          "text": "Workerのコードから複数リクエストにまたがる明示的な`BEGIN TRANSACTION` / `COMMIT`はサポートされておらず、複数文をアトミックに実行したい場合は`batch()`を使う"
+          "text": "D1は auto-commit で動作し、すべてのクエリが暗黙のトランザクション内で実行される。複数文をアトミックに実行したい場合は`batch()`で1回の呼び出しにまとめる"
         },
         {
           "text": "トランザクションという概念自体がD1には存在せず、`batch()`を使っても原子性は保証されない",
@@ -3482,7 +3482,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "D1は分散環境で動作するため、Workerのコードから複数のリクエストにまたがる明示的な`BEGIN TRANSACTION`/`COMMIT`はサポートされていません。複数のSQL文をアトミックに(全て成功 or 全て失敗で)実行したい場合は、`env.DB.batch()`を使って1回のリクエストにまとめる必要があります。\n{{diagram:0}}",
+      "explanation": "D1は auto-commit で動作し、すべてのクエリが暗黙のトランザクション内で実行されます。ユーザークエリ側からこの挙動を変えることはできません。\n{{diagram:0}}\nそのため複数のSQL文をアトミックに(全て成功 or 全て失敗で)実行したい場合は、`env.DB.batch()`でprepared statementの配列を1回の呼び出しにまとめます。batch内の各文は順番に、他と並行しない形で実行・コミットされることが保証されています。",
       "referenceUrl": "https://developers.cloudflare.com/d1/worker-api/d1-database/#batch",
       "hint": "「複数のリクエストをまたぐ」トランザクションが可能かどうかがポイントです。",
       "tags": [
@@ -3492,20 +3492,21 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "D1がサポートする範囲/しない範囲",
+          "label": "D1のトランザクションの扱い",
           "columns": [
             {
-              "heading": "サポートされない",
+              "heading": "D1の動作",
               "items": [
-                "複数リクエストにまたがる明示的なBEGIN/COMMIT",
-                "長時間保持するトランザクション"
+                "auto-commit",
+                "すべてのクエリが暗黙のトランザクション内",
+                "この挙動はユーザークエリから変更できない"
               ]
             },
             {
-              "heading": "サポートされる",
+              "heading": "複数文をアトミックに",
               "items": [
-                "`env.DB.batch()`による複数文の原子的実行(prepared statementの配列を渡す)",
-                "1つのprepared statement単位の実行"
+                "`env.DB.batch()` に prepared statement の配列を渡す",
+                "各文は順番に・並行せず実行/コミットされる"
               ]
             }
           ]
@@ -20784,10 +20785,10 @@
       "options": [
         {
           "text": "すでに正式リリース(GA)されており、すべての機能について通常の料金が請求される",
-          "wrongFeedback": "現時点ではオープンベータ段階であり、標準的なR2のストレージ・操作料金以外にPipelines自体の課金は発生しません。"
+          "wrongFeedback": "現時点ではオープンベータ段階であり、正式リリース(GA)ではありません。"
         },
         {
-          "text": "オープンベータ段階であり、Workers Paidプランの開発者であれば誰でも利用でき、現時点では標準的なR2のストレージ・操作料金以外は課金されない"
+          "text": "オープンベータ段階であり、Workers Paidプランの開発者であれば追加の申請なしに誰でも利用を開始できる"
         },
         {
           "text": "オープンベータ段階だが、Workers Freeプランのユーザーであっても追加の申請なしにすぐ利用できる",
@@ -20799,7 +20800,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Pipelinesは現在オープンベータ段階にあり、Workers Paidプランの開発者であれば誰でも利用を開始できます。現時点では、標準的なR2のストレージ・操作料金以外にPipelines自体の利用について課金されません。\n{{diagram:0}}",
+      "explanation": "Cloudflare Pipelinesは現在オープンベータ段階にあり、Workers Paidプランの開発者であれば、営業への個別申し込みなしに誰でも利用を開始できます。Freeプランでは利用できません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/",
       "hint": "「まだ正式版ではない」段階の機能に、どのプランの開発者がアクセスできるか考えましょう。",
       "tags": [
@@ -20824,9 +20825,9 @@
               ]
             },
             {
-              "heading": "現在の課金",
+              "heading": "申し込み",
               "items": [
-                "R2のストレージ・操作料金のみ"
+                "不要（すぐ開始できる）"
               ]
             }
           ]
@@ -24832,13 +24833,13 @@
           "wrongFeedback": "`OPTIONS`のプリフライトリクエストは認証情報を含まないのが通常のため、ブロックを避けたい場合はルールに`or http.request.method eq \"OPTIONS\"`を追加することが推奨されています。"
         },
         {
-          "text": "JWT検証はEndpoint Managementへの登録に関わらず、ゾーン内のすべてのエンドポイントに対して自動的に適用される",
-          "wrongFeedback": "JWT検証はEndpoint Managementに登録された(host・method・pathが揃った)エンドポイントに対してのみ機能します。自動的にすべてに適用されるわけではありません。"
+          "text": "JWT検証を使うには、対象のエンドポイントをあらかじめEndpoint Managementに登録しておく必要がある",
+          "wrongFeedback": "トークン設定を作った時点で、Cloudflareはゾーン内の全リクエストを設定した場所でチェックします。検証そのものにEndpoint Managementへの登録もルールも不要です。登録が要るのは、特定のオペレーションだけに`log`/`block`を効かせるJWT検証ルールを使う場合だけです。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "API ShieldのJWT検証は、クライアントのリクエストヘッダーまたはCookieに含まれるJWTのみを検証対象とし、`POST`ボディに含まれるJWTは現時点で検証できません(この制限の緩和を希望する場合はaccount teamにフィードバックするよう案内されています)。また、JWT検証はEndpoint Managementに登録された(host・method・pathの揃った)エンドポイントに対してのみ機能します。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/#limitations",
+      "explanation": "API ShieldのJWT検証は、クライアントのリクエストヘッダーまたはCookieに含まれるJWTのみを検証対象とし、`POST`ボディに含まれるJWTは現時点で検証できません(この制限の緩和を希望する場合はaccount teamに問い合わせるよう案内されています)。\n{{diagram:0}}\nなお検証そのものは、トークン設定を作った時点でゾーン内の全リクエストが対象になります。Endpoint Managementへの登録が要るのは、特定のオペレーションだけに`log`/`block`を効かせる「JWT検証ルール」を使う場合だけです。",
+      "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/",
       "hint": "JWTが「どこに載っているか」という点で、対応している場所と対応していない場所があることを考えましょう。",
       "tags": [
         "api-shield",
