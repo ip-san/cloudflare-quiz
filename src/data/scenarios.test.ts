@@ -35,7 +35,9 @@ describe('Scenarios', () => {
   })
 
   describe('nextSteps（完走後の次の一歩）', () => {
-    const withSteps = SCENARIOS.filter((s) => s.nextSteps && s.nextSteps.length > 0)
+    // nextSteps を持つものだけに絞り込んではいけない。絞ると「nextSteps を消したシナリオ」が
+    // 以降の検査対象から黙って外れる。全シナリオを平坦化して、どの検査も取りこぼさない形にする。
+    const allSteps = SCENARIOS.flatMap((s) => (s.nextSteps ?? []).map((step) => ({ scenarioId: s.id, step })))
 
     // シナリオの価値は「知識で終わらせず手を動かすところまで繋ぐ」ことにある。
     // 1本でも次の一歩が無いと、そのシナリオだけ読み物で終わってしまう。
@@ -44,27 +46,33 @@ describe('Scenarios', () => {
       expect(missing, `次の一歩が無いシナリオ: ${missing.join(', ')}`).toEqual([])
     })
 
-    it('各 nextStep に label があり、command か docUrl の少なくとも一方を持つこと', () => {
-      for (const s of withSteps) {
-        for (const step of s.nextSteps ?? []) {
-          expect(step.label, `${s.id}: label がない`).toBeTruthy()
-          expect(
-            Boolean(step.command) || Boolean(step.docUrl),
-            `${s.id} / "${step.label}": command と docUrl の両方がない（何をすればいいか辿れない）`
-          ).toBe(true)
+    // ScenarioCompletion は label を React の key とコピー済み表示の識別子の両方に使う。
+    // 同一シナリオ内で重複すると key が衝突し、片方をコピーしただけで両方に ✓ が出る。
+    it('同一シナリオ内で nextStep の label が重複しないこと', () => {
+      const dup: string[] = []
+      for (const s of SCENARIOS) {
+        const labels = (s.nextSteps ?? []).map((step) => step.label)
+        for (const label of labels.filter((l, i) => labels.indexOf(l) !== i)) {
+          dup.push(`${s.id}: "${label}"`)
         }
+      }
+      expect(dup, `label が重複している nextStep: ${dup.join(', ')}`).toEqual([])
+    })
+
+    it('各 nextStep に label があり、command か docUrl の少なくとも一方を持つこと', () => {
+      for (const { scenarioId, step } of allSteps) {
+        expect(step.label, `${scenarioId}: label がない`).toBeTruthy()
+        expect(
+          Boolean(step.command) || Boolean(step.docUrl),
+          `${scenarioId} / "${step.label}": command と docUrl の両方がない（何をすればいいか辿れない）`
+        ).toBe(true)
       }
     })
 
     it('docUrl はすべて developers.cloudflare.com を指すこと', () => {
-      const bad: string[] = []
-      for (const s of withSteps) {
-        for (const step of s.nextSteps ?? []) {
-          if (step.docUrl && !step.docUrl.startsWith('https://developers.cloudflare.com/')) {
-            bad.push(`${s.id}: ${step.docUrl}`)
-          }
-        }
-      }
+      const bad = allSteps
+        .filter(({ step }) => step.docUrl && !step.docUrl.startsWith('https://developers.cloudflare.com/'))
+        .map(({ scenarioId, step }) => `${scenarioId}: ${step.docUrl}`)
       expect(bad, `公式ドキュメント以外へのリンク: ${bad.join(', ')}`).toEqual([])
     })
 
@@ -74,14 +82,9 @@ describe('Scenarios', () => {
       // `curl` は POSIX 環境に標準で入っている前提で許可する。
       // Cloudflare 固有のコマンドは公式ドキュメントで実在を確認したものだけ。
       const ALLOWED_PREFIXES = ['npx wrangler ', 'npm create cloudflare', 'cloudflared ', 'curl ']
-      const bad: string[] = []
-      for (const s of withSteps) {
-        for (const step of s.nextSteps ?? []) {
-          if (step.command && !ALLOWED_PREFIXES.some((p) => step.command?.startsWith(p))) {
-            bad.push(`${s.id}: ${step.command}`)
-          }
-        }
-      }
+      const bad = allSteps
+        .filter(({ step }) => step.command && !ALLOWED_PREFIXES.some((p) => step.command?.startsWith(p)))
+        .map(({ scenarioId, step }) => `${scenarioId}: ${step.command}`)
       expect(bad, `想定外のコマンド: ${bad.join(', ')}`).toEqual([])
     })
   })

@@ -78,7 +78,10 @@ export function ScenarioCompletion({ scenarioId }: { scenarioId: string }) {
             {scenario.nextSteps.map((step) => (
               <li key={step.label} className="rounded-xl bg-white/70 p-3 dark:bg-stone-900/40">
                 <div className="flex items-start gap-2">
-                  <span className="mt-0.5 text-cf-accent text-xs">▶</span>
+                  {/* 装飾。読み上げると「次の一歩」全項目の頭に「▶」が挿入されるため隠す */}
+                  <span className="mt-0.5 text-cf-accent text-xs" aria-hidden="true">
+                    ▶
+                  </span>
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-cf-ink text-sm">{step.label}</p>
 
@@ -97,7 +100,7 @@ export function ScenarioCompletion({ scenarioId }: { scenarioId: string }) {
                         rel="noopener noreferrer"
                         className="mt-1.5 inline-flex items-center gap-1 text-cf-accent text-xs hover:underline"
                       >
-                        <ExternalLink className="h-3 w-3" />
+                        <ExternalLink className="h-3 w-3" aria-hidden="true" />
                         {locale.scenario.openDocs}
                       </a>
                     )}
