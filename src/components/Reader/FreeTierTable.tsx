@@ -2,6 +2,7 @@ import { ArrowLeft, ExternalLink } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import { locale } from '@/config/locale'
 import { FREE_TIER_SERVICES } from '@/data/freeTier'
+import { headerStyles } from '@/lib/styles'
 import { useQuizStore } from '@/stores/quizStore'
 
 /**
@@ -16,7 +17,7 @@ export function FreeTierTable() {
 
   return (
     <div className="min-h-dvh bg-cf-bg pb-16">
-      <header className="sticky top-0 z-10 border-stone-200 border-b bg-cf-bg/95 backdrop-blur dark:border-stone-700">
+      <header className={headerStyles.sticky}>
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
           <button
             onClick={() => setViewState('menu')}

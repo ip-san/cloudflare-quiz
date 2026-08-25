@@ -26,7 +26,7 @@ import { Question } from '../entities/Question'
 import { UserProgress } from '../entities/UserProgress'
 import { PREDEFINED_CATEGORIES } from '../valueObjects/Category'
 import type { DifficultyLevel } from '../valueObjects/Difficulty'
-import { getChapterFromTags } from '../valueObjects/OverviewChapter'
+import { getChapterFromTags, getQuestionsOrderedByTag } from '../valueObjects/OverviewChapter'
 import type { QuizModeId } from '../valueObjects/QuizMode'
 import { calculateAccuracy, PASSING_SCORE } from '../valueObjects/ScoreThresholds'
 import { AdaptiveDifficultyService } from './AdaptiveDifficultyService'
@@ -297,32 +297,17 @@ export class QuizSessionService {
       if (filtered.length > 0) questions = filtered
     }
 
-    // 個人開発コース: `indie` タグ付きの問題だけを、`indie-NNN` の順序どおりに出題する。
-    // 全体像モードと違いチャプター導入画面は挟まず、つくる→データ→公開→独自ドメイン→
-    // コスト→運用という一本道のコースとして流す。
-    if (config.mode === 'indie') {
-      const filtered = questions.filter((q) => q.tags.includes('indie'))
-      if (filtered.length > 0) {
-        questions = filtered.sort((a, b) => {
-          const getOrder = (q: Question): number => {
-            const orderTag = q.tags.find((t) => /^indie-\d+$/.test(t))
-            return orderTag ? Number.parseInt(orderTag.replace('indie-', ''), 10) : 999
-          }
-          return getOrder(a) - getOrder(b)
-        })
-      }
-    }
-
-    // For overview mode, filter to tagged questions and sort by order tag
+    // タグで束ねて決まった順に流すコース（全体像モード / 個人開発コース）。
+    // 並べ替えは getQuestionsOrderedByTag に集約している — 順序タグの解釈を
+    // モードごとに書き分けると差異が静かに生まれるため。
+    //
+    // overview は空でもそのまま通す（タグ未整備なら 0 問と分かった方がよい）のに対し、
+    // indie は practical/trivia と同じくフォールバックする、という違いだけが残る。
     if (config.mode === 'overview') {
-      questions = questions.filter((q) => q.tags.includes('overview'))
-      questions.sort((a, b) => {
-        const getOrder = (q: Question): number => {
-          const orderTag = q.tags.find((t) => t.startsWith('overview-'))
-          return orderTag ? parseInt(orderTag.replace('overview-', ''), 10) : 999
-        }
-        return getOrder(a) - getOrder(b)
-      })
+      questions = getQuestionsOrderedByTag(questions, 'overview')
+    } else if (config.mode === 'indie') {
+      const ordered = getQuestionsOrderedByTag(questions, 'indie')
+      if (ordered.length > 0) questions = ordered
     }
 
     // For bookmark mode, filter to bookmarked questions

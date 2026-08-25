@@ -14,20 +14,28 @@
  */
 
 import { existsSync, readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { docPageToFilename } from './topic-config.mjs'
 
-const DOCS_DIR = resolve(process.cwd(), '.claude/tmp/docs')
-const SOURCE = resolve(process.cwd(), 'src/data/freeTier.ts')
+// スクリプト位置を基準にする（quiz-lint.mjs / fetch-docs.mjs と同じ方式）。
+// process.cwd() 基準にすると、リポジトリルート以外から実行したときに壊れる。
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const DOCS_DIR = resolve(ROOT, '.claude/tmp/docs')
+const SOURCE = resolve(ROOT, 'src/data/freeTier.ts')
 const asJson = process.argv.includes('--json')
 
-/** `foo/bar/baz` → `foo__bar__baz.md` (fetch-docs.mjs と同じ規則) */
-function docPageToFilename(page) {
-  return `${page.replace(/\//g, '__')}.md`
-}
+const DOC_VALUE_RE = /docValue: '((?:[^'\\]|\\.)*)'/g
+const LABEL_RE = /label: '((?:[^'\\]|\\.)*)'/g
 
 /**
  * freeTier.ts から検証に必要な情報だけを抜き出す。
  * TS を実行せずに済ませるため、構造が単純なうちは正規表現で読む。
+ *
+ * ブロック分割はインデント（サービスオブジェクトが2スペース）に依存するので、
+ * 整形ルールが変わると静かに壊れうる。そうなると「0件検証して全部OK」という
+ * 一番気づきにくい失敗をするため、ファイル全体から独立に数えた件数と突き合わせて
+ * パース自体の健全性を検査する（`parsed` が全件を拾えているか）。
  */
 function parseServices(src) {
   const services = []
@@ -37,11 +45,22 @@ function parseServices(src) {
     const idMatch = block.match(/id: '([^']+)'/)
     const pageMatch = block.match(/docPage: '([^']+)'/)
     if (!idMatch || !pageMatch) continue
-    const docValues = [...block.matchAll(/docValue: '((?:[^'\\]|\\.)*)'/g)].map((m) => m[1].replace(/\\'/g, "'"))
-    const labels = [...block.matchAll(/label: '((?:[^'\\]|\\.)*)'/g)].map((m) => m[1].replace(/\\'/g, "'"))
+    const docValues = [...block.matchAll(DOC_VALUE_RE)].map((m) => m[1].replace(/\\'/g, "'"))
+    const labels = [...block.matchAll(LABEL_RE)].map((m) => m[1].replace(/\\'/g, "'"))
     services.push({ id: idMatch[1], docPage: pageMatch[1], docValues, labels })
   }
-  return services
+
+  // ブロック構造に依存しない実数（ファイル全体を素直に数えたもの）
+  const expectedServices = [...src.matchAll(/docPage: '/g)].length
+  const expectedValues = [...src.matchAll(DOC_VALUE_RE)].length
+  const parsedValues = services.reduce((n, s) => n + s.docValues.length, 0)
+
+  return {
+    services,
+    parseOk: services.length === expectedServices && parsedValues === expectedValues,
+    expectedServices,
+    expectedValues,
+  }
 }
 
 function main() {
@@ -55,9 +74,20 @@ function main() {
     process.exit(0)
   }
 
-  const services = parseServices(readFileSync(SOURCE, 'utf8'))
+  const { services, parseOk, expectedServices, expectedValues } = parseServices(readFileSync(SOURCE, 'utf8'))
   const issues = []
   let checked = 0
+
+  if (!parseOk) {
+    issues.push({
+      service: '(parser)',
+      type: 'parse-incomplete',
+      detail:
+        `freeTier.ts を読み切れていません（services ${services.length}/${expectedServices}、` +
+        `docValue ${services.reduce((n, s) => n + s.docValues.length, 0)}/${expectedValues}）。` +
+        'このスクリプトの正規表現がファイルの整形に追従できていない可能性があります。',
+    })
+  }
 
   for (const svc of services) {
     const file = resolve(DOCS_DIR, docPageToFilename(svc.docPage))
