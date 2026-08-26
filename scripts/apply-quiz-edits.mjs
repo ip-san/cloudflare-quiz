@@ -79,12 +79,23 @@ for (const p of proposals) {
       if (kind === 'option') quiz.options[idx].text = value
       else quiz.options[idx].wrongFeedback = value
     } else if (field === 'explanation' || field === 'question') {
-      // 図のマーカーを落とすと解説から図が消えるので、数が変わったら拒否する
+      // 図マーカーの扱い:
+      // - 既存マーカーの削除は拒否する（解説の途中にあった図が消えてしまう）
+      // - 追加は許可する（未参照だった図を本文の該当箇所へ結び付ける作業がある）
+      // - 存在しない図を指すマーカーは拒否する（何も描画されない死んだ参照になる）
       if (field === 'explanation') {
-        const oldMarkers = (quiz.explanation.match(/\{\{diagram:\d+\}\}/g) ?? []).sort().join(',')
-        const newMarkers = (value.match(/\{\{diagram:\d+\}\}/g) ?? []).sort().join(',')
-        if (oldMarkers !== newMarkers) {
-          errors.push(`${p.id}: explanation の図マーカーが変化 (${oldMarkers} → ${newMarkers})`)
+        const markersOf = (text) => (text.match(/\{\{diagram:(\d+)\}\}/g) ?? []).map((m) => m.match(/\d+/)[0])
+        const oldMarkers = markersOf(quiz.explanation)
+        const newMarkers = new Set(markersOf(value))
+        const dropped = oldMarkers.filter((m) => !newMarkers.has(m))
+        if (dropped.length > 0) {
+          errors.push(`${p.id}: explanation から図マーカーが消えている (${[...new Set(dropped)].join(', ')})`)
+          continue
+        }
+        const diagramCount = (quiz.diagrams ?? []).length
+        const dangling = [...newMarkers].filter((m) => Number(m) >= diagramCount)
+        if (dangling.length > 0) {
+          errors.push(`${p.id}: 存在しない図を指すマーカー (${dangling.join(', ')} / 図は${diagramCount}個)`)
           continue
         }
       }
