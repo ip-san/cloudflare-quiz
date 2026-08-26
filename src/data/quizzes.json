@@ -451,11 +451,11 @@
           "wrongFeedback": "自動リトライの仕組みではありません。`waitUntil`はあくまで非同期処理の完了をWorkerに待たせるためのAPIです。"
         },
         {
-          "text": "レスポンスをクライアントに返すまでの最大待機時間(タイムアウト)を設定する",
+          "text": "レスポンスをクライアントに返すまでの最大待機時間(タイムアウト)をミリ秒で設定する",
           "wrongFeedback": "`waitUntil`はタイムアウトを設定する機能ではありません。レスポンス返却後も処理を継続させるためのAPIです。"
         },
         {
-          "text": "レスポンスをクライアントに返した後も、ログ送信やキャッシュ書き込みなどの非同期処理をWorkerの実行コンテキスト内で継続させる"
+          "text": "レスポンスをクライアントに返した後も、ログ送信などの非同期処理をWorkerの実行コンテキスト内で継続させる"
         },
         {
           "text": "複数のリクエストを1つにバッチ処理してまとめて応答する",
@@ -1419,10 +1419,10 @@
           "wrongFeedback": "`wrangler.toml` は `[env.<name>]` セクションによって複数環境をネイティブにサポートしています。"
         },
         {
-          "text": "`[env.staging]` や `[env.production]` セクションを定義し、環境ごとに上書きしたい設定を記述したうえで `wrangler deploy --env production` のようにデプロイする"
+          "text": "`[env.staging]` や `[env.production]` セクションに環境ごとに上書きしたい設定を記述し、`wrangler deploy --env production` のようにデプロイする"
         },
         {
-          "text": "`--staging` と `--production` という専用のコマンドライン引数がそれぞれ用意されており、それを直接指定する",
+          "text": "`wrangler deploy --staging` と `wrangler deploy --production` という専用のコマンドライン引数がそれぞれ用意されており、それを直接指定する",
           "wrongFeedback": "そのような専用フラグはありません。環境名は `--env` フラグで指定します。"
         },
         {
@@ -2520,11 +2520,11 @@
       "question": "Workers KVのput()で`metadata`オプションを指定する主な用途として適切なものはどれですか？",
       "options": [
         {
-          "text": "複数のKV namespace間でのレプリケーション順序を制御するために使用する",
+          "text": "複数のKV namespace間で値が伝播するレプリケーションの順序を制御するために使用する",
           "wrongFeedback": "metadataにそのような制御機能はありません。KVの伝播順序を直接制御するオプションは提供されていません。"
         },
         {
-          "text": "値本体を読み込まずに、list()やgetWithMetadata()でコンテンツタイプやバージョンなどの付加情報だけを取得できるようにする"
+          "text": "値本体を読み込まずに、list()の結果からコンテンツタイプやバージョンなどの付加情報だけを取得できるようにする"
         },
         {
           "text": "キーのTTL(有効期限)を延長するために使用する",
@@ -6703,14 +6703,14 @@
           "wrongFeedback": "全文書を毎回送るのは非効率かつプロンプト長の制限に反します。RAGでは類似検索で関連する一部の文書のみに絞り込んで使います。"
         },
         {
-          "text": "質問文をembedding化してVectorizeで類似文書を検索し、関連文書（本文はD1やR2などに保存）をコンテキストとしてLLMのプロンプトに追加して回答を生成する"
+          "text": "質問文をembedding化してVectorizeで類似文書を検索し、関連文書をコンテキストとしてLLMのプロンプトに追加して回答を生成する"
         },
         {
           "text": "Vectorizeが直接自然言語の回答文を生成し、Workers AIは使用しない",
           "wrongFeedback": "Vectorizeはベクトルの保存・検索に特化したデータベースであり、自然言語の回答文を生成する機能は持ちません。回答生成はWorkers AIなどのLLMが担います。"
         },
         {
-          "text": "ユーザーの質問をそのままLLMに渡し、Vectorizeは応答結果をキャッシュするためだけに使う",
+          "text": "ユーザーの質問をそのままLLMに渡し、Vectorizeは生成された応答結果をキャッシュして再利用するためだけに使う",
           "wrongFeedback": "それはAI Gatewayのキャッシュに近い説明です。VectorizeはRAGにおいて関連文書を検索（retrieval）する中心的な役割を持ちます。"
         }
       ],
@@ -7450,7 +7450,7 @@
           "wrongFeedback": "WorkersはV8 isolateという軽量な実行単位を使い、仮想マシンモデルより約100倍高速に起動できる設計です。専用VMを常時起動する仕組みではありません。"
         },
         {
-          "text": "デプロイ時にリージョンを指定する必要がなく、Cloudflareのグローバルネットワーク上で自動的にユーザーに近い場所で実行される「リージョンレス」モデルである"
+          "text": "デプロイ時にリージョンを指定する必要がなく、自動的にユーザーに近い場所で実行される「リージョンレス」モデルである"
         }
       ],
       "correctIndex": 3,
@@ -9134,10 +9134,10 @@
           "wrongFeedback": "Tiered CacheはHTTPキャッシュ(CDN)の仕組みであり、Workers KVの読み取りを扱う機能ではありません。"
         },
         {
-          "text": "下位(ユーザーに近い)データセンターでキャッシュミスした場合、オリジンに直接問い合わせるのではなく上位のデータセンターに問い合わせることで、オリジンへのリクエスト数を削減しキャッシュヒット率を高める仕組み"
+          "text": "下位(ユーザーに近い)データセンターでキャッシュミスした場合、オリジンではなく上位のデータセンターに問い合わせ、オリジンへのリクエストを減らしヒット率を高める仕組み"
         },
         {
-          "text": "すべてのデータセンターが常に同じキャッシュ内容を複製し合うことで、Cache APIの結果整合性の問題を解消する機能",
+          "text": "すべてのデータセンターが常に同じキャッシュ内容を相互に複製し合うことで、Cache APIの結果整合性の問題を根本的に解消する機能",
           "wrongFeedback": "Tiered Cacheはデータセンター間でキャッシュ内容を常に複製する機能ではありません。下位データセンターがミスした際に上位データセンターへ問い合わせる階層構造です。"
         },
         {
@@ -11727,14 +11727,14 @@
       "question": "Cloudflare Hyperdriveの役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "AWSやNeonなどでホストされた既存のPostgres/MySQLデータベースへのWorkersからのアクセスを、接続プーリングとクエリキャッシュで高速化するサービス"
+          "text": "既存のPostgres/MySQLデータベースへのWorkersからのアクセスを、接続プーリングとクエリキャッシュで高速化するサービス"
         },
         {
           "text": "データベースを自動的にCloudflareのエッジへ移行(マイグレーション)するツール",
           "wrongFeedback": "データベース自体は元の場所に残ります。Hyperdriveは移行ツールではなく、既存データベースへのアクセスを速くする仕組みです。"
         },
         {
-          "text": "Cloudflareが提供する新しい分散SQLデータベースで、D1の上位版としてデータを保存する",
+          "text": "Cloudflareが提供する新しい分散SQLデータベースで、D1の上位版としてデータそのものをエッジに保存する",
           "wrongFeedback": "Hyperdrive自体はデータベースではありません。既存のPostgres/MySQLデータベースへの接続を高速化するサービスです。"
         },
         {
@@ -12339,10 +12339,10 @@
           "wrongFeedback": "YAMLではなくTypeScript/JavaScriptのクラスとして定義します。ステップは通常のコードとして書きます。"
         },
         {
-          "text": "`WorkflowEntrypoint` クラスを継承し、`run(event, step)` メソッドの中で最低1つの `step` 呼び出しを行うクラスを定義する"
+          "text": "`WorkflowEntrypoint` を継承し、`run(event, step)` メソッドの中で最低1つの `step` 呼び出しを行うクラスを定義する"
         },
         {
-          "text": "`export default { workflow() {} }` 形式のハンドラを定義する",
+          "text": "`export default { workflow(event, step) {} }` 形式のハンドラをエクスポートして定義する",
           "wrongFeedback": "`fetch`ハンドラのようなdefault exportの形式ではなく、`WorkflowEntrypoint` を継承したクラスをexportします。"
         }
       ],
@@ -12674,7 +12674,7 @@
       "question": "Workflowのステップから決済APIのような「二重実行したくない外部API」を呼ぶ場合の設計として、公式のベストプラクティスに沿ったものはどれですか？",
       "options": [
         {
-          "text": "step.doの外側(runメソッド直下)でAPIを呼べばリトライの影響を受けない",
+          "text": "step.doの外側(runメソッド直下)でAPIを呼べばリトライの影響を受けず、二重実行は起きない",
           "wrongFeedback": "step.doの外での副作用はむしろアンチパターンです。エンジンの再実行時に何度も走る可能性があり、永続化もされません。副作用は必ずステップの中に入れます。"
         },
         {
@@ -12686,7 +12686,7 @@
           "wrongFeedback": "リトライを切ると一時障害からの回復力を失います。またステップ外の要因(エンジンの再起動など)による再実行は防げないため、冪等性の確保が本質的な対策です。"
         },
         {
-          "text": "ステップはリトライで複数回実行されうるという前提に立ち、課金済みかどうかを確認してから課金APIを呼ぶ「冪等(idempotent)」な実装にする"
+          "text": "ステップは複数回実行されうる前提に立ち、課金済みかを確認してから課金APIを呼ぶ「冪等(idempotent)」な実装にする"
         }
       ],
       "correctIndex": 3,
@@ -13645,7 +13645,7 @@
       "question": "Browser Run を Worker から使ってスクリーンショットを撮る際の基本的な構成として正しいものはどれですか？",
       "options": [
         {
-          "text": "ブラウザ操作は `fetch` でHTMLを取得するのと完全に同じで、JavaScript実行後の状態は扱えない",
+          "text": "ブラウザ操作は `fetch` でHTMLを取得するのと完全に同じ処理であり、JavaScript実行後の状態やスクリーンショットは扱えない",
           "wrongFeedback": "単なる`fetch`と違い、ヘッドレスChromeが実際にページを描画するため、JavaScript実行後の状態やスクリーンショットを扱えます。"
         },
         {
@@ -13653,7 +13653,7 @@
           "wrongFeedback": "WorkerからOSコマンドは実行できません。Browser バインディングと Puppeteer/Playwright を介してヘッドレスChromeを操作します。"
         },
         {
-          "text": "Browser のバインディングを設定し、`@cloudflare/puppeteer` などで Puppeteer/Playwright を使ってページを開き、操作やスクリーンショット取得を行う"
+          "text": "Browser のバインディングを設定し、`@cloudflare/puppeteer` などで Puppeteer/Playwright を使って操作やスクリーンショット取得を行う"
         },
         {
           "text": "画面描画は Turnstile のトークン経由で取得する",
@@ -16812,7 +16812,7 @@
       "question": "AI Gatewayの「Spend limits」機能の基本的な役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "モデルの料金に基づいてリクエストごとの実際のコストを追跡し、一定期間の累計支出が予算を超えたらリクエストをブロックする(または安いモデルへフォールバックする)"
+          "text": "モデルの料金に基づいてリクエストごとの実際のコストを追跡し、一定期間の累計支出が予算を超えたらリクエストをブロックする"
         },
         {
           "text": "プロンプトや応答の文字数を制限し、それを超えると自動的に切り詰める",
@@ -19731,14 +19731,14 @@
           "wrongFeedback": "DNSの設定だけでなく、APIの`status`・`ssl.status`フィールドで検証・証明書発行が完了しているかも確認する必要があります。"
         },
         {
-          "text": "`result.status`だけを確認すればよく、`result.ssl.status`は本番トラフィックの判断には関係しない",
+          "text": "`result.status`が`active`であることだけを確認すればよく、`result.ssl.status`は本番トラフィックの判断には関係しない",
           "wrongFeedback": "本番トラフィックの判断には`result.status`と`result.ssl.status`の両方が`active`であることを確認する必要があります。"
         },
         {
           "text": "`result.status`(ホスト名の検証・プロキシ可否)と`result.ssl.status`(証明書の発行・配備)の両方が`active`であり、かつ顧客のDNSがSaaS事業者のターゲットを指していることを確認する"
         },
         {
-          "text": "`result.ssl.status`だけを確認すればよく、`result.status`は本番トラフィックの判断には関係しない",
+          "text": "`result.ssl.status`が`active`であることだけを確認すればよく、`result.status`は本番トラフィックの判断には関係しない",
           "wrongFeedback": "`result.ssl.status`だけでなく`result.status`(ホスト名自体の検証状態)も確認する必要があります。"
         }
       ],
@@ -21992,7 +21992,7 @@
           "wrongFeedback": "部分(CNAME)セットアップではCloudflareがゾーンを管理していないため、DNSレコードの自動作成は行われず手動作成が必要です。"
         },
         {
-          "text": "ルート(apex)ドメインであっても、CNAMEフラット化に対応していないDNSプロバイダーで問題なくCNAMEレコードを作成できる",
+          "text": "ゾーンのルート(apex)ドメインであっても、CNAMEフラット化に対応していないDNSプロバイダーで問題なくCNAMEレコードを手動作成できる",
           "wrongFeedback": "CNAMEフラット化に対応していないプロバイダーでは、ルートドメインにCNAMEレコードを作成できません。サブドメインを使う必要があります。"
         },
         {
@@ -22000,7 +22000,7 @@
           "wrongFeedback": "IPアドレスではなく`<ホスト名>.cdn.cloudflare.net`という形式のホスト名を指定します。"
         },
         {
-          "text": "外部のDNSプロバイダー側で、対象ホスト名から`<ホスト名>.cdn.cloudflare.net`を指す先のCNAMEレコードを手動作成する必要があり、ゾーンのルート(apex)ドメインはCNAMEレコードの仕様上使用できない"
+          "text": "外部のDNSプロバイダー側で`<ホスト名>.cdn.cloudflare.net`を指すCNAMEレコードを手動作成する必要があり、ゾーンのルート(apex)ドメインはCNAMEの仕様上使用できない"
         }
       ],
       "correctIndex": 3,
@@ -23395,10 +23395,10 @@
       "question": "Cloudflareが提供する3つのBot対策製品の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "全ドメインに一括で適用するBot Fight Mode(Free)、カテゴリごとにアクションを設定できるSuper Bot Fight Mode(Pro以上)、リクエスト単位のスコアで細かく制御できるBot Management(Enterprise向けアドオン)"
+          "text": "Bot Fight Mode(Free、全ドメイン一括)、Super Bot Fight Mode(Pro以上、カテゴリ別)、Bot Management(Enterpriseアドオン、リクエスト単位のスコア)"
         },
         {
-          "text": "IP Access Rules・Zone Lockdown・User Agent Blockingという、Ruleset Engine外で動く3つの機能",
+          "text": "IP Access Rules・Zone Lockdown・User Agent Blockingという、Ruleset Engineの外で動く3つのアクセス制御機能",
           "wrongFeedback": "これらはRuleset Engine外で動く別のセキュリティ機能です。Bot対策製品の組み合わせとは異なります。"
         },
         {
@@ -29065,14 +29065,14 @@
           "wrongFeedback": "発行元だけでなく、有効期限内であることとホスト名の一致も要件に含まれます。"
         },
         {
-          "text": "自己署名証明書であっても、Common Nameがリクエストされたホスト名と正確に一致してさえいれば、この要件は満たされる",
+          "text": "自己署名証明書であっても、有効期限内でCommon Nameがリクエストされたホスト名と正確に一致してさえいれば、この要件は満たされる",
           "wrongFeedback": "自己署名証明書はFull(strict)の要件を満たしません。公的な認証局またはCloudflareのOrigin CAからの発行が必要です。"
         },
         {
-          "text": "有効期限内であること・公的な認証局またはCloudflareのOrigin CAから発行されていること・Common NameまたはSANが要求されたホスト名と一致すること、という3つの条件をすべて満たす必要がある"
+          "text": "有効期限内・公的な認証局またはCloudflareのOrigin CAからの発行・Common NameまたはSANが要求されたホスト名と一致、の3条件をすべて満たす必要がある"
         },
         {
-          "text": "証明書が有効期限内でありさえすれば要件を満たし、発行元がどこであるか(自己署名を含む)やホスト名の一致は一切問われない",
+          "text": "証明書が有効期限内でありさえすれば要件を満たし、発行元がどこであるか(自己署名を含む)やCommon Name・SANとホスト名の一致は一切問われない",
           "wrongFeedback": "有効期限だけでなく、発行元(公的CAまたはOrigin CA)とホスト名の一致も要件に含まれます。"
         }
       ],
@@ -29477,7 +29477,7 @@
           "wrongFeedback": "むしろ逆で、Cloudflare上で証明書ピンニングが機能する唯一の証明書タイプがカスタム証明書です。"
         },
         {
-          "text": "カスタム証明書を使う主な理由は、証明機関(CA)を自分で選びたい場合や、Cloudflareが提供しないOrganization Validated(OV)・Extended Validation(EV)証明書が必要な場合である"
+          "text": "カスタム証明書を使う主な理由は、証明機関(CA)を自分で選びたい場合や、CloudflareのUniversal SSLでは提供されないOV・EV証明書が必要な場合である"
         }
       ],
       "correctIndex": 3,
@@ -31705,14 +31705,14 @@
           "wrongFeedback": "Windows版は自動更新されません。`cloudflared update`コマンドによる手動でのアップデートが必要です。"
         },
         {
-          "text": "ゼロダウンタイムで更新するには、新しいバージョンのcloudflaredインスタンス(別のレプリカ、またはLoad Balancerのプール内の新インスタンス)を先に起動し、正常に動作することを確認してから古いインスタンスを停止する"
+          "text": "ゼロダウンタイムで更新するには、新バージョンのcloudflaredインスタンス(別のレプリカやLoad Balancerプール内の新インスタンス)を先に起動し、正常動作を確認してから古いインスタンスを停止する"
         },
         {
           "text": "設定ファイルを変更した場合、実行中のcloudflaredインスタンスを一度も停止せずに変更を自動的に反映させることができる",
           "wrongFeedback": "実行中のインスタンスは設定変更を自動反映しません。新しい設定のレプリカを起動し、稼働を確認してから旧インスタンスを停止する手順が必要です。"
         },
         {
-          "text": "`--autoupdate-freq`のデフォルト値は1時間ごとであり、cloudflaredは1時間おきに更新確認と再起動を行う",
+          "text": "`--autoupdate-freq`のデフォルト値は1時間ごとに設定されており、cloudflaredは1時間おきに更新確認とプロセスの再起動を自動的に行う",
           "wrongFeedback": "デフォルトは24時間ごとです。1時間ごとではありません。"
         }
       ],
@@ -32187,14 +32187,14 @@
           "wrongFeedback": "コンテンツセキュリティルールはClient-Side Security Advanced契約者専用の機能です。"
         },
         {
-          "text": "Free・Proプランではスクリプトモニタリングのみにアクセスでき、ドメインベースの脅威インテリジェンスはすべての顧客が利用できる一方、悪性スクリプト検知やURLベースの脅威インテリジェンスの利用にはClient-Side Security Advancedが必要である"
+          "text": "Free・Proプランではスクリプトモニタリングのみにアクセスでき、ドメインベースの脅威インテリジェンスは全顧客が利用できるが、悪性スクリプト検知やURLベースの脅威インテリジェンスにはClient-Side Security Advancedが必要である"
         },
         {
           "text": "Free・Proプランではスクリプトモニタリングと接続(connection)モニタリングの両方に完全にアクセスできる",
           "wrongFeedback": "Free・Proプランではスクリプトモニタリングのみアクセスでき、接続モニタリングは含まれません。"
         },
         {
-          "text": "ドメインベースの脅威インテリジェンスもClient-Side Security Advancedの契約者専用の機能であり、無料プランでは一切利用できない",
+          "text": "ドメインベースの脅威インテリジェンスも悪性スクリプト検知と同じくClient-Side Security Advancedの契約者専用の機能であり、Free・Proプランでは一切利用できない",
           "wrongFeedback": "ドメインベースの脅威インテリジェンスはすべての顧客が利用できます。Advanced限定なのは悪性スクリプト検知とURLベースの脅威インテリジェンスです。"
         }
       ],
@@ -32241,7 +32241,7 @@
           "wrongFeedback": "Code change alertは週1回ではなく、毎日送信される通知です。"
         },
         {
-          "text": "変更されたスクリプトのレビューは、時間の経過とともにJavaScriptの依存関係がどう変化したかを追跡し、その変更が想定内かどうかを検証する作業である一方、悪性スクリプトのレビューでは、Malicious code analysisのスコアや脅威インテリジェンスとの一致状況を確認して脅威度を判断する"
+          "text": "変更されたスクリプトのレビューはJavaScriptの依存関係の変化を追跡し変更が想定内かを検証する作業で、悪性スクリプトのレビューはMalicious code analysisのスコアや脅威インテリジェンスとの一致状況から脅威度を判断する"
         },
         {
           "text": "変更されたスクリプトのレビューは、Cloudflareが提供するJS整合性スコアと脅威インテリジェンスの一致状況を必ず確認する作業である",
@@ -32502,7 +32502,7 @@
       "question": "コンテンツセキュリティルールの違反(rule violations)を確認する方法に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "GraphQL APIの`pageShieldReportsAdaptiveGroups`データセットでは、過去90日分の違反情報を無制限にクエリできる",
+          "text": "GraphQL APIの`pageShieldReportsAdaptiveGroups`データセットでは、過去90日分の違反情報を件数や期間の制限なく自由にクエリできる",
           "wrongFeedback": "クエリできるのは過去90日分ではなく過去30日分の違反情報です。"
         },
         {
@@ -32510,7 +32510,7 @@
           "wrongFeedback": "既存のLogpushの仕組みの中で`page_shield_events`データセットを指定するだけで、専用の別サービス契約は不要です。"
         },
         {
-          "text": "違反情報はダッシュボードで確認できるほか、GraphQL APIの`pageShieldReportsAdaptiveGroups`データセット(過去30日分をクエリ可能)や、Logpushの`page_shield_events`データセットを通じても取得できる"
+          "text": "違反情報はダッシュボードのほか、GraphQL APIの`pageShieldReportsAdaptiveGroups`(過去30日分)や、Logpushの`page_shield_events`データセットからも取得できる"
         },
         {
           "text": "違反情報はダッシュボードでのみ確認でき、GraphQL APIやLogpushのような他の手段では取得できない",
@@ -33064,11 +33064,11 @@
           "wrongFeedback": "mTLSはTLS復号と互換性がありません。GatewayはオリジンへクライアントのTLS証明書を転送できないため、mTLSハンドシェイクが失敗します。回避にはDo Not Inspectポリシーの作成が必要です。"
         },
         {
-          "text": "証明書ピニングを使うアプリケーションでも、Cloudflareの証明書を端末にインストールしさえすれば常に問題なくTLS復号できる",
+          "text": "証明書ピニングを使うアプリケーションでも、Cloudflareのルート証明書を端末の信頼ストアにインストールしさえすれば常に問題なくTLS復号できる",
           "wrongFeedback": "証明書ピニングを使うアプリはCloudflareの証明書を信頼しないため、証明書をインストールするだけでは解決しません。アプリへの証明書追加やDo Not Inspectポリシーなど別の対応が必要です。"
         },
         {
-          "text": "Gatewayは復号したHTTPSトラフィックにポリシーを適用したうえで、ユーザー側の証明書で再暗号化する。証明書ピニングやmTLS認証、ESNI/ECHによるハンドシェイク暗号化を使うアプリケーションは、TLS復号と互換性がない"
+          "text": "Gatewayは復号したHTTPSトラフィックにポリシーを適用し、ユーザー側の証明書で再暗号化する。証明書ピニング・mTLS認証・ESNI/ECHを使うアプリケーションはTLS復号と互換性がない"
         },
         {
           "text": "TLS復号を有効にしなくても、HTTPSトラフィックの完全なURL・ヘッダー・リクエストボディをGatewayが検査できる",
@@ -33331,7 +33331,7 @@
       "question": "GatewayがユーザーとGateway間、Gatewayと宛先サーバー間で確立する接続の仕組みに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "Gatewayはユーザーとの接続とは独立した新しいTCP接続を宛先サーバーとの間に確立し、ユーザー側の送信元IP・ポートとは異なる新しい送信元IP・ポートを割り当てるため、ユーザー側のTCPハンドシェイクの詳細はオリジンとのハンドシェイクには含まれない"
+          "text": "Gatewayはユーザーとの接続とは独立した新しいTCP接続を宛先サーバーとの間に確立し新しい送信元IP・ポートを割り当てるため、ユーザー側のTCPハンドシェイクの詳細はオリジンとのハンドシェイクには含まれない"
         },
         {
           "text": "宛先サーバーへのTCP接続が失敗した通信は、Gatewayのアクティビティログとゼロトラストのネットワークセッションログの両方に必ず記録される",
@@ -33342,7 +33342,7 @@
           "wrongFeedback": "TCP接続が失敗した場合、Gatewayはポリシーを一切適用せず、ユーザーからの接続を再試行します。"
         },
         {
-          "text": "Gatewayは宛先サーバーへの接続を確立する際、常にユーザーの元のTCPハンドシェイク情報(送信元IP・ポートなど)をそのままオリジンへ転送する",
+          "text": "Gatewayは宛先サーバーへの接続を確立する際、ユーザーとの接続で使われた元のTCPハンドシェイク情報(送信元IP・ポートなど)を常にそのままオリジンへ転送する",
           "wrongFeedback": "Gatewayはユーザーとの接続とは独立した新しい接続を確立し、新しい送信元IP・ポートを割り当てます。ユーザー側のTCPハンドシェイクの詳細はオリジンへ転送されません。"
         }
       ],
@@ -33723,7 +33723,7 @@
           "wrongFeedback": "Split Tunnelの設定が影響するのは転送中のデータのスキャンのみです。保存中のデータ(CASBによるスキャン)には影響しません。"
         },
         {
-          "text": "保存中のデータもGatewayのHTTPポリシーを経由して検知される仕組みになっているため、Do Not Inspectポリシーを設定すればCASBによるSaaSアプリのスキャンも同時に無効化できる",
+          "text": "保存中のデータもGatewayのHTTPポリシーとTLS復号を経由して検知される仕組みになっているため、Do Not InspectポリシーやSplit Tunnelを設定すればCASBによるSaaSアプリのスキャンも同時に無効化できる",
           "wrongFeedback": "CASBはSaaSアプリのAPIへ直接接続してスキャンするため、Gateway経由の設定であるDo Not Inspectポリシーの影響を受けません。"
         },
         {
@@ -33731,7 +33731,7 @@
           "wrongFeedback": "転送中のデータの検知にはGatewayのHTTPポリシーによるTLS復号が必要です。復号なしではHTTPSの中身を検査できません。"
         },
         {
-          "text": "転送中のデータはSecure Web Gateway(HTTPポリシーとTLS復号)と連携して検知され、Do Not InspectポリシーやSplit Tunnelの設定に影響を受ける。一方、保存中のデータはCloudflare CASBがSaaSアプリのAPIへ直接接続してファイルを取得・スキャンするため、Gatewayの設定には影響を受けない"
+          "text": "転送中のデータはSecure Web Gateway(HTTPポリシーとTLS復号)経由で検知されDo Not InspectやSplit Tunnelの影響を受けるが、保存中のデータはCASBがSaaSアプリのAPIへ直接接続してスキャンするためGatewayの設定の影響を受けない"
         }
       ],
       "correctIndex": 3,
@@ -35382,14 +35382,14 @@
       "question": "Browser Isolationの基本的な有効化の流れに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "デフォルトではIsolateポリシーを追加するまで一切のトラフィックが分離されず、接続方式には通常のURLでブラウジングするインライン方式と、Cloudflareがホストするプレフィックス付きURLを経由するクライアントレス方式の2種類がある"
+          "text": "デフォルトではIsolateポリシーを追加するまで一切のトラフィックが分離されず、接続方式には通常のURLでブラウジングするインライン方式と、プレフィックス付きURLを経由するクライアントレス方式の2種類がある"
         },
         {
           "text": "GatewayのHTTPポリシーとは別に、Browser Isolation専用の独立したポリシービルダーでIsolateポリシーを作成する",
           "wrongFeedback": "IsolateはGatewayのHTTPポリシービルダーの中のアクションの1つとして設定します。専用の別ビルダーは存在しません。"
         },
         {
-          "text": "Browser Isolationのアドオンを契約した時点で、追加のポリシー設定なしにすべてのHTTPトラフィックが自動的に分離される",
+          "text": "Browser Isolationのアドオンを契約して有効化した時点で、Isolateポリシーの追加など追加の設定なしにすべてのHTTPトラフィックが自動的に分離される",
           "wrongFeedback": "Isolateポリシーを追加するまでは、デフォルトでは一切のトラフィックが分離されません。"
         },
         {
@@ -35698,10 +35698,10 @@
       "question": "CASBの利用可能範囲に関するプランごとの違いに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "CASBはすべてのZero Trustユーザーが利用できるが、無料プランのユーザーが設定できるインテグレーションは最大2つまでで、finding(検知結果)インスタンスの詳細を閲覧するにはEnterpriseプランへのアップグレードが必要である"
+          "text": "CASBはすべてのZero Trustユーザーが利用できるが、無料プランで設定できるインテグレーションは最大2つまでで、finding(検知結果)インスタンスの詳細閲覧にはEnterpriseプランが必要"
         },
         {
-          "text": "無料プランのユーザーが設定できるインテグレーション数に上限はなく、findingインスタンスの詳細閲覧もすべてのプランで無制限に可能である",
+          "text": "無料プランのユーザーが設定できるインテグレーション数に上限はなく、finding(検知結果)インスタンスの詳細閲覧もすべてのプランで無制限に可能である",
           "wrongFeedback": "無料プランでは最大2つまでのインテグレーションに制限されており、findingインスタンスの詳細閲覧にはEnterpriseプランが必要です。"
         },
         {
@@ -36017,7 +36017,7 @@
       "question": "CASBのfindingを「Ignore(無視)」する操作と「Hide(非表示)」する操作の違いに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "IgnoreやHideを行うと、CASBはそのfindingタイプ・インスタンスに対するバックグラウンドでのスキャン自体を完全に停止し、以降は二度と検知が行われなくなる",
+          "text": "IgnoreやHideを行うと、CASBはそのfindingタイプやインスタンスに対するバックグラウンドでのスキャン自体を完全に停止し、以降は再スキャンしても二度と検知が行われなくなる",
           "wrongFeedback": "スキャン自体は継続されます。新たに検知された場合もIgnored/Hiddenタブへ振り分けられるだけで、検知そのものが停止するわけではありません。"
         },
         {
@@ -36025,7 +36025,7 @@
           "wrongFeedback": "どちらの操作も取り消し可能(reversible)です。"
         },
         {
-          "text": "Ignoreはそのfindingタイプ全体をActiveからIgnoredへ移動させ、Hideは特定の1件のインスタンスのみをActiveからHiddenへ移動させる操作で、どちらも取り消し可能であり、その後も新たな検知は引き続き行われるが、Ignored/Hiddenタブへ振り分けられる"
+          "text": "Ignoreはそのfindingタイプ全体をActiveからIgnoredへ、Hideは特定の1件のインスタンスのみをHiddenへ移動させる操作で、どちらも取り消し可能であり、その後も新たな検知は行われるが該当するタブへ振り分けられる"
         },
         {
           "text": "Ignoreは特定の1件のインスタンスのみに適用される細かい単位の操作であり、Hideの方はそのfindingタイプ全体という広い単位に適用される",
@@ -36172,7 +36172,7 @@
       "question": "CASBのfindingからGatewayのHTTPポリシーを作成する機能に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "この機能はGoogle Workspaceの「編集権限付きで公開アクセス可能なファイル」「閲覧権限付きで公開アクセス可能なファイル」「編集権限付きで社外共有されているファイル」「閲覧権限付きで社外共有されているファイル」という4種類のPosture findingsに限定されており、利用にはGatewayのHTTPフィルタリングを事前に有効化しておく必要がある"
+          "text": "この機能はGoogle Workspaceの「公開アクセス可能／社外共有」×「編集権限／閲覧権限」の4種類のPosture findingsに限定されており、利用にはGatewayのHTTPフィルタリングを事前に有効化しておく必要がある"
         },
         {
           "text": "この機能を利用するにあたって、あらかじめGatewayのトラフィックフィルタリング機能(HTTPインスペクション)を有効化しておくような前提条件は、ドキュメント上どこにも特に定められていない",
@@ -36274,7 +36274,7 @@
       "question": "CASB Webhookで設定できる認証方式に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "HMAC-Signingを選択した場合、署名用シークレットの設定は不要で、Cloudflareが自動的にすべてを処理する",
+          "text": "HMAC-Signingを選択した場合でも、署名用シークレットの設定は不要で、鍵の生成から署名までCloudflareが自動的にすべて処理する",
           "wrongFeedback": "HMAC-Signingを選択した場合、署名用シークレットの設定が必要です。"
         },
         {
@@ -36282,7 +36282,7 @@
           "wrongFeedback": "None・Basic Auth・Bearer Auth・Static Headers・HMAC-Signingの5種類がサポートされています。1種類のみではありません。"
         },
         {
-          "text": "認証方式にはNone(なし)・Basic Auth・Bearer Auth・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類が用意されている"
+          "text": "認証方式にはNone・Basic Auth・Bearer Auth・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類がある"
         },
         {
           "text": "Static Headersを使う場合、同じヘッダー名を複数回指定して重複させることが推奨されている",
@@ -36328,7 +36328,7 @@
       "question": "検証が行われるタイミングを踏まえると、CASB Webhookの送信先URLに関する制約として正しい説明はどれですか?",
       "options": [
         {
-          "text": "送信先URLとしてlocalhostやループバックアドレスのような予約済みアドレスも、他の一般的なURLと同様に問題なく設定できる",
+          "text": "送信先URLとしてlocalhostやループバック、プライベートアドレスのような予約済みアドレスも、他の一般的なURLと同様に問題なく設定できる",
           "wrongFeedback": "localhost・ループバック・プライベート・その他の予約済みアドレスに解決されるURLは拒否されます。"
         },
         {
@@ -36336,7 +36336,7 @@
           "wrongFeedback": "`https://`のURLのみが受け付けられます。HTTPは受け付けられません。"
         },
         {
-          "text": "送信先URLは`https://`かつ外部から到達可能(publicly reachable)である必要があり、localhostやループバック、プライベートアドレスなどの予約済みアドレスに解決されるURLは保存時点で拒否される"
+          "text": "送信先URLは`https://`かつ外部から到達可能である必要があり、localhostやループバック、プライベートアドレスなどの予約済みアドレスに解決されるURLは保存時点で拒否される"
         },
         {
           "text": "送信先URLの妥当性チェックは、Webhookの作成時ではなく実際に配信が試みられた時点で初めて行われる",
@@ -36639,14 +36639,14 @@
           "wrongFeedback": "Pausedのクライアントはタイムアウト後に自動的に再接続されます。"
         },
         {
-          "text": "fleetとは、Cloudflare One Clientがインストールされ、Zero Trust組織に接続されているユーザーデバイスの集合を指し、接続ステータスにはConnected(接続中)・Disconnected(切断)・Paused(管理者コードによる一時停止)・Connecting(接続試行中)がある"
+          "text": "fleetとはCloudflare One ClientがインストールされZero Trust組織に接続されたユーザーデバイスの集合で、接続ステータスはConnected・Disconnected・Paused(管理者コードによる一時停止)・Connectingの4つ"
         },
         {
           "text": "Pausedステータスは、デバイスがマルウェアに感染したことをCloudflareが検知した際に、管理者が強制的にそのデバイスを切断した状態を指すものとして扱われる",
           "wrongFeedback": "Pausedは、ユーザーまたは管理者が管理者オーバーライドコードを使って一時的にWARPをオフにした状態を指します。マルウェア感染時の強制切断ではありません。"
         },
         {
-          "text": "fleetとは、Cloudflare One Clientがインストールされているかどうかに関わらず、Zero Trust組織に属するすべてのデバイスを指す用語として定義されている",
+          "text": "fleetとは、Cloudflare One Clientがインストールされているかどうかや接続ステータスに関わらず、Zero Trust組織に属するすべてのデバイスを指す用語として定義されている",
           "wrongFeedback": "fleetはCloudflare One Clientがインストールされ、Zero Trust組織に接続されているデバイスの集合を指します。"
         }
       ],
@@ -37336,7 +37336,7 @@
       "question": "リモートパケットキャプチャ(PCAP)とCloudflare One Client診断ログのファイルサイズ・時間の制約に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "Cloudflare One Client診断ログにはあらかじめファイルサイズの上限が設定されており、それを超える分量のログはそもそも生成自体ができない仕組みになっている",
+          "text": "Cloudflare One Client診断ログにはあらかじめ100MBというファイルサイズの上限が設定されており、それを超える分量のログはそもそも生成自体ができない仕組みになっている",
           "wrongFeedback": "診断ログ自体にファイルサイズの上限はありません。ただし100MBを超えるファイルはCloudflareへアップロードできず、管理者へ直接共有する必要があります。"
         },
         {
@@ -37348,7 +37348,7 @@
           "wrongFeedback": "PCAPのファイルサイズ上限は50MBです。診断ログの100MBという数値は、Cloudflareへアップロードできる上限であり、別の制約です。"
         },
         {
-          "text": "PCAPには時間上限600秒・ファイルサイズ上限50MB・パケットサイズ上限1500バイトという制約がある一方、Cloudflare One Client診断ログ自体にはファイルサイズの上限はないが、100MBを超えるファイルはCloudflareへアップロードできず、管理者へ直接共有する必要がある"
+          "text": "PCAPには時間上限600秒・ファイルサイズ上限50MB・パケットサイズ上限1500バイトの制約がある一方、診断ログ自体にファイルサイズの上限はないが、100MBを超えるとCloudflareへアップロードできず管理者へ直接共有する必要がある"
         }
       ],
       "correctIndex": 3,
@@ -40793,7 +40793,7 @@
           "wrongFeedback": "重複する期間のイベントを設定したい場合は、同一の待機室内で重ねるのではなく別の待機室を用意する必要があります。"
         },
         {
-          "text": "イベントで設定した値は待機室本体の設定を恒久的に上書きし、`event_end_time`を過ぎた後も新しい値がそのまま残り続ける",
+          "text": "イベントで設定した`Total active users`などの値は待機室本体の設定を恒久的に上書きし、`event_end_time`を過ぎた後も新しい値がそのまま残り続ける",
           "wrongFeedback": "イベントで設定した値は、あくまでそのイベントの開始時刻から終了時刻までの期間だけ待機室のデフォルト設定を上書きするものであり、イベント終了後は元の設定に戻ります。"
         },
         {
@@ -40801,7 +40801,7 @@
           "wrongFeedback": "1つの待機室に作成できるイベントには5件という上限があり、新しいイベントを作成するには既存のイベントを削除する必要があります。"
         },
         {
-          "text": "イベントは、特定の期間だけ`Total active users`や`Queueing Method`などの値を待機室のデフォルト設定から上書きするために使い、対象の待機室自体がEnabledでなければイベントは有効化されない"
+          "text": "イベントは特定の期間だけ`Total active users`や`Queueing Method`などを待機室のデフォルト設定から上書きするもので、対象の待機室自体がEnabledでなければ有効化されない"
         }
       ],
       "correctIndex": 3,
@@ -41359,7 +41359,7 @@
       "question": "Waiting RoomでTurnstileを併用する際の`turnstile_mode`と`turnstile_action`の役割について、正しい説明はどれですか?",
       "options": [
         {
-          "text": "`turnstile_mode`はウィジェットの表示形式(`off`・`invisible`・`visible_non_interactive`・`visible_managed`)を決め、`turnstile_action`はチャレンジに失敗した際に`log`と`infinite_queue`のどちらの挙動を取るかを決める"
+          "text": "`turnstile_mode`はウィジェットの表示形式(`off`や`invisible`など)を決め、`turnstile_action`はチャレンジに失敗した際に`log`と`infinite_queue`のどちらの挙動を取るかを決める"
         },
         {
           "text": "Turnstileウィジェットは待機室ページだけでなく、JSON応答が有効な非ブラウザ向けのレスポンスにも同様に表示される",
@@ -41997,7 +41997,7 @@
           "wrongFeedback": "Debug Modeの有効化には、ブラウザのコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行する操作が必要です。ダッシュボードのボタンだけでは有効化できません。"
         },
         {
-          "text": "設定ページで取得したDebug Keyを使い、ブラウザコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行して`zarazDebug`Cookieを作成する"
+          "text": "設定ページで取得したDebug Keyを使い、ブラウザコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行する"
         }
       ],
       "correctIndex": 3,
@@ -43440,11 +43440,11 @@
       "question": "AgentsのSandboxツールに関する説明として正しいものはどれですか?",
       "options": [
         {
-          "text": "Sandboxは`this.sql`と同じくSQLiteベースの機能であり、コンテナは一切使用せずWorker isolateの中だけで完結する",
+          "text": "Sandboxは`this.sql`と同じくSQLiteベースの機能であり、コンテナは一切使用せずAgentが動くWorker isolateの中だけで完結して実行される",
           "wrongFeedback": "SandboxはCloudflare Containersを基盤としており、Agentのコードが動くWorker isolateとは分離された実行環境を提供します。"
         },
         {
-          "text": "Cloudflare Containersを基盤としており、Agentのコード(Worker isolate)とは分離された環境でPythonやNode.jsのコード実行・ファイル操作・シェルコマンドを行うためのTypeScript APIを提供する"
+          "text": "Cloudflare Containersを基盤とし、Agentのコード(Worker isolate)とは分離された環境でPython・Node.js・シェルコマンドの実行やファイル操作を行うTypeScript APIを提供する"
         },
         {
           "text": "Sandboxで生成したファイルやログは自動的に`this.state`に保存され、Agentの状態と完全に一体化して管理される",
