@@ -39876,7 +39876,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "SSHのような非HTTPアプリケーションをSpectrumで公開する場合、ダッシュボードでApplication Type、ドメイン、Edge Port(例: 22)、オリジンのIPアドレスとポートを指定してアプリケーションを作成します。オリジン側で真のクライアントIPが必要な場合は、PROXY Protocol v1/v2を有効化してオリジンへクライアントIP情報を伝えます。",
+      "explanation": "SSHのような非HTTPアプリケーションをSpectrumで公開する場合、ダッシュボードでApplication Type、ドメイン、Edge Port(例: 22)、オリジンのIPアドレスとポートを指定してアプリケーションを作成します。オリジン側で真のクライアントIPが必要な場合は、PROXY Protocol v1/v2を有効化してオリジンへクライアントIP情報を伝えます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/get-started/",
       "hint": "「オレンジクラウドのHTTPプロキシとは別に、専用のアプリケーションを作る必要があるかどうか」を考えましょう。",
       "tags": [
@@ -40557,7 +40557,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`session duration`は1分から30分の範囲(デフォルト5分)で設定する値で、訪問者が対象の`host/path`にアクセスしてから、その時間内であれば再び待機室を経由せずに直接戻ってこられることを保証します。これにより同一トランザクション中に何度も待機室を通される体験を防ぐと同時に、セッションクッキーが失効すると新たな空きとしてカウントされるため、動的なアウトフローも実現します。",
+      "explanation": "`session duration`は1分から30分の範囲(デフォルト5分)で設定する値で、訪問者が対象の`host/path`にアクセスしてから、その時間内であれば再び待機室を経由せずに直接戻ってこられることを保証します。\n{{diagram:0}}\nこれにより同一トランザクション中に何度も待機室を通される体験を防ぐと同時に、セッションクッキーが失効すると新たな空きとしてカウントされるため、動的なアウトフローも実現します。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
       "hint": "「待機室を出た後」に関する設定である点に注目しましょう。",
       "tags": [
@@ -40750,7 +40750,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Waiting Roomの待機室ページには、未装飾で推定待機時間を表示するだけのDefault waiting roomと、HTML/CSSを自由に編集してブランディングできるCustom waiting roomがあります。カスタムテンプレートを使う場合、推定待機時間を表示し続けるには、テンプレートの`<main>`セクション内にある`<h2 id=\"time-remaining\">`を含む待機時間表示用コードを削除しないようにする必要があります。カスタムHTMLファイルのインポートには1MB(1,048,576バイト)のサイズ上限があります。",
+      "explanation": "Waiting Roomの待機室ページには、未装飾で推定待機時間を表示するだけのDefault waiting roomと、HTML/CSSを自由に編集してブランディングできるCustom waiting roomがあります。カスタムテンプレートを使う場合、推定待機時間を表示し続けるには、テンプレートの`<main>`セクション内にある`<h2 id=\"time-remaining\">`を含む待機時間表示用コードを削除しないようにする必要があります。カスタムHTMLファイルのインポートには1MB(1,048,576バイト)のサイズ上限があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/customize-waiting-room/",
       "hint": "「Default」と「Custom」でそれぞれ何ができるかを整理してみましょう。",
       "tags": [
@@ -40857,7 +40857,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "プリキューイングは`prequeue_start_time`を設定することで有効になり、この時刻は`event_start_time`より少なくとも5分前でなければなりません。`shuffle_at_event_start`を`true`にすると、プリキュー期間中に到達した訪問者はイベント開始時にランダムな順番で並び替えられます。これにより「早い者勝ち」ではなく、プリキュー期間内に来た全員に公平な当選チャンスを与える「くじ引き」方式を実現できます。既存のアクティブセッションもプリキューに含めたい場合は、プリキュー期間をsession durationより長くし、Disable Session Renewalを有効にする必要があります。",
+      "explanation": "プリキューイングは`prequeue_start_time`を設定することで有効になり、この時刻は`event_start_time`より少なくとも5分前でなければなりません。`shuffle_at_event_start`を`true`にすると、プリキュー期間中に到達した訪問者はイベント開始時にランダムな順番で並び替えられます。\n{{diagram:0}}\nこれにより「早い者勝ち」ではなく、プリキュー期間内に来た全員に公平な当選チャンスを与える「くじ引き」方式を実現できます。既存のアクティブセッションもプリキューに含めたい場合は、プリキュー期間をsession durationより長くし、Disable Session Renewalを有効にする必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
       "hint": "「いつプリキューを開始できるか」という時刻の制約と、`shuffle_at_event_start`の役割を確認しましょう。",
       "tags": [
@@ -40920,7 +40920,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "JSON応答を利用するには、リクエストヘッダーに`Accept: application/json`を(他の値を混在させず)厳密に一致させて送信する必要があります。待機中は`cfWaitingRoom`オブジェクトにJSONで待機情報が返されるため、クライアント(モバイルアプリやバックエンドサービス)は`refreshIntervalSeconds`で指定された間隔ごとにリクエストを再送し、待機列内での順番を進める必要があります。また、レスポンスヘッダーで受け取ったクッキーを次のリクエストに含める必要があり、これを怠ると新規ユーザーとして待機列の末尾に回されます。Turnstileはブラウザ向けのHTMLレスポンスでのみ有効で、JSON応答では無効化されます。この機能はAdvanced Waiting Room customer限定です。",
+      "explanation": "JSON応答を利用するには、リクエストヘッダーに`Accept: application/json`を(他の値を混在させず)厳密に一致させて送信する必要があります。待機中は`cfWaitingRoom`オブジェクトにJSONで待機情報が返されるため、クライアント(モバイルアプリやバックエンドサービス)は`refreshIntervalSeconds`で指定された間隔ごとにリクエストを再送し、待機列内での順番を進める必要があります。また、レスポンスヘッダーで受け取ったクッキーを次のリクエストに含める必要があり、これを怠ると新規ユーザーとして待機列の末尾に回されます。\n{{diagram:0}}\nTurnstileはブラウザ向けのHTMLレスポンスでのみ有効で、JSON応答では無効化されます。この機能はAdvanced Waiting Room customer限定です。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/json-response/",
       "hint": "ヘッダーの厳密な一致条件と、クライアント側が定期的に何をすべきかに注目しましょう。",
       "tags": [
@@ -41054,7 +41054,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "基本的な待機室は1つまで、BusinessおよびEnterpriseプランに含まれています。1ゾーンにつき利用できるWaiting Roomのプランは1つのみです。カスタム待機室ページ、JSON応答、Eventsなどの追加機能を利用するには、Enterpriseプランの顧客がAdvanced Waiting Roomを追加アドオンとして購入する必要があります。なお、Project Fair Shotの対象顧客も利用資格を得られます。",
+      "explanation": "基本的な待機室は1つまで、BusinessおよびEnterpriseプランに含まれています。1ゾーンにつき利用できるWaiting Roomのプランは1つのみです。カスタム待機室ページ、JSON応答、Eventsなどの追加機能を利用するには、Enterpriseプランの顧客がAdvanced Waiting Roomを追加アドオンとして購入する必要があります。\n{{diagram:0}}\nなお、Project Fair Shotの対象顧客も利用資格を得られます。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/plans/",
       "hint": "「基本の待機室」と「Advanced Waiting Room」がそれぞれどのプランで使えるかを整理しましょう。",
       "tags": [
@@ -41316,7 +41316,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "この機能を使うには、ダッシュボードで\"Allow session termination via origin commands\"を有効にするか、APIで`enabled_origin_commands`プロパティに`revoke`を含める必要があります。有効化後、オリジンからのレスポンスに`Cf-Waiting-Room-Command: revoke`ヘッダーを含めると、そのレスポンスに対応するユーザーのセッションが無効化されます。これにより待機列の空きがより動的に生まれ、スループットが向上する可能性があります。無効化されたセッション数はWaiting Room AnalyticsのGraphQL APIから`sessionsRevoked`メトリクスとして取得できます。",
+      "explanation": "この機能を使うには、ダッシュボードで\"Allow session termination via origin commands\"を有効にするか、APIで`enabled_origin_commands`プロパティに`revoke`を含める必要があります。有効化後、オリジンからのレスポンスに`Cf-Waiting-Room-Command: revoke`ヘッダーを含めると、そのレスポンスに対応するユーザーのセッションが無効化されます。これにより待機列の空きがより動的に生まれ、スループットが向上する可能性があります。無効化されたセッション数はWaiting Room AnalyticsのGraphQL APIから`sessionsRevoked`メトリクスとして取得できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/control-user-session/",
       "hint": "コマンドを付与するのはリクエスト側かレスポンス側か、確認しましょう。",
       "tags": [
@@ -42497,7 +42497,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflare Agentsは、耐久性のある識別子・エージェントごとに組み込まれたSQLストレージ・リアルタイム接続・スケジュール実行・(中断されても)復旧可能な実行を備えた、状態を持つAIエージェントをホストするためのランタイムです。Cloudflareのネットワーク上で数千万インスタンス規模までスケールするよう設計されています。",
+      "explanation": "Cloudflare Agentsは、耐久性のある識別子・エージェントごとに組み込まれたSQLストレージ・リアルタイム接続・スケジュール実行・(中断されても)復旧可能な実行を備えた、状態を持つAIエージェントをホストするためのランタイムです。\n{{diagram:0}}\nCloudflareのネットワーク上で数千万インスタンス規模までスケールするよう設計されています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/",
       "hint": "「状態を持つ(stateful)」という言葉がヒントです。",
       "tags": [
@@ -43067,7 +43067,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`routeAgentRequest()`のデフォルトのルーティング規約は`/agents/{agent名}/{インスタンス名}`です。例えば`ChatRoom`というAgentクラスは`/agents/chat-room/...`にマッピングされます。ルーターは元のクラス名とkebab-case変換後の両方にマッチするようになっています。",
+      "explanation": "`routeAgentRequest()`のデフォルトのルーティング規約は`/agents/{agent名}/{インスタンス名}`です。\n{{diagram:0}}\n例えば`ChatRoom`というAgentクラスは`/agents/chat-room/...`にマッピングされます。ルーターは元のクラス名とkebab-case変換後の両方にマッチするようになっています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
       "hint": "PascalCaseのクラス名はURL上ではどう表記されるかを考えましょう。",
       "tags": [
@@ -43223,7 +43223,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`this.schedule()`は、秒数を指定した遅延実行(`this.schedule(60, \"taskName\", payload)`)、Dateオブジェクトを指定した日時実行、cron文字列を指定した定期実行の3つの方式に対応しています。一定間隔での繰り返し実行には別途`this.scheduleEvery()`を使います。スケジュールされたタスクはSQLiteのテーブルに保存されて実行順に処理され、Durable Objectの`alarm`を使って正しいタイミングでAgentインスタンスを起こす仕組みで実現されています。",
+      "explanation": "`this.schedule()`は、秒数を指定した遅延実行(`this.schedule(60, \"taskName\", payload)`)、Dateオブジェクトを指定した日時実行、cron文字列を指定した定期実行の3つの方式に対応しています。\n{{diagram:0}}\n一定間隔での繰り返し実行には別途`this.scheduleEvery()`を使います。スケジュールされたタスクはSQLiteのテーブルに保存されて実行順に処理され、Durable Objectの`alarm`を使って正しいタイミングでAgentインスタンスを起こす仕組みで実現されています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
       "hint": "「1回だけ」「日時指定」「cron」の何種類の方式に、`this.schedule()`自体は対応しているかを考えましょう。",
       "tags": [
@@ -43285,7 +43285,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Agentのcronスケジュールはデフォルトで冪等に扱われます。同じタスク名・同じパラメータで`this.schedule()`を再度呼び出しても、重複したスケジュールが新規作成されるのではなく、既存のスケジュールがそのまま返されます。これにより、デプロイのたびにスケジュール登録コードが再実行されても、ジョブが際限なく増殖することを防げます。",
+      "explanation": "Agentのcronスケジュールはデフォルトで冪等に扱われます。同じタスク名・同じパラメータで`this.schedule()`を再度呼び出しても、重複したスケジュールが新規作成されるのではなく、既存のスケジュールがそのまま返されます。\n{{diagram:0}}\nこれにより、デプロイのたびにスケジュール登録コードが再実行されても、ジョブが際限なく増殖することを防げます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
       "hint": "デプロイのたびに同じスケジュール登録コードが再実行されても、ジョブが増殖しないようにする仕組みです。",
       "tags": [
