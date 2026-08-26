@@ -39511,7 +39511,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "ダッシュボードでSpectrumアプリケーションを作成する際は、アプリケーションタイプ、Spectrumを利用するドメイン、CloudflareがトラフィックをリッスンするEdge Port、そしてオリジンのIPアドレスとポートを設定します。IPアドレス方式・CNAMEレコード方式・ロードバランサー方式・仮想ネットワーク方式のいずれかでオリジンを指定できます。",
+      "explanation": "ダッシュボードでSpectrumアプリケーションを作成する際は、アプリケーションタイプ、Spectrumを利用するドメイン、CloudflareがトラフィックをリッスンするEdge Port、そしてオリジンのIPアドレスとポートを設定します。\n{{diagram:0}}\nIPアドレス方式・CNAMEレコード方式・ロードバランサー方式・仮想ネットワーク方式のいずれかでオリジンを指定できます。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/get-started/",
       "hint": "「どのポートで受けて、どこに転送するか」を指定する項目群を考えましょう。",
       "tags": [
@@ -39562,7 +39562,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Spectrumアプリケーションのオリジンは、直接のIPアドレスを指定するorigin_direct、またはDNSレコードによる名前解決を使うorigin_dnsのいずれかで指定します。リクエストにはorigin_dnsかorigin_directのどちらかのパラメータが含まれている必要があり、両方を指定するとHTTP 400 Bad Requestが返されます。origin_dnsで有効なレコードタイプはA、AAAA、SRV、または空(AとAAAA両方)です。",
+      "explanation": "Spectrumアプリケーションのオリジンは、直接のIPアドレスを指定するorigin_direct、またはDNSレコードによる名前解決を使うorigin_dnsのいずれかで指定します。リクエストにはorigin_dnsかorigin_directのどちらかのパラメータが含まれている必要があり、両方を指定するとHTTP 400 Bad Requestが返されます。origin_dnsで有効なレコードタイプはA、AAAA、SRV、または空(AとAAAA両方)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/settings-by-plan/",
       "hint": "「オリジンをIPで直接指定する方法」と「DNS名で指定する方法」は併用できるかどうかを考えましょう。",
       "tags": [
@@ -39613,7 +39613,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "SpectrumのEdge TLS Terminationには Flexible・Full・Full (Strict) の3モードがあります。Flexibleはクライアントとエッジ間のみ暗号化し、エッジからオリジンへは暗号化しません。Fullはオリジンへの通信も暗号化しますが証明書検証は行わず、Full (Strict)は証明書を厳密に検証した上で暗号化します。offに設定した場合はプロトコルのアップグレードは行われず、ペイロードがそのまま転送されます。このトグルが適用されるのはTCPアプリケーションのみです。",
+      "explanation": "SpectrumのEdge TLS Terminationには Flexible・Full・Full (Strict) の3モードがあります。Flexibleはクライアントとエッジ間のみ暗号化し、エッジからオリジンへは暗号化しません。Fullはオリジンへの通信も暗号化しますが証明書検証は行わず、Full (Strict)は証明書を厳密に検証した上で暗号化します。\n{{diagram:0}}\noffに設定した場合はプロトコルのアップグレードは行われず、ペイロードがそのまま転送されます。このトグルが適用されるのはTCPアプリケーションのみです。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「オリジン証明書を検証するかどうか」でFullとFull (Strict)の違いを整理しましょう。",
       "tags": [
@@ -39675,7 +39675,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "CloudflareはクライアントとTCP/UDPコネクションを終端してからオリジンへ接続するため、そのままではオリジンにはCloudflareのIPアドレスが見えます。真のクライアントIPをオリジンへ伝えるため、TCPアプリケーションではPROXY Protocol v1(人間可読なテキスト形式、Amazon ELBやNGINXも対応)またはv2(バイナリ形式)を利用できます。UDPアプリケーションではv2、またはUDP向けにCloudflareが開発したSimple Proxy Protocolを利用します。仮想ネットワークオリジンを使う構成ではPROXY Protocolはサポートされていません。",
+      "explanation": "CloudflareはクライアントとTCP/UDPコネクションを終端してからオリジンへ接続するため、そのままではオリジンにはCloudflareのIPアドレスが見えます。真のクライアントIPをオリジンへ伝えるため、TCPアプリケーションではPROXY Protocol v1(人間可読なテキスト形式、Amazon ELBやNGINXも対応)またはv2(バイナリ形式)を利用できます。\n{{diagram:0}}\nUDPアプリケーションではv2、またはUDP向けにCloudflareが開発したSimple Proxy Protocolを利用します。仮想ネットワークオリジンを使う構成ではPROXY Protocolはサポートされていません。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/how-to/enable-proxy-protocol/",
       "hint": "「テキスト形式」と「バイナリ形式」、そしてTCP/UDPそれぞれで使えるバージョンの違いに注目しましょう。",
       "tags": [
@@ -39719,7 +39719,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "IP Access rulesがSpectrumアプリケーションに対して有効な場合、Cloudflareはそのドメインに設定されたIP Access rulesを尊重しますが、対象は特定のIPアドレス・IPブロック・国・ASNに対して作成されたルールに限られ、アクションもallowまたはblockのみが尊重されます。WAFのカスタムルールはSpectrumでは動作しません。またIP Access rulesの適用結果はNetwork Analyticsには反映されず、確認にはSpectrumのイベントログを使う必要があります。",
+      "explanation": "IP Access rulesがSpectrumアプリケーションに対して有効な場合、Cloudflareはそのドメインに設定されたIP Access rulesを尊重しますが、対象は特定のIPアドレス・IPブロック・国・ASNに対して作成されたルールに限られ、アクションもallowまたはblockのみが尊重されます。WAFのカスタムルールはSpectrumでは動作しません。またIP Access rulesの適用結果はNetwork Analyticsには反映されず、確認にはSpectrumのイベントログを使う必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「どのアクション」が尊重され、「どこで結果を確認する」必要があるかに注目しましょう。",
       "tags": [
@@ -39770,7 +39770,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "SpectrumはOSI参照モデルのレイヤー3/4でDDoS防御を提供し、TCP/UDPベースの攻撃に対応します。レイヤー4のリバースプロキシとして動作するため、正当なTCPコネクションを確立してからオリジンへプロキシする形になり、SYNやSYN-ACKリフレクション攻撃の影響はCloudflareのグローバルネットワーク側に吸収されます。またSYN cookieチャレンジのようなLinuxネットワークスタックの仕組みも活用します。設定したプロトコル・ポート以外宛てのパケットや、想定外プロトコルのフラッド(例: TCPアプリケーションに対するUDPフラッド)はドロップされます。L7 DDoS攻撃への対応やキャッシュなどの機能を得るには、WAF/CDNサービスとの併用が推奨されます。",
+      "explanation": "SpectrumはOSI参照モデルのレイヤー3/4でDDoS防御を提供し、TCP/UDPベースの攻撃に対応します。レイヤー4のリバースプロキシとして動作するため、正当なTCPコネクションを確立してからオリジンへプロキシする形になり、SYNやSYN-ACKリフレクション攻撃の影響はCloudflareのグローバルネットワーク側に吸収されます。またSYN cookieチャレンジのようなLinuxネットワークスタックの仕組みも活用します。設定したプロトコル・ポート以外宛てのパケットや、想定外プロトコルのフラッド(例: TCPアプリケーションに対するUDPフラッド)はドロップされます。\n{{diagram:0}}\nL7 DDoS攻撃への対応やキャッシュなどの機能を得るには、WAF/CDNサービスとの併用が推奨されます。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/about/ddos-for-spectrum/",
       "hint": "設定したプロトコルやポートと一致しないトラフィックが来た場合に何が起きるか、また接続確立の前後で何が変わるかを考えましょう。",
       "tags": [
@@ -39821,7 +39821,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Spectrumは、MQTT・メール・ファイル転送・バージョン管理システム・ゲームなど、TCPまたはUDPを使う任意のアプリケーションをCloudflare経由でルーティングし、オリジンを隠蔽してDDoS攻撃から保護するために使われます。CDNの静的アセット配信高速化やCASBのSaaSスキャン、GatewayのDNS/Network/HTTP検査とは異なるレイヤーの課題を解決します。",
+      "explanation": "Spectrumは、MQTT・メール・ファイル転送・バージョン管理システム・ゲームなど、TCPまたはUDPを使う任意のアプリケーションをCloudflare経由でルーティングし、オリジンを隠蔽してDDoS攻撃から保護するために使われます。\n{{diagram:0}}\nCDNの静的アセット配信高速化やCASBのSaaSスキャン、GatewayのDNS/Network/HTTP検査とは異なるレイヤーの課題を解決します。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/",
       "hint": "「HTTP以外のプロトコルを使うアプリケーション」という共通点を持つ選択肢を探しましょう。",
       "tags": [
@@ -39927,7 +39927,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Spectrumはアプリケーション(ドメイン・ポートの組)単位で設定するL4のTCP/UDPプロキシで、個々のアプリケーションにDDoS防御やTLS終端を提供します。これに対しCloudflare WAN(旧Magic WAN)は拠点(サイト)間をCloudflare経由で接続するWAN-as-a-Serviceであり、Magic TransitはBGPアドバタイズしたIPプレフィックス全体をネットワーク層(L3/4)のDDoS攻撃から保護するサービスです。3つはいずれもHTTP以外のトラフィックを扱える点で共通しますが、設定・保護の単位がアプリケーション単位か、拠点単位か、IPプレフィックス全体かという点で異なります。",
+      "explanation": "Spectrumはアプリケーション(ドメイン・ポートの組)単位で設定するL4のTCP/UDPプロキシで、個々のアプリケーションにDDoS防御やTLS終端を提供します。これに対しCloudflare WAN(旧Magic WAN)は拠点(サイト)間をCloudflare経由で接続するWAN-as-a-Serviceであり、Magic TransitはBGPアドバタイズしたIPプレフィックス全体をネットワーク層(L3/4)のDDoS攻撃から保護するサービスです。3つはいずれもHTTP以外のトラフィックを扱える点で共通しますが、設定・保護の単位がアプリケーション単位か、拠点単位か、IPプレフィックス全体かという点で異なります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/",
       "hint": "「何を単位に設定・保護するか」(アプリケーション/拠点/IPプレフィックス)という切り口で整理しましょう。",
       "tags": [
@@ -39984,7 +39984,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Spectrumアプリケーションに対してArgo Smart Routingを有効にすると、トラフィックは最も速く信頼性の高いネットワーク経路を自動的に選択して転送されるようになります。argo_smart_routingフィールドはtraffic_typeがdirectに設定されたTCPアプリケーションで利用可能な、Enterpriseプランを必要とするフィールドです。",
+      "explanation": "Spectrumアプリケーションに対してArgo Smart Routingを有効にすると、トラフィックは最も速く信頼性の高いネットワーク経路を自動的に選択して転送されるようになります。argo_smart_routingフィールドはtraffic_typeがdirectに設定されたTCPアプリケーションで利用可能な、Enterpriseプランを必要とするフィールドです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「どのプロトコル・どの設定のアプリケーションで利用できるか」という条件に注目しましょう。",
       "tags": [
@@ -40032,7 +40032,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Spectrumアプリケーションを作成すると、ユニークなIPv4/IPv6アドレスが割り当てられます(IPv6のみで運用するよう構成することも可能です)。これらのアドレスは固定ではなく変化する可能性があるため、現在のアドレスを確認する最良の方法はSpectrumアプリケーションのDNS名を参照することです。アドレスは中国のデータセンターを除くCloudflareの全データセンターからエニーキャストされます。",
+      "explanation": "Spectrumアプリケーションを作成すると、ユニークなIPv4/IPv6アドレスが割り当てられます(IPv6のみで運用するよう構成することも可能です)。これらのアドレスは固定ではなく変化する可能性があるため、現在のアドレスを確認する最良の方法はSpectrumアプリケーションのDNS名を参照することです。\n{{diagram:0}}\nアドレスは中国のデータセンターを除くCloudflareの全データセンターからエニーキャストされます。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「アドレスが固定かどうか」と「どうやって現在のアドレスを調べるべきか」を考えましょう。",
       "tags": [
@@ -40080,7 +40080,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "SpectrumはSMTPサーバーの前段でTCPロードバランサーのように動作しますが、仲介メールサーバーとしては機能せず、データはそのままオリジンへパススルーされます。メールに表示される送信元IPはCloudflareのエッジIPになるため、オリジン側で真のクライアントIPが必要な場合はProxy Protocolの有効化が推奨されます。またSpectrumアプリケーションには逆引きDNSエントリがなく、MXレコードがSpectrumのIPと一致しないため、逆引きDNSチェックやMXレコード照合を行うSMTPサーバーではメッセージが拒否されることがあります。",
+      "explanation": "SpectrumはSMTPサーバーの前段でTCPロードバランサーのように動作しますが、仲介メールサーバーとしては機能せず、データはそのままオリジンへパススルーされます。メールに表示される送信元IPはCloudflareのエッジIPになるため、オリジン側で真のクライアントIPが必要な場合はProxy Protocolの有効化が推奨されます。またSpectrumアプリケーションには逆引きDNSエントリがなく、MXレコードがSpectrumのIPと一致しないため、逆引きDNSチェックやMXレコード照合を行うSMTPサーバーではメッセージが拒否されることがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「Spectrumがメールの内容を解釈するかどうか」と「逆引きDNS・MXレコードの整合性」に注目しましょう。",
       "tags": [
@@ -40131,7 +40131,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Spectrumアプリケーションはポート範囲でトラフィックをプロキシするよう構成できます。オリジン側(`origin_direct`や`origin_port`)のポート範囲内のポート数は、protocolフィールドで指定したポート数と一致している必要があります。エッジのポート範囲内の特定ポートへの接続は、オリジン範囲内の対応するオフセットのポートへプロキシされます(例: range.example.com:1005 は origin範囲の 3005 番へ)。",
+      "explanation": "Spectrumアプリケーションはポート範囲でトラフィックをプロキシするよう構成できます。オリジン側(`origin_direct`や`origin_port`)のポート範囲内のポート数は、protocolフィールドで指定したポート数と一致している必要があります。エッジのポート範囲内の特定ポートへの接続は、オリジン範囲内の対応するオフセットのポートへプロキシされます(例: range.example.com:1005 は origin範囲の 3005 番へ)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「エッジのポート番号」と「オリジンのポート番号」がどう対応づけられるかを考えましょう。",
       "tags": [
@@ -40182,7 +40182,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "SpectrumアプリケーションでCloudflare Tunnelの仮想ネットワークをオリジンとして使う場合、アプリケーションタイプはTCPまたはUDPに限られます(HTTP/HTTPSは非対応)。origin_directには単一の、指定した仮想ネットワーク内で到達可能なプライベートIPアドレスのみを指定でき、複数アドレスの指定やホスト名オリジン(origin_dns)、ポート範囲はサポートされません。またProxy Protocolはサポートされておらず、proxy_protocolはoffに設定する必要があります。",
+      "explanation": "SpectrumアプリケーションでCloudflare Tunnelの仮想ネットワークをオリジンとして使う場合、アプリケーションタイプはTCPまたはUDPに限られます(HTTP/HTTPSは非対応)。origin_directには単一の、指定した仮想ネットワーク内で到達可能なプライベートIPアドレスのみを指定でき、複数アドレスの指定やホスト名オリジン(origin_dns)、ポート範囲はサポートされません。またProxy Protocolはサポートされておらず、proxy_protocolはoffに設定する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「単一アドレスか複数アドレスか」「ポート範囲は使えるか」「PROXY Protocolは使えるか」の3点を確認しましょう。",
       "tags": [
@@ -40256,7 +40256,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Spectrumはすべてのコネクションについて、イベント数(count)・送信バイト数(bytesIngress)・受信バイト数(bytesEgress)・コネクション継続時間の平均/中央値/90パーセンタイル/99パーセンタイルといったメトリクスを計測します。これらはイベント種別(connect・progress・disconnectなど)・アプリケーションID・Colo名・IPバージョンといったディメンションで絞り込むことができ、ダッシュボードに加えてAPIからも取得できます。",
+      "explanation": "Spectrumはすべてのコネクションについて、イベント数(count)・送信バイト数(bytesIngress)・受信バイト数(bytesEgress)・コネクション継続時間の平均/中央値/90パーセンタイル/99パーセンタイルといったメトリクスを計測します。これらはイベント種別(connect・progress・disconnectなど)・アプリケーションID・Colo名・IPバージョンといったディメンションで絞り込むことができ、ダッシュボードに加えてAPIからも取得できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/analytics/",
       "hint": "SpectrumがL4(TCP/UDP)のプロキシであることを踏まえて、どんな指標が中心になるかを考えましょう。",
       "tags": [
@@ -40310,7 +40310,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Universal SSLはCloudflare Spectrumと互換性がありません。Spectrumアプリケーションで証明書を利用するには、Advanced Certificate Managerまたはカスタム証明書を使う必要があります。またSpectrumのHTTPSアプリケーションは現時点でHTTP/3をサポートしておらず、UDPパケットの断片化もサポートされていないため断片化されたパケットはエッジでドロップされます。",
+      "explanation": "Universal SSLはCloudflare Spectrumと互換性がありません。Spectrumアプリケーションで証明書を利用するには、Advanced Certificate Managerまたはカスタム証明書を使う必要があります。\n{{diagram:0}}\nまたSpectrumのHTTPSアプリケーションは現時点でHTTP/3をサポートしておらず、UDPパケットの断片化もサポートされていないため断片化されたパケットはエッジでドロップされます。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/limitations/",
       "hint": "Universal SSL・HTTP/3・UDPの断片化のそれぞれについて、Spectrumで何がサポートされていないかを一つずつ照らし合わせましょう。",
       "tags": [
@@ -40362,7 +40362,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "SpectrumとCloudflare Tunnelの直接統合はHTTP/HTTPSタイプのアプリケーションでのみサポートされます。これはSpectrumがTunnelサービスへ到達するために、Layer 7 CDN製品を経由してアップストリームする必要があるためです。TCPなど他のタイプのSpectrumアプリケーションでTunnelのサブドメイン(<UUID>.cfargotunnel.com)を直接オリジンに指定する構成はサポートされていません。非HTTPトラフィックをTunnel経由のプライベートエンドポイントへルーティングしたい場合は、Private Network Load Balancing(LTM)を使うCloudflare Load Balancerを間に挟む代替構成が案内されています。",
+      "explanation": "SpectrumとCloudflare Tunnelの直接統合はHTTP/HTTPSタイプのアプリケーションでのみサポートされます。これはSpectrumがTunnelサービスへ到達するために、Layer 7 CDN製品を経由してアップストリームする必要があるためです。TCPなど他のタイプのSpectrumアプリケーションでTunnelのサブドメイン(<UUID>.cfargotunnel.com)を直接オリジンに指定する構成はサポートされていません。非HTTPトラフィックをTunnel経由のプライベートエンドポイントへルーティングしたい場合は、Private Network Load Balancing(LTM)を使うCloudflare Load Balancerを間に挟む代替構成が案内されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/limitations/",
       "hint": "「直接統合がサポートされるアプリケーションタイプ」と「非HTTPトラフィックの代替ルーティング方法」を分けて考えましょう。",
       "tags": [
@@ -40620,7 +40620,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "FIFOは待機室に入った順番(タイムスタンプ)に基づいて訪問者をオリジンへ通す方式で、先に並んだ人ほど早く抜けられます。Randomはアプリケーションに空きが出るたびに待機中の訪問者をランダムに選んで通す方式で、在庫やチケットなどをより公平に配分したい場合に向きます。Passthroughは`queueing_method`を`passthrough`に設定して全トラフィックを即座に素通りさせる方式で、閑散期の分析用途などに使われます。Rejectは全トラフィックを拒否して静的ページを返す方式で、メンテナンスやイベント専用エンドポイントに使われます。",
+      "explanation": "FIFOは待機室に入った順番(タイムスタンプ)に基づいて訪問者をオリジンへ通す方式で、先に並んだ人ほど早く抜けられます。Randomはアプリケーションに空きが出るたびに待機中の訪問者をランダムに選んで通す方式で、在庫やチケットなどをより公平に配分したい場合に向きます。Passthroughは`queueing_method`を`passthrough`に設定して全トラフィックを即座に素通りさせる方式で、閑散期の分析用途などに使われます。Rejectは全トラフィックを拒否して静的ページを返す方式で、メンテナンスやイベント専用エンドポイントに使われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/queueing-methods/",
       "hint": "「並んだ順」「ランダム」「素通り」「拒否」という4つのキーワードを対応付けてみましょう。",
       "tags": [
@@ -40687,7 +40687,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`__cfwaitingroom`クッキーは、待機室が有効かつキューイング対象のhost/pathへのアクセス時にのみ発行される暗号化されたクッキーです。待機室で待機している間は有効期限が常に5分に設定されますが、訪問者がタブを閉じたりアプリケーションを離れたりしない限り20秒ごとに自動更新されます。訪問者がアプリケーションに到達した後は、`session duration`で指定した時間の経過後にクッキーが失効します。",
+      "explanation": "`__cfwaitingroom`クッキーは、待機室が有効かつキューイング対象のhost/pathへのアクセス時にのみ発行される暗号化されたクッキーです。待機室で待機している間は有効期限が常に5分に設定されますが、訪問者がタブを閉じたりアプリケーションを離れたりしない限り20秒ごとに自動更新されます。訪問者がアプリケーションに到達した後は、`session duration`で指定した時間の経過後にクッキーが失効します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/waiting-room-cookie/",
       "hint": "「待機中」と「アプリケーション到達後」でクッキーの有効期限がどう変わるかに注目しましょう。",
       "tags": [
@@ -40805,7 +40805,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Eventsは、製品ローンチのような特定の期間だけ`Total active users`・`New users per minute`・`Session duration`・`Queueing Method`などを待機室のデフォルト設定から上書きするための機能です。イベントで明示的に設定しなかった項目はデフォルト設定を継承できます。イベントは対象の待機室自体がEnabledになっていないと有効化されず、1つの待機室に持てるイベント数は5件までという上限があります。イベント期間が重複する場合は同じ待機室内ではなく別の待機室を使う必要があります。",
+      "explanation": "Eventsは、製品ローンチのような特定の期間だけ`Total active users`・`New users per minute`・`Session duration`・`Queueing Method`などを待機室のデフォルト設定から上書きするための機能です。イベントで明示的に設定しなかった項目はデフォルト設定を継承できます。イベントは対象の待機室自体がEnabledになっていないと有効化されず、1つの待機室に持てるイベント数は5件までという上限があります。\n{{diagram:0}}\nイベント期間が重複する場合は同じ待機室内ではなく別の待機室を使う必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
       "hint": "「恒久的な変更」なのか「期間限定の上書き」なのかに注目しましょう。",
       "tags": [
@@ -40983,7 +40983,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Waiting Roomを機能させるには、対象のhostnameに対してプロキシ状態(オレンジクラウド)のDNSレコード、またはプロキシモードのロードバランサーを設定しておく必要があります。これらはWaiting Room作成時に自動設定されないため、事前に用意しておく必要があります。また、Waiting RoomはCloudflareのCDNを前提とし、グローバルなCloudflareのデータセンターで稼働するWorkers上に構築されています。リクエストは最寄りのデータセンターのWaiting Room Workerに到達し、そこでキューイングするかどうかが判定されます。",
+      "explanation": "Waiting Roomを機能させるには、対象のhostnameに対してプロキシ状態(オレンジクラウド)のDNSレコード、またはプロキシモードのロードバランサーを設定しておく必要があります。これらはWaiting Room作成時に自動設定されないため、事前に用意しておく必要があります。また、Waiting RoomはCloudflareのCDNを前提とし、グローバルなCloudflareのデータセンターで稼働するWorkers上に構築されています。リクエストは最寄りのデータセンターのWaiting Room Workerに到達し、そこでキューイングするかどうかが判定されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/about/",
       "hint": "「DNSレコードは自動設定されるか」「何の上に構築されているか」を確認しましょう。",
       "tags": [
@@ -41105,7 +41105,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Waiting RoomはグローバルなCloudflareデータセンター群で動作するWorkersを基盤としています。リクエストは最寄りのデータセンターのWaiting Room Workerに到達し、そのWorkerが管理者定義の閾値(total active users・new users per minute)とローカルに保持するWaiting Room stateをもとにその場で判定を下します。Waiting Room stateは各データセンターごとに保持されつつ、Durable Objectsで構築されたパイプラインを通じて数秒ごとに世界中の変化が伝播されます。この設計により、リクエストごとに中央へ問い合わせる必要がなく、追加のレイテンシをほとんど発生させずに常時Waiting Roomを有効化できます。",
+      "explanation": "Waiting RoomはグローバルなCloudflareデータセンター群で動作するWorkersを基盤としています。リクエストは最寄りのデータセンターのWaiting Room Workerに到達し、そのWorkerが管理者定義の閾値(total active users・new users per minute)とローカルに保持するWaiting Room stateをもとにその場で判定を下します。Waiting Room stateは各データセンターごとに保持されつつ、Durable Objectsで構築されたパイプラインを通じて数秒ごとに世界中の変化が伝播されます。\n{{diagram:0}}\nこの設計により、リクエストごとに中央へ問い合わせる必要がなく、追加のレイテンシをほとんど発生させずに常時Waiting Roomを有効化できます。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/about/",
       "hint": "判定がどこ(中央か、各データセンターか)で行われ、グローバルな状態がどう伝播するかを整理しましょう。",
       "tags": [
@@ -41156,7 +41156,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`queueing_method`を`Passthrough`に設定すると、全トラフィックが即座にオリジンへ素通りします。この状態でもtotal active users・new users per minute・time on originなどのトラフィック分析データは引き続き収集されるため、閾値設定を検討するための有用なテストとして利用できます。イベント機能と組み合わせ、平常時はPassthroughにしておき、需要が急増する期間だけEventsでキューイングメソッドをFIFOなどへ切り替える、という運用によく使われます。",
+      "explanation": "`queueing_method`を`Passthrough`に設定すると、全トラフィックが即座にオリジンへ素通りします。この状態でもtotal active users・new users per minute・time on originなどのトラフィック分析データは引き続き収集されるため、閾値設定を検討するための有用なテストとして利用できます。イベント機能と組み合わせ、平常時はPassthroughにしておき、需要が急増する期間だけEventsでキューイングメソッドをFIFOなどへ切り替える、という運用によく使われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/queueing-methods/",
       "hint": "「素通りさせつつ何を収集し続けるか」に注目しましょう。",
       "tags": [
@@ -41209,7 +41209,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "キューイング前後どちらにも訪問者を待たせずにメンテナンスページを配信するには、まず`Passthrough`のキューイングメソッドで待機室を作成し、平常時は全トラフィックを素通りさせます。その上で、メンテナンス期間に合わせて`Reject`のキューイングメソッドを指定したイベントを作成すると、その期間だけ全トラフィックが拒否され静的ページが返されます。イベント終了後は自動的に`Passthrough`の挙動に戻るため、メンテナンス期間の前後で訪問者が不要に待たされることがありません。",
+      "explanation": "キューイング前後どちらにも訪問者を待たせずにメンテナンスページを配信するには、まず`Passthrough`のキューイングメソッドで待機室を作成し、平常時は全トラフィックを素通りさせます。その上で、メンテナンス期間に合わせて`Reject`のキューイングメソッドを指定したイベントを作成すると、その期間だけ全トラフィックが拒否され静的ページが返されます。イベント終了後は自動的に`Passthrough`の挙動に戻るため、メンテナンス期間の前後で訪問者が不要に待たされることがありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
       "hint": "平常時とメンテナンス期間とで、キューイングメソッドがどのように切り替わるかを考えましょう。",
       "tags": [
@@ -41263,7 +41263,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`disable_session_renewal`を`true`にすると、訪問者のセッションクッキーはリクエストのたびに更新されなくなり、最初にオリジンへ到達してからsession duration分の時間だけしかサイトを閲覧できなくなります。その時間が経過した時点でアクティブなキューイングが発生していれば待機列の末尾に回され、キューイングが発生していなければ新規訪問者として扱われ新しいクッキーが発行されます。デフォルトの`false`ではリクエストのたびにセッションクッキーの有効期限が更新され続けます。この設定はEnterprise顧客が購入した場合にのみ利用可能です。",
+      "explanation": "`disable_session_renewal`を`true`にすると、訪問者のセッションクッキーはリクエストのたびに更新されなくなり、最初にオリジンへ到達してからsession duration分の時間だけしかサイトを閲覧できなくなります。その時間が経過した時点でアクティブなキューイングが発生していれば待機列の末尾に回され、キューイングが発生していなければ新規訪問者として扱われ新しいクッキーが発行されます。デフォルトの`false`ではリクエストのたびにセッションクッキーの有効期限が更新され続けます。\n{{diagram:0}}\nこの設定はEnterprise顧客が購入した場合にのみ利用可能です。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/control-user-session/",
       "hint": "「リクエストのたびに更新される」のはどちらの設定かを確認しましょう。",
       "tags": [
@@ -41375,7 +41375,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`turnstile_mode`は、Turnstileウィジェットの表示形式を`off`・`invisible`・`visible_non_interactive`・`visible_managed`から選択する設定です(デフォルトは`invisible`)。`off`に設定すると統合自体を完全に無効化できます。`turnstile_action`は、訪問者がTurnstileチャレンジに失敗した場合の挙動を`log`と`infinite_queue`から選択する設定です(デフォルトは`log`)。なお、Turnstileはブラウザ向けのHTMLレスポンスにのみ適用され、JSON応答が有効な非ブラウザ向けのレスポンスでは無効化されます。",
+      "explanation": "`turnstile_mode`は、Turnstileウィジェットの表示形式を`off`・`invisible`・`visible_non_interactive`・`visible_managed`から選択する設定です(デフォルトは`invisible`)。`off`に設定すると統合自体を完全に無効化できます。`turnstile_action`は、訪問者がTurnstileチャレンジに失敗した場合の挙動を`log`と`infinite_queue`から選択する設定です(デフォルトは`log`)。なお、Turnstileはブラウザ向けのHTMLレスポンスにのみ適用され、JSON応答が有効な非ブラウザ向けのレスポンスでは無効化されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
       "hint": "「表示形式」を決めるのと「失敗時の挙動」を決めるのはそれぞれどちらの設定か整理しましょう。",
       "tags": [
@@ -41426,7 +41426,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Waiting Roomは`__cfwaitingroom`クッキーによって訪問者を識別し、待機列内の位置を管理しています。JSON応答を利用する非ブラウザクライアント(モバイルアプリやバックエンドサービスなど)は、レスポンスヘッダーで受け取ったクッキーを次のリクエストに含め続ける必要があります。リクエストにクッキーが含まれていない場合、Waiting Roomはそれを新規訪問者とみなして新しいクッキーを発行するため、その訪問者は待機列の末尾に置かれてしまいます。そのため非ブラウザ環境でWaiting Roomを利用する際は、クッキーの保持と送信を適切に行うクッキーマネージャーなどの実装が推奨されます。",
+      "explanation": "Waiting Roomは`__cfwaitingroom`クッキーによって訪問者を識別し、待機列内の位置を管理しています。JSON応答を利用する非ブラウザクライアント(モバイルアプリやバックエンドサービスなど)は、レスポンスヘッダーで受け取ったクッキーを次のリクエストに含め続ける必要があります。リクエストにクッキーが含まれていない場合、Waiting Roomはそれを新規訪問者とみなして新しいクッキーを発行するため、その訪問者は待機列の末尾に置かれてしまいます。\n{{diagram:0}}\nそのため非ブラウザ環境でWaiting Roomを利用する際は、クッキーの保持と送信を適切に行うクッキーマネージャーなどの実装が推奨されます。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/json-response/",
       "hint": "クッキーが欠落したリクエストを、Waiting Roomはどのような訪問者として扱うかを考えましょう。",
       "tags": [
@@ -41483,7 +41483,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Zarazは、Google AnalyticsやFacebook Pixelのようなサードパーティのアナリティクス・広告・マーケティングツールを、ブラウザ上ではなくCloudflareのエッジ側で実行するツールです。これにより、ブラウザが直接ダウンロード・実行するスクリプトの数や重さを減らし、ページの速度・セキュリティを改善しつつ、外部に送信されるデータをより細かく制御できるようになります。",
+      "explanation": "Cloudflare Zarazは、Google AnalyticsやFacebook Pixelのようなサードパーティのアナリティクス・広告・マーケティングツールを、ブラウザ上ではなくCloudflareのエッジ側で実行するツールです。これにより、ブラウザが直接ダウンロード・実行するスクリプトの数や重さを減らし、ページの速度・セキュリティを改善しつつ、外部に送信されるデータをより細かく制御できるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/",
       "hint": "「ブラウザ側」と「エッジ側」のどちらでスクリプトを実行する仕組みかを考えましょう。",
       "tags": [
@@ -41538,7 +41538,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Zarazでは、ページビューやクリックなどの「発火条件」を定義するのがトリガーで、そのトリガーが一致したときにツールが実行する具体的な処理(データ送信など)を定義するのがアクションです。1つのアクションには複数のトリガーを「Firing Triggers」として割り当てることができ、そのいずれかが一致すればアクションが発火します。",
+      "explanation": "Zarazでは、ページビューやクリックなどの「発火条件」を定義するのがトリガーで、そのトリガーが一致したときにツールが実行する具体的な処理(データ送信など)を定義するのがアクションです。\n{{diagram:0}}\n1つのアクションには複数のトリガーを「Firing Triggers」として割り当てることができ、そのいずれかが一致すればアクションが発火します。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
       "hint": "「いつ発火するか」を決める役割と、「発火した結果何をするか」を決める役割、それぞれの名前を思い出しましょう。",
       "tags": [
@@ -41587,7 +41587,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Scroll depthルールは、固定のピクセル数(例: `100px`)またはページの表示割合(例: `45%`)のいずれかを指定して、その位置までスクロールされたときにトリガーを発火させることができます。なお、Match ruleは変数名・一致条件・一致文字列の組み合わせで条件を作る仕組みであり、Click listenerはCSSセレクタとXPathの両方に対応し、TimerにはLimitで発火回数の上限を設定できます。",
+      "explanation": "Scroll depthルールは、固定のピクセル数(例: `100px`)またはページの表示割合(例: `45%`)のいずれかを指定して、その位置までスクロールされたときにトリガーを発火させることができます。なお、Match ruleは変数名・一致条件・一致文字列の組み合わせで条件を作る仕組みであり、Click listenerはCSSセレクタとXPathの両方に対応し、TimerにはLimitで発火回数の上限を設定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
       "hint": "各ルールタイプが「何を単位に」条件を判定するかを比較してみましょう。",
       "tags": [
@@ -41649,7 +41649,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Zarazでサーバーサイド実行されるツールへの通信は、ブラウザから直接ではなくCloudflareのエッジから送信されます。そのため、エッジを通過する際に「Trim IP addresses」(IPアドレスの一部を切り詰める)や「Clean User Agent strings」(User Agent文字列からセンシティブな情報を除去する)といった設定を使い、第三者に渡す前に情報を加工できます。",
+      "explanation": "Zarazでサーバーサイド実行されるツールへの通信は、ブラウザから直接ではなくCloudflareのエッジから送信されます。そのため、エッジを通過する際に「Trim IP addresses」(IPアドレスの一部を切り詰める)や「Clean User Agent strings」(User Agent文字列からセンシティブな情報を除去する)といった設定を使い、第三者に渡す前に情報を加工できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
       "hint": "サーバーサイドで実行されるツールへの通信が、どこから送信され、途中でどのような加工が可能かを考えましょう。",
       "tags": [
@@ -41720,7 +41720,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Zaraz Consent Management platform (CMP)は、サイトで使用するツールに「Purpose(目的)」を割り当て、ユーザーがそのPurposeに同意したかどうかに基づいて、Zarazが該当ツールをロードするかどうかを制御する仕組みです。1つのPurposeには複数のツールを割り当てられますが、1つのツールが持てるPurposeは1つだけです。Purposeの割り当ては自動化されておらず、サイト運営者が責任を持って設定する必要があります。",
+      "explanation": "Zaraz Consent Management platform (CMP)は、サイトで使用するツールに「Purpose(目的)」を割り当て、ユーザーがそのPurposeに同意したかどうかに基づいて、Zarazが該当ツールをロードするかどうかを制御する仕組みです。1つのPurposeには複数のツールを割り当てられますが、1つのツールが持てるPurposeは1つだけです。\n{{diagram:0}}\nPurposeの割り当ては自動化されておらず、サイト運営者が責任を持って設定する必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/consent-management/",
       "hint": "「誰が」「何に対して」同意するのかという単位に注目しましょう。",
       "tags": [
@@ -41771,7 +41771,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "ユーザーの同意設定は、JSON形式のファーストパーティCookieに保存され、各PurposeのIDに対してtrue(同意)/false(拒否)/値なし(未選択)のいずれかがマッピングされます。Purposeが割り当てられていないツールはデフォルトで同意チェックをスキップしてロードされてしまうため、意図しない動作を避けるにはPurposeの割り当てを確認する必要があります。",
+      "explanation": "ユーザーの同意設定は、JSON形式のファーストパーティCookieに保存され、各PurposeのIDに対してtrue(同意)/false(拒否)/値なし(未選択)のいずれかがマッピングされます。\n{{diagram:0}}\nPurposeが割り当てられていないツールはデフォルトで同意チェックをスキップしてロードされてしまうため、意図しない動作を避けるにはPurposeの割り当てを確認する必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/consent-management/",
       "hint": "同意状態がどこに、どのような形式で保存されるかを思い出しましょう。",
       "tags": [
@@ -41821,7 +41821,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Preview & Publishワークフローを有効にすると、ダッシュボードでの変更はすぐには公開されず、ブラウザのコンソールで`zaraz.preview(\"<デバッグキー>\")`を実行することで、自分のブラウザ上だけで未公開の変更を試すことができます。問題なければダッシュボードから「Publish」を選択して全ユーザーに反映します。なおZarazはデフォルトではリアルタイムに変更を反映する設計であり、Preview & Publishはあえて有効化するオプションです。",
+      "explanation": "Preview & Publishワークフローを有効にすると、ダッシュボードでの変更はすぐには公開されず、ブラウザのコンソールで`zaraz.preview(\"<デバッグキー>\")`を実行することで、自分のブラウザ上だけで未公開の変更を試すことができます。問題なければダッシュボードから「Publish」を選択して全ユーザーに反映します。\n{{diagram:0}}\nなおZarazはデフォルトではリアルタイムに変更を反映する設計であり、Preview & Publishはあえて有効化するオプションです。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/history/preview-mode/",
       "hint": "「公開前に自分だけで試す」ためにブラウザのコンソールで何を実行するかを考えましょう。",
       "tags": [
@@ -41885,7 +41885,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Zaraz Context Enricherは、Cloudflare Worker上に実装する仕組みです。WorkerはリクエストのJSONボディから`system`と`client`のコンテキストオブジェクトを受け取り、必要な加工(値の追加・書き換え・マスキングなど)を行った上で、同じ形式のJSONとして返します。設定したContext Enricher Workerは、特定のツールだけでなく、そのゾーンにおけるZarazのすべてのリクエストに対して実行されます。",
+      "explanation": "Zaraz Context Enricherは、Cloudflare Worker上に実装する仕組みです。WorkerはリクエストのJSONボディから`system`と`client`のコンテキストオブジェクトを受け取り、必要な加工(値の追加・書き換え・マスキングなど)を行った上で、同じ形式のJSONとして返します。\n{{diagram:0}}\n設定したContext Enricher Workerは、特定のツールだけでなく、そのゾーンにおけるZarazのすべてのリクエストに対して実行されます。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/advanced/context-enricher/",
       "hint": "この機能がブラウザ側とサーバー側のどちらで、何を材料に動作するかを考えましょう。",
       "tags": [
@@ -41949,7 +41949,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "データレイヤー互換モードを有効にすると、`dataLayer.push({event: \"purchase\", price: 24})`のような呼び出しを自動的に`zaraz.track(\"purchase\", {price: 24})`相当の呼び出しに変換してくれます。ただし、このモードはEコマースイベントの自動マッピングには対応しておらず、Eコマースデータを扱いたい場合はE-commerce APIを使う必要があります。またこの機能はスクリプトを小さく保つためデフォルトで無効になっており、公式にも`dataLayer`自体の利用は推奨されていません。",
+      "explanation": "データレイヤー互換モードを有効にすると、`dataLayer.push({event: \"purchase\", price: 24})`のような呼び出しを自動的に`zaraz.track(\"purchase\", {price: 24})`相当の呼び出しに変換してくれます。ただし、このモードはEコマースイベントの自動マッピングには対応しておらず、Eコマースデータを扱いたい場合はE-commerce APIを使う必要があります。\n{{diagram:0}}\nまたこの機能はスクリプトを小さく保つためデフォルトで無効になっており、公式にも`dataLayer`自体の利用は推奨されていません。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/advanced/datalayer-compatibility/",
       "hint": "`dataLayer.push()`が変換される先のメソッド名と、対応していない用途は何かを考えましょう。",
       "tags": [
@@ -42001,7 +42001,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Debug Modeを有効にするには、まずSettingsページでDebug Keyを確認し、ブラウザの開発者ツールのコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行します。これにより`zarazDebug`という名前のデバッグ用Cookieが作成され、デバッガーのポップアップが表示されます。無効化するには`zaraz.debug()`を引数なしで実行してCookieを削除します。",
+      "explanation": "Debug Modeを有効にするには、まずSettingsページでDebug Keyを確認し、ブラウザの開発者ツールのコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行します。これにより`zarazDebug`という名前のデバッグ用Cookieが作成され、デバッガーのポップアップが表示されます。無効化するには`zaraz.debug()`を引数なしで実行してCookieを削除します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/web-api/debug-mode/",
       "hint": "有効化の手段が、ダッシュボードの操作だけで済むのか、それとも別の場所での操作を必要とするのかを考えましょう。",
       "tags": [
@@ -42056,7 +42056,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Zaraz Monitoringでは、Loads(Zarazの読み込み回数)、Events(Pageview・Track・E-commerceを含むイベント数)、Triggers(発火したトリガー数)、Actions(実行されたアクション数)に加えて、Zarazがサードパーティツールに対して行うサーバーサイドリクエストのステータスコードも確認できます。",
+      "explanation": "Zaraz Monitoringでは、Loads(Zarazの読み込み回数)、Events(Pageview・Track・E-commerceを含むイベント数)、Triggers(発火したトリガー数)、Actions(実行されたアクション数)に加えて、Zarazがサードパーティツールに対して行うサーバーサイドリクエストのステータスコードも確認できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/monitoring/",
       "hint": "Monitoringが対象とする範囲が、ブラウザ側のイベントだけに限られるのかどうかを考えましょう。",
       "tags": [
@@ -42115,7 +42115,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Zarazは全てのCloudflareプランで利用可能で、アカウントごとに毎月100万件のZaraz Eventsが無料枠として提供されます。追加分は100万イベントごとに月額5ドルのZaraz Paidプランで利用できます。Paidプランを有効化せずに無料枠を超えた場合は、次の請求サイクルまでZarazが無効化されます(ウェブサイト自体へのアクセスが遮断されるわけではありません)。無料枠の50%・80%・90%に達した際には通知メールが送信されます。",
+      "explanation": "Zarazは全てのCloudflareプランで利用可能で、アカウントごとに毎月100万件のZaraz Eventsが無料枠として提供されます。追加分は100万イベントごとに月額5ドルのZaraz Paidプランで利用できます。\n{{diagram:0}}\nPaidプランを有効化せずに無料枠を超えた場合は、次の請求サイクルまでZarazが無効化されます(ウェブサイト自体へのアクセスが遮断されるわけではありません)。無料枠の50%・80%・90%に達した際には通知メールが送信されます。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/pricing-info/",
       "hint": "Zarazがどのプラン層で利用でき、使用量の確認や通知がどのように行われる設計かを整理しましょう。",
       "tags": [
@@ -42172,7 +42172,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Zarazのツールカタログにネイティブ対応がない場合でも、Custom HTML・Custom Image・HTTP Requestといったカスタム統合を使うことで、任意のサードパーティツールをZaraz経由で組み込むことができます。これらの利用にサポートへの事前申請は不要です。",
+      "explanation": "Zarazのツールカタログにネイティブ対応がない場合でも、Custom HTML・Custom Image・HTTP Requestといったカスタム統合を使うことで、任意のサードパーティツールをZaraz経由で組み込むことができます。\n{{diagram:0}}\nこれらの利用にサポートへの事前申請は不要です。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/supported-tools/",
       "hint": "ネイティブ対応がない場合の「受け皿」となる統合の種類を思い出しましょう。",
       "tags": [
@@ -42219,7 +42219,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`zaraz.track()`はカスタムイベントをその場でリアルタイムに記録するための関数、`zaraz.set()`は一度変数を設定すれば以降のすべての`track()`呼び出しに自動的に付与されるようにするショートカット、`zaraz.ecommerce()`はEコマース関連のデータをトリガーやアクションを個別に設定しなくても複数のツールへ送信できる統一メソッドです。`zaraz.track()`は`async`関数であり、必要に応じて`await`で完了を待つこともできます。",
+      "explanation": "`zaraz.track()`はカスタムイベントをその場でリアルタイムに記録するための関数、`zaraz.set()`は一度変数を設定すれば以降のすべての`track()`呼び出しに自動的に付与されるようにするショートカット、`zaraz.ecommerce()`はEコマース関連のデータをトリガーやアクションを個別に設定しなくても複数のツールへ送信できる統一メソッドです。`zaraz.track()`は`async`関数であり、必要に応じて`await`で完了を待つこともできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/get-started/",
       "hint": "3つの関数がそれぞれ何のために用意されているのか、役割の違いを整理しましょう。",
       "tags": [
@@ -42279,7 +42279,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Click listenerをCSSセレクタ型で設定する場合、`#`(ID)や`.`(クラス)などの記号を省略すると正しく動作しないため、必ず含める必要があります。また、`<a>`タグのようなリンク要素のクリックを追跡したい場合は、要素そのものではなく`href`属性に対するリスナーを個別に作成する必要があります。`Wait for actions`はミリ秒単位で指定し、指定した時間だけページ遷移を待たせてリクエストの送信を完了させます。",
+      "explanation": "Click listenerをCSSセレクタ型で設定する場合、`#`(ID)や`.`(クラス)などの記号を省略すると正しく動作しないため、必ず含める必要があります。また、`<a>`タグのようなリンク要素のクリックを追跡したい場合は、要素そのものではなく`href`属性に対するリスナーを個別に作成する必要があります。`Wait for actions`はミリ秒単位で指定し、指定した時間だけページ遷移を待たせてリクエストの送信を完了させます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
       "hint": "CSSセレクタの書き方やリンク要素の扱いについて、細かな設定上の注意点を思い出しましょう。",
       "tags": [
@@ -42332,7 +42332,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Zarazを使い始める前には、基本的にはウェブサイトをCloudflare経由でプロキシしておくことが推奨されますが、プロキシしないドメインでZarazを利用する方法も別途用意されています。ツールを追加する際、Automatic Actionsに対応するツールであればPageviews・Events・E-commerceのいずれかを選択でき、対応していないツールの場合はCustom Actionsで個別に設定します。",
+      "explanation": "Zarazを使い始める前には、基本的にはウェブサイトをCloudflare経由でプロキシしておくことが推奨されますが、プロキシしないドメインでZarazを利用する方法も別途用意されています。ツールを追加する際、Automatic Actionsに対応するツールであればPageviews・Events・E-commerceのいずれかを選択でき、対応していないツールの場合はCustom Actionsで個別に設定します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/get-started/",
       "hint": "「プロキシが必須かどうか」と「Actionsの選択肢」の2点を、ドキュメントの記述に沿って確認しましょう。",
       "tags": [
@@ -42383,7 +42383,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Bot Score Thresholdは、「Block automated only(Automatedカテゴリのみブロック)」や「Block automated and likely automated(AutomatedとLikely Automatedをブロック)」といった選択肢を提供し、リクエストのボットスコアに基づいてZarazの読み込みを制御します。ただしボットスコアはあくまで推定値であり、常に正確であることが保証されているわけではありません。また「Trim IP addresses」はIPアドレスの一部を切り詰める機能、「Remove URL query parameters」はクエリパラメータをすべて除去する機能です。",
+      "explanation": "Bot Score Thresholdは、「Block automated only(Automatedカテゴリのみブロック)」や「Block automated and likely automated(AutomatedとLikely Automatedをブロック)」といった選択肢を提供し、リクエストのボットスコアに基づいてZarazの読み込みを制御します。ただしボットスコアはあくまで推定値であり、常に正確であることが保証されているわけではありません。また「Trim IP addresses」はIPアドレスの一部を切り詰める機能、「Remove URL query parameters」はクエリパラメータをすべて除去する機能です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
       "hint": "ボットスコアという仕組み自体が、リクエストの性質をどの程度の確実性で言い当てられるものかを考えましょう。",
       "tags": [
@@ -42445,7 +42445,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "「Auto-inject script」はデフォルトで有効になっており、Zarazの動作に必要なスクリプトを自動的にページへ挿入します。この設定を無効化すると自動挿入が停止するため、Zarazの機能を使い続けるにはスクリプトを手動で追加する必要があります。なお、iframe要素への挿入は別設定の「Iframe injection」で制御され、これを有効にするとiframe内にもスクリプトが挿入されるようになります。",
+      "explanation": "「Auto-inject script」はデフォルトで有効になっており、Zarazの動作に必要なスクリプトを自動的にページへ挿入します。この設定を無効化すると自動挿入が停止するため、Zarazの機能を使い続けるにはスクリプトを手動で追加する必要があります。なお、iframe要素への挿入は別設定の「Iframe injection」で制御され、これを有効にするとiframe内にもスクリプトが挿入されるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
       "hint": "デフォルトの状態(有効/無効)と、オフにしたときに開発者が追加で行う必要がある作業を考えましょう。",
       "tags": [
@@ -42556,7 +42556,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Agentは`Agent<Env, State>`を継承したクラスとして定義します。Worker側の`fetch`ハンドラでは`await routeAgentRequest(request, env)`を呼び出し、戻り値がなければ404を返すのが基本パターンです。`routeAgentRequest()`がリクエストURLを解析し、対応するAgentインスタンスへ自動的にルーティングします。",
+      "explanation": "Agentは`Agent<Env, State>`を継承したクラスとして定義します。Worker側の`fetch`ハンドラでは`await routeAgentRequest(request, env)`を呼び出し、戻り値がなければ404を返すのが基本パターンです。`routeAgentRequest()`がリクエストURLを解析し、対応するAgentインスタンスへ自動的にルーティングします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/agents-api/",
       "hint": "Agent専用の基底クラスと、ルーティング用の関数が用意されています。",
       "tags": [
@@ -42608,7 +42608,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "initialStateは新規に作成されたAgentインスタンスが最初に使う既定の状態を定義します。適用は遅延的に行われ、新規インスタンスはinitialStateを使い、既に永続化された状態を持つ既存インスタンスはSQLiteに保存された状態を読み込みます。initialStateを定義しない場合、`this.state`は`undefined`を返します。",
+      "explanation": "initialStateは新規に作成されたAgentインスタンスが最初に使う既定の状態を定義します。適用は遅延的に行われ、新規インスタンスはinitialStateを使い、既に永続化された状態を持つ既存インスタンスはSQLiteに保存された状態を読み込みます。\n{{diagram:0}}\ninitialStateを定義しない場合、`this.state`は`undefined`を返します。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
       "hint": "「新規インスタンス」と「既存インスタンス」で挙動が異なる点がポイントです。",
       "tags": [
@@ -42661,7 +42661,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`this.setState()`は(1)新しい状態をSQLiteへ保存し、(2)接続中の全WebSocketクライアントへ変更をブロードキャストし、(3)最後に`onStateChanged()`コールバックを発火させます。状態はJSONシリアライズ可能である必要があります。",
+      "explanation": "`this.setState()`は(1)新しい状態をSQLiteへ保存し、(2)接続中の全WebSocketクライアントへ変更をブロードキャストし、(3)最後に`onStateChanged()`コールバックを発火させます。\n{{diagram:0}}\n状態はJSONシリアライズ可能である必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
       "hint": "「永続化」「同期」「コールバック」の3段階の処理が行われます。",
       "tags": [
@@ -42712,7 +42712,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`onStateChanged(state, source)`のsourceは、更新がどこから来たかを示します。Agent自身が`setState()`を呼んだ場合はサーバー起点と分かるよう文字列`\"server\"`が渡され、クライアントが状態を更新した場合はそのクライアントに対応するConnectionオブジェクトが渡されます。sourceが`\"server\"`のときに早期リターンすることで、自分自身の更新に反応してしまう無限ループを防ぐのが一般的なパターンです。",
+      "explanation": "`onStateChanged(state, source)`のsourceは、更新がどこから来たかを示します。Agent自身が`setState()`を呼んだ場合はサーバー起点と分かるよう文字列`\"server\"`が渡され、クライアントが状態を更新した場合はそのクライアントに対応するConnectionオブジェクトが渡されます。sourceが`\"server\"`のときに早期リターンすることで、自分自身の更新に反応してしまう無限ループを防ぐのが一般的なパターンです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
       "hint": "「自分自身が発生させた更新に反応してしまう無限ループ」を防ぐために使われる値です。",
       "tags": [
@@ -42765,7 +42765,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`validateStateChange(nextState, source)`は、状態の永続化・ブロードキャストが行われる前に同期的に呼ばれます。内部でエラーをthrowすると、その状態更新は拒否され、SQLiteへの保存やクライアントへのブロードキャストは行われません。不正な値(例: スコアが負の数)を弾くバリデーションロジックの実装に使います。",
+      "explanation": "`validateStateChange(nextState, source)`は、状態の永続化・ブロードキャストが行われる前に同期的に呼ばれます。内部でエラーをthrowすると、その状態更新は拒否され、SQLiteへの保存やクライアントへのブロードキャストは行われません。\n{{diagram:0}}\n不正な値(例: スコアが負の数)を弾くバリデーションロジックの実装に使います。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
       "hint": "「保存される前」に実行され、throwすると更新そのものを止められます。",
       "tags": [
@@ -42830,7 +42830,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`this.sql`は、各Agentインスタンスに個別に組み込まれたSQLiteデータベースへアクセスするためのAPIです。タグ付きテンプレートリテラルとして呼び出し、`${}`内の値はプレースホルダとして安全にバインドされます。`this.state`とは別に、メッセージ履歴のような大きなデータの保存先として使うことが推奨されています。",
+      "explanation": "`this.sql`は、各Agentインスタンスに個別に組み込まれたSQLiteデータベースへアクセスするためのAPIです。タグ付きテンプレートリテラルとして呼び出し、`${}`内の値はプレースホルダとして安全にバインドされます。\n{{diagram:0}}\n`this.state`とは別に、メッセージ履歴のような大きなデータの保存先として使うことが推奨されています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
       "hint": "テンプレートリテラルの`${}`部分は自動的にプレースホルダとしてバインドされます。",
       "tags": [
@@ -42885,7 +42885,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "AgentのWebSocket処理は、接続確立時に呼ばれる`onConnect(connection, ctx)`、メッセージ受信時に呼ばれる`onMessage(connection, message)`、切断時に呼ばれる`onClose(connection, code, reason, wasClean)`という3つの主要なライフサイクルフックで構成されます。ctxには認証などに使える元のリクエスト情報も含まれます。",
+      "explanation": "AgentのWebSocket処理は、接続確立時に呼ばれる`onConnect(connection, ctx)`、メッセージ受信時に呼ばれる`onMessage(connection, message)`、切断時に呼ばれる`onClose(connection, code, reason, wasClean)`という3つの主要なライフサイクルフックで構成されます。\n{{diagram:0}}\nctxには認証などに使える元のリクエスト情報も含まれます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
       "hint": "接続・メッセージ受信・切断のそれぞれに対応するフックがあります。",
       "tags": [
@@ -42940,7 +42940,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`this.broadcast()`は接続中の全WebSocketクライアントへメッセージを送信します。第2引数に接続ID(`connection.id`)の配列を渡すことで、特定の接続を送信対象から除外できます。例えば「誰かが参加した」という通知を、その本人以外の全員へ送るといった用途に使えます。",
+      "explanation": "`this.broadcast()`は接続中の全WebSocketクライアントへメッセージを送信します。第2引数に接続ID(`connection.id`)の配列を渡すことで、特定の接続を送信対象から除外できます。\n{{diagram:0}}\n例えば「誰かが参加した」という通知を、その本人以外の全員へ送るといった用途に使えます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
       "hint": "第2引数で「送らない相手」を指定できます。",
       "tags": [
@@ -43013,7 +43013,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Agentインスタンスがハイバネーションを挟んでも、`this.state`に保存された状態、WebSocket接続ごとに`connection.setState()`で設定した状態、`this.sql`に保存されたSQLiteのデータは保持されます。一方で、クラスのメンバー変数として保持しているだけのインメモリの一時変数や、`setInterval`/`setTimeout`で登録したタイマーは失われるため、永続化が必要なデータは状態かSQLiteに保存する必要があります。",
+      "explanation": "Agentインスタンスがハイバネーションを挟んでも、`this.state`に保存された状態、WebSocket接続ごとに`connection.setState()`で設定した状態、`this.sql`に保存されたSQLiteのデータは保持されます。一方で、クラスのメンバー変数として保持しているだけのインメモリの一時変数や、`setInterval`/`setTimeout`で登録したタイマーは失われるため、永続化が必要なデータは状態かSQLiteに保存する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
       "hint": "「SQLiteや状態に保存されているか」と「メモリ上だけに置かれているか」で明暗が分かれます。",
       "tags": [
@@ -43118,7 +43118,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "`routeAgentRequest()`はクライアントから届いたHTTPリクエストのURLを解析し、対応するAgentインスタンスへ自動的にルーティングするための関数です。一方`getAgentByName()`は、サーバー側のコードから特定の名前空間・インスタンス名を指定してAgentインスタンスを取得し、RPC呼び出しやリクエストの転送(`basePath`を使ったカスタムルーティングなど)を行いたい場合に使います。",
+      "explanation": "`routeAgentRequest()`はクライアントから届いたHTTPリクエストのURLを解析し、対応するAgentインスタンスへ自動的にルーティングするための関数です。一方`getAgentByName()`は、サーバー側のコードから特定の名前空間・インスタンス名を指定してAgentインスタンスを取得し、RPC呼び出しやリクエストの転送(`basePath`を使ったカスタムルーティングなど)を行いたい場合に使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
       "hint": "「クライアントのURLから自動で」なのか「サーバー側コードから明示的に」なのかがポイントです。",
       "tags": [
@@ -43168,7 +43168,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Agentのインスタンス名の付け方によって、ユーザーごとに専用の状態を持たせる(例: `user-abc123`)、複数ユーザーで状態を共有する「部屋」的な使い方をする(例: `general`というチャットルーム)、アプリ全体で1つだけのシングルトンとして扱う(例: `default`)など、様々な設計パターンを実現できます。セッションIDやドキュメントIDなど、実行時のコンテキストから動的にインスタンス名を決めることも可能です。",
+      "explanation": "Agentのインスタンス名の付け方によって、ユーザーごとに専用の状態を持たせる(例: `user-abc123`)、複数ユーザーで状態を共有する「部屋」的な使い方をする(例: `general`というチャットルーム)、アプリ全体で1つだけのシングルトンとして扱う(例: `default`)など、様々な設計パターンを実現できます。セッションIDやドキュメントIDなど、実行時のコンテキストから動的にインスタンス名を決めることも可能です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
       "hint": "インスタンス名の付け方そのものが設計パターンになります。",
       "tags": [
@@ -43349,7 +43349,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "公式ドキュメントは、「Agentから独立して動作し、ステップごとのリトライやマルチステップのオーケストレーションが必要な処理にはWorkflowsを使う。Fibersは、Agent自身の実行の一部である処理のために使う」と説明しています。例えば、LLMへのリクエスト中にAgentインスタンスが退避(eviction)された場合でも、`runFiber()`で登録した処理はチェックポイント(`stash()`)から`onFiberRecovered()`で再開できます。",
+      "explanation": "公式ドキュメントは、「Agentから独立して動作し、ステップごとのリトライやマルチステップのオーケストレーションが必要な処理にはWorkflowsを使う。Fibersは、Agent自身の実行の一部である処理のために使う」と説明しています。例えば、LLMへのリクエスト中にAgentインスタンスが退避(eviction)された場合でも、`runFiber()`で登録した処理はチェックポイント(`stash()`)から`onFiberRecovered()`で再開できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/durable-execution/",
       "hint": "「Agent自身の処理の一部かどうか」が使い分けの基準です。",
       "tags": [
@@ -43404,7 +43404,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "AgentsにおけるMCP対応は、外部のMCPサーバーに接続する「MCPクライアント」としての機能です。`addMcpServer()`で外部のMCPサーバーに接続してツールを検出し、`this.mcp.getAITools()`で取得したツールをAI SDKの`generateText()`などに渡してモデルに使わせます。接続情報はAgentのSQLストレージに永続化され、OAuthフローやカスタムヘッダーによる認証もサポートされています。Agent自身をMCPサーバーとして構築したい場合は、別途MCPサーバー向けのドキュメントを参照する必要があります。",
+      "explanation": "AgentsにおけるMCP対応は、外部のMCPサーバーに接続する「MCPクライアント」としての機能です。`addMcpServer()`で外部のMCPサーバーに接続してツールを検出し、`this.mcp.getAITools()`で取得したツールをAI SDKの`generateText()`などに渡してモデルに使わせます。接続情報はAgentのSQLストレージに永続化され、OAuthフローやカスタムヘッダーによる認証もサポートされています。\n{{diagram:0}}\nAgent自身をMCPサーバーとして構築したい場合は、別途MCPサーバー向けのドキュメントを参照する必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/agents/tools/mcp/",
       "hint": "「Agentが外部のMCPサーバーに接続する側」なのか「Agent自身がMCPサーバーになる側」なのかを区別しましょう。",
       "tags": [
@@ -43456,7 +43456,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "SandboxはCloudflare Containersを基盤とした機能で、Agentのコードが実行されるWorker isolateとは分離された環境で、Python・Node.js・シェルコマンド・パッケージマネージャーなどを実行するためのTypeScript APIを提供します。`getSandbox()`でSandbox(Durable Object)を取得し、`writeFile()`や`exec()`などのメソッドでファイル操作やコマンド実行を行います。ユーザーに見える進捗やメタデータは`this.state`に、ワークスペースのファイルやログなどはSandbox側のファイルシステムに保持するという役割分担が推奨されています。",
+      "explanation": "SandboxはCloudflare Containersを基盤とした機能で、Agentのコードが実行されるWorker isolateとは分離された環境で、Python・Node.js・シェルコマンド・パッケージマネージャーなどを実行するためのTypeScript APIを提供します。`getSandbox()`でSandbox(Durable Object)を取得し、`writeFile()`や`exec()`などのメソッドでファイル操作やコマンド実行を行います。\n{{diagram:0}}\nユーザーに見える進捗やメタデータは`this.state`に、ワークスペースのファイルやログなどはSandbox側のファイルシステムに保持するという役割分担が推奨されています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/tools/sandbox/",
       "hint": "Agentのコードが動く場所と、コードを実行させる場所は分離されています。",
       "tags": [
