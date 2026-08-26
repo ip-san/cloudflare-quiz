@@ -122,7 +122,7 @@
           "wrongFeedback": "アイソレートは新しいOSプロセスをフォークするのではなく、既に起動しているランタイムプロセス内に生成される軽量なサンドボックスです。"
         },
         {
-          "text": "OSやランタイムの起動を伴わない軽量な実行コンテキストであり、コンテナ/VM上でNodeプロセスを起動するよりも大幅に高速に起動できる"
+          "text": "OSやランタイムの起動を伴わない軽量な実行コンテキストであり、コンテナ/VMよりも大幅に高速に起動できる"
         },
         {
           "text": "アイソレートごとに個別のOSカーネルを持つため、VMより起動が遅い",
@@ -3883,7 +3883,7 @@
           "wrongFeedback": "R2にはオブジェクト単位のパスワード機能はありません。公開にはパブリックアクセスの有効化とドメイン接続を使います。"
         },
         {
-          "text": "バケットのパブリックアクセスを有効にし、r2.devドメインまたはカスタムドメインを接続して配信する"
+          "text": "パブリックアクセスを有効にし、r2.devまたはカスタムドメインを接続して配信する"
         },
         {
           "text": "Workers KVに全オブジェクトをコピーしてから配信する",
@@ -6573,7 +6573,7 @@
       "question": "Cloudflare Vectorizeとは何ですか？",
       "options": [
         {
-          "text": "embeddingベクトルを保存し、意味的な近さで類似度検索を行うグローバル分散型ベクトルデータベース"
+          "text": "embeddingベクトルを保存し類似度検索を行うグローバル分散型ベクトルデータベース"
         },
         {
           "text": "KVストアの読み書きを高速化するキャッシュレイヤー",
@@ -8014,7 +8014,7 @@
           "wrongFeedback": "HTMLRewriterはフォーマット変換ツールではなく、HTML要素をパース・書き換えるためのAPIです。"
         },
         {
-          "text": "Workerがレスポンスとして返すHTMLドキュメントを、ストリーミングしながらパース・書き換えできるAPI"
+          "text": "Worker内でHTMLドキュメントをストリーミングしながらパース・書き換えできるAPI"
         }
       ],
       "correctIndex": 3,
@@ -8228,7 +8228,7 @@
           "wrongFeedback": "同一のWorkerプロジェクト内に静的アセットとスクリプトを共存させ、フルスタックアプリケーションとしてデプロイできます。"
         },
         {
-          "text": "Wranglerの設定で`assets`バインディングを有効にすると、Workerスクリプトから`env.ASSETS.fetch(request)`のようにして静的アセットへのリクエストを転送できる"
+          "text": "`assets`バインディングを設定すると、Workerスクリプトから`env.ASSETS.fetch(request)`で静的アセットへのリクエストを転送できる"
         },
         {
           "text": "`assets`バインディングを使うには、KVやD1のような別サービスへ静的ファイルを事前にアップロードしておく必要がある",
@@ -14904,7 +14904,7 @@
           "wrongFeedback": "ユーザーごとに同じインスタンスを返し続けたい場合は`getContainer()`を名前付きで使います。`getRandom()`はステートレスな負荷分散向けです。"
         },
         {
-          "text": "ユーザーセッションやドキュメントのように特定の実体に紐づけたい場合は名前を指定して`getContainer()`を使い、どのインスタンスが処理しても構わないステートレスな負荷分散には`getRandom()`を使う"
+          "text": "特定の実体に紐づけたい場合は名前を指定して`getContainer()`を使い、どのインスタンスが処理しても構わないステートレスな負荷分散には`getRandom()`を使う"
         },
         {
           "text": "`getContainer()`は毎回ランダムなインスタンスを選び、`getRandom()`は名前で固定のインスタンスを取得する",
@@ -15929,7 +15929,7 @@
           "wrongFeedback": "Service BindingsもWorker間通信をサポートする仕組みです。両者ともWorker-to-Worker通信を可能にします。"
         },
         {
-          "text": "呼び出す相手のWorkerが事前に決まっている内部サービス間通信にはService Bindingsを使い、顧客が動的にアップロードするWorkerを呼び出す場合にはWorkers for Platformsを使う"
+          "text": "呼び出す相手が事前に決まっている場合はService Bindingsを使い、顧客が動的にアップロードするWorkerを呼び出す場合はWorkers for Platformsを使う"
         },
         {
           "text": "Workers for PlatformsとService Bindingsは同時に使うことができず、どちらか一方しか選べない",
@@ -16037,7 +16037,7 @@
       "question": "dynamic dispatch Workerがnamespace内のuser Workerを呼び出せるようにするための正しいwrangler設定と呼び出し方はどれですか？",
       "options": [
         {
-          "text": "`\"dispatch_namespaces\": [{ \"binding\": \"DISPATCHER\", \"namespace\": \"my-dispatch-namespace\" }]`を設定し、`env.DISPATCHER.get(workerName)`で対象のuser Workerを取得する"
+          "text": "`dispatch_namespaces`バインディングに`binding`名と`namespace`名を設定し、`env.DISPATCHER.get(workerName)`で対象のuser Workerを取得する"
         },
         {
           "text": "`durable_objects`バインディングでnamespaceを指定し、`env.NAMESPACE.idFromName(workerName)`でWorkerを取得する",
@@ -16098,7 +16098,7 @@
           "wrongFeedback": "ダッシュボードでの一律設定ではなく、コード内で顧客ごとに異なる上限を柔軟に指定できます。"
         },
         {
-          "text": "`env.DISPATCHER.get(workerName, {}, { limits: { cpuMs: ..., subRequests: ... } })`のように第3引数でCPU時間とサブリクエスト数の上限を指定し、顧客のプラン種別などに応じて動的に値を変える"
+          "text": "`env.DISPATCHER.get(workerName, {}, { limits: { cpuMs: ..., subRequests: ... } })`のように第3引数でCPU時間とサブリクエスト数の上限を指定する"
         },
         {
           "text": "`outbound`パラメータに`{ limits: {...} }`を渡し、Outbound Worker側で上限を強制する",
@@ -17299,7 +17299,7 @@
       "question": "Custom Providerの`base_url`設定でありがちな失敗として正しいものはどれですか？",
       "options": [
         {
-          "text": "`base_url`にAPIパスの一部(例: `/v1`)を含めてしまうと、リクエスト側にも同じ`/v1`が含まれている場合にパスが重複し、アップストリームが`/v1/v1/chat/completions`のような誤ったパスを受け取ってしまう"
+          "text": "`base_url`にAPIパスの一部(例: `/v1`)を含めると、リクエスト側の`/v1`と重複し、`/v1/v1/chat/completions`のような誤ったパスになってしまう"
         },
         {
           "text": "`base_url`をHTTPSではなくHTTPで登録しても問題なく動作する",
@@ -17704,7 +17704,7 @@
           "wrongFeedback": "WebRTCは通常UDPをベースにしており、Cloudflare RealtimeもUDPベースの通信を前提としています。"
         },
         {
-          "text": "特定のリージョンを意識することなく、WebRTCによる音声・映像・データのリアルタイム通信をスケーラブルに実現できるインフラである"
+          "text": "特定のリージョンを意識せずWebRTCによる音声・映像・データのリアルタイム通信を実現できるインフラ"
         },
         {
           "text": "利用するには必ず特定のリージョンのサーバーを指定してデプロイする必要がある",
@@ -19158,7 +19158,7 @@
           "wrongFeedback": "説明が逆です。`tunnel_id`は特定の1つのトンネルへのバインド、`network_id: \"cf1:network\"`はアカウント全体のMesh/トンネルへのバインドです。"
         },
         {
-          "text": "`tunnel_id`は特定の1つのCloudflare Tunnelを直接指定してバインドするのに対し、`network_id: \"cf1:network\"`はアカウント全体のCloudflare MeshノードやTunnel/WAN経由の経路へアクセスできるようにする"
+          "text": "`tunnel_id`は特定の1つのCloudflare Tunnelにバインドするのに対し、`network_id: \"cf1:network\"`はアカウント全体のMeshノードやTunnel/WAN経由の経路へアクセスできる"
         },
         {
           "text": "`tunnel_id`と`network_id: \"cf1:network\"`はどちらを指定しても全く同じ範囲にアクセスできる",
@@ -19884,7 +19884,7 @@
       "question": "顧客がすでにCloudflareを使っているドメインを、カスタムホスト名としてCloudflare for SaaSに追加した場合の制約として正しいものはどれですか？",
       "options": [
         {
-          "text": "Argo、Early Hints、Client-side security、Spectrum、ワイルドカードDNSなど、一部の機能について顧客が自分のダッシュボードから制御できなくなる"
+          "text": "Argo、Early Hints、Client-side security、Spectrumなど一部の機能を、顧客が自分のダッシュボードから制御できなくなる"
         },
         {
           "text": "顧客はカスタムホスト名として追加した時点で、そのドメインのDNSレコードを完全に削除しなければならない",
@@ -19946,7 +19946,7 @@
           "wrongFeedback": "Apex ProxyingはEnterpriseプラン向けのアドオンとして提供されている機能です。"
         },
         {
-          "text": "標準構成ではAレコードでSaaS事業者のターゲットを指す設定はサポートされておらず、Apexドメインを直接サポートするには「Apex Proxying」というEnterprise向けアドオンが必要"
+          "text": "標準構成ではAレコードでターゲットを指す設定はサポートされず、Apexドメインの直接サポートには「Apex Proxying」というEnterpriseアドオンが必要"
         },
         {
           "text": "AレコードでSaaS事業者のターゲットを指す設定は、Apex Proxyingを使わなくても標準構成でサポートされている",
@@ -20745,7 +20745,7 @@
           "wrongFeedback": "SinksはR2への書き込みに対応しています(Iceberg形式のR2 Data Catalog、またはJSON/Parquet形式のR2)。KV専用ではありません。"
         },
         {
-          "text": "R2 Data CatalogへApache Icebergテーブルとして、またはR2へ生のJSON/Parquetファイルとして書き込むことができ、データが重複・欠落しないexactly-onceの配信を保証する"
+          "text": "R2 Data CatalogへApache Icebergテーブルとして、またはR2へJSON/Parquetとして書き込むことができ、exactly-onceの配信を保証する"
         }
       ],
       "correctIndex": 3,
@@ -22351,7 +22351,7 @@
           "wrongFeedback": "`aud`はどちらの認証方式でもペイロードに含まれます。両者の違いは`sub`や`common_name`などの他のフィールドです。"
         },
         {
-          "text": "IdP認証のペイロードにはメールアドレスや`sub`(ユーザーの一意なID)が含まれるのに対し、サービストークン認証のペイロードでは`sub`が空文字列になり、代わりに`common_name`にサービストークンのClient IDが入る"
+          "text": "IdP認証のペイロードにはメールアドレスや`sub`が含まれるのに対し、サービストークン認証では`sub`が空文字列になり、代わりに`common_name`にClient IDが入る"
         },
         {
           "text": "サービストークン認証のペイロードには`exp`(有効期限)が含まれず、JWTが無期限に有効になる",
@@ -26101,7 +26101,7 @@
       "question": "Adaptive Routingの「Failover across pools」とGeo Steeringを組み合わせて使う場合の正しい説明はどれですか？",
       "options": [
         {
-          "text": "Geo Steering使用時、「Failover across pools」は同じ地理的グループ内のPoolのみを対象とし、例えば北米(NA)のPoolがすべて不健全になっても、それだけでは自動的に欧州(EU)のPoolへはフェイルオーバーせず、グローバルなFallback Poolへ向かう"
+          "text": "Geo Steering使用時、「Failover across pools」は同じ地理的グループ内のPoolのみを対象とし、北米(NA)のPoolがすべて不健全になっても欧州(EU)のPoolへはフェイルオーバーせずFallback Poolへ向かう"
         },
         {
           "text": "「Failover across pools」を有効にすれば、Geo Steeringの地理的なグルーピングを越えて、世界中のどのPoolへも自動的にフェイルオーバーするようになる",
@@ -26367,7 +26367,7 @@
           "wrongFeedback": "そのようなモードはありません。Edge TTLの3モードはCache-Controlヘッダーの扱い方によって区別されます。"
         },
         {
-          "text": "Cache-Controlヘッダーがあればそれに従い、なければキャッシュをバイパスするモード、Cache-Controlヘッダーがあればそれに従い、なければCloudflareのデフォルト挙動を使うモード、Cache-Controlヘッダーを無視して指定したTTLを使うモードの3つ"
+          "text": "Cache-Controlヘッダーがあれば従い、なければキャッシュをバイパスするモード、あれば従い、なければCloudflareのデフォルト挙動を使うモード、Cache-Controlを無視して指定したTTLを使うモードの3つ"
         }
       ],
       "correctIndex": 3,
@@ -26832,7 +26832,7 @@
           "wrongFeedback": "優先順位が逆です。Custom Tiered Cacheの設定がある場合、クラウドリージョンヒントによるマッピングはそちらに優先されません(上書きされません)。"
         },
         {
-          "text": "AWS・GCP・Azure・Oracle Cloudといった主要クラウド事業者に対応しており、Free・Pro・Business・Enterpriseのすべてのプランで追加費用なしに利用できる"
+          "text": "AWS・GCP・Azure・Oracle Cloudといった主要クラウド事業者に対応しており、すべてのプランで追加費用なしに利用できる"
         }
       ],
       "correctIndex": 3,
@@ -27144,7 +27144,7 @@
           "wrongFeedback": "URL rewriteはクライアント側ではなくサーバー側の操作です。ブラウザに表示されるURLは変化しません。"
         },
         {
-          "text": "URL rewriteはWebサーバーがリクエストを処理する前に行われるサーバー側の操作でブラウザのURL表示は変化しないが、URL redirectはWebサーバーが最初のURLを読み込んだ後に行われるクライアント側の操作で訪問者にURLの変化が見える"
+          "text": "URL rewriteはリクエスト処理前に行われるサーバー側の操作でブラウザのURL表示は変化しないが、URL redirectはURLを読み込んだ後のクライアント側の操作で訪問者にURLの変化が見える"
         }
       ],
       "correctIndex": 3,
@@ -28296,7 +28296,7 @@
       "question": "Webトラフィックを扱うDNSレコードを「DNS-only(グレークラウド)」のままにしておくことのリスクとして正しいものはどれですか？",
       "options": [
         {
-          "text": "オリジンサーバーの実IPアドレスがDNSクエリの応答として公開されるため、標的型攻撃への保護が失われ、CloudflareによるHTTP/HTTPS分析やDDoS保護、WAFなどの製品機能も適用されない"
+          "text": "オリジンサーバーの実IPアドレスがDNSクエリの応答として公開されるため標的型攻撃への保護が失われ、DDoS保護やWAFなどの製品機能も適用されない"
         },
         {
           "text": "DNSクエリの応答速度が極端に遅くなり、実用的な速度でサイトにアクセスできなくなる",
@@ -29983,7 +29983,7 @@
           "wrongFeedback": "Freeプラン向けのクォータ行は用意されておらず、合成テストの実行にはPro以上のプランが必要です。プランによる差がないわけではありません。"
         },
         {
-          "text": "Businessプランは単発テスト100本・定期テスト10本(毎日)であり、Enterpriseプランは単発テスト150本・定期テスト15本(毎日)である"
+          "text": "Businessは単発テスト100本・定期テスト10本(毎日)、Enterpriseは単発150本・定期15本(毎日)である"
         },
         {
           "text": "Proプランの単発テストの上限は、Enterpriseプランの上限よりも多い",
@@ -30344,7 +30344,7 @@
           "wrongFeedback": "逆です。Early Hintsはオリジンサーバーやworkerに到達する前に送信されることがあるため、認証チェックより先に送られる可能性があります。"
         },
         {
-          "text": "Early HintsのレスポンスはオリジンサーバーやWorkerに到達する前に送信されることがあるため、未認証の訪問者に対しても、本来の403 Forbiddenレスポンスより先にキャッシュされた103レスポンスが送信されてしまう可能性がある"
+          "text": "Early HintsのレスポンスはオリジンやWorkerに到達する前に送信されることがあるため、未認証の訪問者にも本来の403 Forbiddenより先に103レスポンスが送信される可能性がある"
         },
         {
           "text": "Cloudflareは認証が必要なページに対しては、Early Hintsの生成を常に自動的にブロックするため、この点について特別な注意は不要である",
@@ -31981,7 +31981,7 @@
           "wrongFeedback": "コード解析だけでなく、URLベース・ドメインベースの脅威インテリジェンス照合も独立した仕組みとして併用されています。"
         },
         {
-          "text": "スクリプトのコード自体を解析する仕組み、スクリプトのURLを脅威インテリジェンスと照合する仕組み、スクリプトのドメインを脅威インテリジェンスと照合する仕組みという、3つの独立した仕組みを組み合わせて判定している"
+          "text": "スクリプトのコード自体を解析する仕組み、URLの脅威インテリジェンス照合、ドメインの脅威インテリジェンス照合という3つの独立した仕組みを組み合わせて判定している"
         },
         {
           "text": "脅威フィードが更新されても、過去に検知済みのスクリプトや接続の分類が再評価されることはなく、最初の判定結果がそのまま維持される",
@@ -32914,7 +32914,7 @@
           "wrongFeedback": "そのような挙動は文書化されていません。"
         },
         {
-          "text": "WhatsAppやAndroid Studioなど一部のアプリケーションは、`8.8.8.8`のようなハードコードされたフォールバックDNSサーバーへの問い合わせを内蔵しており、Gatewayが主要なDNSクエリをブロックしてもこのフォールバック経由でDNSポリシーを回避できてしまう"
+          "text": "WhatsAppやAndroid Studioなど一部のアプリは`8.8.8.8`のようなハードコードされたフォールバックDNSサーバーを内蔵しており、主要なDNSクエリがブロックされてもこの経路でDNSポリシーを回避できてしまう"
         },
         {
           "text": "GatewayはIPv6で送信されたDNSクエリを評価対象外としているため、IPv6のみでクエリすれば必ず回避でき、これはGatewayの既知の仕様として文書化されている",
@@ -33456,7 +33456,7 @@
           "wrongFeedback": "HTTPポリシー設定でデフォルトのBlockアクションを構成でき、一致しなかったトラフィックをブロックするよう変更できます。"
         },
         {
-          "text": "DNS・Network・HTTPのいずれも、どのポリシーにも一致しなかった場合のデフォルトはAllow(許可)であり、GatewayはデフォルトでPermissive(許容的)なモデルを採用している。ただしHTTPポリシー設定でデフォルトのBlockアクションを構成している場合は、一致しなかったトラフィックがブロックされる"
+          "text": "DNS・Network・HTTPのいずれもデフォルトはAllow(許可)であり、GatewayはデフォルトでPermissiveなモデルを採用している。ただしHTTPポリシー設定でデフォルトのBlockアクションを構成している場合はブロックされる"
         },
         {
           "text": "どのポリシーにも一致しなかったトラフィックは、DNS・Network・HTTPのすべてのポリシービルダーにおいてデフォルトでブロックされるという制限的(Restrictive)な設計になっている",
@@ -33678,7 +33678,7 @@
           "wrongFeedback": "専用Egress IPはIPv4アドレスとIPv6アドレス範囲の両方で構成されます。"
         },
         {
-          "text": "ResolverポリシーとEgressポリシー(専用Egress IPを含む)はどちらもEnterpriseプラン限定の機能であり、専用Egress IPは宛先IPと宛先ポートの一意な組み合わせごとに最大4万件の同時接続をサポートする"
+          "text": "ResolverポリシーとEgressポリシーはどちらもEnterpriseプラン限定であり、専用Egress IPは宛先IPと宛先ポートの一意な組み合わせごとに最大4万件の同時接続をサポートする"
         }
       ],
       "correctIndex": 3,
@@ -34305,11 +34305,11 @@
           "wrongFeedback": "1つのポリシーにまとめるのではなく、異なるDLPプロファイルを使う2つの別々のHTTPポリシーとして構成することが推奨されています。"
         },
         {
-          "text": "信頼度の低いプロファイルはBlockアクションで即座にブロックし、信頼度の高いプロファイルはAllowアクションでログのみ記録することが推奨されている",
+          "text": "信頼度の低いプロファイルはBlockアクションで即座にブロックし、信頼度の高いプロファイルは別のAllowアクションのポリシーでログのみ記録することが推奨されている",
           "wrongFeedback": "逆です。信頼度の低いプロファイルはAllow(ログのみ)、信頼度の高いプロファイルはBlock(実際にブロック)という組み合わせが推奨されています。"
         },
         {
-          "text": "Low/Medium信頼度のプロファイルをAllowアクションのポリシーでログのみ記録し、High信頼度のプロファイルを別のBlockアクションのポリシーで実際にブロックするという、2つの独立したHTTPポリシーを組み合わせる設計が推奨されている"
+          "text": "Low/Medium信頼度のプロファイルはAllowポリシーでログのみ記録し、High信頼度のプロファイルは別のBlockポリシーでブロックするという、2つの独立したHTTPポリシーを組み合わせる設計が推奨されている"
         }
       ],
       "correctIndex": 3,
@@ -35539,7 +35539,7 @@
       "question": "非アイデンティティ(non-identity)のオンランプ経由でBrowser Isolationを利用する仕組みに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "プロキシエンドポイントやCloudflare WANのようなオンランプはCloudflare One Clientへのログインを必要としないため、これらの経路ではユーザーIDに基づくIsolateポリシーを組むことができず、非アイデンティティのセレクタに基づいてポリシーを構成する必要がある。またダッシュボードで「ユーザーIDが不明な場合のHTTPトラフィックの分離を許可する」という設定を有効にする必要がある"
+          "text": "プロキシエンドポイントやCloudflare WANのようなオンランプはCloudflare One Clientへのログインを必要としないため、ユーザーIDに基づくIsolateポリシーを組むことができず、ダッシュボードで「ユーザーIDが不明な場合のHTTPトラフィックの分離を許可する」設定を有効にする必要がある"
         },
         {
           "text": "非アイデンティティのオンランプという概念は、メールのリンクを匿名でクリックするような用途に特化した仕組みであり、プロキシエンドポイントやCloudflare WANとは無関係である",
@@ -35648,7 +35648,7 @@
           "wrongFeedback": "それはBrowser Isolationの説明です。CASBはAPI経由でSaaS/クラウド環境をスキャンする仕組みです。"
         },
         {
-          "text": "CASBはSaaSアプリケーションやクラウド環境のAPIへ接続し、ユーザーが正常にログインした後に発生しうるセキュリティ上の問題(設定不備・不正なユーザー活動・シャドーITなど)をスキャンする"
+          "text": "CASBはSaaSアプリケーションやクラウド環境のAPIへ接続し、ユーザーが正常にログインした後に発生しうるセキュリティ上の問題をスキャンする"
         },
         {
           "text": "CASBはネットワークを流れるHTTPトラフィックをインラインで検査し、ログイン前の通信内容から機密データを検知する",
@@ -36850,7 +36850,7 @@
           "wrongFeedback": "HTTPステータスコードを計測するのはHTTPテストの方です。Tracerouteテストはネットワーク経路(ホップごとの応答時間・パケットロス)を計測します。"
         },
         {
-          "text": "Tracerouteテストは、エンドユーザーデバイスからサーバーまでのIPパケットのネットワーク経路を計測するテストで、パケットが経由する中継ルーター(ホップ)ごとに応答時間とパケットロスを記録する"
+          "text": "エンドユーザーデバイスからサーバーまでのIPパケットのネットワーク経路を計測し、経由する中継ルーター(ホップ)ごとに応答時間とパケットロスを記録する"
         }
       ],
       "correctIndex": 3,
@@ -37115,7 +37115,7 @@
           "wrongFeedback": "IP visibilityはIPv4・IPv6の両方に対応しています。"
         },
         {
-          "text": "IP visibilityはデバイスごとに、エンドユーザーデバイスのプライベートIPを示すDevice、ISPがそのデバイスのトラフィックにルーティングする際に割り当てるパブリックIPを示すISP、デバイスが接続しているルーターのプライベートIPを示すGatewayという3種類のIPアドレスを表示する"
+          "text": "エンドユーザーデバイスのプライベートIPを示すDevice、ISPが割り当てるパブリックIPを示すISP、接続しているルーターのプライベートIPを示すGatewayという3種類のIPアドレスを表示する"
         },
         {
           "text": "Device・ISP・Gatewayという3種類のIPアドレスのうち、Deviceはエンドユーザーデバイスに割り当てられたパブリック(グローバル)なIPアドレスを指すものとして扱われる",
@@ -38113,7 +38113,7 @@
           "wrongFeedback": "Outbound DLPはMicrosoft 365専用の機能であり、Microsoft E3またはE5ライセンスが必要です。Google Workspaceでは利用できません。"
         },
         {
-          "text": "Outbound DLPはMicrosoft 365専用の機能で、Microsoft E3またはE5ライセンスが必要である。DLP Assist add-inはメッセージがクライアント側で送信される前にEMLへヘッダーを挿入する仕組みで、組織への伝播には最大24時間かかることがある"
+          "text": "Outbound DLPはMicrosoft 365専用でE3またはE5ライセンスが必要。DLP Assist add-inはクライアント側で送信前にEMLへヘッダーを挿入する仕組みで、組織への伝播には最大24時間かかることがある"
         },
         {
           "text": "DLP Assist add-inは、メッセージがクライアントから送信されて送信サーバー側に到達した後の段階で初めてヘッダーを挿入する仕組みになっている",
@@ -38851,7 +38851,7 @@
           "wrongFeedback": "ハッシュには送信元・宛先IPアドレスに加え、TCP/UDPパケットの場合は送信元・宛先ポートも使われます。"
         },
         {
-          "text": "送信元・宛先IPアドレス(TCP/UDPの場合は送信元・宛先ポートも含む)から計算したハッシュ値を等コストの経路数で割った余りによって経路が決まる確率的なアルゴリズムであり、同一フローのパケットは同じトンネルを使い続ける"
+          "text": "送信元・宛先IP(TCP/UDPではポートも含む)から計算したハッシュを等コストの経路数で割った余りで経路が決まる確率的なアルゴリズムで、同一フローのパケットは同じトンネルを使い続ける"
         },
         {
           "text": "同一セッション内のパケットであっても、パケットごとに異なるネクストホップ(トンネル)へランダムに振り分けられる",
@@ -39758,7 +39758,7 @@
           "wrongFeedback": "SpectrumはL3/L4を対象とするDDoS防御を提供します。L7 DDoS攻撃からHTTP/Sアプリケーションを守るにはWAF/CDNサービスとの併用が推奨されます。"
         },
         {
-          "text": "Spectrumはレイヤー4のリバースプロキシとして動作するため、正当なTCPコネクションが確立される前のSYNやSYN-ACKリフレクション攻撃の影響はCloudflareのグローバルネットワーク側に吸収される"
+          "text": "Spectrumはレイヤー4のリバースプロキシとして動作するため、SYNやSYN-ACKリフレクション攻撃の影響はCloudflareのグローバルネットワーク側に吸収される"
         },
         {
           "text": "SpectrumアプリケーションがTCP用に設定されている場合でも、UDPフラッドのパケットはそのままオリジンへ転送される",
