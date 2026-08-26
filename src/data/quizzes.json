@@ -8472,7 +8472,7 @@
         },
         {
           "text": "`wrangler auth --token`",
-          "wrongFeedback": "そのようなサブコマンドはありません。認証にはブラウザ経由のOAuthフローを開始する`wrangler login`を使います。"
+          "wrongFeedback": "ログインに使うのは`wrangler auth --token`ではなく、ブラウザ経由のOAuthフローを開始する`wrangler login`です。"
         },
         {
           "text": "`wrangler deploy --login`",
@@ -9285,7 +9285,7 @@
       "options": [
         {
           "text": "`wrangler d1 backup create <name>` でバックアップを作成し、`wrangler d1 backup restore` で復元する",
-          "wrongFeedback": "そのような`backup`サブコマンドは存在しません。書き出しには`export`、復元には`execute`を使います。"
+          "wrongFeedback": "現行のD1に`backup`サブコマンドはありません(スナップショット型のバックアップAPIは`version: alpha`の旧データベース向けのもので、現在はTime Travelに置き換えられています)。書き出しには`export`、復元には`execute`を使います。"
         },
         {
           "text": "Cloudflareダッシュボードの「ダウンロード」ボタンを押すと自動的にJSON形式でエクスポートされる",
@@ -10576,7 +10576,7 @@
       "options": [
         {
           "text": "静的アセットの配信には一切関与せず、`functions/` 配下のAPIリクエストにのみ影響する",
-          "wrongFeedback": "ミドルウェアは静的アセットへのリクエストを含め、そのディレクトリ以下の全リクエストに対して実行されます。"
+          "wrongFeedback": "ミドルウェアは、配置したディレクトリ以下（サブディレクトリを含む）のPages Functionsに一致するリクエストに対して実行されます。さらに`functions/_middleware.js`をルート直下に置けば、静的ファイルへのリクエストの前段でも実行されます。"
         },
         {
           "text": "同じディレクトリ以下の全リクエストに対してルートハンドラより先に実行され、`next()` を呼び出すことで後続の処理へ処理を渡せる"

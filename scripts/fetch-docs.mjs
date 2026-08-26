@@ -229,6 +229,35 @@ function reportUnexpandedPartials(cachedFiles) {
     console.log(`   - ${a.filename} (${a.count})`)
   }
   if (affected.length > 10) console.log(`   ... and ${affected.length - 10} more`)
+  reportUnexpandedNamespaces(cachedFiles)
+}
+
+/**
+ * `<WranglerNamespace namespace="d1" />` の未展開を報告する。
+ *
+ * これは `<Render>` とは別の盲点で、サブコマンド一覧が Wrangler 自身の
+ * CLI スキーマからビルド時に生成されるため、ソースにテキストが存在しない。
+ * 取りに行っても実体が無いので展開できない——`<Render>` と違い
+ * 「取得漏れ」ではなく「原理的に不在」である。
+ *
+ * 2026-08-26 に d1-013 の監査で発覚した。「`backup` サブコマンドは存在しない」
+ * という記述の裏が取れず、キャッシュだけでは判断できなかった。
+ * 同種の `<WranglerCommand>` は normalizeWranglerComponents が
+ * プレーンテキストを挿入して救っているが、こちらは救えない。
+ */
+function reportUnexpandedNamespaces(cachedFiles) {
+  const affected = []
+  for (const filename of cachedFiles) {
+    const text = readFileSync(resolve(DOCS_DIR, filename), 'utf8')
+    const m = text.match(/<WranglerNamespace[^>]*\/>/g)
+    if (m) affected.push({ filename, count: m.length })
+  }
+  if (affected.length === 0) return
+  console.log(`\n⚠️  Unexpanded <WranglerNamespace>: ${affected.length} pages`)
+  console.log('   サブコマンド一覧がビルド時生成のため、ソースに実体が無い（取得しても救えない）。')
+  console.log('   これらのページを referenceUrl にする問題で「そのサブコマンドは無い」と')
+  console.log('   判定する場合は、キャッシュではなくライブのドキュメントを見ること。')
+  for (const a of affected) console.log(`   - ${a.filename}`)
 }
 
 const args = process.argv.slice(2)
