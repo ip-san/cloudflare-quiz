@@ -3351,7 +3351,7 @@
           "wrongFeedback": "`prepare().bind().run()`でINSERT/UPDATE/DELETEも問題なく実行できます。"
         },
         {
-          "text": "`exec()`はバインドパラメータをサポートせず、主にスキーマ定義など管理系のSQLをまとめて実行するために使う。ユーザー入力を扱うクエリには`prepare().bind()`を使うべき"
+          "text": "`exec()`はバインドパラメータをサポートせず、スキーマ定義など管理系のSQLをまとめて実行するのに使い、ユーザー入力を扱うクエリには`prepare().bind()`を使う"
         }
       ],
       "correctIndex": 3,
@@ -4105,7 +4105,7 @@
           "wrongFeedback": "これは自前実装であり、R2が標準提供する仕組みではありません。R2はS3互換の署名付きURLを発行できます。"
         },
         {
-          "text": "S3互換APIの署名機能を使ってpresigned URL（署名付きURL）を生成し、有効期限付きで一時的なアクセスを許可する"
+          "text": "S3互換APIでpresigned URL（署名付きURL）を生成し、有効期限付きで一時的なアクセスを許可する"
         },
         {
           "text": "カスタムドメインを接続すれば自動的に全オブジェクトへの一時アクセスURLが発行される",
@@ -5000,7 +5000,7 @@
           "wrongFeedback": "SQLiteバックエンドではSQL APIに加えて、get/put/delete/listなどの同期的なKV APIも利用できます。"
         },
         {
-          "text": "SQLiteストレージバックエンドが推奨されており、各storageメソッド呼び出しは暗黙的にトランザクションでラップされアトミックに実行される"
+          "text": "SQLiteストレージバックエンドが推奨され、各メソッド呼び出しは暗黙的にトランザクションでラップされアトミックに実行される"
         },
         {
           "text": "ストレージへの書き込みは結果整合性のみが保証され、同一DO内でも読み取り直後の値が古い場合がある",
@@ -6103,7 +6103,7 @@
           "wrongFeedback": "環境変数はダッシュボードやCLIから設定するものであり、`_headers` ファイルの役割ではありません。"
         },
         {
-          "text": "特定のパスパターンに対してカスタムのHTTPレスポンスヘッダーを付与するため"
+          "text": "パスパターンごとにカスタムHTTPレスポンスヘッダーを付与するため"
         },
         {
           "text": "デプロイ対象から除外するファイル一覧を指定するため",
@@ -6171,7 +6171,7 @@
       "question": "Cloudflare Pages の `_redirects` ファイルで、パスの一部を任意の文字列にマッチさせて転送先で参照する(いわゆるワイルドカード/splat)場合の記法として正しいものはどれか。",
       "options": [
         {
-          "text": "`/old/* /new/:splat 301` のように `*` でマッチさせ、転送先で `:splat` として参照する"
+          "text": "`/old/* /new/:splat 301` のように `*` でマッチさせ `:splat` で参照する"
         },
         {
           "text": "ワイルドカード指定はサポートされておらず、すべてのパスを1行ずつ列挙する必要がある",
@@ -13108,7 +13108,7 @@
           "wrongFeedback": "フォーマット別のファイル識別子ではありません。Variant は寸法や合わせ方などのリサイズ設定です。"
         },
         {
-          "text": "ホスト画像に対してあらかじめ定義しておくリサイズ方法の設定で、例えば `width`・`height`・`fit`・`blur` を指定した「thumbnail(100x100)」のような版を用意しておける"
+          "text": "ホスト画像のリサイズ方法をあらかじめ定義しておく設定で、`width`・`height`・`fit`・`blur` を指定した「thumbnail(100x100)」のような版を用意しておける"
         },
         {
           "text": "同じ画像を複数のリージョンに複製して保存する冗長化の単位",
@@ -14040,7 +14040,7 @@
           "wrongFeedback": "エラーのみを抽出する仕組みではなく、リクエスト全体からランダムに一定割合を記録する仕組みです。"
         },
         {
-          "text": "高トラフィックなWorkerで記録するリクエストの割合を絞り、ログ量とコストを抑えつつ傾向を把握できるようにする"
+          "text": "高トラフィックなWorkerで記録するリクエストの割合を絞り、ログ量とコストを抑えつつ傾向を把握する"
         }
       ],
       "correctIndex": 3,
@@ -14410,7 +14410,7 @@
           "wrongFeedback": "SQL APIはHTTPエンドポイントへの直接リクエストで利用します。シークレット経由の自動転送という仕組みはありません。"
         },
         {
-          "text": "`Account Analytics Read`権限を持つAPIトークンを作成し、`Authorization: Bearer <token>`ヘッダーを付けてSQL APIのエンドポイントにクエリ本文をPOSTする"
+          "text": "`Account Analytics Read`権限のAPIトークンで`Authorization: Bearer <token>`ヘッダーを付け、SQL APIのエンドポイントへクエリ本文をPOSTする"
         }
       ],
       "correctIndex": 3,
@@ -14626,7 +14626,7 @@
           "wrongFeedback": "実際の上限は`blobs`・`doubles`がそれぞれ最大20件、`indexes`は実質1件です。"
         },
         {
-          "text": "`blobs`・`doubles`はそれぞれ最大20件、`indexes`は実質1件のみ有効で、1件のデータポイント内の`blobs`合計サイズは16KBまで、1回のWorker呼び出しにつき最大250件のデータポイントを書き込める"
+          "text": "`blobs`・`doubles`は各最大20件、`indexes`は実質1件のみ有効で、`blobs`合計サイズは16KBまで、1回のWorker呼び出しにつき最大250件のデータポイントを書き込める"
         }
       ],
       "correctIndex": 3,
@@ -15170,7 +15170,7 @@
       "question": "Containerの課金の考え方として正しい説明はどれですか？",
       "options": [
         {
-          "text": "コンテナが実際に稼働している10ms単位で課金され、リクエストが来た時や手動起動時に課金が始まり、スリープすると停止するため、使った分だけの支払いになる"
+          "text": "実際に稼働している10ms単位で課金され、リクエストが来た時や手動起動時に始まり、スリープすると停止するため、使った分だけの支払いになる"
         },
         {
           "text": "ネットワークegressの料金は世界中どこでも同一で、リージョンによる違いはない",
@@ -16340,7 +16340,7 @@
           "wrongFeedback": "タグは顧客ID・プラン種別・環境などで検索・フィルタしたり、一括操作を行うために使います。課金専用の仕組みではありません。"
         },
         {
-          "text": "顧客ID・プラン種別・環境などのタグを付与でき、タグでフィルタして一覧取得や一括削除といった操作ができる(1スクリプトあたり最大8個まで)"
+          "text": "顧客ID・プラン種別・環境などのタグを付与でき、タグでフィルタして一覧取得や一括削除ができる(1スクリプトあたり最大8個まで)"
         }
       ],
       "correctIndex": 3,
@@ -16667,7 +16667,7 @@
           "wrongFeedback": "既存のnamespaceに対してAPIで`trusted_workers`を更新するだけで切り替えられ、namespaceを作り直す必要はありません。"
         },
         {
-          "text": "既にデプロイ済みのWorkerは`request.cf`を使えるようにするために再デプロイが必要だが、切り替え後に新しくデプロイするWorkerは自動的に`request.cf`にアクセスできる"
+          "text": "既にデプロイ済みのWorkerは`request.cf`を使うために再デプロイが必要だが、切り替え後に新しくデプロイするWorkerは自動的にアクセスできる"
         },
         {
           "text": "trusted modeへの切り替えは全Workerを一度削除しないと行えない安全装置がある",
@@ -17253,7 +17253,7 @@
           "wrongFeedback": "`base_url`にはルートドメインのみを登録するべきで、APIパスの部分はリクエストURL側(`custom-{slug}/`より後ろ)に含めます。"
         },
         {
-          "text": "Custom Providerのslugには`custom-`というプレフィックスを付けて参照し、ゲートウェイURLの`custom-{slug}/`より後ろの部分がそのまま登録した`base_url`の末尾に連結されてアップストリームURLになる"
+          "text": "Custom Providerのslugには`custom-`プレフィックスを付けて参照し、ゲートウェイURLの`custom-{slug}/`より後ろの部分が`base_url`の末尾に連結されてアップストリームURLになる"
         },
         {
           "text": "Custom Providerは常にOpenAI互換の`/chat/completions`形式のリクエストしか受け付けられず、それ以外のAPI形式には対応できない",
@@ -17579,7 +17579,7 @@
           "wrongFeedback": "`AI Gateway Run`権限を持つトークンは、BYOKで保存された認証情報を使うゲートウェイも含め、アカウント内の全ゲートウェイにリクエストを送れてしまいます。自動的に保護されているわけではありません。"
         },
         {
-          "text": "`AI Gateway Run`権限はR2のバケット単位のスコープとは異なりアカウント全体に及ぶため、そのトークンを持つ第三者はBYOKで保存された認証情報を含め、アカウント内のすべてのゲートウェイにリクエストを送れてしまう"
+          "text": "`AI Gateway Run`権限はR2のバケット単位のスコープとは異なりアカウント全体に及び、そのトークンを持つ第三者はBYOKの認証情報を含めアカウント内の全ゲートウェイにリクエストを送れてしまう"
         }
       ],
       "correctIndex": 3,
@@ -19572,7 +19572,7 @@
       "question": "VPC ServicesがSSRF(サーバーサイドリクエストフォージェリ)対策として機能する仕組みとして正しいものはどれですか？",
       "options": [
         {
-          "text": "各VPC Serviceが特定の1つのホスト・ポートの組み合わせにのみルーティングするよう強制されているため、Workerのコードが細工されたURLを`fetch()`に渡しても、プライベートネットワーク全体を露出させることなく、意図した1つの宛先だけにリクエストが制限される"
+          "text": "各VPC Serviceが特定の1つのホスト・ポートにのみルーティングするよう強制されているため、Workerのコードが細工されたURLを`fetch()`に渡しても、プライベートネットワーク全体を露出させず、登録済みの1つの宛先にリクエストが制限される"
         },
         {
           "text": "VPC ServiceはWorkerのソースコードを静的解析し、SSRFを引き起こしうるコードパターンをデプロイ前に検出する",
@@ -21165,7 +21165,7 @@
           "wrongFeedback": "逆です。`UNNEST`は`SELECT`句でのみ使用できます。"
         },
         {
-          "text": "配列を複数行に展開する演算子で、`SELECT`句の中でのみ使用でき、1つの`SELECT`文でUNNESTできる配列は1つに制限されている"
+          "text": "配列を複数行に展開する演算子で、`SELECT`句でのみ使用でき、1つの`SELECT`文でUNNESTできる配列は1つだけ"
         },
         {
           "text": "`UNNEST`は配列の要素数を数える(カウントする)ための集計関数である",
@@ -22820,7 +22820,7 @@
           "wrongFeedback": "`skip`は終端アクションではありません。設定に応じて特定のルール・フェーズ・製品の評価だけをスキップします。"
         },
         {
-          "text": "設定次第で、現在のルールセット内の残りのルール・現在フェーズの残りのルール(ゾーンレベルのみ)・特定のルールセットやフェーズ・Ruleset Engineに基づかない特定のセキュリティ製品など、複数の対象をスキップできる"
+          "text": "設定次第で、現在のルールセット内の残りのルール・現在フェーズの残りのルール(ゾーンのみ)・特定のルールセットやフェーズ・Ruleset Engineに基づかない特定のセキュリティ製品をスキップできる"
         },
         {
           "text": "`skip`アクションを使うと、Ruleset Engineを使わないBot Fight Modeも含めてすべてのセキュリティ機能をスキップできる",
@@ -22965,7 +22965,7 @@
           "wrongFeedback": "上限を超えた部分が「検査結果に一切影響しない」形で自動補完されるわけではありません。超過した内容は完全には分析されず、誤検知などの原因になり得ます。"
         },
         {
-          "text": "Enterpriseプランでは128KB、Freeプランでは1MBが上限であり、上限を超えた部分は`http.request.body.truncated`フィールドで検知できる"
+          "text": "Enterpriseプランは128KB、Freeプランは1MBが上限で、超えた部分は`http.request.body.truncated`フィールドで検知できる"
         },
         {
           "text": "検査できるボディサイズに上限はなく、`Content-Length`がどれだけ大きなリクエストでもすべて検査対象になる",
@@ -23190,7 +23190,7 @@
           "wrongFeedback": "カウント式を空文字列にした場合、カウントが無効化されるのではなく、マッチ式(`expression`)と同じ内容がカウント式として使われます。"
         },
         {
-          "text": "カスタムカウント式を設定すると、それはマッチ式を自動的に拡張したものにはならないため、必要であれば元のマッチ式の条件を自分でカウント式に含める必要がある"
+          "text": "カスタムカウント式はマッチ式を自動的に拡張したものにはならないため、必要であれば元のマッチ式の条件を自分でカウント式に含める必要がある"
         },
         {
           "text": "カウント式には常にHTTPレスポンスのフィールドを含めることができ、いかなる設定制限も存在しない",
@@ -24736,7 +24736,7 @@
           "wrongFeedback": "mTLSはgRPCベースのAPIにも対応しています。JSON形式に限定されているわけではありません。"
         },
         {
-          "text": "モバイルアプリ・IoTデバイス・サービス間通信などのAPIクライアントの身元を検証するために使われ、全プランがCloudflare管理のCAでmTLSを利用でき、Enterpriseは最大5つの独自CAをアップロードできる"
+          "text": "モバイルアプリ・IoTデバイスなどAPIクライアントの身元を検証するために使われ、全プランがCloudflare管理のCAでmTLSを利用でき、Enterpriseは最大5つの独自CAをアップロードできる"
         }
       ],
       "correctIndex": 3,
@@ -28051,7 +28051,7 @@
       "question": "Cloudflareでプロキシ(オレンジクラウド)にできるDNSレコードの種類として正しいものはどれですか？",
       "options": [
         {
-          "text": "IPアドレス解決に使われるA・AAAA・CNAMEレコードのみがプロキシ可能で、MXやTXTなど他の種類のレコードは常にDNS-onlyになる"
+          "text": "IPアドレス解決に使われるA・AAAA・CNAMEレコードのみがプロキシ可能で、MXやTXTなど他の種類は常にDNS-onlyになる"
         },
         {
           "text": "TXT・MXレコードを含む、すべての種類のDNSレコードをプロキシできる",
@@ -29174,7 +29174,7 @@
           "wrongFeedback": "制限は存在します。デフォルトポート(443)以外のHTTPS接続では、Fullモードへフォールバックします。"
         },
         {
-          "text": "Flexibleの挙動が保証されるのはデフォルトポート(443)でのHTTPS接続のみで、それ以外のポートを使うHTTPS接続はFullモードにフォールバックする"
+          "text": "Flexibleの挙動が保証されるのはデフォルトポート(443)でのHTTPS接続のみで、それ以外のポートではFullモードにフォールバックする"
         }
       ],
       "correctIndex": 3,
@@ -30869,7 +30869,7 @@
       "question": "リモート管理(remotely-managed)トンネルとローカル管理(locally-managed)トンネルの違いに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "ローカル管理トンネルはCLIで作成し、認証情報ファイル(credentials-file)や設定内容をオリジン側のconfig.ymlに保持するのに対し、リモート管理トンネルはダッシュボードやAPIで作成し、トークンを使ってcloudflaredをそのトンネルに関連付ける"
+          "text": "ローカル管理トンネルはCLIで作成し、認証情報ファイル(credentials-file)や設定内容をオリジン側のconfig.ymlに保持するのに対し、リモート管理トンネルはダッシュボードやAPIで作成し、トークンでcloudflaredをトンネルに関連付ける"
         },
         {
           "text": "リモート管理トンネルはconfig.ymlファイルを必須とし、ローカル管理トンネルはダッシュボードでのみ設定変更ができる",
@@ -33880,7 +33880,7 @@
           "wrongFeedback": "保存方法に明確な違いがあります。EDMはハッシュ化、CWLはプレーンテキスト保存です。"
         },
         {
-          "text": "EDMデータセットはハッシュ化された形で扱われ、ペイロードログでもマッチした値が編集(redact)される一方、CWLデータセットはプレーンテキストのままDLP内に保存され、マッチした値がペイロードログにそのまま表示される"
+          "text": "EDMデータセットはハッシュ化された形で扱われ、ペイロードログでもマッチした値が編集(redact)される一方、CWLデータセットはプレーンテキストのまま保存され、マッチした値はログにそのまま表示される"
         },
         {
           "text": "EDMデータセットもCWLデータセットも、どちらもCloudflare側でプレーンテキストのまま保存され、ログにもマッチした値がそのまま表示される",
@@ -35206,7 +35206,7 @@
           "wrongFeedback": "個々のファイルサイズは最大512MBまでが推奨されています。"
         },
         {
-          "text": "ダウンロードされたファイルはメモリ内に保持され、リモートブラウザセッションの終了時に破棄される仕組みになっており、個々のファイルサイズは最大512MBまでが推奨されている"
+          "text": "ダウンロードされたファイルはメモリ内に保持され、リモートブラウザセッションの終了時に破棄される。個々のファイルサイズは最大512MBまでが推奨されている"
         },
         {
           "text": "ダウンロードされたファイルはCloudflareのストレージに永続的に保存され、セッション終了後もアクセスできる",
@@ -39138,7 +39138,7 @@
           "wrongFeedback": "Advanced TCP Protection・Advanced DNS ProtectionはDDoS managed rulesetsの後に適用されます。"
         },
         {
-          "text": "DDoS managed rulesets、Advanced TCP Protection、Advanced DNS Protection、Cloudflare Network Firewallの順に適用される。DDoS managed rulesetsは常時有効で無効化できない"
+          "text": "DDoS managed rulesets(常時有効で無効化不可)、Advanced TCP Protection、Advanced DNS Protection、Cloudflare Network Firewallの順に適用される"
         },
         {
           "text": "4つの緩和レイヤーはすべて並列に同時評価され、実行順序という概念は存在しない",
@@ -39860,7 +39860,7 @@
       "question": "SpectrumでSSH(TCPポート22)向けのアプリケーションを設定する際の一般的な流れとして、正しいものはどれですか?",
       "options": [
         {
-          "text": "Cloudflareダッシュボードでドメインに割り当てたEdge Portへの接続を、オリジンのSSHポートへプロキシするアプリケーションを作成し、必要に応じてPROXY Protocolを有効化して真のクライアントIPをオリジンへ伝える"
+          "text": "ダッシュボードでドメインに割り当てたEdge Portへの接続をオリジンのSSHポートへプロキシするアプリケーションを作成し、必要に応じてPROXY Protocolを有効化して真のクライアントIPを伝える"
         },
         {
           "text": "SSHのようなTCPアプリケーションでは、Edge TLS TerminationをFull (Strict)に設定しない限りアプリケーションを作成できない",
@@ -40499,7 +40499,7 @@
           "wrongFeedback": "Turnstileチャレンジの失敗時の挙動を制御するのは`turnstile_action`などの別設定です。`total active users`と`new users per minute`はトラフィック量の閾値を表します。"
         },
         {
-          "text": "`total active users`は`host/path`で許容する同時アクティブセッション数の上限、`new users per minute`はその`host/path`への1分あたりの新規流入の閾値であり、いずれも200より大きい値で、後者は前者以下に設定する必要がある"
+          "text": "`total active users`は`host/path`で許容する同時アクティブセッション数の上限、`new users per minute`は1分あたりの新規流入の閾値であり、いずれも200より大きく、後者は前者以下に設定する必要がある"
         }
       ],
       "correctIndex": 3,
@@ -40549,7 +40549,7 @@
           "wrongFeedback": "Turnstileチャレンジの成否に関する猶予時間ではありません。`session duration`はオリジン到達後の再訪問に関する設定です。"
         },
         {
-          "text": "1分から30分の範囲(デフォルト5分)で設定し、訪問者が対象の`host/path`を離れてから再び待機室を経由せずに直接戻れる時間の長さを表す(`session_duration`パラメータ)"
+          "text": "1分から30分の範囲(デフォルト5分)で設定し、訪問者が`host/path`を離れてから待機室を経由せず直接戻れる時間を表す(`session_duration`パラメータ)"
         },
         {
           "text": "待機室ページ(`__cfwaitingroom`クッキー)が自動リフレッシュされる間隔を表し、デフォルトで20秒に固定されている",
@@ -40912,7 +40912,7 @@
           "wrongFeedback": "JSON応答モードでもクッキーの送受信は必須です。リクエストに前回取得したクッキーを含めないと新規ユーザーとして扱われ、待機列の末尾に回されてしまいます。"
         },
         {
-          "text": "リクエストヘッダーに`Accept: application/json`を厳密に一致させて送信する必要があり、待機中は`refreshIntervalSeconds`ごとにクライアント側からリクエストを再送して順番を進める必要がある"
+          "text": "リクエストヘッダーに`Accept: application/json`を厳密に一致させて送る必要があり、待機中は`refreshIntervalSeconds`ごとにクライアントからリクエストを再送して順番を進める"
         },
         {
           "text": "JSON応答はすべてのプラン(Business以上)で標準的に利用でき、Advanced Waiting Roomのようなアドオンは不要である",
@@ -41046,7 +41046,7 @@
           "wrongFeedback": "1ゾーンにつき利用できるWaiting Roomのプランは1つだけです。基本とAdvancedを同時に組み合わせることはできません。"
         },
         {
-          "text": "基本的な待機室(1つ)はBusinessおよびEnterpriseプランに含まれており、カスタマイズやイベントなど一部の追加機能を利用するにはEnterpriseプランでAdvanced Waiting Roomを購入する必要がある"
+          "text": "基本的な待機室(1つ)はBusinessおよびEnterpriseプランに含まれ、カスタマイズやイベントなどの追加機能を使うにはEnterpriseでAdvanced Waiting Roomを購入する必要がある"
         },
         {
           "text": "Advanced Waiting Roomのアドオンを購入すると、Freeプランのアカウントでもカスタマイズやイベント機能などすべての追加機能を利用できる",
@@ -41304,7 +41304,7 @@
           "wrongFeedback": "無効化されたセッション数はWaiting Room AnalyticsのGraphQL APIから`sessionsRevoked`メトリクスとして取得できます。"
         },
         {
-          "text": "ダッシュボードで\"Allow session termination via origin commands\"を有効にし、オリジンからのレスポンスに`Cf-Waiting-Room-Command: revoke`ヘッダーを付与すると、対応するユーザーのセッションが無効化され待機列の空きがより動的に生まれる"
+          "text": "ダッシュボードで\"Allow session termination via origin commands\"を有効にし、オリジンからのレスポンスに`Cf-Waiting-Room-Command: revoke`ヘッダーを付与すると、対応するユーザーのセッションが無効化される"
         },
         {
           "text": "この機能(`enabled_origin_commands`)はダッシュボードから常時デフォルトで有効になっており、追加の設定なしにオリジンからのすべてのレスポンスヘッダーを解析してセッションを無効化する",
@@ -43055,7 +43055,7 @@
           "wrongFeedback": "`routeAgentRequest()`は`/agents/{agent名}/{インスタンス名}`という規約に基づいて自動的にルーティングするため、デコレータでの明示的な指定は不要です。"
         },
         {
-          "text": "`https://your-worker.workers.dev/agents/{agent名}/{インスタンス名}` という形式で、Agentクラス名はkebab-caseに変換されて(元の名前とkebab-case版の両方に)マッチする"
+          "text": "`https://your-worker.workers.dev/agents/{agent名}/{インスタンス名}` という形式で、Agentクラス名は元の名前とkebab-case版の両方にマッチする"
         },
         {
           "text": "Agentクラス名はそのままcamelCaseの文字列としてURLに使われ、kebab-caseへの変換は行われない",
