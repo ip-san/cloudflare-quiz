@@ -768,7 +768,7 @@
       "question": "レガシーのService Worker形式(`addEventListener('fetch', ...)`)と比べて、モジュール形式(ESM)のWorkerの特徴として正しいものはどれですか?",
       "options": [
         {
-          "text": "ESM形式では標準Fetch APIのRequest/Responseオブジェクトが使用できず、`env`から取得する独自のペイロード形式へ変換してから処理する必要がある",
+          "text": "ESM形式では標準Fetch APIのRequest/Responseオブジェクトが使用できず、Workers独自のペイロード形式へ変換してから処理する必要がある",
           "wrongFeedback": "ESM形式でも標準Fetch APIのRequest/Responseオブジェクトがそのまま使われます。"
         },
         {
@@ -2973,7 +2973,7 @@
           "text": "`wrangler d1 create` でデータベースを作成し、`database_id` を `wrangler.toml` の `[[d1_databases]]` に設定する"
         },
         {
-          "text": "`package.json`のdependenciesに `@cloudflare/d1` を追加すると`database_id`が自動検出されるため、`wrangler.toml`への追記は不要でそのままバインディングされる",
+          "text": "`package.json`のdependenciesに `@cloudflare/d1` を追加するとビルド時に接続情報が自動検出されるため、設定ファイルへの追記は不要でそのままバインディングされる",
           "wrongFeedback": "npmパッケージを追加するだけでは不十分で、`wrangler.toml`(または`wrangler.jsonc`)でのバインディング設定が必須です。"
         },
         {
@@ -7372,7 +7372,7 @@
           "wrongFeedback": "WorkersはCloudflare独自のランタイム(workerd)上で動作し続けます。Node.js自体に実行環境が切り替わるわけではありません。"
         },
         {
-          "text": "TypeScriptのコンパイル時に、Buffer・Crypto・StreamといったNode.js組み込みモジュールの型定義を自動生成する",
+          "text": "TypeScriptのコンパイル時に、Node.js組み込みモジュールの型定義を`node_modules`配下へ自動生成する",
           "wrongFeedback": "型定義生成の話ではなく、実行時のNode.js API互換性に関するフラグです。"
         }
       ],
@@ -8858,7 +8858,7 @@
           "wrongFeedback": "アクセスには事前のバインディング設定が必要です。設定していないnamespaceには envからアクセスできません。"
         },
         {
-          "text": "Cloudflareダッシュボードのバインディング設定画面でのみ登録でき、`wrangler.toml`や`wrangler.jsonc`に[[`kv_namespaces`]]を記述してもデプロイ時に無視される",
+          "text": "Cloudflareダッシュボードのバインディング設定画面でのみ登録でき、プロジェクトの設定ファイルにバインディング定義を書いてもデプロイ時に無視されるため、コードからは参照できない",
           "wrongFeedback": "`wrangler.toml`(または`wrangler.jsonc`)の[[`kv_namespaces`]]セクションにbindingとidを記述する方法がサポートされています。ダッシュボードのみに限定されません。"
         },
         {
@@ -9471,7 +9471,7 @@
           "wrongFeedback": "そのような制約はなく、1つのWorkerに複数のD1データベースをバインドすることが可能です。"
         },
         {
-          "text": "`env.DB`という1つのバインディング名にすべてのデータベースをまとめておき、クエリ実行時に引数でデータベース名を切り替えて`DB_MAIN`と`DB_ANALYTICS`を使い分ける",
+          "text": "`env.DB`という1つのバインディング名にすべてのデータベースをまとめておき、クエリ実行時に第1引数へデータベース名を文字列で渡して接続先を切り替えて使い分ける方式になっている",
           "wrongFeedback": "D1のClient APIには実行時にデータベースを切り替える引数はありません。バインディングごとに別々の名前を割り当てます。"
         },
         {
@@ -11591,7 +11591,7 @@
           "text": "Workers Logsなどでエラーの発生箇所を確認し、Worker自体の実行エラー(例外)なのか、fetch()等のサブリクエスト先のエラーなのかをまず切り分ける"
         },
         {
-          "text": "エラー率の急上昇はすべてCloudflareのネットワーク障害が原因と判断し、Workers Logsは確認せずCloudflareのステータスページとサポートの対応を待つだけにする",
+          "text": "エラー率の急上昇はすべてCloudflareのネットワーク障害が原因と判断し、自分たちでは切り分けを行わずCloudflareのステータスページとサポートの対応を待つだけにする",
           "wrongFeedback": "原因の多くはアプリケーションコードや接続先サービス側にあることも多く、まずは自分たちで切り分けを行うべきです。"
         }
       ],
@@ -11811,7 +11811,7 @@
       "question": "既存のNode.js向けPostgresドライバ(pgパッケージ)を使っているコードをHyperdrive経由に切り替える場合、必要な変更として正しいものはどれですか？",
       "options": [
         {
-          "text": "`pg` パッケージをCloudflare専用SDKに置き換え、SQLをHyperdrive独自のクエリ言語に書き直したうえで、ORMもHyperdrive対応版へ移行する必要がある",
+          "text": "`pg` パッケージをCloudflare専用SDKに置き換え、SQLをHyperdrive独自のクエリ言語に書き直したうえで、接続処理も専用APIへ移行する必要がある",
           "wrongFeedback": "専用SDKも独自クエリ言語も不要です。Hyperdriveは既存のドライバ・ORM・SQLをそのまま使えることが特長です。"
         },
         {
@@ -12107,7 +12107,7 @@
       "question": "Hyperdriveバインディングを使うWorkerを `wrangler dev` でローカル開発するときの挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "`localConnectionString`で接続していても本番と同じHyperdriveのクエリキャッシュが自動的に効くため、キャッシュ挙動の検証もローカルで完結できる",
+          "text": "`wrangler dev`でのローカル実行でも本番と同じHyperdriveのクエリキャッシュが自動的に効くため、キャッシュ挙動の検証もローカルで完結できる",
           "wrongFeedback": "ローカル実行(localConnectionString使用時)ではHyperdriveのキャッシュは効きません。キャッシュ挙動の確認は本番相当の環境が必要です。"
         },
         {
@@ -13747,7 +13747,7 @@
       "question": "Cloudflare Workers の「Workers Logs」(observability設定)が提供する機能として正しいものはどれですか？",
       "options": [
         {
-          "text": "`wrangler dev`実行時のローカルコンソール出力を`console.log`単位で整形して保存し、本番環境からは完全に切り離して隠す機能",
+          "text": "`wrangler dev`実行時のローカルコンソール出力を行単位で整形してファイルに保存し、本番環境のログからは完全に切り離して隠すための機能",
           "wrongFeedback": "Workers Logsはローカル専用ではなく、本番デプロイ後のWorkerからのログをダッシュボードに集約する機能です。"
         },
         {
@@ -14787,7 +14787,7 @@
           "text": "`containers`配列、対応する`durable_objects`バインディング、`migrations`での`new_sqlite_classes`指定"
         },
         {
-          "text": "`containers`配列に`image`と`class_name`を指定するだけで完結し、`durable_objects`バインディングや`migrations`の設定は一切不要",
+          "text": "`containers`配列に`image`と`class_name`と`max_instances`を指定するだけで完結し、他のセクションへの追記や移行設定は一切不要",
           "wrongFeedback": "ContainerはDurable Objectと1対1で結びつくため、`durable_objects`バインディングと`migrations`の設定も必須です。"
         },
         {
@@ -16390,7 +16390,7 @@
           "wrongFeedback": "trusted modeは全Worker間でキャッシュが共有されクロステナントのアクセスが起こりうるため、自社が全コードを管理する社内プラットフォームなど、顧客コードを実行しない場合に向いています。"
         },
         {
-          "text": "untrusted modeでは`caches.default`によるキャッシュ操作が利用可能で、trusted modeでは逆にnamespace内の全Workerで無効化され、`request.cf`も参照できなくなる",
+          "text": "untrusted modeでは`caches.default`によるキャッシュ操作が利用可能で、trusted modeでは逆にnamespace内の全Workerで無効化されるため、キャッシュを使うにはuntrustedを選ぶ必要がある",
           "wrongFeedback": "逆です。`caches.default`はnamespace内の全Workerで無効化されており、これはuntrusted/trusted両方に共通する制約です。また`request.cf`が参照できるようになるのはtrusted modeのほうです。"
         }
       ],
@@ -17310,7 +17310,7 @@
           "wrongFeedback": "そのような制約の説明ではありません。よくある失敗は`base_url`とリクエストパスの間でパスの重複や欠落が起きることです。"
         },
         {
-          "text": "アップストリームプロバイダーが404を返す原因は常にAI Gateway側の一時的な障害であり、`base_url`に`/v1`が含まれているかどうかやリクエストパス側の設定を見直す必要はなく、時間を置けば解消する",
+          "text": "アップストリームプロバイダーが404を返す原因は常にAI Gateway側の一時的な障害であり、`base_url`やリクエストパス側の設定を見直す必要はなく、しばらく時間を置いて再試行すれば自然に解消する",
           "wrongFeedback": "404の主な原因は`base_url`の設定ミスやリクエストパスの誤りであることが多く、まず設定を確認すべきとされています。"
         }
       ],
@@ -17758,7 +17758,7 @@
           "wrongFeedback": "Realtimeは`room`という概念自体を持ちません。roomの概念はアプリケーション側で実装する必要があります。"
         },
         {
-          "text": "roomを作成するには専用の`rooms/new`というAPIエンドポイントを呼び出し、返却されたroom IDを各Sessionに紐づける必要がある",
+          "text": "roomを作成するには専用の`rooms/new`というAPIエンドポイントを呼び出し、返却されたroom IDを参加者ごとに紐づける必要がある",
           "wrongFeedback": "そのようなAPIエンドポイントは存在しません。RealtimeはSessionとTrackという概念のみを扱います。"
         }
       ],
@@ -18586,7 +18586,7 @@
           "wrongFeedback": "カスタムホスト名の利用に追加料金は発生しません。"
         },
         {
-          "text": "STUN/TURN over UDP、TURN over TCPに加えて、TURN over TLSでもCNAMEレコードを設定するだけでカスタムドメインが利用でき、プロトコルによる制限はない",
+          "text": "STUN/TURN over UDP、TURN over TCPに加えて、TURN over TLSでもカスタムドメインが利用でき、暗号化の有無によるプロトコル上の制限は存在しない",
           "wrongFeedback": "TURN over TLSではカスタムドメインは利用できません。カスタムドメインが使えるのはUDPとTCPのプロトコルのみです。"
         }
       ],
@@ -19312,7 +19312,7 @@
           "text": "Workers VPCでは`auto`または`quic`によるQUICトランスポートのトンネルが必要で、`http2`だとDNS解決などに問題が生じる"
         },
         {
-          "text": "Workers VPCではZero Trustと同じく`http2`プロトコルのトンネルが必須で、`auto`や`quic`によるQUICトランスポートはサポートされていない",
+          "text": "Workers VPCではZero Trustと同じく`http2`プロトコルのトンネルが必須で、QUICトランスポートを選んだトンネルはサポートされていない",
           "wrongFeedback": "逆です。Workers VPCにはQUICトランスポート(`auto`または`quic`)が必要で、`http2`ではDNS解決などに問題が生じます。"
         },
         {
@@ -19524,7 +19524,7 @@
           "wrongFeedback": "エラーの分類(Bad Upstream/Client/Internal)は、VPC ServiceのMetricsタブにも表示されるラベルと一致します。"
         },
         {
-          "text": "すべてのDNS関連エラー(`dns_error`)は、NXDOMAINでもSERVFAILでも原因に関わらず常に「Internal」エラーとして分類され、利用者側では対処できない",
+          "text": "すべてのDNS関連エラー(`dns_error`)は、名前解決に失敗した理由や返された応答コードに関わらず常に「Internal」エラーとして分類され、利用者側では一切対処できない",
           "wrongFeedback": "DNS関連エラーは原因によって「Client」(NXDOMAINの場合)または「Bad Upstream」(それ以外のDNS障害)に分類され、「Internal」には分類されません。"
         }
       ],
@@ -19782,7 +19782,7 @@
           "wrongFeedback": "所有権検証が完了していない場合、Cloudflareはそのホスト名のトラフィックをプロキシできません。"
         },
         {
-          "text": "所有権検証は`ssl.validation_records`を使って`ssl.status`に影響し、証明書検証は`ownership_verification`系を使ってカスタムホスト名の`status`に影響する",
+          "text": "所有権検証は`ssl.validation_records`を使ってカスタムホスト名の`status`に影響し、証明書検証は`ownership_verification`系を使って`ssl.status`に影響する",
           "wrongFeedback": "説明が逆です。所有権検証には`ownership_verification`系、証明書検証には`ssl.validation_records`が使われます。"
         },
         {
@@ -20315,7 +20315,7 @@
           "wrongFeedback": "割り当てられたクォータ(`allocated`)自体はソフトリミットです。ハードな強制がかかるのは非Enterpriseプランの`hard_cap`到達時です。"
         },
         {
-          "text": "Enterpriseプランも含め、`allocated`を超えて`hard_cap`に到達すると、以後はAPIもダッシュボードも一切カスタムホスト名を作成できなくなる仕様である",
+          "text": "Enterpriseプランも含め、`hard_cap`に到達した時点で、以後はAPIからもダッシュボードからも一切新しいカスタムホスト名を作成できなくなる仕様である",
           "wrongFeedback": "Enterpriseプランは`hard_cap`到達後もカスタムホスト名を作成し続けられます。"
         },
         {
@@ -22303,7 +22303,7 @@
           "wrongFeedback": "署名鍵は6週間ごとにローテーションされます。ハードコードは推奨されておらず、`https://<team-name>.cloudflareaccess.com/cdn-cgi/access/certs`から都度取得するべきです。"
         },
         {
-          "text": "`public_cert`エンドポイントは現行と直前の両方の鍵を返すため、その値をアプリ側にキャッシュしておけば、6週間ごとのローテーション後もJWTの`kid`を突き合わせることなく検証でき、不整合を心配する必要は一切ない",
+          "text": "`public_cert`エンドポイントは現行と直前の両方の鍵を返すため、その値をアプリ側にキャッシュしておけば、鍵がローテーションされた後も追加の突き合わせなしにそのまま検証でき、不整合を心配する必要は一切ない",
           "wrongFeedback": "`public_cert`は最新鍵のみを返すため、キャッシュが古いままだと不整合が起きえます。`kid`を`public_certs`と突き合わせる方法が推奨されます。"
         },
         {
@@ -23916,7 +23916,7 @@
           "text": "`request.cf.botManagement.score`として、WAFカスタムルールの`cf.bot_management.score`に対応する値をリクエストオブジェクトから参照できる"
         },
         {
-          "text": "ボットスコアは`X-Bot-Score`のようなHTTPレスポンスヘッダーとしてのみ提供され、WAFカスタムルールの`cf.bot_management.score`からは参照できてもWorkersのコード内から直接参照することはできない",
+          "text": "ボットスコアは`X-Bot-Score`のようなHTTPレスポンスヘッダーとしてのみ提供され、レスポンスを受け取った側で読み取ることはできても、Workersのコード内から直接プログラム的に参照することはできない",
           "wrongFeedback": "レスポンスヘッダー経由ではなく、`request.cf.botManagement.score`としてWorkersのコード内から直接参照できます。"
         },
         {
@@ -24008,7 +24008,7 @@
       "question": "Bot ManagementのJA3/JA4フィンガープリントフィールドに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "JA3/JA4フィンガープリントは、同じクライアントであっても`cf.bot_management.ja3_hash`の値は宛先IP・ポート・X509証明書が変わるたびに毎回異なる値になるため、複数の宛先を使い分ける自動化ツールの追跡には使えない",
+          "text": "JA3/JA4フィンガープリントは、同じクライアントであっても`cf.bot_management.ja3_hash`の値は接続を張り直すたびにランダムな値へ変化してしまうため、再現性がなく自動化ツールの継続的な追跡には使えない",
           "wrongFeedback": "JA3/JA4フィンガープリントは、宛先IP・ポート・証明書が変わっても同一クライアントであれば同じ値になるという再現性が特徴です。"
         },
         {
