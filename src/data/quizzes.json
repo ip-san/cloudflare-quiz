@@ -363,7 +363,7 @@
           "text": "設定ファイルで定義したKVやD1、シークレット、環境変数などのバインディングにアクセスするためのオブジェクト"
         },
         {
-          "text": "Workerのレスポンスをエッジにキャッシュするために渡される、Cache APIのインスタンス",
+          "text": "Workerのレスポンスをエッジにキャッシュするために渡される、`put()`や`match()`を持つCache APIのインスタンス",
           "wrongFeedback": "キャッシュ操作は`caches.default`などの別のAPIを使います。`env`はバインディングへのアクセス用です。"
         },
         {
@@ -451,7 +451,7 @@
           "wrongFeedback": "自動リトライの仕組みではありません。`waitUntil`はあくまで非同期処理の完了をWorkerに待たせるためのAPIです。"
         },
         {
-          "text": "レスポンスをクライアントに返すまでの最大待機時間(タイムアウト)をミリ秒で設定する",
+          "text": "レスポンスをクライアントに返すまでの最大待機時間(タイムアウト)をミリ秒で設定し、超過した場合は処理を打ち切って504を返す",
           "wrongFeedback": "`waitUntil`はタイムアウトを設定する機能ではありません。レスポンス返却後も処理を継続させるためのAPIです。"
         },
         {
@@ -1139,7 +1139,7 @@
       "question": "`wrangler deploy` を実行したときの動作として正しいものはどれですか？",
       "options": [
         {
-          "text": "ローカルの開発サーバーが起動し、ブラウザが自動的に開く",
+          "text": "ローカルの開発サーバーが`localhost:8787`で起動し、ブラウザが自動的に開いてホットリロードされる",
           "wrongFeedback": "それは `wrangler dev` の動作です。`wrangler deploy` は本番公開を行います。"
         },
         {
@@ -1422,7 +1422,7 @@
           "text": "`[env.staging]` や `[env.production]` セクションに環境ごとに上書きしたい設定を記述し、`wrangler deploy --env production` のようにデプロイする"
         },
         {
-          "text": "`wrangler deploy --staging` と `wrangler deploy --production` という専用のコマンドライン引数がそれぞれ用意されており、それを直接指定する",
+          "text": "`wrangler deploy --staging` と `wrangler deploy --production` という環境ごとの専用コマンドライン引数がそれぞれ用意されており、`wrangler.toml` 側の記述なしに直接指定する",
           "wrongFeedback": "そのような専用フラグはありません。環境名は `--env` フラグで指定します。"
         },
         {
@@ -1563,7 +1563,7 @@
       "question": "WorkerからKVネームスペースやR2バケットなどのCloudflareリソースにアクセスするための「バインディング」は、どこで宣言しますか？",
       "options": [
         {
-          "text": "ブラウザの開発者ツールのコンソールから `env` オブジェクトに直接プロパティを追加して設定する",
+          "text": "ブラウザの開発者ツールのコンソールから `env` オブジェクトに直接プロパティを追加し、デプロイ後のWorkerに反映させる",
           "wrongFeedback": "ブラウザの開発者ツールでバインディングを設定する仕組みはありません。"
         },
         {
@@ -2113,7 +2113,7 @@
           "wrongFeedback": "clone()はレスポンスボディを複製する標準Web APIですが、それ自体はエッジへの保存を行いません。"
         },
         {
-          "text": "env.MY_KV.put(request.url, response)",
+          "text": "env.MY_KV.put(request.url, response, {expirationTtl: 60})",
           "wrongFeedback": "KVはキーバリューストアであり、Responseオブジェクトをそのままキャッシュ機構として保存する用途には設計されていません。HTTPレスポンスのキャッシュにはCache APIを使います。"
         },
         {
@@ -2191,7 +2191,7 @@
       "question": "Workers KVの一貫性モデルについて正しい説明はどれですか？",
       "options": [
         {
-          "text": "強整合性であり、書き込みは全世界のあらゆるエッジで即座に読み取り可能になる",
+          "text": "強整合性であり、書き込みは全世界のあらゆるエッジで即座に読み取り可能になるため、Durable Objectsを使わなくても最新値の読み取りが保証される",
           "wrongFeedback": "KVは強整合性ではなく結果整合性のモデルを採用しています。書き込み直後は他のデータセンターから見ると古い値が返ることがあります。強い整合性が必要な場合はDurable Objectsなどを検討します。"
         },
         {
@@ -2440,7 +2440,7 @@
           "wrongFeedback": "Cache APIはCloudflareのエッジ(データセンター)側にレスポンスを保存する仕組みです。オリジン側のストレージではありません。"
         },
         {
-          "text": "保存すると同時に世界中のすべてのCloudflareデータセンターに自動的に複製される",
+          "text": "保存すると同時に世界中のすべてのCloudflareデータセンターに複製され、Workers KVと同様にどのデータセンターからでも取得できる",
           "wrongFeedback": "Cache APIの内容はグローバルに複製されません。保存されたデータセンターに閉じています。"
         },
         {
@@ -2749,7 +2749,7 @@
           "text": "レスポンスにSet-Cookieヘッダーが含まれる場合は、一意なデータを含む可能性があるためキャッシュされない"
         },
         {
-          "text": "POSTリクエストに対するレスポンスは常に自動的にキャッシュされ、除外する方法はない",
+          "text": "POSTリクエストに対するレスポンスもGETと同様に常に自動的にキャッシュされ、`Cache-Control`ヘッダーでも除外する方法はない",
           "wrongFeedback": "逆です。GET以外のメソッドに対するレスポンスはCache APIでは基本的にキャッシュ対象外です。"
         },
         {
@@ -2818,7 +2818,7 @@
       "question": "Cloudflare D1 の説明として最も適切なものはどれですか？",
       "options": [
         {
-          "text": "強い整合性を持つ状態とWebSocketを扱うコンピューティングプリミティブ",
+          "text": "強い整合性を持つ状態とWebSocket接続を、単一インスタンス上で扱うコンピューティングプリミティブ",
           "wrongFeedback": "これはDurable Objectsの説明です。D1はSQLiteエンジンによるリレーショナルDBです。"
         },
         {
@@ -3470,7 +3470,7 @@
           "wrongFeedback": "`prepare()`は1つのSQL文を対象とする設計です。複数文をまとめて原子的に扱いたい場合は`batch()`を使うべきです。"
         },
         {
-          "text": "D1はSQLiteそのものなので、他のRDBMSと同様に任意の箇所で`BEGIN`と`COMMIT`を自由に発行し、長時間のトランザクションを維持できる",
+          "text": "D1はSQLiteそのものなので、他のRDBMSと同様に任意の箇所で`BEGIN`と`COMMIT`を自由に発行でき、`ROLLBACK`による明示的な巻き戻しを含む長時間のトランザクションを維持できる",
           "wrongFeedback": "D1は auto-commit で動作し、すべてのクエリが暗黙のトランザクション内で実行されます。ユーザークエリ側からこの挙動を変えることはできないため、任意の箇所で`BEGIN`/`COMMIT`を発行して長時間トランザクションを保持する使い方はできません。"
         },
         {
@@ -3825,7 +3825,7 @@
           "text": "`wrangler.toml`（または `wrangler.jsonc`）で R2 バケットバインディングを設定し、env 経由でアクセスする"
         },
         {
-          "text": "常にS3互換APIエンドポイントにHTTPリクエストを送り、`Authorization`ヘッダーに含めたアクセスキーで署名する",
+          "text": "Workersからも常にS3互換APIエンドポイントにHTTPリクエストを送り、`Authorization`ヘッダーにAWS SigV4形式で署名したアクセスキーを含める",
           "wrongFeedback": "S3互換APIは外部アプリケーションからのアクセスや既存S3ツールの流用に有用ですが、Workers内から使う最も基本的な方法はバインディングです。"
         }
       ],
@@ -3956,7 +3956,7 @@
           "wrongFeedback": "1つのバケットには多数のオブジェクトを保存できます。"
         },
         {
-          "text": "バケットは階層型ディレクトリのみで構成され、フラットなキー指定はできない",
+          "text": "バケットは階層型のディレクトリツリーのみで構成され、「/」を含まないフラットなキー指定はできない",
           "wrongFeedback": "R2の内部構造はフラットな名前空間です。キーに「/」を含めることで見かけ上のディレクトリを表現できますが、「ディレクトリのみ」というのは誤りです。"
         },
         {
@@ -4097,7 +4097,7 @@
       "question": "R2オブジェクトに対して、期限付きで一時的なアクセス権を与える仕組みを実装したい場合、どの方法を使いますか？",
       "options": [
         {
-          "text": "Workers KVにトークンを保存し、KVの有効期限機能でURLを自動失効させる",
+          "text": "Workers KVにトークンを保存し、KVの有効期限(TTL)機能でURLを自動失効させる仕組みが、R2の標準機能として提供されている",
           "wrongFeedback": "KVのTTL機能はキーバリューの値自体の有効期限であり、R2オブジェクトへの一時アクセスURL発行とは別の仕組みです。"
         },
         {
@@ -4607,7 +4607,7 @@
       "question": "Durable Objects の特徴として最も適切なものはどれですか？",
       "options": [
         {
-          "text": "リクエストを受けるたびに異なるコロケーションのインスタンスにランダムにルーティングされる",
+          "text": "同じ ID へのリクエストであっても、受けるたびに異なるコロケーションのインスタンスへランダムにルーティングされる",
           "wrongFeedback": "同じ ID（名前）に対するリクエストは常に同じ単一インスタンスにルーティングされます。ランダムに振り分けられることはありません。"
         },
         {
@@ -5411,7 +5411,7 @@
           "text": "静的サイトのホスティングに加え、Pages Functions によるサーバーレス処理も統合できるプラットフォーム"
         },
         {
-          "text": "自前の仮想マシン上でコンテナイメージを実行・スケールさせるためのオーケストレーション基盤",
+          "text": "自前の仮想マシン上でコンテナイメージを実行・スケールさせるためのオーケストレーション基盤であり、静的ファイルの配信機能は含まない",
           "wrongFeedback": "それは Cloudflare Pages ではなく、コンテナ/仮想化基盤の説明です。"
         },
         {
@@ -5811,7 +5811,7 @@
           "wrongFeedback": "Pages は既存プロジェクト向けに引き続きサポートされており、即座に利用できなくなるわけではありません。"
         },
         {
-          "text": "Workers の静的アセット機能は Pages Functions の完全な代替として位置づけられておらず、静的ファイル配信は今後も Pages 専用の機能である",
+          "text": "Workers の静的アセット機能は Pages Functions の完全な代替として位置づけられておらず、静的ファイル配信は今後も Pages 専用の機能として新規プロジェクトでも Pages が推奨され続ける",
           "wrongFeedback": "Workers の静的アセット機能により、静的配信とサーバーサイド処理を Workers 単体で扱えるようになっており、Pages 専用というわけではありません。"
         },
         {
@@ -6106,7 +6106,7 @@
           "text": "パスパターンごとにカスタムHTTPレスポンスヘッダーを付与するため"
         },
         {
-          "text": "デプロイ対象から除外するファイル一覧を指定するため",
+          "text": "デプロイ対象から除外するファイルやディレクトリのパターン一覧を指定するため",
           "wrongFeedback": "それは `_headers` の役割ではありません。`_headers` はレスポンスヘッダーを制御するファイルです。"
         },
         {
@@ -6527,7 +6527,7 @@
           "wrongFeedback": "それはD1やCache APIの役割です。AI GatewayはAIモデルへのリクエストを対象としたゲートウェイです。"
         },
         {
-          "text": "Workers AIのモデルを独自のデータセットでファインチューニングすること",
+          "text": "Workers AIのモデルを独自のデータセットでファインチューニングし、専用モデルとして配信すること",
           "wrongFeedback": "AI Gatewayはリクエストを中継・管理するプロキシ的な機能であり、モデルのファインチューニング機能ではありません。"
         }
       ],
@@ -6580,7 +6580,7 @@
           "wrongFeedback": "それはCache APIやAI Gatewayのキャッシュ機能に近い説明です。Vectorizeはキャッシュ層ではありません。"
         },
         {
-          "text": "画像・動画などのファイルをオブジェクトとして保存するストレージ",
+          "text": "画像・動画などのファイルをオブジェクトとして保存し、S3互換APIで読み書きできるグローバル分散ストレージ",
           "wrongFeedback": "オブジェクトストレージはR2の役割です。Vectorizeはembeddingベクトルを保存・検索するデータベースです。"
         },
         {
@@ -6651,7 +6651,7 @@
           "wrongFeedback": "embeddingはテキストだけでなく画像や音声などのデータもベクトル化でき、マルチモーダルな類似検索にも使われます。"
         },
         {
-          "text": "テキストをそのまま文字列として比較し、完全一致した文書のみを検索結果として返す",
+          "text": "テキストをベクトル化せずそのまま文字列として比較し、表記が完全に一致した文書のみを検索結果として返す仕組み",
           "wrongFeedback": "それは全文検索やキーワード完全一致検索の説明です。embeddingによる検索は『意味的な近さ』を扱う点が異なります。"
         },
         {
@@ -6699,7 +6699,7 @@
       "question": "Workers AIとVectorizeを組み合わせたRAG（Retrieval-Augmented Generation）構成の一般的な流れとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Vectorizeに保存された全文書を毎回LLMのプロンプトにそのまま含めて送信する",
+          "text": "Vectorizeに保存された全文書を毎回LLMのプロンプトにそのまま含めて送信し、どの部分が質問に関連するかの絞り込みは類似度検索ではなくLLM側の注意機構に任せる",
           "wrongFeedback": "全文書を毎回送るのは非効率かつプロンプト長の制限に反します。RAGでは類似検索で関連する一部の文書のみに絞り込んで使います。"
         },
         {
@@ -6837,7 +6837,7 @@
       "question": "Vectorizeのインデックスを作成する際に指定が必要で、かつ作成後に変更できない設定はどれですか？",
       "options": [
         {
-          "text": "フィルタに使うmetadataフィールドの型のみ",
+          "text": "フィルタに使うmetadataフィールドの名前と型(string等)のみ",
           "wrongFeedback": "metadataの型はcreate-metadata-indexコマンドで別途管理されますが、インデックス作成時に必須かつ変更不可なのは次元数と距離メトリクスです。"
         },
         {
@@ -8087,7 +8087,7 @@
           "wrongFeedback": "Streams APIは形式変換の機能ではありません。バイナリやテキストのチャンクをそのまま順次扱うための仕組みです。"
         },
         {
-          "text": "複数のWorker間で同一のTCPコネクションを共有し、通信回数を減らす",
+          "text": "複数のWorker間で同一のTCPコネクションを共有し、ハンドシェイクの回数を減らして通信を高速化する",
           "wrongFeedback": "TCPコネクションの共有機能ではありません。Streams APIは1つのWorker内でのボディデータの逐次処理に関するAPIです。"
         }
       ],
@@ -8791,7 +8791,7 @@
           "wrongFeedback": "`vars`の値は単純に上書きされる仕組みであり、自動的に配列へマージされることはありません。"
         },
         {
-          "text": "トップレベルの `[vars]` の値が常に優先され、`[env.production]` 側の指定は無視される",
+          "text": "トップレベルの `[vars]` の値が常に優先されるため、`--env production` を付けても `[env.production]` の指定は無視される",
           "wrongFeedback": "優先順位が逆です。指定した環境（`--env`）の設定がトップレベルの値を上書きします。"
         }
       ],
@@ -9214,7 +9214,7 @@
       "question": "Cloudflareの Cache Reserve について正しい説明はどれですか？",
       "options": [
         {
-          "text": "Workers KVの別名であり、実体はCache Reserve = Workers KVという同一の仕組みである",
+          "text": "Workers KVの別名であり、実体はCache Reserve = Workers KVという同一の仕組みで、保存先もKVネームスペースである",
           "wrongFeedback": "Cache ReserveはWorkers KVとは別の機能で、HTTPキャッシュのための永続的なキャッシュ層です。R2上に実装されています。"
         },
         {
@@ -10660,7 +10660,7 @@
           "wrongFeedback": "`wrangler pages deploy` はどのCI/CD環境やローカル環境からでも実行でき、GitHub Actionsに限定されません。"
         },
         {
-          "text": "Pages に`wrangler pages deploy`のようなCLIコマンドは存在せず、Git連携以外のデプロイ方法をサポートしていない",
+          "text": "Pages に`wrangler pages deploy`のようなCLIコマンドは存在せず、GitHubまたはGitLabとの連携以外のデプロイ方法をサポートしていない",
           "wrongFeedback": "`wrangler pages deploy` コマンドを使ったDirect Uploadにより、Git連携なしでもデプロイできます。"
         },
         {
@@ -10732,7 +10732,7 @@
           "wrongFeedback": "`node` をnpmパッケージとしてdependenciesに追加してバージョンを固定する仕組みではありません。"
         },
         {
-          "text": "`wrangler.toml` の `compatibility_date` を変更することでNode.jsのバージョンも連動して切り替わる",
+          "text": "`wrangler.toml` の `compatibility_date` を変更することで、ビルド時に使われるNode.jsのバージョンも対応するLTS版へ連動して切り替わる",
           "wrongFeedback": "`compatibility_date` はWorkersランタイムの互換性日付を指定するものであり、ビルド時のNode.jsバージョン指定とは別の仕組みです。"
         },
         {
@@ -10945,8 +10945,8 @@
           "wrongFeedback": "cache はキャッシュ制御に関するオプションで、ストリーミングの有効化とは無関係です。ストリーミングには stream: true の指定と text/event-stream のContent-Type設定が必要です。"
         },
         {
-          "text": "inputsに stream: false を指定し、Content-Type: application/json を設定する",
-          "wrongFeedback": "stream: false は通常の一括レスポンス（非ストリーミング）の指定です。ストリーミングを有効にするには stream: true を指定します。"
+          "text": "inputsに stream: false を指定し、Content-Type: application/json を設定すれば、Workers AI側が自動的にSSEへ変換して配信する",
+          "wrongFeedback": "stream: false は通常の一括レスポンス（非ストリーミング）の指定であり、自動的にSSEへ変換されることはありません。ストリーミングを有効にするには stream: true を指定し、Content-Type も text/event-stream を設定します。"
         },
         {
           "text": "inputsに stream: true を指定し、Response返却時に Content-Type: text/event-stream を設定する"
@@ -11121,7 +11121,7 @@
           "wrongFeedback": "D1のスロークエリなどはD1自体の監視機能で確認するものであり、AI Gatewayのログとは別です。"
         },
         {
-          "text": "Vectorizeインデックスに保存されているベクトルの値そのもの",
+          "text": "Vectorizeインデックスに保存されているベクトルの値そのものとmetadataの中身",
           "wrongFeedback": "AI GatewayのログはAIモデルへのリクエスト/レスポンスに関する情報であり、Vectorizeに保存されたベクトル値を記録するものではありません。"
         }
       ],
@@ -11660,7 +11660,7 @@
           "wrongFeedback": "Workersの課金軸はリクエスト数とCPU時間であり、メモリ使用量自体が直接の課金対象ではありません。"
         },
         {
-          "text": "Workerの実行時間(壁時計時間)をできるだけ長くして、1リクエストでまとめて多くの処理を行う",
+          "text": "Workerの実行時間(壁時計時間)をできるだけ長くして、1リクエストの中でまとめて多くの処理を行いリクエスト数を減らす",
           "wrongFeedback": "壁時計時間自体は課金対象ではありませんが、重い処理を1リクエストに詰め込めばCPU時間の消費が増える可能性があります。まとめること自体がコスト最適化にはなりません。"
         },
         {
@@ -11811,7 +11811,7 @@
       "question": "既存のNode.js向けPostgresドライバ(pgパッケージ)を使っているコードをHyperdrive経由に切り替える場合、必要な変更として正しいものはどれですか？",
       "options": [
         {
-          "text": "`pg` パッケージをCloudflare専用SDKに置き換え、SQLをHyperdrive独自のクエリ言語に書き直す",
+          "text": "`pg` パッケージをCloudflare専用SDKに置き換え、SQLをHyperdrive独自のクエリ言語に書き直したうえで、ORMもHyperdrive対応版へ移行する必要がある",
           "wrongFeedback": "専用SDKも独自クエリ言語も不要です。Hyperdriveは既存のドライバ・ORM・SQLをそのまま使えることが特長です。"
         },
         {
@@ -11932,7 +11932,7 @@
           "wrongFeedback": "クエリキャッシュはデフォルトで有効です。SQLコメントによる指示という仕組みもありません。"
         },
         {
-          "text": "SELECT文であればLASTVAL()のような揮発性(volatile)関数を含んでいてもキャッシュされる",
+          "text": "SELECT文であればLASTVAL()やNOW()のような揮発性(volatile)関数を含んでいても、結果が`max_age`の間キャッシュされる",
           "wrongFeedback": "volatileやstableに分類される関数を含むクエリは、SELECTであってもキャッシュ対象外です。実行のたびに結果が変わりうるためです。"
         },
         {
@@ -11984,7 +11984,7 @@
           "wrongFeedback": "SQLコメントでキャッシュを制御する仕組みはありません。キャッシュの有効/無効はHyperdrive設定単位で決まります。"
         },
         {
-          "text": "書き込みを行うと該当するキャッシュは自動的に無効化されるので、特別な対処は不要",
+          "text": "同じHyperdrive設定で書き込めば、該当するキャッシュはwrite-throughで自動的に無効化されるので特別な対処は不要",
           "wrongFeedback": "Hyperdriveは書き込みが発生してもキャッシュ済みの読み取り結果を無効化しません。max_ageが切れるまで古い結果が返る可能性があります。"
         },
         {
@@ -12404,7 +12404,7 @@
           "text": "各ステップは個別にリトライ可能な自己完結した単位で、返り値は永続化され、後続の失敗時には失敗したステップから再開できる"
         },
         {
-          "text": "どれか1つのステップが失敗すると、Workflow全体が必ず最初のステップからやり直しになる",
+          "text": "どれか1つのステップが失敗すると、成功済みステップの返り値も破棄されてWorkflow全体が必ず最初のステップからやり直しになる",
           "wrongFeedback": "最初からやり直しにはなりません。成功済みステップの結果は永続化されており、失敗したステップだけがリトライされます。"
         }
       ],
@@ -12674,7 +12674,7 @@
       "question": "Workflowのステップから決済APIのような「二重実行したくない外部API」を呼ぶ場合の設計として、公式のベストプラクティスに沿ったものはどれですか？",
       "options": [
         {
-          "text": "step.doの外側(runメソッド直下)でAPIを呼べばリトライの影響を受けず、二重実行は起きない",
+          "text": "step.doの外側(runメソッド直下)でAPIを呼べばステップのリトライ対象から外れるため二重実行は起きず、結果も自動的に永続化される",
           "wrongFeedback": "step.doの外での副作用はむしろアンチパターンです。エンジンの再実行時に何度も走る可能性があり、永続化もされません。副作用は必ずステップの中に入れます。"
         },
         {
@@ -12953,7 +12953,7 @@
           "wrongFeedback": "トークンは検証用の使い捨ての値で、個人情報を平文で保持する設計ではありません。保存して使い回すものでもありません。"
         },
         {
-          "text": "トークンの検証は `siteverify` を呼ばずともクライアント側のJavaScriptだけで完結し、サーバーに送る必要はない",
+          "text": "トークンの検証は `siteverify` を呼ばずともクライアント側のJavaScriptがsitekeyを使って完結でき、サーバーへトークンを送る必要はない",
           "wrongFeedback": "検証はサーバー側で Siteverify API を使って行う必要があります。クライアント側だけでは完結しません。"
         },
         {
@@ -13165,7 +13165,7 @@
           "wrongFeedback": "URL経由(Transformations)は公開URLが必要ですが、バインディングなら生バイト列を直接扱えるため、URL配置は必須ではありません。"
         },
         {
-          "text": "`env.IMAGES.query(\"SELECT resize ...\")` のようにSQLでリサイズ命令を発行する",
+          "text": "`env.IMAGES.query(\"SELECT resize(width, 800) ...\")` のようにSQL文でリサイズ命令を発行して結果を受け取る",
           "wrongFeedback": "Images はSQLで操作しません。バインディングの input/transform/output をチェーンして生バイトを加工します。"
         }
       ],
@@ -13272,7 +13272,7 @@
           "wrongFeedback": "専用アプリは不要です。Stream Player(iframe)や標準的なプレーヤーでWeb/アプリ上で再生できます。"
         },
         {
-          "text": "配信できる解像度はアップロード時の1つに固定され、視聴者は回線が細い端末でも常に同じビットレートで受信することになる",
+          "text": "配信できる解像度はアップロード時の1つに固定されるため、回線が細い端末の視聴者も常に同じビットレートで受信するしかなく、再生が途切れやすくなる",
           "wrongFeedback": "アダプティブビットレートに対応しており、回線や端末に応じて複数の解像度(360p〜1080p)を切り替えます。"
         }
       ],
@@ -13979,7 +13979,7 @@
           "wrongFeedback": "構造化ログの主な利点は速度ではなく、フィールド単位でのフィルタ・検索のしやすさです。"
         },
         {
-          "text": "1リクエストあたりの`console.log`の呼び出し回数の上限が撤廃される",
+          "text": "1リクエストあたりの`console.log`の呼び出し回数の上限が撤廃され、文字列で出力するより多くのログを記録できるようになる",
           "wrongFeedback": "呼び出し回数の上限が撤廃されるわけではありません。構造化ログの利点はフィールド単位の検索性向上です。"
         },
         {
@@ -14028,7 +14028,7 @@
       "question": "Workers Logsの「head-based sampling」(`head_sampling_rate`)の主な目的はどれですか？",
       "options": [
         {
-          "text": "特定の国・地域からのリクエストだけをログに残すために地理的フィルタをかける",
+          "text": "特定の国からのリクエストだけをログに残すため、`head_sampling_rate`に対象国のコードを指定してフィルタをかける",
           "wrongFeedback": "地理的フィルタリングの仕組みではありません。head-based samplingはリクエストの記録割合を制御するものです。"
         },
         {
@@ -15825,7 +15825,7 @@
           "wrongFeedback": "静的解析専用の仕組みではありません。リクエストのルーティングとプラットフォームロジックの実行が役割です。"
         },
         {
-          "text": "顧客が書いたコードを直接実行するWorkerそのものであり、user Workerと同一のものを指す用語である",
+          "text": "顧客が書いたコードを直接実行するWorkerそのものでuser Workerと同一のものを指し、namespaceにアップロードされた各スクリプトがこれにあたる",
           "wrongFeedback": "dynamic dispatch Workerとuser Workerは別物です。dynamic dispatch Workerはリクエストの入り口となり、適切なuser Workerへ振り分ける役割を持ちます。"
         }
       ],
@@ -15873,8 +15873,8 @@
       "question": "user Workerに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "dispatch namespaceの外側、通常のWorkersアカウントの直下にデプロイされる",
-          "wrongFeedback": "user Workerはdispatch namespaceの中にデプロイされます。"
+          "text": "dispatch namespaceの外側、通常のWorkersアカウントの直下にデプロイされ、Service Bindingsで呼び出される",
+          "wrongFeedback": "user Workerはdispatch namespaceの中にデプロイされ、Service Bindingsではなく`env.DISPATCHER.get(name)`で呼び出されます。"
         },
         {
           "text": "顧客が書いたコードをAPI経由でdispatch namespaceにデプロイしたもので、バインディングを個別に付与できる"
@@ -17040,7 +17040,7 @@
           "text": "fixedは時計の区切りごとにカウントがリセットされ区切りをまたぐと上限の倍近く通ることがあるが、slidingは常に直近の時間幅で数えるため抜け道が生じにくい"
         },
         {
-          "text": "fixedは常に直近の時間幅で件数を数え、slidingは時計の区切り(例: 12:00-12:10のような10分ごと)でリセットされる",
+          "text": "fixedは常に直近の時間幅で件数を数えるため抜け道が生じにくく、slidingは時計の区切り(12:00-12:10のような10分ごと)でリセットされるため区切りをまたぐと上限の倍近く通る",
           "wrongFeedback": "説明が逆です。時計の区切りでリセットされるのがfixed、常に直近の時間幅で数えるのがslidingです。"
         },
         {
@@ -17516,7 +17516,7 @@
           "wrongFeedback": "クレジットの読み込みに加えて、ゲートウェイの**Workers AI Billing**設定を**Unified billing**に変更する必要があります。"
         },
         {
-          "text": "Workers AIモデルはUnified Billingの対象外であり、ゲートウェイ側の設定に関わらず常に通常のWorkers AI料金が前払いクレジットとは別に請求される",
+          "text": "Workers AIモデルはUnified Billingの対象外であり、前払いクレジットはOpenAIやAnthropicなどサードパーティプロバイダーの利用分にしか使えず、Workers AIには常に通常料金が別途請求される",
           "wrongFeedback": "ゲートウェイの**Workers AI Billing**設定を**Unified billing**にすれば、Workers AIの利用分も前払いクレジットから差し引けます。"
         },
         {
@@ -18164,7 +18164,7 @@
           "text": "1回のAPI呼び出しで追加できるTrackは最大64個までで、それ以上追加したい場合は複数回のAPI呼び出しに分ける必要がある"
         },
         {
-          "text": "1回のAPI呼び出しで追加できるTrackは最大10個までで、それ以上は複数回に分けても追加できない",
+          "text": "1回のAPI呼び出しで追加できるTrackは最大10個までで、それ以上は複数回のAPI呼び出しに分けてもSession全体として11個目以降は追加できない",
           "wrongFeedback": "上限は64個です。また複数回のAPI呼び出しに分けることで、より多くのTrackを追加できます。"
         },
         {
@@ -19414,7 +19414,7 @@
           "wrongFeedback": "ダウンスケールでレプリカが削除されると、そのレプリカへの既存の接続は切断されてしまいます。"
         },
         {
-          "text": "`cloudflared`はレプリカ間で自動的に負荷分散を行うため、オートスケーリング環境での利用が公式に推奨されている",
+          "text": "`cloudflared`はレプリカ間で自動的に負荷分散を行い、ダウンスケールで削除されるレプリカの接続も別のレプリカへ引き継がれるため、オートスケーリング環境での利用が推奨されている",
           "wrongFeedback": "`cloudflared`はレプリカ間の負荷分散を行いません。オートスケーリング環境での利用は推奨されていません。"
         },
         {
@@ -20149,7 +20149,7 @@
       "question": "複数のゾーンに同じホスト名へのプロキシ済みDNSレコードが存在する場合の「ホスト名優先度」に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "完全一致するホスト名のケースでは、ワイルドカード一致の場合と同じく、常にDNS(論理DNSゾーン)が新旧どちらのカスタムホスト名よりも優先される",
+          "text": "完全一致するホスト名のケースでは、ワイルドカード一致の場合と同じく、常にDNS(論理DNSゾーン)が新旧どちらのカスタムホスト名よりも優先され、順序が入れ替わることはない",
           "wrongFeedback": "完全一致の場合はカスタムホスト名(新しいものはさらにレガシーより優先)がDNSより優先されます。"
         },
         {
@@ -20470,7 +20470,7 @@
           "wrongFeedback": "自動的により緩い方が選ばれるという仕組みではありません。ワイルドカード一致の場合は顧客側のプラン上限が優先されます。"
         },
         {
-          "text": "SaaS事業者がEnterpriseプランを契約していれば、顧客が無料プランであるかどうかに関わらず、常にEnterpriseプランの上限が適用される",
+          "text": "SaaS事業者がEnterpriseプランを契約していれば、ワイルドカード一致であっても顧客が無料プランかどうかに関わらず常にEnterpriseプランの上限が適用され、顧客のゾーンもEnterpriseゾーンとして扱われる",
           "wrongFeedback": "ワイルドカードカスタムホスト名の場合、顧客のプラン(この場合は無料プラン)の上限が優先されます。"
         },
         {
@@ -20525,8 +20525,8 @@
           "wrongFeedback": "逆です。基本的には最も新しく発行された証明書が優先されます。"
         },
         {
-          "text": "証明書の削除が発生した場合は、発行日時に関わらず残っている証明書の中で最も有効期限が早いものが優先される",
-          "wrongFeedback": "逆です。削除が発生した場合は、有効期限が最も遅い(遠い)証明書が優先されます。"
+          "text": "証明書の削除が発生した場合は、発行日時に関わらず残っている証明書の中で最も有効期限が早い(近い)ものが優先され、その証明書が更新されても優先順位は変わらない",
+          "wrongFeedback": "逆です。削除が発生した場合は、有効期限が最も遅い(遠い)証明書が優先されます。またその後、有効期限が近かった証明書が更新されれば、その証明書が改めて最新の有効期限を持つものとして優先されます。"
         },
         {
           "text": "複数の証明書が存在する場合、Cloudflareはランダムに1つを選んで提示する",
@@ -21219,7 +21219,7 @@
           "text": "同じStreamを参照する複数の`INSERT ... SELECT ... WHERE ...`文をセミコロンで区切って1つのPipelineに記述する"
         },
         {
-          "text": "条件による振り分けはPipelinesのSQLでは実現できず、Worker側でロジックを実装してStreamを使い分ける必要がある",
+          "text": "条件による振り分けはPipelinesのSQLでは実現できず、SQL変換は1つのSinkへの単純な整形にしか使えないため、Worker側でロジックを実装してStreamを使い分ける必要がある",
           "wrongFeedback": "Pipelinesの複数`INSERT`文とWHERE句の組み合わせで、SQLだけで振り分けを実現できます。"
         }
       ],
@@ -21753,7 +21753,7 @@
           "wrongFeedback": "1つのRequireルール内の複数の値はAND条件として評価されるため、単純にカンマ区切りで並べてもOR条件にはなりません。"
         },
         {
-          "text": "Requireルールを複数の国それぞれについて1つずつ追加すれば、Access側が自動的にOR条件に変換してくれる",
+          "text": "Requireルールを複数の国それぞれについて1つずつ追加すれば、同じセレクタ種別のRequireルール同士はAccess側が自動的にOR条件に変換してくれる",
           "wrongFeedback": "Requireルールを複数追加してもAND条件として評価されるため、自動的にOR条件へ変換されることはありません。"
         }
       ],
@@ -22154,7 +22154,7 @@
           "wrongFeedback": "Client IDとClient Secretの両方をJSON形式でまとめてヘッダーに含める必要があり、Client IDの省略はできません。"
         },
         {
-          "text": "Client IDとClient Secretをそれぞれ別の`Set-Cookie`ヘッダーとして送信し、Cookieとして読み取らせればヘッダー制約を回避できる",
+          "text": "Client IDとClient Secretをそれぞれ別の`Set-Cookie`ヘッダーとして送信し、Accessに`Cookie`ヘッダーから読み取らせれば、カスタムヘッダーを1つしか送れないサービスでもヘッダー制約を回避できる",
           "wrongFeedback": "Cookieでの回避方法ではありません。単一ヘッダーで送る場合は`read_service_tokens_from_header`の設定とJSON形式での送信が必要です。"
         }
       ],
@@ -22565,7 +22565,7 @@
           "wrongFeedback": "終端アクションに一致すると、以降のルール・フェーズは評価されず処理が停止します。"
         },
         {
-          "text": "終端アクションという概念はカスタムルールにのみ適用され、マネージドルールやレート制限ルールには適用されない",
+          "text": "終端アクションという概念はカスタムルールのフェーズにのみ適用され、マネージドルールやレート制限ルールでは一致しても以降の評価が続く",
           "wrongFeedback": "終端アクションの概念はカスタムルールに限らず、マネージドルールやレート制限ルールなど複数の機能に共通して適用されます。"
         },
         {
@@ -23701,7 +23701,7 @@
           "wrongFeedback": "ランダムな値ではありません。各リクエストの特徴に基づいて算出される、意味のあるスコアです。"
         },
         {
-          "text": "0から100までの整数で、100に近いほどボットである可能性が高いことを示す",
+          "text": "0から100までの整数のスコアで、100に近いほどボットである可能性が高く、0に近いほど人間である可能性が高いことを示す",
           "wrongFeedback": "範囲も方向も異なります。ボットスコアは1〜99の整数で、数値が小さいほどボットの可能性が高いことを示します。"
         },
         {
@@ -25568,7 +25568,7 @@
       "question": "Geo Steeringと他のLoad Balancing機能の互換性に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "Geo Steeringはカスタムルールと完全に互換性があり、Geo Steeringが有効なLoad Balancerに適用したカスタムルールも常に期待通りに動作する",
+          "text": "Geo Steeringはカスタムルールと完全に互換性があり、Geo Steeringが有効なLoad Balancerに適用したカスタムルールも常に期待通りに動作し、リージョンごとのPool選択をカスタムルール側から上書きできる",
           "wrongFeedback": "互換性はありません。Geo Steeringが有効なLoad Balancerにカスタムルールを適用しても、期待通りには機能しません。"
         },
         {
@@ -25623,7 +25623,7 @@
           "wrongFeedback": "Poolの健全性ステータスやセッションアフィニティ、アダプティブルーティングも考慮に入れられます。完全に無視されるわけではありません。"
         },
         {
-          "text": "DNS-onlyのLoad BalancerではLeast Outstanding Requestsは完全にフル機能で動作し、他のSteering Policyと全く同じ精度で処理される",
+          "text": "DNS-onlyのLoad BalancerでもLeast Outstanding Requestsは未完了リクエスト数を正確に把握して完全にフル機能で動作し、他のSteering Policyと全く同じ精度で処理される",
           "wrongFeedback": "DNS-onlyのLoad Balancerでは未完了リクエスト数を把握できないため常に0とみなされ、実質的に`random_steering`のWeightのみに基づく動作になります。"
         },
         {
@@ -25783,7 +25783,7 @@
       "question": "エンドポイントアドレスに設定されたDNSレコードの種類によって挙動が変わる、ヘルスモニターのプローブがIPv4とIPv6のどちらを使うかに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "プローブは常にIPv4とIPv6の両方を同時に、`AAAA`レコードの有無に関わらず1インターバルにつき2回送信して健全性を判定する",
+          "text": "プローブは常にIPv4とIPv6の両方を同時に、`A`/`AAAA`レコードの有無に関わらず1インターバルにつき合計2回送信し、両方が成功した場合のみ健全と判定する",
           "wrongFeedback": "同時に2回送信されるわけではありません。1インターバルにつき1回のプローブのみが送られ、IPv4かIPv6のいずれか一方が使われます。"
         },
         {
@@ -26713,8 +26713,8 @@
       "question": "カスタムキャッシュキーに`user-agent`のような「制限付きヘッダー」を含める場合の正しい説明はどれですか？",
       "options": [
         {
-          "text": "制限付きヘッダーは`user-agent`の1種類のみであり、`accept`や`referer`などは制限付きヘッダーには含まれない",
-          "wrongFeedback": "制限付きヘッダーは`user-agent`だけでなく、`accept`・`accept-charset`・`accept-encoding`・`accept-datetime`・`accept-language`・`referer`も含まれます。"
+          "text": "制限付きヘッダーは`user-agent`の1種類のみであり、`accept`や`referer`などは通常のカスタムヘッダーと同じ扱いでヘッダー名だけを指定して登録できる",
+          "wrongFeedback": "制限付きヘッダーは`user-agent`だけでなく、`accept`・`accept-charset`・`accept-encoding`・`accept-datetime`・`accept-language`・`referer`も含まれます。そのためこれらのヘッダーも1〜3個の値の指定が必須です。"
         },
         {
           "text": "制限付きヘッダーをキャッシュキーに含める場合、値の指定数に上限はなく、無制限に値を列挙できる",
@@ -26776,7 +26776,7 @@
           "wrongFeedback": "そのような料金別の2種類ではありません。実際にはSmart・Generic Global・Regional・Customといったトポロジーの種類があります。"
         },
         {
-          "text": "上位層を1つの固定データセンターに常に指定するSingle Tierと、上位層を持たず常に直接オリジンへ問い合わせるNo Tierという、2種類のトポロジーのみが用意されている",
+          "text": "上位層を1つの固定データセンターに常に指定するSingle Tierと、上位層を持たず常に直接オリジンへ問い合わせるNo Tierという2種類のみが用意されており、リージョン単位や自動選択のトポロジーは提供されていない",
           "wrongFeedback": "そのような2種類ではありません。実際にはSmart・Generic Global・Regional・Customといったトポロジーの種類があります。"
         }
       ],
@@ -26824,7 +26824,7 @@
           "wrongFeedback": "クラウドリージョンヒントはFree・Pro・Business・Enterpriseのすべてのプランで追加費用なしに利用できます。"
         },
         {
-          "text": "対応しているのはAWSのみであり、他のクラウド事業者(GCP・Azure・Oracle Cloud)には対応していない",
+          "text": "対応しているのはAWSのリージョンのみであり、他のクラウド事業者(GCP・Azure・Oracle Cloud)にホストされたオリジンには対応していない",
           "wrongFeedback": "AWSのみではありません。GCP・Azure・Oracle Cloudにも対応しています。"
         },
         {
@@ -26981,7 +26981,7 @@
           "wrongFeedback": "これは`HIT`が示す意味です。`BYPASS`はキャッシュがバイパスされたことを示します。"
         },
         {
-          "text": "キャッシュされたコンテンツの有効期限が切れており、`REVALIDATED`のようにオリジンで再検証が行われ、内容に変更がなかったことを示す",
+          "text": "キャッシュされたコンテンツの有効期限が切れており、`REVALIDATED`のようにオリジンへの条件付きリクエストで再検証が行われ、内容に変更がなかったことを示す",
           "wrongFeedback": "これは`REVALIDATED`が示す意味です。`BYPASS`はキャッシュがバイパスされたことを示します。"
         },
         {
@@ -27190,7 +27190,7 @@
           "wrongFeedback": "複数のURL Rewrite Rulesを連続して適用しても、ホスト名自体を書き換えることはできません。"
         },
         {
-          "text": "URL Rewrite Rulesの設定画面で、パス・クエリ文字列に加えてホスト名も直接指定して書き換えることができる",
+          "text": "URL Rewrite Rulesの設定画面で、パス・クエリ文字列に加えてホスト名も直接指定して書き換えることができ、Origin Rulesを使わずにリクエストの解決先を変更できる",
           "wrongFeedback": "URL Rewrite Rulesではホスト名を書き換えることはできません。パスとクエリ文字列のみが対象です。"
         },
         {
@@ -27235,7 +27235,7 @@
       "question": "URL Rewrite Rulesの「静的な書き換え(static rewrite)」と「動的な書き換え(dynamic rewrite)」の違いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "静的な書き換えはURIパスのみを対象とし、動的な書き換えはクエリ文字列のみを対象とするという、対象範囲による区分である",
+          "text": "静的な書き換えはURIパスのみを対象とし、動的な書き換えはクエリ文字列のみを対象とするという対象範囲による区分であり、1つのルールでパスとクエリ文字列の両方を書き換えることはできない",
           "wrongFeedback": "対象範囲による区分ではありません。静的・動的のどちらも、URIパス・クエリ文字列のいずれか、または両方を対象にできます。"
         },
         {
@@ -27698,7 +27698,7 @@
           "text": "`Host`ヘッダーオーバーライドを行うと、明示的に別のSNIオーバーライドを設定しない限り、SNI(Server Name Indication)の値も同じ値に自動更新される"
         },
         {
-          "text": "`Host`ヘッダーオーバーライドとDNSレコードオーバーライドは互いに排他的な設定であり、同じOrigin Ruleの中で両方を組み合わせることはできない",
+          "text": "`Host`ヘッダーオーバーライドとDNSレコードオーバーライドは互いに排他的な設定であり、同じOrigin Ruleの中で両方を指定すると設定の保存時にエラーとなるため組み合わせられない",
           "wrongFeedback": "排他的ではありません。多くの場合、`Host`ヘッダーオーバーライドとDNSレコードオーバーライドは組み合わせて使う必要があります。"
         }
       ],
@@ -27848,7 +27848,7 @@
           "wrongFeedback": "1種類のみではありません。`\"off\"`・`\"essentially_off\"`・`\"under_attack\"`という複数の値が使えます。"
         },
         {
-          "text": "Under Attack modeはConfiguration Rulesの設定項目には含まれておらず、ダッシュボードの別ページからしか制御できない",
+          "text": "Under Attack modeはConfiguration Rulesの設定項目には含まれておらず、Security設定のダッシュボードページからゾーン全体に対してしか制御できない",
           "wrongFeedback": "Configuration Rulesの設定項目の1つとして含まれており、`security_level`プロパティで制御できます。"
         }
       ],
@@ -28303,7 +28303,7 @@
           "wrongFeedback": "応答速度が極端に遅くなるわけではありません。主なリスクはオリジンIPアドレスの露出とDDoS保護・製品機能が適用されないことです。"
         },
         {
-          "text": "DNS-onlyのレコードはCloudflareのネームサーバーで一切名前解決できず、常にNXDOMAINエラーが返される",
+          "text": "DNS-onlyのレコードはCloudflareのネームサーバーで名前解決できず常にNXDOMAINが返されるため、Webトラフィックを扱うレコードはプロキシを有効にしない限り到達不能になる",
           "wrongFeedback": "DNS-onlyのレコードも通常どおり名前解決されます。NXDOMAINエラーが常に返されるわけではありません。"
         },
         {
@@ -28707,7 +28707,7 @@
       "question": "既存のDNSプロバイダーがDNSSECの外部DNSKEYレコード追加(マルチシグナーDNSSEC)に対応していない場合、DNSSECを有効にしたままCloudflareへ移行する際に注意すべき正しい手順はどれですか？",
       "options": [
         {
-          "text": "この移行パスでは、常にドメインの一時的な停止(ダウンタイム)なしで完了させることができ、DNSSEC保護が途切れる瞬間は一切発生しない",
+          "text": "この移行パスでは、DSレコードを残したままネームサーバーを切り替えられるためTTLの失効を待つ必要がなく、常にダウンタイムなしで完了できてDNSSEC保護が途切れる瞬間も発生しない",
           "wrongFeedback": "外部DNSKEYレコードに対応していない場合の移行パスでは、DNSSEC保護が一時的に途切れる期間が発生することが明記されています。ダウンタイムなしで完了できるのは、マルチシグナーDNSSECによるアクティブ移行に対応している場合です。"
         },
         {
@@ -29072,8 +29072,8 @@
           "text": "有効期限内・公的な認証局またはCloudflareのOrigin CAからの発行・Common NameまたはSANが要求されたホスト名と一致、の3条件をすべて満たす必要がある"
         },
         {
-          "text": "証明書が有効期限内でありさえすれば要件を満たし、発行元がどこであるか(自己署名を含む)やCommon Name・SANとホスト名の一致は一切問われない",
-          "wrongFeedback": "有効期限だけでなく、発行元(公的CAまたはOrigin CA)とホスト名の一致も要件に含まれます。"
+          "text": "証明書が有効期限内でありさえすれば要件を満たし、発行元がどこであるか(自己署名を含む)やCommon Name・SANとホスト名の一致は一切問われないため、Full(strict)でも526エラーが発生することはない",
+          "wrongFeedback": "有効期限だけでなく、発行元(公的CAまたはOrigin CA)とホスト名の一致も要件に含まれます。これらを満たさない場合は526エラーに遭遇する可能性があります。"
         }
       ],
       "correctIndex": 2,
@@ -29265,7 +29265,7 @@
           "text": "無料で自動発行されるDomain Validated(DV)証明書で、Fullセットアップではルートドメインと第1階層のサブドメインをカバーする"
         },
         {
-          "text": "Universal SSLはOrganization Validated(OV)証明書であり、組織の実在性を検証したうえで発行される",
+          "text": "Universal SSLはOrganization Validated(OV)証明書であり、ドメインの所有確認に加えて組織の実在性まで検証したうえで発行される",
           "wrongFeedback": "Universal SSLはDomain Validated(DV)証明書です。組織の実在性を検証するOVではありません。"
         },
         {
@@ -29636,7 +29636,7 @@
           "wrongFeedback": "TLS 1.0やTLS 1.1も最小値として指定可能です。TLS 1.2以上に制限されているわけではありません。"
         },
         {
-          "text": "設定できるのはゾーン単位のみであり、ホスト名(サブドメイン)ごとに異なる最小TLSバージョンを設定することはできない",
+          "text": "設定できるのはゾーン単位のみで、Advanced Certificate Managerを購入してもホスト名(サブドメイン)ごとに異なる最小TLSバージョンを設定することはできない",
           "wrongFeedback": "Advanced Certificate Managerを使えば、ホスト名ごとに異なる最小TLSバージョンを設定できます。ゾーン単位のみに限定されているわけではありません。"
         }
       ],
@@ -30084,7 +30084,7 @@
           "wrongFeedback": "HTML検証エラー自体は、訪問者にとっての実際の問題を意味するものではないと明記されています。深刻な表示崩れを必ず意味するわけではありません。"
         },
         {
-          "text": "JavaScriptやjQueryに問題が発生した場合の推奨対応は、ブラウザのキャッシュをクリアすることであり、Rocket Loader自体を無効化する必要はない",
+          "text": "JavaScriptやjQueryに問題が発生した場合の推奨対応は、ブラウザのキャッシュをクリアして再読み込みすることであり、Rocket Loader自体を無効化して再テストする必要はない",
           "wrongFeedback": "推奨される対応はRocket Loaderを無効化して再テストすることです。ブラウザキャッシュのクリアではありません。"
         },
         {
@@ -30241,7 +30241,7 @@
           "wrongFeedback": "逆です。Early Hintsはオリジンが完全な応答を準備している「待ち時間」を利用して、その前に送信される予備的なレスポンスです。"
         },
         {
-          "text": "Early Hintsは`EARLY`のような新しいHTTPメソッドを定義するものであり、既存の`GET`や`POST`とは別の専用メソッドを使う",
+          "text": "Early Hintsは`EARLY`のような新しいHTTPメソッドをRFC 8297で定義するものであり、既存の`GET`や`POST`とは別の専用メソッドをブラウザが使う",
           "wrongFeedback": "新しいHTTPメソッドではなく、`103`という新しいステータスコードを使う仕組みです。"
         }
       ],
@@ -31170,7 +31170,7 @@
           "wrongFeedback": "`bastion`はcloudflaredをジャンプホストとして機能させ、任意のローカルアドレスへのアクセスを可能にするサービスタイプで、SSH専用ではありません。"
         },
         {
-          "text": "`hello_world`はリモート管理・ローカル管理のどちらのトンネルでも利用できるテスト用サービスである",
+          "text": "`hello_world`はリモート管理・ローカル管理のどちらのトンネルでも利用できるテスト用サービスで、config.ymlを使わないリモート管理トンネルでも指定できる",
           "wrongFeedback": "`hello_world`はローカル管理トンネルでのみ利用できるテスト用サービスです。"
         }
       ],
@@ -31218,7 +31218,7 @@
           "wrongFeedback": "上書きできます。トップレベルの`originRequest`はデフォルト値として機能し、個々のingressルールで指定すれば特定サービスだけ値を上書きできます。"
         },
         {
-          "text": "設定ファイルには`tunnel`フィールド(トンネルのUUIDまたは名前)を記載する必要がなく、認証情報ファイル(credentials-file)のパスだけで十分である",
+          "text": "設定ファイルには`tunnel`フィールド(トンネルのUUIDまたは名前)を記載する必要がなく、`credentials-file`のパスさえ書いてあればcloudflaredが認証情報ファイルの中身からトンネルを特定するため十分である",
           "wrongFeedback": "`tunnel`フィールドも必須の項目です。認証情報ファイルのパスだけでは設定として不十分です。"
         },
         {
@@ -31818,7 +31818,7 @@
           "wrongFeedback": "逆です。サンプリングされるのはモニタリング用ヘッダーで、ルール用ヘッダーはルールの式に一致する全レスポンスに(サンプリングなしで)付与されます。"
         },
         {
-          "text": "どちらのヘッダーも`content-security-policy`(ブロックモード)のみが使われ、`content-security-policy-report-only`が使われることはない",
+          "text": "どちらのヘッダーも`content-security-policy`(ブロックモード)のみが使われ、モニタリング用ヘッダーでもLogルールでも`content-security-policy-report-only`が使われることはなく、違反は常にブロックされる",
           "wrongFeedback": "`content-security-policy-report-only`はモニタリング用ヘッダーとLogルールで使われます。ブロックモードの`content-security-policy`が使われるのはAllowルールのみです。"
         },
         {
@@ -34571,7 +34571,7 @@
           "text": "Microsoft側でのラベルの追加・編集は24時間以内にCloudflare DLPへ反映されるが、削除は反映されずプロファイル内のエントリは残る"
         },
         {
-          "text": "Microsoft側での感度ラベルの追加・編集・削除は、いずれもリアルタイムで即座にCloudflare DLPへ反映される",
+          "text": "Microsoft側での感度ラベルの追加・編集・削除は、いずれもリアルタイムで即座にCloudflare DLPへ反映され、削除したラベルに対応する検知エントリもプロファイルから自動的に消える",
           "wrongFeedback": "追加・編集の反映には最大24時間かかり、さらにMicrosoft側での削除はCloudflare側へ反映されません。即座に・すべて反映されるわけではありません。"
         },
         {
@@ -35644,7 +35644,7 @@
           "wrongFeedback": "逆です。CASBはユーザーが正常にログインした後に発生する問題を検知する仕組みです。"
         },
         {
-          "text": "CASBはユーザーのブラウザセッションをリモート環境で実行し、アクティブコンテンツをローカル端末から隔離する",
+          "text": "CASBはユーザーのブラウザセッションをCloudflareのリモート環境で実行し、JavaScriptなどのアクティブコンテンツをローカル端末から隔離して描画結果だけを転送する",
           "wrongFeedback": "それはBrowser Isolationの説明です。CASBはAPI経由でSaaS/クラウド環境をスキャンする仕組みです。"
         },
         {
@@ -37118,7 +37118,7 @@
           "text": "エンドユーザーデバイスのプライベートIPを示すDevice、ISPが割り当てるパブリックIPを示すISP、接続しているルーターのプライベートIPを示すGatewayという3種類のIPアドレスを表示する"
         },
         {
-          "text": "Device・ISP・Gatewayという3種類のIPアドレスのうち、Deviceはエンドユーザーデバイスに割り当てられたパブリック(グローバル)なIPアドレスを指すものとして扱われる",
+          "text": "Device・ISP・Gatewayという3種類のIPアドレスのうち、Deviceはエンドユーザーデバイスに割り当てられたパブリック(グローバル)なIPアドレスを指し、ISPはそのISPが保有するプライベートIPを指すものとして扱われる",
           "wrongFeedback": "Deviceが指すのはエンドユーザーデバイスのプライベートIPアドレスです。パブリックIPアドレスを指すのはISPの方です。"
         },
         {
@@ -38475,7 +38475,7 @@
           "text": "MPLS回線やハブアンドスポーク型ルーティングを置き換え、拠点をCloudflareのグローバルネットワーク経由で接続するサイト間接続サービスである"
         },
         {
-          "text": "ユーザーの端末にインストールするクライアントソフトウェアのみを使って、個々のデバイスをZero Trustで保護する製品である",
+          "text": "ユーザーの端末にインストールするクライアントソフトウェアのみを使い、デバイスのトラフィックをCloudflareへ転送してデバイス単位でZero Trustポリシーを適用する製品である",
           "wrongFeedback": "デバイス単位のクライアント保護はCloudflare One Client(WARP)の役割です。Cloudflare WANは拠点(サイト)単位の接続を扱います。"
         },
         {
@@ -38750,7 +38750,7 @@
           "text": "route-based VPNが推奨されている。policy-based VPNには、1本のIPsecトンネルに含められるChild SAが約100個までなどの制約がある"
         },
         {
-          "text": "policy-based VPNが推奨されており、route-based VPNは非推奨のため使用すべきではない",
+          "text": "policy-based VPNが推奨されており、route-based VPNは非推奨のため使用すべきではなく、IPsecトンネルはトラフィックセレクタによるポリシー指定を前提に設計されている",
           "wrongFeedback": "推奨は逆です。route-based VPNが推奨されており、policy-based VPNはやむを得ない場合に使う方式です。"
         },
         {
@@ -39549,7 +39549,7 @@
           "text": "origin_directとorigin_dnsは、どちらか一方のみを指定でき、両方を同時に指定するとHTTP 400エラーになる"
         },
         {
-          "text": "origin_dnsで指定できるDNSレコードタイプはCNAMEのみで、AレコードやAAAAレコードは指定できない",
+          "text": "origin_dnsで指定できるDNSレコードタイプはCNAMEのみで、AレコードやAAAAレコード、SRVレコードを指定すると保存時にエラーになる",
           "wrongFeedback": "origin_dnsではA、AAAA、SRV、または(AとAAAA両方を意味する)空指定が有効なレコードタイプで、CNAME限定ではありません。ダッシュボードからCNAME方式で作成する場合はCNAMEレコードを別途Cloudflareのゾーンに作成する必要があります。"
         },
         {
@@ -40671,7 +40671,7 @@
       "question": "Waiting Roomが利用する`__cfwaitingroom`クッキーの挙動について、正しい説明はどれですか?",
       "options": [
         {
-          "text": "このクッキーは訪問者のIPアドレスとブラウザ情報のみを暗号化せずに保持し、待機列とは無関係に広告トラッキングに利用される",
+          "text": "このクッキーは訪問者のIPアドレスとブラウザのUser-Agent情報のみを暗号化せず平文で保持し、待機列とは無関係に広告トラッキングに利用される",
           "wrongFeedback": "`__cfwaitingroom`クッキーは暗号化されており、広告トラッキング用途ではなく待機列内の位置や再入場の許可を管理するために使われます。"
         },
         {
@@ -41144,7 +41144,7 @@
           "wrongFeedback": "`Passthrough`は全トラフィックを素通りさせる設定であり待機自体が発生しないため、待機中のユーザー向けのTurnstileチャレンジが表示される場面はありません。"
         },
         {
-          "text": "`Passthrough`はEventsの`prequeue_start_time`を設定した場合にのみ利用可能な特殊モードであり、通常の待機室設定には指定できない",
+          "text": "`Passthrough`はEventsの`prequeue_start_time`を設定した場合にのみ利用可能な特殊モードであり、待機室本体の`queueing_method`には指定できずEvents側からのみ設定できる",
           "wrongFeedback": "`Passthrough`はEvents専用の特殊モードではなく、通常の待機室のデフォルトの`queueing_method`としても指定できます。"
         },
         {
@@ -42107,7 +42107,7 @@
           "wrongFeedback": "Zaraz EventsのMonitoringページから、現在の使用量を簡単に確認できます。"
         },
         {
-          "text": "Zaraz Paidプランに加入しない場合、無料枠を超えた時点でウェブサイトへのアクセス自体がすべて遮断される",
+          "text": "Zaraz Paidプランに加入しない場合、月100万件の無料枠を超えた時点でZarazだけでなくウェブサイトへのアクセス自体がすべて遮断される",
           "wrongFeedback": "無料枠を超えてPaidプランを有効化しない場合に発生するのは、次の請求サイクルまでZarazが無効化されることであり、ウェブサイトへのアクセス自体が遮断されるわけではありません。"
         },
         {
@@ -42164,7 +42164,7 @@
           "wrongFeedback": "Zarazには非対応ツール向けのCustom HTML・Custom Image・HTTP Requestといったカスタム統合が用意されています。"
         },
         {
-          "text": "非対応ツールを追加するには、Cloudflareサポートに申請してZarazのツールカタログへ承認登録してもらう必要がある",
+          "text": "非対応ツールを追加するには、Cloudflareサポートに申請してZarazのツールカタログへ承認登録してもらう必要があり、承認までは組み込めない",
           "wrongFeedback": "非対応ツールの追加にサポートへの事前申請は必要なく、用意されているカスタム統合(Custom HTML等)を使って自分で組み込めます。"
         },
         {
@@ -42595,7 +42595,7 @@
           "text": "新規に作成されたAgentインスタンスが最初に使う既定の状態を定義するもので、既に永続化された状態を持つ既存インスタンスはSQLiteに保存された状態を代わりに読み込む"
         },
         {
-          "text": "すべてのAgentインスタンスに対して毎回強制的に適用される固定値であり、`this.setState()`で上書きしても次回アクセス時にリセットされる",
+          "text": "すべてのAgentインスタンスに対して起動のたびに強制的に適用される固定値であり、`this.setState()`でSQLiteに保存しても次回アクセス時にはinitialStateへリセットされる",
           "wrongFeedback": "initialStateは新規インスタンスの既定値にすぎません。`setState()`で更新した状態はSQLiteに永続化され、リセットされません。"
         },
         {
@@ -42760,7 +42760,7 @@
           "text": "状態の永続化・ブロードキャストが行われる前に同期的に実行され、内部でエラーをthrowすると、その状態更新を拒否できる"
         },
         {
-          "text": "TypeScriptの型を実行時に検証するための自動生成コードであり、開発者が明示的に実装する必要はない",
+          "text": "TypeScriptの型定義から自動生成される実行時の型検証コードであり、開発者がAgentクラスに明示的に実装する必要はない",
           "wrongFeedback": "`validateStateChange`は開発者が明示的に実装するメソッドで、業務ロジック上の妥当性(例: スコアが負にならないか)を検証するために使います。"
         }
       ],
@@ -42869,7 +42869,7 @@
       "question": "AgentがWebSocket接続を処理する際のライフサイクルフックの組み合わせとして正しいものはどれですか?",
       "options": [
         {
-          "text": "`onConnect(connection, ctx)`は接続の確立時ではなく、クライアントが最初にメッセージを送った直後にのみ呼ばれる",
+          "text": "`onConnect(connection, ctx)`は接続の確立時ではなく、クライアントが最初のメッセージを送った直後に`onMessage`より先に一度だけ呼ばれる",
           "wrongFeedback": "`onConnect`はWebSocket接続が確立した時点で呼ばれ、最初のメッセージ送信を待つ必要はありません。"
         },
         {
@@ -43276,7 +43276,7 @@
           "text": "デフォルトで冪等(idempotent)に扱われ、重複したスケジュールは作られず既存のものがそのまま返される"
         },
         {
-          "text": "常に新しいスケジュールとして追加登録され、同じ条件のジョブが実行のたびに増え続ける",
+          "text": "常に新しいスケジュールとして追加登録されるため、デプロイのたびにスケジュール登録コードが走ると同じ条件のジョブが際限なく増え続ける",
           "wrongFeedback": "cronスケジュールはデフォルトで冪等に扱われるため、同一パラメータでの再登録は重複を生みません。"
         },
         {
