@@ -3825,8 +3825,8 @@
           "text": "`wrangler.toml`（または `wrangler.jsonc`）で R2 バケットバインディングを設定し、env 経由でアクセスする"
         },
         {
-          "text": "Workersからも常にS3互換APIエンドポイントにHTTPリクエストを送り、`Authorization`ヘッダーにAWS SigV4形式で署名したアクセスキーを含める",
-          "wrongFeedback": "S3互換APIは外部アプリケーションからのアクセスや既存S3ツールの流用に有用ですが、Workers内から使う最も基本的な方法はバインディングです。"
+          "text": "Workersから使う場合はバインディングが用意されておらず、外部アプリケーションと同じくS3互換APIエンドポイントへHTTPリクエストを送る方法しか選べない",
+          "wrongFeedback": "WorkersにはR2バインディングが用意されており、`env`経由で直接アクセスできます。S3互換APIは外部アプリケーションからのアクセスや既存S3ツールの流用に有用ですが、Workers内での基本手段ではありません。"
         }
       ],
       "correctIndex": 2,
@@ -7944,7 +7944,7 @@
       "options": [
         {
           "text": "値: 100 MiB、キー: 1024 bytes",
-          "wrongFeedback": "値のサイズ上限が実際より大きい数値です。"
+          "wrongFeedback": "値・キーとも実際の上限と異なります。正しくは値: 25 MiB、キー: 512 bytesです。"
         },
         {
           "text": "値: 1 MiB、キー: 256 bytes",
@@ -10252,7 +10252,7 @@
           "wrongFeedback": "max_concurrencyは1〜250の範囲で設定する必要があり、無制限に大きくすることはできません。"
         },
         {
-          "text": "max_concurrencyは1〜250の範囲で必ず明示的に設定する必要があり、未設定のままデプロイするとConsumerがエラーになる",
+          "text": "max_concurrencyは必ず明示的に設定する必要があり、未設定のままデプロイするとConsumerが起動時にエラーになりメッセージの取得が始まらない",
           "wrongFeedback": "未設定のままでも動作します。Cloudflareはむしろ上限を固定せず、Queues側の自動スケールに任せることを推奨しています。"
         },
         {
