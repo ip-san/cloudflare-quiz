@@ -525,11 +525,11 @@
       "question": "Cloudflare Workersがコールドスタート時に高速な起動を実現できる主な理由は何ですか?",
       "options": [
         {
-          "text": "全てのWorkerが常時稼働しており、コールドスタート自体が発生しないため",
+          "text": "全てのWorkerが世界中の全データセンターで常時稼働しており、コールドスタート自体が発生しないため",
           "wrongFeedback": "コールドスタートの概念自体はWorkersにも存在しますが、VM/コンテナ上でNodeプロセスを起動するよりも大幅に高速です。「発生しない」わけではありません。"
         },
         {
-          "text": "V8アイソレートはOSやコンテナランタイムのブートを必要とせず、既に起動済みのランタイムプロセス内で軽量な実行コンテキストとして生成されるため"
+          "text": "V8アイソレートはOSやコンテナランタイムのブートを伴わず、起動済みプロセス内に軽量な実行コンテキストとして生成されるため"
         },
         {
           "text": "コード実行前に必ずディスクからOSイメージ全体を読み込むため",
@@ -1143,7 +1143,7 @@
           "wrongFeedback": "それは `wrangler dev` の動作です。`wrangler deploy` は本番公開を行います。"
         },
         {
-          "text": "設定ファイルに基づきWorkerのコードをビルドし、Cloudflareのグローバルネットワークにアップロード・公開する"
+          "text": "コードをビルドし、Cloudflareのグローバルネットワークにアップロードして公開する"
         },
         {
           "text": "ローカルのWrangler CLI自体を最新バージョンに更新する",
@@ -2746,7 +2746,7 @@
           "wrongFeedback": "Workerが停止するわけではありません。206 Partial Contentなど一部の条件でput()が拒否されることはありますが、Worker全体の実行が止まるわけではありません。"
         },
         {
-          "text": "レスポンスにSet-Cookieヘッダーが含まれる場合はキャッシュされず、Cache-Controlがキャッシュを禁じている場合やレスポンスが大きすぎる場合はput()が413エラーを返す"
+          "text": "レスポンスにSet-Cookieヘッダーが含まれる場合は、一意なデータを含む可能性があるためキャッシュされない"
         },
         {
           "text": "POSTリクエストに対するレスポンスは常に自動的にキャッシュされ、除外する方法はない",
@@ -4936,11 +4936,11 @@
       "question": "Worker のリクエスト処理内で ctx.waitUntil() を使って後処理を行う代わりに、Cloudflare Queues を使うべき理由として最も適切なものはどれですか？",
       "options": [
         {
-          "text": "Queues の方がレイテンシが低く、常に同期的にレスポンスへ結果を反映できるため",
+          "text": "Queues の方がキューへの書き込みレイテンシが低く、常に同期的にレスポンスへ結果を反映できるため",
           "wrongFeedback": "Queues は非同期の後処理を分離する仕組みであり、元のレスポンスに同期的に結果を反映することを目的とはしていません。"
         },
         {
-          "text": "waitUntil() の処理は元のリクエストを処理した Worker 実行の一部として実行され、失敗しても永続的なリトライや配信保証がないが、Queues はメッセージを永続化し失敗時に自動リトライや DLQ への退避を行える"
+          "text": "waitUntil() には失敗時のリトライ保証がないが、Queues はメッセージを永続化し自動リトライや DLQ への退避を行えるため"
         },
         {
           "text": "waitUntil() は課金が発生しないため",
@@ -5121,7 +5121,7 @@
       "question": "多数のWebSocket接続を長時間維持するDurable Objectのコストを抑えるために使うべき仕組みと、その効果として正しいものはどれですか？",
       "options": [
         {
-          "text": "WebSocket Hibernation API（acceptWebSocket()）を使うことで、非アクティブ期間中にDOをスリープさせつつクライアント接続を維持でき、その間のBillable Duration(GB-s)課金は発生しない"
+          "text": "WebSocket Hibernation APIを使うと、非アクティブ期間中も接続を維持したままDOをスリープさせられ、その間の課金は発生しない"
         },
         {
           "text": "標準のWebSocket API（accept()）を使い、addEventListenerでイベントを購読する",
@@ -5294,7 +5294,7 @@
           "wrongFeedback": "idFromName()は現在も「最も一般的なDurable Objectsの参照方法」とされる主要なAPIであり、非推奨ではありません。"
         },
         {
-          "text": "ルーム名やユーザーIDのように既知の文字列から決定論的に同じインスタンスへ到達したい場合はidFromName()を使い、初回アクセス時のレイテンシを重視しIDを外部（KVやCookie等）に保存する運用にする場合はnewUniqueId()を使う"
+          "text": "既知の名前から決定論的に同じインスタンスへ到達したい場合はidFromName()、IDを外部に保存して参照する運用ならnewUniqueId()を使う"
         }
       ],
       "correctIndex": 3,
@@ -6460,18 +6460,18 @@
       "question": "Workers AIで実行できるタスクの種類として適切な組み合わせはどれですか？",
       "options": [
         {
-          "text": "SQLクエリの実行とトランザクション処理のみ",
+          "text": "SQLクエリの実行とトランザクション処理などのデータベース操作のみ",
           "wrongFeedback": "それはD1（SQLデータベース）の役割です。Workers AIは機械学習モデルの推論を実行するサービスです。"
         },
         {
-          "text": "ベクトルの保存とベクトル類似検索のみ",
+          "text": "ベクトルの保存とベクトル類似検索などのベクトル検索操作のみ",
           "wrongFeedback": "ベクトルの保存・検索はVectorizeの役割です。Workers AIはそこで使うembeddingベクトルなどを生成する側を担います。"
         },
         {
-          "text": "テキスト生成、テキスト埋め込み（embedding）、画像分類、音声認識（Speech-to-Text）など複数のタスクカテゴリ"
+          "text": "テキスト生成、テキスト埋め込み、画像分類、音声認識など複数のタスクカテゴリ"
         },
         {
-          "text": "静的ファイルの配信とキャッシュ制御のみ",
+          "text": "静的ファイルの配信とキャッシュ制御などのコンテンツ配信操作のみ",
           "wrongFeedback": "それはWorkersの基本機能やCache APIの役割であり、Workers AI固有の機能ではありません。"
         }
       ],
@@ -6644,18 +6644,18 @@
       "question": "embedding（埋め込みベクトル）を使った類似検索の仕組みとして正しい説明はどれですか？",
       "options": [
         {
-          "text": "テキストなどのデータをモデルで数値ベクトルに変換し、ベクトル間の距離（コサイン類似度など）が近いものを『意味的に似ている』として検索する"
+          "text": "データをモデルで数値ベクトルに変換し、ベクトル間の距離が近いものを意味的に似ているとして検索する"
         },
         {
-          "text": "画像や音声には適用できず、テキストデータ専用の技術である",
+          "text": "画像や音声などのデータには適用できず、テキストデータ専用の技術である",
           "wrongFeedback": "embeddingはテキストだけでなく画像や音声などのデータもベクトル化でき、マルチモーダルな類似検索にも使われます。"
         },
         {
-          "text": "テキストをそのまま文字列比較し、完全一致する文書のみを返す",
+          "text": "テキストをそのまま文字列として比較し、完全一致した文書のみを検索結果として返す",
           "wrongFeedback": "それは全文検索やキーワード完全一致検索の説明です。embeddingによる検索は『意味的な近さ』を扱う点が異なります。"
         },
         {
-          "text": "SQLのLIKE演算子を使って部分一致検索を行う",
+          "text": "SQLのLIKE演算子を使って文字列の部分一致検索を行う",
           "wrongFeedback": "LIKE演算子による部分一致検索はリレーショナルDBの機能で、ベクトルの意味的類似検索とは仕組みが異なります。"
         }
       ],
@@ -6837,18 +6837,18 @@
       "question": "Vectorizeのインデックスを作成する際に指定が必要で、かつ作成後に変更できない設定はどれですか？",
       "options": [
         {
-          "text": "metadataフィールドの型のみ",
+          "text": "フィルタに使うmetadataフィールドの型のみ",
           "wrongFeedback": "metadataの型はcreate-metadata-indexコマンドで別途管理されますが、インデックス作成時に必須かつ変更不可なのは次元数と距離メトリクスです。"
         },
         {
-          "text": "次元数（dimensions）と距離メトリクス（cosine / euclidean / dot-productなど）"
+          "text": "次元数（dimensions）と距離メトリクス（metric）"
         },
         {
-          "text": "インデックスに保存できるベクトル数の上限のみ",
+          "text": "インデックスに保存できるベクトル数の上限値のみ",
           "wrongFeedback": "保存件数の上限そのものよりも、ベクトルの次元数と距離メトリクスの指定・固定が重要な制約です。"
         },
         {
-          "text": "インデックスの表示名（ラベル）のみ",
+          "text": "インデックスに付ける表示名（ラベル）のみ",
           "wrongFeedback": "表示名の変更可否が主要な制約ではありません。作成後に変更できないのは、格納するベクトルの構造そのものに関わる設定です。"
         }
       ],
@@ -6893,18 +6893,18 @@
       "question": "Vectorizeのquery()でmetadataによる絞り込み（フィルタ）を行うために必要な事前準備はどれですか？",
       "options": [
         {
-          "text": "Vectorizeインデックス全体を毎回削除して作り直す",
+          "text": "Vectorizeインデックス全体を毎回削除し、metadataを付け直して作り直す",
           "wrongFeedback": "フィルタのたびにインデックスを再作成する必要はありません。事前にメタデータインデックスを作成しておけば継続的にフィルタが利用できます。"
         },
         {
-          "text": "wrangler vectorize create-metadata-index コマンドで、フィルタに使いたいmetadataプロパティのインデックスを事前に作成しておく（1インデックスにつき最大10個まで）"
+          "text": "wrangler vectorize create-metadata-index コマンドで、フィルタ対象のmetadataプロパティのインデックスを事前に作成しておく"
         },
         {
-          "text": "特に事前準備は不要で、query()実行時にfilterを指定するだけでよい",
+          "text": "特に事前準備は不要で、query()の実行時にfilterオプションでmetadataのプロパティ名と値の条件を指定するだけでよい",
           "wrongFeedback": "実際にはquery()を呼ぶ前に、対象のmetadataプロパティに対してメタデータインデックスを作成しておく必要があります。"
         },
         {
-          "text": "R2バケットにmetadataのバックアップを保存しておく",
+          "text": "R2バケットにmetadataのバックアップを保存し、query()から参照できるようにしておく",
           "wrongFeedback": "R2はオブジェクトストレージであり、Vectorizeのmetadataフィルタ機能とは無関係です。"
         }
       ],
@@ -7899,7 +7899,7 @@
           "wrongFeedback": "実際の上限とは異なります。正しくはFree: 50、Paid: 10,000です。"
         },
         {
-          "text": "Free: 50 / Paid: 10,000(wrangler設定で最大10,000,000まで変更可能)"
+          "text": "Free: 50 / Paid: 10,000"
         },
         {
           "text": "Free: 100 / Paid: 5,000",
@@ -8076,7 +8076,7 @@
       "question": "Streams API(ReadableStream/TransformStream)をWorkerで使う主な利点は何ですか?",
       "options": [
         {
-          "text": "リクエスト/レスポンスのボディ全体をメモリにバッファせず、データをチャンク単位で逐次的に処理できるため、大きなペイロードもWorkerのメモリ制限内で扱いやすくなる"
+          "text": "リクエスト/レスポンスのボディ全体をメモリにバッファせず、チャンク単位で逐次的に処理できる"
         },
         {
           "text": "HTTP/1.1で届いた通信を自動的にHTTP/3へアップグレードする",
@@ -8149,18 +8149,18 @@
       "question": "wrangler設定ファイルの`compatibility_date`の役割として正しいものはどれですか?",
       "options": [
         {
-          "text": "Free/Paidといった課金プランを切り替えるための設定",
+          "text": "Free/Paidといった課金プランをデプロイ時に切り替えるための設定",
           "wrongFeedback": "課金プランの切り替えとは無関係です。`compatibility_date`はあくまでランタイムの挙動バージョンを指定するものです。"
         },
         {
-          "text": "Workerのソースコードを保存した日時を記録するだけのメタ情報",
+          "text": "Workerのソースコードを最後に保存・デプロイした日時を記録するだけのメタ情報",
           "wrongFeedback": "単なる保存日時の記録ではなく、ランタイムの挙動を切り替えるための設定値です。"
         },
         {
-          "text": "Workersランタイムの挙動をその日付時点の仕様に固定し、Cloudflareがランタイムを更新しても既存Workerの動作が意図せず変わらないようにするための設定"
+          "text": "Workersランタイムの挙動をその日付時点の仕様に固定し、意図しない破壊的変更を受けないようにする設定"
         },
         {
-          "text": "デプロイ先のCloudflareデータセンターを地理的に優先順位付けする設定",
+          "text": "デプロイ先のCloudflareデータセンターを地理的な近さで優先順位付けする設定",
           "wrongFeedback": "データセンターの地理的優先順位とは無関係です。実行場所の最適化にはSmart Placementなど別の仕組みがあります。"
         }
       ],
@@ -8395,19 +8395,19 @@
       "question": "Cloudflare Workersにおける「サブリクエスト」としてカウントされる操作の組み合わせとして適切なものはどれですか?",
       "options": [
         {
-          "text": "Worker内から発生する`fetch()`呼び出しに加え、KV・D1・R2・Durable Objectsなどのバインディング経由の呼び出しやCache API呼び出し"
+          "text": "`fetch()`に加え、KV・D1・R2などのバインディング経由の呼び出しとCache API呼び出し"
         },
         {
-          "text": "Worker自身が受信した着信HTTPリクエストの数のみ",
+          "text": "Worker自身が外部から受信した着信HTTPリクエストの総数のみ",
           "wrongFeedback": "それは着信リクエスト数です。サブリクエストは、Workerがリクエストを処理する過程で自ら発生させる送信側の呼び出しを指します。"
         },
         {
-          "text": "Worker内で発生した`console.log`の呼び出し回数のみ",
+          "text": "Worker内で発生した`console.log`などのログ出力の呼び出し回数のみ",
           "wrongFeedback": "`console.log`はサブリクエストとしてカウントされません。ログ出力はネットワーク越しの呼び出しではないためです。"
         },
         {
-          "text": "同一アイソレート内でグローバルスコープに保持された変数へのアクセス回数",
-          "wrongFeedback": "変数へのアクセスはネットワーク越しの呼び出しではないため、サブリクエストにはカウントされません。"
+          "text": "同一アイソレート内でグローバルスコープに保持された変数やモジュールへのアクセス回数",
+          "wrongFeedback": "変数やモジュールへのアクセスはネットワーク越しの呼び出しではないため、サブリクエストにはカウントされません。"
         }
       ],
       "correctIndex": 0,
@@ -9067,18 +9067,18 @@
       "question": "fetch()の第2引数に渡す`cf`オブジェクトで`cacheKey`を指定する目的として正しいものはどれですか？",
       "options": [
         {
-          "text": "2つのリクエストがキャッシュ上で「同じ」とみなされるかどうかを決定する基準(キャッシュキー)をカスタマイズする"
+          "text": "2つのリクエストをキャッシュ上で同一とみなす基準をカスタマイズする"
         },
         {
-          "text": "レスポンスを保存する際の暗号化キーを指定する",
+          "text": "レスポンスをキャッシュに保存する際の暗号化キーを指定する",
           "wrongFeedback": "暗号化に関するオプションではありません。キャッシュの同一性判定に使う識別子を指定するものです。"
         },
         {
-          "text": "Workers KVのキー名を上書きする",
+          "text": "Workers KVに保存するときのキー名を上書きする",
           "wrongFeedback": "cacheKeyはHTTPキャッシュ(Cache API/エッジキャッシュ)のキーを指す概念であり、Workers KVのキー名とは無関係です。"
         },
         {
-          "text": "リクエストに付与する認証トークンを指定する",
+          "text": "オリジンへのリクエストに付与する認証トークンを指定する",
           "wrongFeedback": "認証とは無関係です。cacheKeyはキャッシュの識別に使われる文字列です。"
         }
       ],
@@ -9214,7 +9214,7 @@
       "question": "Cloudflareの Cache Reserve について正しい説明はどれですか？",
       "options": [
         {
-          "text": "Workers KVの別名であり、実体はCache Reserve = Workers KVである",
+          "text": "Workers KVの別名であり、実体はCache Reserve = Workers KVという同一の仕組みである",
           "wrongFeedback": "Cache ReserveはWorkers KVとは別の機能で、HTTPキャッシュのための永続的なキャッシュ層です。R2上に実装されています。"
         },
         {
@@ -9226,7 +9226,7 @@
           "wrongFeedback": "Cache Reserveはレスポンスの実体(コンテンツそのもの)をR2に保存する仕組みです。統計情報のみを記録するものではありません。"
         },
         {
-          "text": "R2ストレージ上に実装された永続的なキャッシュ層で、キャッシュ可能なコンテンツを通常より長く保持することでオリジンへの不要なトラフィックを削減する仕組み。初期保持期間は30日間で、アクセスがあるたびに保持期間がリセットされる"
+          "text": "R2ストレージ上に実装された永続的なキャッシュ層で、コンテンツを通常より長く保持してオリジンへの不要なトラフィックを削減する仕組み"
         }
       ],
       "correctIndex": 3,
@@ -10245,7 +10245,7 @@
       "question": "Cloudflare Queues の Consumer concurrency のデフォルト動作として正しいものはどれですか？",
       "options": [
         {
-          "text": "デフォルトで自動スケールが有効になっており、キューのバックログ（未処理メッセージ数）やその増加速度、成功/失敗の比率に応じてConsumerの同時実行数が自動調整される"
+          "text": "デフォルトで自動スケールが有効で、キューのバックログやその増加速度、成功/失敗の比率に応じて同時実行数が自動調整される"
         },
         {
           "text": "max_concurrencyには上限がなく、任意の大きな数値を設定できる",
@@ -10803,7 +10803,7 @@
           "wrongFeedback": "ビルドキャッシュはビルド時の依存関係キャッシュであり、配信コンテンツのCDNキャッシュとは別の仕組みです。"
         },
         {
-          "text": "依存関係(パッケージマネージャのキャッシュなど)をビルド間で再利用する機能で、プロジェクト設定(Settings > Build > Build cache)で有効化(Enable)する必要がある。ビルドに問題が起きた場合は、同じ設定画面からキャッシュをクリア(Clear Cache)して強制的にクリーンビルドできる"
+          "text": "依存関係のキャッシュをビルド間で再利用する機能で、プロジェクト設定で明示的に有効化(Enable)する必要がある"
         },
         {
           "text": "ビルドキャッシュを利用するには、プロジェクトごとに専用のR2バケットを事前に手動作成し明示的に紐付ける必要がある",
@@ -13378,19 +13378,19 @@
       "question": "Cloudflare Email Service が提供する機能の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "社内向けのメールボックス(受信箱)をホストするメールサーバー",
+          "text": "社内向けのメールボックス(受信箱)をホストして保管するメールサーバー",
           "wrongFeedback": "メールボックスをホストするサービスではありません。送信と、受信メールのルーティング/Worker処理を提供します。"
         },
         {
-          "text": "迷惑メールのフィルタリングとウイルススキャンに特化したメールセキュリティ製品",
+          "text": "迷惑メールのフィルタリングと添付ファイルのウイルススキャンに特化したメールセキュリティ製品",
           "wrongFeedback": "それはEmail Security(旧Area 1)の領域です。Email Service はアプリからの送信と受信メールの振り分けを担います。"
         },
         {
-          "text": "メールマガジンの購読者管理と一斉配信を行うマーケティングツール",
+          "text": "メールマガジンの購読者管理と配信リストへの一斉配信を行うマーケティングツール",
           "wrongFeedback": "マーケティング配信ツールではありません。トランザクションメール送信と受信メールのルーティングが中心です。"
         },
         {
-          "text": "アプリからのトランザクションメール送信(Email Sending)と、ドメイン宛の受信メールをWorkerやメールアドレスへ振り分ける受信処理(Email Routing)"
+          "text": "アプリからのトランザクションメール送信(Email Sending)と、受信メールの振り分け(Email Routing)"
         }
       ],
       "correctIndex": 3,
@@ -13431,7 +13431,7 @@
       "question": "ドメイン宛に届いた受信メールを、Workerのコードで処理(独自ロジックを適用)したい場合の方法として正しいものはどれですか？",
       "options": [
         {
-          "text": "`fetch`/`scheduled` と同じハンドラの一種である `email(message, env, ctx)` を実装し、message.from / message.to などを扱う"
+          "text": "`fetch`/`scheduled` と同じハンドラの一種である `email(message, env, ctx)` を実装する"
         },
         {
           "text": "`queue` ハンドラを実装すると受信メールが自動的にキュー経由で届く",
@@ -13442,7 +13442,7 @@
           "wrongFeedback": "受信メールはポーリングで取りません。専用の `email` ハンドラがメール受信時に自動的に呼び出されます。"
         },
         {
-          "text": "受信メールは Worker では扱えず、必ず外部のメールサーバーを立てる必要がある",
+          "text": "受信メールは Worker では扱えず、必ず自前の外部メールサーバーを立てて転送する必要がある",
           "wrongFeedback": "Worker で扱えます。`email` ハンドラを実装すれば受信メールをコードで処理できます。"
         }
       ],
@@ -13597,18 +13597,18 @@
       "question": "Cloudflare Browser Run(旧 Browser Rendering)の役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "Cloudflareのネットワーク上でヘッドレスの Chrome を動かし、スクリーンショット取得・PDF生成・スクレイピング・テストなどのブラウザ自動化を行える"
+          "text": "Cloudflareのネットワーク上でヘッドレスの Chrome を動かし、ブラウザ自動化を行える"
         },
         {
-          "text": "利用者のブラウザを高速化するためのキャッシュ・最適化サービス",
+          "text": "利用者の手元のブラウザを高速化するためのキャッシュ・リソース最適化サービス",
           "wrongFeedback": "利用者側ブラウザの高速化ではありません。サーバー側でヘッドレスChromeを動かして自動化するサービスです。"
         },
         {
-          "text": "WebサイトのデザインをGUIで編集するビジュアルエディタ",
+          "text": "WebサイトのデザインをGUI上でドラッグ操作しながら編集するビジュアルエディタ",
           "wrongFeedback": "デザインエディタではありません。プログラムからヘッドレスブラウザを制御する仕組みです。"
         },
         {
-          "text": "ブラウザ拡張機能を開発・配布するためのプラットフォーム",
+          "text": "ブラウザ拡張機能を開発・審査・配布するためのプラットフォーム",
           "wrongFeedback": "拡張機能の開発配布基盤ではありません。ヘッドレスブラウザの自動操作を提供します。"
         }
       ],
@@ -14568,7 +14568,7 @@
           "wrongFeedback": "呼び方が逆です。自動生成されるリクエスト/レスポンス情報は`invocation log`、`console.log`による任意の出力は`custom log`です。"
         },
         {
-          "text": "invocation logは自動生成されるリクエスト/レスポンスのメタデータで`$cloudflare.$metadata.type = \"cf-worker-event\"`として識別でき、`observability.logs.invocation_logs`を`false`にすると無効化できる"
+          "text": "invocation logは自動生成されるリクエスト/レスポンスのメタデータで`$cloudflare.$metadata.type = \"cf-worker-event\"`として識別でき、wrangler設定で無効化できる"
         },
         {
           "text": "invocation logとcustom logはどちらも無効化できず、Workers Logsを有効にすると常に両方が記録される",
@@ -14780,18 +14780,18 @@
       "question": "WorkerからContainerを使うためのwrangler設定に最低限必要な要素の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "`vars`にDockerイメージのURLを直接書き込むだけの設定",
+          "text": "`vars`環境変数にDockerイメージのURLを直接書き込むだけの設定",
           "wrongFeedback": "`vars`ではなく専用の`containers`フィールドで`image`などを指定します。"
         },
         {
-          "text": "`containers`配列(`image`/`class_name`)、対応する`durable_objects`バインディング、`migrations`での`new_sqlite_classes`指定"
+          "text": "`containers`配列、対応する`durable_objects`バインディング、`migrations`での`new_sqlite_classes`指定"
         },
         {
-          "text": "`containers`配列のみで完結し、Durable Objectsの設定は一切不要",
+          "text": "`containers`配列に`image`を指定するだけで完結し、Durable Objectsの設定は一切不要",
           "wrongFeedback": "ContainerはDurable Objectと1対1で結びつくため、`durable_objects`バインディングと`migrations`の設定も必須です。"
         },
         {
-          "text": "`kv_namespaces`バインディングで、Containerの状態をKVに保存する設定",
+          "text": "`kv_namespaces`バインディングを追加し、Containerの状態とルーティング情報をKVに保存する設定",
           "wrongFeedback": "KVではなくDurable Objectがコンテナの状態管理・ルーティングを担います。"
         }
       ],
@@ -14953,7 +14953,7 @@
       "question": "`Container`クラスの`defaultPort`と`sleepAfter`プロパティの役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "`defaultPort`は`fetch()`/`containerFetch()`がコンテナと通信するポート番号、`sleepAfter`はアクティビティがない状態が続いた場合にコンテナを停止するまでの時間"
+          "text": "`defaultPort`はコンテナと通信するポート番号、`sleepAfter`はアクティビティがない状態が続いた場合にコンテナを停止するまでの時間"
         },
         {
           "text": "`defaultPort`はコンテナ起動時の初期ヘルスチェック回数、`sleepAfter`はログの保持期間",
@@ -15343,7 +15343,7 @@
           "wrongFeedback": "ローカル開発でもDocker互換のCLIツールとエンジン(Docker DesktopやColimaなど)が必要です。"
         },
         {
-          "text": "Dockerが必要で、`image`がローカルパスならDockerfileからビルドされ、イメージ参照ならレジストリから取得され、コンテナのコード変更は`[r]`キーで手動リビルドする必要がある"
+          "text": "Docker互換のCLIツールとエンジンが必要で、コンテナのコード変更は自動リビルドされず`[r]`キーで手動リビルドする必要がある"
         },
         {
           "text": "設定した`max_instances`は、ローカル開発でも本番と同じ上限として適用される",
@@ -15718,7 +15718,7 @@
           "wrongFeedback": "リージョン間の複製機能ではありません。テナントごとに独立したWorker実行環境を提供する仕組みです。"
         },
         {
-          "text": "顧客やAIが書いたコードを、テナントごとに隔離された安全なサンドボックス(Worker)で実行できるようにし、マルチテナントなプラットフォームを構築できるようにする"
+          "text": "顧客やAIが書いたコードを、テナントごとに隔離されたサンドボックス(Worker)で実行できるようにするマルチテナント基盤"
         },
         {
           "text": "単一のWorkerのコールドスタート時間を短縮するための高速化機能",
@@ -16383,14 +16383,14 @@
           "wrongFeedback": "実質的な差があります。trusted modeでは`request.cf`が利用可能になり、キャッシュも共有される点が異なります。"
         },
         {
-          "text": "untrusted modeでは`request.cf`オブジェクトにアクセスできずキャッシュもWorkerごとに分離されるが、trusted modeにすると`request.cf`が利用可能になりキャッシュも共有されるようになる"
+          "text": "untrusted modeでは`request.cf`が使えずキャッシュもWorkerごとに分離されるが、trusted modeでは`request.cf`が使えキャッシュも共有される"
         },
         {
           "text": "trusted modeは顧客が書いたコードを実行する場合に推奨される、より安全な設定である",
           "wrongFeedback": "trusted modeは全Worker間でキャッシュが共有されクロステナントのアクセスが起こりうるため、自社が全コードを管理する社内プラットフォームなど、顧客コードを実行しない場合に向いています。"
         },
         {
-          "text": "untrusted modeでは`caches.default`が利用可能で、trusted modeでは逆に無効化される",
+          "text": "untrusted modeでは`caches.default`によるキャッシュ操作が利用可能で、trusted modeでは逆にnamespace内の全Workerで無効化される",
           "wrongFeedback": "逆です。`caches.default`はnamespace内の全Workerで無効化されており、これはuntrusted/trusted両方に共通する制約です。"
         }
       ],
@@ -17751,7 +17751,7 @@
           "wrongFeedback": "そもそもRealtimeにroomという概念がないため、そのような保証も存在しません。"
         },
         {
-          "text": "RealtimeはSessionとTrackというより粒度の細かい概念のみを扱い、「room」のような参加者管理の抽象化は提供しないため、誰がどのTrackを持っているかの管理はアプリケーション側の責任になる"
+          "text": "RealtimeはSessionとTrackという概念のみを扱い、「room」のような参加者管理の抽象化は提供しない"
         },
         {
           "text": "Realtime自体がroomという概念を持ち、参加者の入退室をAPIで直接管理できる",
@@ -18367,7 +18367,7 @@
           "wrongFeedback": "`priorityOrdering`はリモートTrackをpullする側(サブスクライバー)のAPI呼び出しで指定する設定です。"
         },
         {
-          "text": "`priorityOrdering`は帯域が制約された際にどのRID(品質レベル)を優先するかを制御し、`ridNotAvailable`は優先していたRIDが利用できなくなった場合の挙動(何もしないか、次点のRIDへ切り替えるか)を制御する"
+          "text": "`priorityOrdering`は帯域が制約された際にどのRIDを優先するかを制御し、`ridNotAvailable`は優先RIDが利用できなくなった場合の挙動を制御する"
         },
         {
           "text": "`ridNotAvailable`は常に最高品質のRIDへ強制的に切り替える設定であり、他の選択肢はない",
@@ -18782,7 +18782,7 @@
       "question": "Workers VPCでプライベートネットワークに接続するために必要な仕組みとして正しいものはどれですか？",
       "options": [
         {
-          "text": "プライベートネットワーク側からCloudflareへの永続的な接続を確立するCloudflare Tunnelを使い、インバウンドのファイアウォールルールやパブリックIPアドレスなしにWorkerからの接続を受けられるようにする"
+          "text": "プライベートネットワーク側からCloudflareへの永続的な接続を確立するCloudflare Tunnelを使い、Workerからの接続を受けられるようにする"
         },
         {
           "text": "プライベートネットワーク内のすべてのポートをインターネットに公開し、Cloudflareからの接続を待ち受ける",
@@ -18953,7 +18953,7 @@
           "wrongFeedback": "ベータ期間中は、すべてのWorkersプランで無料に利用できます。"
         },
         {
-          "text": "現在ベータ(Beta)段階であり、ベータ期間中はすべてのWorkersプランで無料に利用でき、通常のWorkersの料金(コンピュート時間・リクエスト数)のみが適用される"
+          "text": "現在ベータ段階で、ベータ期間中はすべてのWorkersプランで無料に利用でき、通常のWorkersの料金のみが適用される"
         }
       ],
       "correctIndex": 3,
@@ -19004,7 +19004,7 @@
           "wrongFeedback": "逆です。実際の接続先(ルーティング)にはVPC Service設定側のホスト・ポートが常に使われます。"
         },
         {
-          "text": "実際の接続先(ルーティング)には常にVPC Service設定側のホスト・ポートが使われ、`fetch()`に渡したURLのホスト名は`Host`ヘッダー(またはHTTPSの場合SNI)を決めるだけで、ポートは無視される"
+          "text": "実際の接続先にはVPC Service設定側のホスト・ポートが使われ、`fetch()`のURLのホスト名は`Host`ヘッダーを決めるだけで、ポートは無視される"
         }
       ],
       "correctIndex": 3,
@@ -21051,7 +21051,7 @@
       "question": "`wrangler types`によって生成される「型付きpipelineバインディング」に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "生成される型名はStream名(バインディング名ではない)を元にPascalCaseに変換し`Record`を付与したものになり、未認証・Stream未検出・非構造化Streamの場合は汎用の`Pipeline<PipelineRecord>`型にフォールバックする"
+          "text": "生成される型名はStream名を元にPascalCaseへ変換し`Record`を付与したもので、未認証・Stream未検出・非構造化Streamの場合は汎用のPipeline型にフォールバックする"
         },
         {
           "text": "`wrangler login`を実行していない未認証の状態でも、キャッシュされた認証情報を使って型付きバインディングは問題なく生成される",
@@ -21108,7 +21108,7 @@
           "wrongFeedback": "キャスト(型変換)はサポートされているステートレスな変換の1つです。"
         },
         {
-          "text": "フィルタ・リシェイプ・UNNEST・キャスト・計算といったステートレスな変換のみがサポートされており、集約(aggregation)・結合(join)・ウィンドウ処理といったステートフルな操作は今後の対応予定"
+          "text": "フィルタ・リシェイプ・UNNEST・キャスト・計算などのステートレスな変換のみがサポートされ、集約・結合・ウィンドウ処理などのステートフルな操作は今後対応予定"
         },
         {
           "text": "SQL変換は1つのPipelineにつき1つの`SELECT`文しか含めることができない",
@@ -21478,18 +21478,18 @@
       "question": "Pipelinesで作成したR2 Data Catalog上のIcebergテーブルを、コマンドラインからR2 SQLでクエリする際の正しい手順はどれですか？",
       "options": [
         {
-          "text": "R2 SQLはPipelines専用の別サービスであり、Pipelinesが作成したIcebergテーブルにはアクセスできない",
+          "text": "R2 SQLはPipelines専用の別サービスであり、Pipelinesが作成したIcebergテーブルにはコマンドラインからアクセスできない",
           "wrongFeedback": "R2 SQLは、Pipelinesが作成したIcebergテーブルを含め、R2 Data Catalog上のテーブルにアクセスしてクエリできます。"
         },
         {
-          "text": "`WRANGLER_R2_SQL_AUTH_TOKEN`環境変数にR2 SQL Read権限を含むAPIトークンを設定したうえで、`wrangler r2 sql query \"<warehouse-name>\" \"<SQLクエリ>\"`のようにウェアハウス名とクエリを指定して実行する"
+          "text": "`WRANGLER_R2_SQL_AUTH_TOKEN`にR2 SQL Read権限のAPIトークンを設定し、`wrangler r2 sql query`にウェアハウス名とSQLを渡して実行する"
         },
         {
-          "text": "認証情報の設定は不要で、`wrangler r2 sql query`はどんなR2バケットに対しても認証なしでクエリを実行できる",
+          "text": "認証情報の設定は不要で、`wrangler r2 sql query`はアカウント内のどのR2バケットに対しても認証なしでクエリを実行できる",
           "wrongFeedback": "`WRANGLER_R2_SQL_AUTH_TOKEN`環境変数などでAPIトークンを設定し、認証する必要があります。"
         },
         {
-          "text": "クエリに使うAPIトークンには、R2 SQLの読み取り権限ではなくWorkers実行権限が必要である",
+          "text": "クエリに使うAPIトークンには、R2 SQLの読み取り権限ではなくWorkersスクリプトの実行権限が必要である",
           "wrongFeedback": "必要なのはR2 SQL Read権限です。Pipelines用に作成したカタログ用トークンにはこの権限が含まれています。"
         }
       ],
@@ -21842,11 +21842,11 @@
           "wrongFeedback": "Excludeルールは必須ではありません。すべてのポリシーに最低1つ必要なのはIncludeルールです。"
         },
         {
-          "text": "Service AuthポリシーにIPレンジのSelectorを設定すると、その時点でポリシー全体が無効化される",
+          "text": "Service AuthポリシーにIPレンジやIPリストのSelectorを設定すると、その時点でポリシー全体が自動的に無効化される",
           "wrongFeedback": "そのような無効化の仕様はありません。よくある設定ミスとして警告されているのは、Allowポリシーの「Everyone」や「One-time PIN」の誤指定です。"
         },
         {
-          "text": "AllowポリシーにIncludeルールでSelectorを「Everyone」に設定する、またはLogin Methodsで「One-time PIN」を指定してしまい、結果として誰でもアプリに到達できてしまう"
+          "text": "AllowポリシーのIncludeルールでSelectorを「Everyone」に設定する、またはLogin Methodsで「One-time PIN」を指定してしまう"
         },
         {
           "text": "Bypassポリシーを1つでも作成すると、アカウント内の他のすべてのポリシーが自動的に無効になる",
@@ -22258,7 +22258,7 @@
           "wrongFeedback": "Cloudflare Tunnel経由でない場合、オリジン側でJWTの署名検証を行う必要があります。ヘッダーの存在だけを確認しても、なりすましを防げません。"
         },
         {
-          "text": "JWTは`Cf-Access-Jwt-Assertion`リクエストヘッダーとして送られ、ブラウザ経由のリクエストでは`CF_Authorization`クッキーとしても渡されるが、クッキーは転送が保証されないため`Cf-Access-Jwt-Assertion`ヘッダーの検証が推奨される"
+          "text": "JWTは`Cf-Access-Jwt-Assertion`リクエストヘッダーとして送られ、クッキーではなくこのヘッダーの検証が推奨される"
         }
       ],
       "correctIndex": 3,
@@ -24308,7 +24308,7 @@
       "question": "Cloudflare API Shieldの提供形態に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "API Shieldのフルセキュリティスイートは、Enterpriseプラン向けの有料アドオンだが、Endpoint ManagementとSchema validationは全プランの顧客が利用でき、Cloudflare管理CAによるmTLSも全プランで設定できる"
+          "text": "API Shieldのフルセキュリティスイートは、Enterpriseプラン向けの有料アドオンだが、Endpoint ManagementやSchema validationは全プランで利用できる"
         },
         {
           "text": "API Shieldはすべての機能がFreeプランを含む全プランで無料かつ無制限に利用できる",
@@ -26674,7 +26674,7 @@
           "wrongFeedback": "上限があります。カスタムキャッシュキー設定に含められるクエリ文字列パラメータの最大数は100個です。"
         },
         {
-          "text": "「すべてのクエリ文字列パラメータを含める」「特定のパラメータを除いてすべて含める」「特定のパラメータのみ含める」「クエリ文字列を無視する」といった選択肢があり、カスタムキャッシュキーにおけるクエリ文字列パラメータの最大数は100個である"
+          "text": "「すべて含める」「特定のパラメータを除いてすべて含める」「特定のパラメータのみ含める」「無視する」といった選択肢があり、含められるパラメータの最大数は100個である"
         }
       ],
       "correctIndex": 3,
@@ -28452,7 +28452,7 @@
       "question": "Cloudflare DNSレコードの作成数の上限(クォータ)に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "レコード数のクォータはPro・Businessプランにのみ適用され、Free・Enterpriseプランには一切上限が存在しない",
+          "text": "レコード数のクォータはPro・Businessプランにのみ適用され、Free・Enterpriseプランにはゾーン単位・アカウント単位のいずれの上限も存在しない",
           "wrongFeedback": "Free・Enterpriseにも上限は存在します。Freeはゾーン単位、Enterpriseはアカウント単位のクォータが適用されます。"
         },
         {
@@ -28460,7 +28460,7 @@
           "wrongFeedback": "両方が同時に適用されることはありません。プランに応じて、ゾーン単位またはアカウント単位のいずれか一方でクォータが適用されます。"
         },
         {
-          "text": "2024年9月1日より前に作成されたFreeゾーンは1,000件、それ以降に作成されたFreeゾーンは200件、Pro・Businessはそれぞれ3,500件が上限で、Enterpriseはゾーン単位ではなくアカウント単位のクォータが適用される"
+          "text": "2024年9月1日より前に作成されたFreeゾーンは1,000件、それ以降は200件、Pro・Businessは3,500件が上限で、Enterpriseはアカウント単位のクォータが適用される"
         },
         {
           "text": "すべてのプランで、レコード数の上限は一律3,500件であり、作成日やプランによる違いは存在しない",
@@ -29827,7 +29827,7 @@
           "wrongFeedback": "ログベースの計測やサードパーティ計測ではありません。Observatoryは合成テストとリアルユーザーモニタリング(RUM)の2種類のデータソースを組み合わせます。"
         },
         {
-          "text": "Google Lighthouseを使うBrowser testやネットワーク性能を計測するNetwork testといった合成テスト(synthetic tests)と、実際のユーザーから計測するリアルユーザーモニタリング(RUM)"
+          "text": "Google Lighthouseを使うBrowser testやNetwork testといった合成テストと、実際のユーザーから計測するリアルユーザーモニタリング(RUM)"
         },
         {
           "text": "WorkersのCPU時間を計測するプロファイリングツールと、KVの読み書きレイテンシを計測するツールの2種類",
@@ -31163,7 +31163,7 @@
           "wrongFeedback": "実際にはUnixソケットを介して通信するサービスタイプです。TCPポートを使うのは`http`や`tcp`のようなサービスタイプです。"
         },
         {
-          "text": "`http_status`は指定した固定のHTTPステータスコードだけを返すサービスタイプで、たとえばcatch-allルールで`http_status:404`のように使うことで、どのホスト名にも一致しなかったリクエストに404を返せる"
+          "text": "`http_status`は指定した固定のHTTPステータスコードだけを返すサービスタイプで、catch-allルールでよく使われる"
         },
         {
           "text": "`bastion`はSSH専用のサービスタイプであり、HTTPやTCPのトラフィックには使用できない",
@@ -31554,7 +31554,7 @@
           "wrongFeedback": "ポート443番の接続がブロックされてもログにエラーが出るだけで、cloudflaredは正常に動作を続けます。トンネル自体は機能します。"
         },
         {
-          "text": "必須の通信はポート7844番(TCP/UDPで`http2`/`quic`用)であり、ポート443番はソフトウェア更新確認などのオプション機能用で、これがブロックされてもcloudflaredはログエラーを出しつつ正常に動作し続ける"
+          "text": "必須の通信はポート7844番(TCP/UDPの両方)で、ポート443番はオプション機能用のため、ブロックされてもcloudflaredはログエラーが出るだけで動作し続ける"
         }
       ],
       "correctIndex": 3,
@@ -32622,11 +32622,11 @@
       "question": "悪性の可能性があるスクリプトのアラートを受け取った際に推奨される調査手順に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "スクリプトが実際のページで読み込まれていることを確認できない場合、それは検知結果が完全な誤検知であることを意味し、それ以上調査する必要はない",
+          "text": "スクリプトが実際のページで読み込まれていることを確認できない場合、それは検知結果が完全な誤検知であることを意味し、それ以上の追加調査を行う必要はない",
           "wrongFeedback": "読み込みが確認できない場合でも、ブラウザ拡張機能・アプリの状態・地理的条件・攻撃者が一部の訪問者にのみ配信している可能性など複数の理由が考えられ、追加の調査(オンライン検索やコードベースのスキャンなど)が推奨されています。"
         },
         {
-          "text": "まずどの検知の仕組みがアラートの引き金になったかを確認し、次に「Page URLs」に記載されたページを開いてブラウザの開発者ツールのNetworkタブでそのスクリプトや接続が実際に読み込まれているか確認し、その後Security Center Investigateのようなツールでドメインやスクリプトの評判を調べる"
+          "text": "どの検知の仕組みがアラートの引き金かを確認し、「Page URLs」のページを開発者ツールのNetworkタブで確認し、最後にSecurity Center Investigateでドメインの評判を調べる"
         },
         {
           "text": "最初のステップとして、常にスクリプトのソースコードを取得してVM上で解析することから始めるべきで、ダッシュボードでの確認は不要である",
@@ -33278,7 +33278,7 @@
       "question": "変更前後で挙動が異なりうることを踏まえると、2025年7月14日に行われたGatewayの評価順序の変更に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "この変更により、Networkレベルのポリシーがアプリケーションレベル(HTTP)のポリシーより先に評価されるようになり、接続を受け入れる前にオリジンへのネットワーク経路を検証するようになった。この変更はHTTPポリシーを使用しているアカウントにのみ影響し、Network BlockとHTTPブロックの両方に一致した場合の挙動(ブロックページを表示せず、Networkポリシーのクライアント通知設定に従う)が変わった"
+          "text": "Networkレベルのポリシーがアプリケーションレベル(HTTP)のポリシーより先に評価されるようになり、接続を受け入れる前にネットワーク経路を検証するようになった。影響するのはHTTPポリシーを使用しているアカウントのみで、NetworkブロックとHTTPブロックの両方に一致した場合の挙動も変わった"
         },
         {
           "text": "この変更により、アプリケーションレベルであるHTTPポリシーがネットワークレベルであるNetworkポリシーより先に評価されるようになり、接続を受け入れる前ではなく受け入れた後にネットワーク経路を検証するようになった",
@@ -33943,7 +33943,7 @@
           "wrongFeedback": "逆です。個々の値のリストに単純化できない非構造化文書(契約書テンプレートなど)を保護するための仕組みがドキュメントエントリです。"
         },
         {
-          "text": "ドキュメントエントリは、契約書テンプレートや社内レポートのように個々の値のリストに単純化できない内容を保護するために、ドキュメント全体の一意なフィンガープリントを作成し、トラフィックとの類似度を比較する仕組みで、`.docx`や`.txt`形式かつ10MB未満のファイルに対応する"
+          "text": "ドキュメントエントリは、契約書テンプレートのように個々の値のリストに単純化できない内容を保護するために、ドキュメント全体の一意なフィンガープリントを作成し、トラフィックとの類似度を比較する仕組みである"
         },
         {
           "text": "ドキュメントエントリで登録できるファイルサイズに上限は設定されておらず、`.docx`や`.txt`に限らずどんなに大きなファイルでも登録できる",
@@ -33986,7 +33986,7 @@
       "question": "AIプロンプトトピック(AI prompt topics)によるAIプロンプトの検知に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "AIプロンプトトピックは、プロンプトに含まれる内容(Content)と、ユーザーがAIに何をさせようとしているかという意図(Intent)の両方を分析でき、対応するAIアプリケーションにはChatGPT・Google Gemini・Perplexity・Claudeが含まれる"
+          "text": "AIプロンプトトピックは、プロンプトに含まれる内容(Content)と、ユーザーがAIに何をさせようとしているかという意図(Intent)の両方を分析できる"
         },
         {
           "text": "AIプロンプトトピックで検知対象にできるAIアプリケーションの種類に制限はなく、あらゆるAIサービスへのプロンプトを検知できる",
@@ -34141,10 +34141,10 @@
       "question": "Free・Pay-as-you-goプランでも利用できるDLP機能に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "Free・Pay-as-you-goプランでは、Financial Informationプロファイル、Social Security・Insurance・Tax・Identifier Numbersプロファイル、ペイロードロギング、誤検知の報告機能が利用できる"
+          "text": "Free・Pay-as-you-goプランでは、Financial Informationプロファイル、Social Security・Tax等の番号プロファイル、ペイロードロギング、誤検知の報告機能が利用できる"
         },
         {
-          "text": "Free・Pay-as-you-goプランでは、事前定義プロファイルを含むDLPのすべての機能が制限なく利用できる",
+          "text": "Free・Pay-as-you-goプランでは、事前定義プロファイル・カスタムプロファイル・ドキュメントエントリを含むDLPのすべての機能が制限なく利用できる",
           "wrongFeedback": "DLPはZero Trust Enterpriseプランのアドオンが基本であり、Free・PAYGプランで使えるのは一部の機能に限られます。"
         },
         {
@@ -35447,7 +35447,7 @@
           "wrongFeedback": "逆です。Clientless Web Isolationは、契約社員のノートPCや個人のスマートフォンのようにソフトウェアをインストールできない未管理デバイスへ分離ブラウジングを提供するための機能です。"
         },
         {
-          "text": "Clientless Web Isolationは、契約社員のノートPCや個人のスマートフォンのようにCloudflare One Clientをインストールできない未管理デバイスへ分離ブラウジングを提供するための機能で、Browser Isolationアドオンの契約が必要であり、`https://<チーム名>.cloudflareaccess.com/browser/<URL>`という形式のURLでアクセスする"
+          "text": "Cloudflare One Clientをインストールできない未管理デバイスへ分離ブラウジングを提供する機能で、`https://<チーム名>.cloudflareaccess.com/browser/<URL>`という形式のURLでアクセスする"
         }
       ],
       "correctIndex": 3,
@@ -35802,18 +35802,18 @@
       "question": "サポートされるファイル形式に応じて対応が分かれることを踏まえると、CASBにおけるDLPスキャンの対象ファイルに関する制約として正しい説明はどれですか?",
       "options": [
         {
-          "text": "スキャン対象はドキュメント・スプレッドシート・PDFのようなテキストベースのファイルに限られ(画像は非対応)、ファイルサイズは100MB以下という上限があり、JavaやRのソースコードファイルは5KB以上のものだけが対象になる"
+          "text": "スキャン対象はドキュメント・スプレッドシート・PDFのようなテキストベースのファイルに限られ、ファイルサイズは100MB以下という上限がある"
         },
         {
           "text": "画像ファイルもテキストベースのファイルと同様に、内容の文字起こしを経てスキャン対象に含まれる",
           "wrongFeedback": "画像ファイルはサポートされていません。スキャン対象はドキュメント・スプレッドシート・PDFのようなテキストベースのファイルです。"
         },
         {
-          "text": "JavaやRのソースコードファイルは、ファイルサイズの大小に関わらず例外なくすべてスキャン対象になる",
+          "text": "JavaやRのソースコードファイルは、ファイルサイズの大小に関わらず例外なくすべてDLPスキャンの対象になる",
           "wrongFeedback": "JavaやRのソースコードファイルは、5KB以上のものだけがスキャン対象です。5KB未満の小さいファイルはスキップされます。"
         },
         {
-          "text": "ファイルサイズの上限は特に設定されておらず、どれほど巨大なファイルであってもすべてスキャンされる",
+          "text": "ファイルサイズの上限は特に設定されておらず、どれほど巨大なファイルであってもすべてスキャン対象に含まれる",
           "wrongFeedback": "100MB以下のファイルのみがスキャン対象です。"
         }
       ],
@@ -36968,7 +36968,7 @@
           "wrongFeedback": "テスト結果はすべてのプランで7日間保存されます。無期限ではありません。"
         },
         {
-          "text": "DEXはログ保持ポリシーに従い、すべてのプランでテスト結果を7日間保存する。テスト結果を閲覧するには、少なくともCloudflare Zero Trust Reportingロールが必要である"
+          "text": "DEXはすべてのプランでテスト結果を7日間保存し、閲覧にはCloudflare Zero Trust Reportingロール以上が必要である"
         },
         {
           "text": "テスト結果を閲覧するために特別な権限は不要で、Zero Trust組織に所属していれば誰でも閲覧できる",
@@ -37027,7 +37027,7 @@
           "wrongFeedback": "しきい値(3.5または-3.5)はデフォルトの基準として使われています。"
         },
         {
-          "text": "Cloudflareはz-score(現在の値が平均から標準偏差何個分離れているかを示す指標)を使ってトラフィックの急増・急減を検知しており、直近5分の値を過去4時間の平均・標準偏差と比較し、5分ごとに計測する。z-scoreが3.5を超えるか-3.5を下回るとアラートが発生する"
+          "text": "z-scoreを使ってトラフィックの急増・急減を検知しており、直近5分の値を過去4時間の平均・標準偏差と比較し、5分ごとに計測する。z-scoreが3.5を超えるか-3.5を下回るとアラートが発生する"
         }
       ],
       "correctIndex": 3,
@@ -37489,7 +37489,7 @@
       "question": "特定のユーザーについてDEXのデータが表示されない場合のトラブルシューティングとして推奨されている確認項目に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "推奨される確認項目は、対象ユーザーが使用しているCloudflare One ClientのバージョンがDEXに対応しているか、そのユーザーに割り当てられたデバイスプロファイルでDEXが有効になっているか、CloudflareのオーケストレーションAPIへの通信がローカルのファイアウォールやSSLインスペクションプロキシによってブロックされていないか、の3点である"
+          "text": "Cloudflare One ClientのバージョンがDEXに対応しているか、デバイスプロファイルでDEXが有効になっているか、オーケストレーションAPIへの通信がファイアウォールやSSLインスペクションにブロックされていないか、の3点である"
         },
         {
           "text": "Fleet statusダッシュボードは常に即座に最新の状態を反映するため、デバイスの接続状態が古いまま表示されるという事象は起こりえない",
@@ -37500,8 +37500,8 @@
           "wrongFeedback": "ディスク空き容量はリモートキャプチャの文脈での確認項目です。データが表示されない場合はクライアントのバージョン・DEXの有効化設定・トラフィックのルーティングを確認すべきとされています。"
         },
         {
-          "text": "確認すべき項目は、ローカルのファイアウォールやSSLインスペクションを行うプロキシの設定のみであり、Cloudflare One Clientのバージョンは無関係である",
-          "wrongFeedback": "クライアントのバージョンがDEXに対応しているかどうかも確認項目に含まれます。"
+          "text": "確認すべき項目は、ローカルのファイアウォールやSSLインスペクションを行うプロキシの設定のみであり、Cloudflare One Clientのバージョンやデバイスプロファイルの設定は無関係である",
+          "wrongFeedback": "クライアントのバージョンがDEXに対応しているかや、デバイスプロファイルでDEXが有効になっているかも確認項目に含まれます。"
         }
       ],
       "correctIndex": 0,
@@ -37969,7 +37969,7 @@
           "wrongFeedback": "逆です。リージョナル処理はMX/InlineまたはBCC/Journalingでのデプロイでのみ利用でき、APIデプロイでは利用できません。"
         },
         {
-          "text": "リージョナル処理はUS・Germany・India・Australiaの4リージョンをサポートしており、DLS自体の購入は不要だが、MX/InlineまたはBCC/Journalingでデプロイした顧客のみが利用できる(API/配信後デプロイでは利用できない)"
+          "text": "リージョナル処理がサポートするのは4つのリージョンのみで、DLS自体の購入は不要だが、MX/InlineまたはBCC/Journalingでデプロイした顧客のみが利用できる"
         },
         {
           "text": "リージョナル処理がサポートするリージョンは世界中のあらゆる地域を網羅しており、特定の国・地域に限定されない",
@@ -38069,7 +38069,7 @@
           "wrongFeedback": "スキャン対象は最大14日間分のメールに限定されています。"
         },
         {
-          "text": "Retro ScanはMicrosoft 365アカウント専用の機能で、最大14日間分のメールをスキャンし、レポートには最大1,000件までのメールが一覧表示される。Email Securityを未購入の顧客でも無料で試すことができる"
+          "text": "Retro ScanはMicrosoft 365アカウント専用の機能で、最大14日間分のメールをスキャンし、レポートには最大1,000件までのメールが一覧表示される"
         }
       ],
       "correctIndex": 3,
@@ -38164,7 +38164,7 @@
           "wrongFeedback": "旧バージョンのOutlookデスクトップクライアントでは、Microsoftの制限により動作しません。"
         },
         {
-          "text": "Outbound DLPは、Outlook Webアプリや新しいOutlookデスクトップクライアントでは安定して動作する一方、旧バージョンのOutlookデスクトップクライアントではMicrosoftの制限により動作せず、モバイルクライアント(iOS・Android)でも不安定になる"
+          "text": "Outlook Webアプリや新しいデスクトップクライアントでは安定して動作するが、旧バージョンのデスクトップクライアントでは動作せず、モバイルクライアントでも不安定になる"
         },
         {
           "text": "モバイルクライアント(iOS・Android)でのOutbound DLPの動作は、デスクトップクライアントと全く同じ安定性を持つ",
@@ -38209,7 +38209,7 @@
       "question": "5種類のアクションそれぞれの適用範囲を踏まえると、Auto-movesで選択できるアクションのプラットフォーム制限に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "「Soft delete - user recoverable」はMicrosoft 365顧客専用、「Move to trash」はGoogle Workspaceユーザー専用のオプションであり、いずれのプラットフォームでも利用できる「Hard delete - admin recoverable」「Move to junk」「No action」とは異なりプラットフォームが限定されている"
+          "text": "「Soft delete - user recoverable」はMicrosoft 365顧客専用、「Move to trash」はGoogle Workspaceユーザー専用のオプションであり、残る3つのアクションはいずれのプラットフォームでも利用できる"
         },
         {
           "text": "「Move to trash」はMicrosoft 365ユーザー専用のオプションとして提供されており、Google Workspaceの顧客はこのオプションを一切利用できない",
@@ -38271,7 +38271,7 @@
           "wrongFeedback": "説明が入れ替わっています。User submissionsはユーザーが送信するもの、Team submissionsはセキュリティチームが送信するものです。"
         },
         {
-          "text": "Team submissionsはすべて例外なくCloudflareによる人間のレビューを受けるのに対し、User submissionsが人間のレビューを受けられるかどうかはPhishGuardの契約有無に依存し、PhishGuard非契約の顧客はTeam submissionsとしての提出でのみ人間による分析を受けられる"
+          "text": "Team submissionsはすべて例外なく人間のレビューを受けるのに対し、User submissionsが人間のレビューを受けられるかどうかはPhishGuardの契約有無に依存する"
         },
         {
           "text": "PhishGuardを契約していない顧客であっても、User submissionsは常にCloudflareによる人間のレビューを受ける",
@@ -40616,7 +40616,7 @@
           "wrongFeedback": "FIFOとRandomの説明が入れ替わっています。FIFOは到着順、Randomはランダムに選出してオリジンへ通します。"
         },
         {
-          "text": "FIFOは到着順にオリジンへ通す方式、Randomは空きが出たときに訪問者をランダムに選んで通す方式、Passthroughは全トラフィックを即座に素通りさせる方式、Rejectは全トラフィックを拒否して静的ページを返す方式である"
+          "text": "FIFOは到着順に通し、Randomはランダムに選んで通し、Passthroughは全トラフィックを素通りさせ、Rejectは全トラフィックを拒否して静的ページを返す"
         }
       ],
       "correctIndex": 3,
@@ -41089,7 +41089,7 @@
       "question": "Waiting RoomがWorkersとDurable Objectsを使ってどのようにキューイングを判定しているかについて、正しい説明はどれですか?",
       "options": [
         {
-          "text": "各データセンターのWaiting Room Workerが、管理者が定義した閾値とローカルに保持するWaiting Room stateだけを使ってその場で判定を行い、Durable Objectsのパイプラインを通じてWaiting Room stateが数秒ごとに世界中へ伝播されることで、追加のレイテンシをほぼ発生させずにグローバルに整合したキューイングを実現している"
+          "text": "各データセンターのWaiting Room Workerが、閾値とローカルのWaiting Room stateだけでその場で判定を行い、Waiting Room stateはDurable Objectsのパイプラインを通じて数秒ごとに世界中へ伝播される"
         },
         {
           "text": "Waiting Room Workerは新規ユーザーの流入のみを監視し、`session duration`満了によるアウトフロー(空き枠の発生)は考慮せずに閾値判定を行う",
