@@ -550,8 +550,42 @@ function printQualityReport(issues) {
 // 5. Distractor Quality Lint
 // ============================================================
 
+/**
+ * 「一番長い選択肢を選ぶ」戦略の正答率を見る、コーパス全体のゲート。
+ *
+ * これは1問ずつ見ても分からない、分布そのものの性質である。
+ * 実際 2026-08-26 に correct-longest-by-margin（差の大きさ）だけを見て
+ * 367問を是正し検査をゼロにしたが、この割合は 85.7% → 85.2% と
+ * ほとんど動いていなかった。差の露骨さは消えても、方向が残っていれば
+ * 「長い方を選ぶ」は変わらず当たる。マージンだけを見る検査では
+ * ここを取りこぼす。
+ *
+ * 偶然なら約25%（4択）。40%までを許容とする。
+ */
+const LONGEST_IS_CORRECT_LIMIT = 0.4
+
+function lintLengthCue(quizzes) {
+  const singles = quizzes.filter((q) => q.type !== 'multi')
+  let longest = 0
+  for (const quiz of singles) {
+    const lens = quiz.options.map((o) => o.text.length)
+    if (lens[quiz.correctIndex] === Math.max(...lens)) longest++
+  }
+  const rate = longest / singles.length
+  if (rate <= LONGEST_IS_CORRECT_LIMIT) return []
+  return [
+    {
+      id: '(corpus)',
+      type: 'longest-option-is-correct',
+      message:
+        `正解が最長の選択肢である割合が ${(rate * 100).toFixed(1)}% (${longest}/${singles.length}) — ` +
+        `「一番長い選択肢を選ぶ」だけでこの割合の問題に正解できる。偶然なら約25%、許容は${LONGEST_IS_CORRECT_LIMIT * 100}%`,
+    },
+  ]
+}
+
 function lintDistractors(quizzes) {
-  const issues = []
+  const issues = lintLengthCue(quizzes)
 
   for (const quiz of quizzes) {
     if (quiz.type === 'multi') continue
