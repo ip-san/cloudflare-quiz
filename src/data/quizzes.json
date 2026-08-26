@@ -1079,7 +1079,7 @@
           "wrongFeedback": "シークレットの確認・操作は `wrangler secret list` などの役割です。"
         },
         {
-          "text": "本番Workerのログをリアルタイムでストリーミング表示する",
+          "text": "デプロイ済みの本番Workerのログをステータスコードで絞り込みながらリアルタイムに表示する",
           "wrongFeedback": "リアルタイムログのストリーミングは `wrangler tail` の役割です。"
         },
         {
@@ -1210,7 +1210,7 @@
           "wrongFeedback": "WorkersはDockerコンテナではなくV8アイソレート上で動作するため、コンテナイメージやポートの指定は不要です。"
         },
         {
-          "text": "`region`（デプロイ先リージョン）と `memory_limit`（メモリ上限）",
+          "text": "`region`（デプロイ先リージョン）と `memory_limit`（1インスタンスあたりのメモリ上限）",
           "wrongFeedback": "Cloudflare Workersはエッジ上で自動的に世界中に分散実行されるため、リージョンやメモリ上限を指定する項目は`wrangler.toml`の基本項目にはありません。"
         },
         {
@@ -1957,8 +1957,8 @@
           "text": "await env.MY_KV.get(\"config:feature-flags\")"
         },
         {
-          "text": "env.MY_KV.read(\"config:feature-flags\")",
-          "wrongFeedback": "read()というメソッドはWorkers KVには存在しません。"
+          "text": "await env.MY_KV.get(\"config\", \"feature-flags\")",
+          "wrongFeedback": "キーは\"config:feature-flags\"という1つの文字列です。get()の第2引数は\"json\"などのtypeやcacheTtlを指定するオプションであり、キーをコロンで区切って2つの引数に分けて渡すことはできません。"
         },
         {
           "text": "env.MY_KV.query(\"config:feature-flags\")",
@@ -2042,8 +2042,8 @@
           "wrongFeedback": "maxAgeはHTTPのCache-Controlディレクティブの概念であり、Workers KVのput()オプションには存在しません。"
         },
         {
-          "text": "{ ttl: 60 }",
-          "wrongFeedback": "ttlというオプション名はWorkers KVには存在しません。"
+          "text": "{ expirationTtl: 60000 }",
+          "wrongFeedback": "expirationTtlは現在時刻からの相対『秒数』を指定するオプションです。60000を指定すると60秒後ではなく60000秒後(約16.7時間後)に失効してしまいます。"
         },
         {
           "text": "{ expiration: 60 }",
@@ -3059,7 +3059,7 @@
           "text": "`env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first()`"
         },
         {
-          "text": "`env.DB.exec('SELECT * FROM users WHERE id = ?')`",
+          "text": "await env.DB.exec('SELECT * FROM users WHERE id = ? LIMIT 1').bind(userId).first()",
           "wrongFeedback": "`exec()`はバインドパラメータをサポートしておらず、主にDDLなど管理用途で使うメソッドです。"
         },
         {
@@ -3195,7 +3195,7 @@
           "wrongFeedback": "逐次実行してもそれぞれが独立したリクエストであるため、途中で失敗しても自動的にはロールバックされません。"
         },
         {
-          "text": "`env.DB.exec('BEGIN; INSERT ...; COMMIT;')` のように明示的なトランザクションを書く",
+          "text": "`env.DB.exec('BEGIN TRANSACTION; INSERT ...; COMMIT;')` のように明示的なトランザクションを書く",
           "wrongFeedback": "D1は複数リクエストにまたがる明示的なBEGIN/COMMITトランザクションをサポートしていません。"
         },
         {
@@ -3274,7 +3274,7 @@
           "text": "`env.DB.prepare('SELECT * FROM products WHERE name = ?').bind(keyword).all()` のように `?` プレースホルダと `bind()` を使う"
         },
         {
-          "text": "`env.DB.prepare(`SELECT * FROM products WHERE name = '${keyword}'`).all()` のようにテンプレートリテラルでSQL文字列に直接値を埋め込む",
+          "text": "`env.DB.prepare(`SELECT * FROM products WHERE name LIKE '%${keyword}%'`).all()` のようにテンプレートリテラルでSQL文字列に直接値を埋め込む",
           "wrongFeedback": "ユーザー入力をSQL文字列に直接埋め込むと、SQLインジェクションの脆弱性が生まれます。"
         },
         {
@@ -3735,8 +3735,8 @@
       "question": "Cloudflare R2 が他のクラウドオブジェクトストレージサービスと比較して最大の特徴として挙げられる料金上の差別化ポイントは何ですか？",
       "options": [
         {
-          "text": "書き込みリクエスト（Class A操作）がすべて無料になる",
-          "wrongFeedback": "Class A操作（書き込み系）にも無料枠を超えると課金が発生します。R2最大の特徴はエグレス料金が無料である点です。"
+          "text": "書き込み（Class A）と読み取り（Class B）のリクエストがすべて無料になる",
+          "wrongFeedback": "Class A（書き込み系）・Class B（読み取り系）のどちらの操作も、無料枠を超えると課金が発生します。R2最大の特徴はエグレス料金が無料である点です。"
         },
         {
           "text": "マルチリージョンへの自動レプリケーションが無料で行われる",
@@ -5076,8 +5076,8 @@
           "wrongFeedback": "deleteAlarm() を呼び出すことで、設定済みのアラームを取り消せます。"
         },
         {
-          "text": "1つのDurable Objectに対して同時に複数のアラームを設定でき、それぞれ独立して発火する",
-          "wrongFeedback": "1つのDOに設定できるアラームは同時に1つのみです。複数のイベントを管理したい場合は、ストレージにスケジュールを保存し、都度次のアラーム時刻を再設定します。"
+          "text": "1つのDurable Objectに複数のアラームを設定でき、setAlarm()を呼ぶたびに別のアラームとして追加される",
+          "wrongFeedback": "1つのDOに設定できるアラームは同時に1つのみで、既存のアラームがある状態でsetAlarm()を呼ぶと追加ではなく上書きになります。複数のイベントを管理したい場合は、ストレージにスケジュールを保存し、都度次のアラーム時刻を再設定します。"
         },
         {
           "text": "alarm() ハンドラが失敗した場合、2秒からの指数バックオフで最大6回まで自動的にリトライされる"
@@ -5341,7 +5341,7 @@
           "text": "ackされたメッセージは、同じバッチ内の他のメッセージが失敗しリトライされても再配信されないようにするため"
         },
         {
-          "text": "ackを呼ばない限り、Consumer Workerはメッセージを受信すること自体ができないため",
+          "text": "ackを呼ばない限りメッセージは未配信として扱われ、Consumer Workerのqueue()ハンドラ自体が起動しないため",
           "wrongFeedback": "ack()を呼ばなくてもメッセージは受信・処理でき、queue()ハンドラが例外なく正常終了すればバッチ全体が暗黙的にackされます。"
         },
         {
@@ -6460,7 +6460,7 @@
       "question": "Workers AIで実行できるタスクの種類として適切な組み合わせはどれですか？",
       "options": [
         {
-          "text": "SQLクエリの実行とトランザクション処理などのデータベース操作のみ",
+          "text": "SQLクエリの実行、トランザクション処理、インデックス作成などのデータベース操作のみ",
           "wrongFeedback": "それはD1（SQLデータベース）の役割です。Workers AIは機械学習モデルの推論を実行するサービスです。"
         },
         {
@@ -9070,7 +9070,7 @@
           "text": "2つのリクエストをキャッシュ上で同一とみなす基準をカスタマイズする"
         },
         {
-          "text": "レスポンスをキャッシュに保存する際の暗号化キーを指定する",
+          "text": "エッジのキャッシュに保存したレスポンスを暗号化・復号するための鍵を指定する",
           "wrongFeedback": "暗号化に関するオプションではありません。キャッシュの同一性判定に使う識別子を指定するものです。"
         },
         {
@@ -9898,7 +9898,7 @@
           "wrongFeedback": "KVは小さな値向けであり、大量データの移行経路としては使われません。専用の移行ツールSuper Slurperを使います。"
         },
         {
-          "text": "R2にはデータ移行支援機能はなく、必ず自前でダウンロード＆アップロードのスクリプトを書く必要がある",
+          "text": "R2にはデータ移行支援機能はなく、S3互換APIを使って自前でダウンロード＆アップロードのスクリプトを書く必要がある",
           "wrongFeedback": "CloudflareはSuper Slurperという移行ツールを提供しており、自前スクリプトを書かなくてもバケット間の一括移行が行えます。"
         }
       ],
@@ -10028,8 +10028,8 @@
           "wrongFeedback": "IAはS3のGlacierのようなコールドストレージではなく、即時に読み取り可能です。低頻度アクセス向けの料金体系を持つクラスという位置づけです。"
         },
         {
-          "text": "IAクラスのオブジェクトはWorkersバインディングのget()では読み取れず、S3互換APIからしかアクセスできない",
-          "wrongFeedback": "ストレージクラスが異なっても、Workersバインディングのget/put等のAPIでアクセス方法自体が変わるわけではありません。"
+          "text": "IAクラスのオブジェクトはWorkersバインディングのget()では読み取れず、S3互換APIで復元(restore)を要求してからでないとアクセスできない",
+          "wrongFeedback": "ストレージクラスが異なっても、Workersバインディングのget/put等のAPIでアクセス方法自体が変わるわけではありません。またR2のIAはS3 Glacierのような復元(restore)操作を必要とせず、即時に読み取れます。"
         },
         {
           "text": "アクセス頻度の低いデータ向けにストレージ単価を抑えたクラスで、データ取り出しには追加料金がかかり、最低保存期間などの制約がある"
@@ -10501,7 +10501,7 @@
       "question": "モノレポ(1つのリポジトリに複数のアプリ/パッケージが含まれる構成)で、特定のサブディレクトリにあるアプリだけを Cloudflare Pages でビルド・デプロイしたい場合、どう設定すればよいか。",
       "options": [
         {
-          "text": "リポジトリ全体を複数のGitリポジトリに分割しない限り、モノレポ内の特定ディレクトリだけをビルド対象にすることはできない",
+          "text": "リポジトリを複数のGitリポジトリに分割するか、サブディレクトリごとに別ブランチを切らない限り、モノレポ内の特定ディレクトリだけをビルド対象にすることはできない",
           "wrongFeedback": "「ルートディレクトリ」設定を使えば、リポジトリを分割しなくても特定のサブディレクトリだけをビルド対象にできます。"
         },
         {
@@ -11418,7 +11418,7 @@
       "question": "マルチテナントSaaSで、各テナントの状態データを他テナントから確実に分離したい。Durable Objectsを使う場合の一般的な設計パターンとして適切なものはどれですか？",
       "options": [
         {
-          "text": "全テナントで1つのDurable Objectインスタンスを共有し、リクエストヘッダーのテナントIDで都度アプリケーション側がフィルタする",
+          "text": "全テナントで固定名から生成した1つのDurable Objectインスタンスを共有し、リクエストヘッダーのテナントIDでアプリケーション側が都度フィルタする",
           "wrongFeedback": "1つのインスタンスに全テナントのデータを混在させると、単一スレッド実行がボトルネックになりやすく、分離も実装依存で不完全になりがちです。"
         },
         {
@@ -12519,7 +12519,7 @@
           "wrongFeedback": "ループでの待機はコンピュート時間を浪費するだけでなく、ステップのCPU時間制限にも収まりません。"
         },
         {
-          "text": "Workflowでは待機ができないため、外部のcronサービスから3日後に別のWorkerを呼び出す",
+          "text": "Workflowでは1回の実行が数分で終了するため、外部のcronサービスから3日後に別のWorkerを呼び出して続きを実行する",
           "wrongFeedback": "Workflows自体が長期間の待機をサポートしています。step.sleepなら最長365日まで待機できます。"
         },
         {
@@ -12567,7 +12567,7 @@
           "wrongFeedback": "Workflowクラス自体がURLを持つわけではありません。バインディング経由のcreate()か、cronスケジュール、wrangler CLIなどで起動します。"
         },
         {
-          "text": "`new MyWorkflow().run(event, step)` のようにWorkflowクラスを直接インスタンス化してrunメソッドを呼び出せば、永続化やリトライも含めて実行できる",
+          "text": "`new MyWorkflow().run(event, step)` のようにWorkflowクラスを直接インスタンス化してrunメソッドを呼び出せば、ステップごとの状態の永続化やリトライも含めてそのまま実行できる",
           "wrongFeedback": "クラスを直接newして実行することはできません。永続化やリトライの管理はWorkflowsランタイムが担うため、必ずバインディング経由で起動します。"
         },
         {
@@ -15228,8 +15228,8 @@
           "wrongFeedback": "1アカウントあたりのイメージ総ストレージには50GBという上限があり、`wrangler containers images delete`などで空き容量を確保する必要があります。"
         },
         {
-          "text": "アカウント単位の上限は一切なく、契約したインスタンスタイプの範囲内であればコンテナの台数や規模に関わらず無制限に同時実行できてしまう",
-          "wrongFeedback": "同時メモリ6TiB、同時vCPU 1,500、同時ディスク30TBなど、アカウント単位の上限が存在します。"
+          "text": "アカウント単位の上限は一切なく、契約したインスタンスタイプの範囲内であれば、コンテナの台数・合計メモリ・イメージ保存容量のいずれにも制限なく同時実行できてしまう",
+          "wrongFeedback": "同時メモリ6TiB、同時vCPU 1,500、同時ディスク30TBといったアカウント単位の上限に加え、コンテナイメージの総ストレージにも50GBの上限が存在します。"
         },
         {
           "text": "1アカウントあたり同時に使える合計メモリ・vCPU・ディスクの上限があり、コンテナイメージの総ストレージ容量にも上限(50GB)がある"
@@ -16390,8 +16390,8 @@
           "wrongFeedback": "trusted modeは全Worker間でキャッシュが共有されクロステナントのアクセスが起こりうるため、自社が全コードを管理する社内プラットフォームなど、顧客コードを実行しない場合に向いています。"
         },
         {
-          "text": "untrusted modeでは`caches.default`によるキャッシュ操作が利用可能で、trusted modeでは逆にnamespace内の全Workerで無効化される",
-          "wrongFeedback": "逆です。`caches.default`はnamespace内の全Workerで無効化されており、これはuntrusted/trusted両方に共通する制約です。"
+          "text": "untrusted modeでは`caches.default`によるキャッシュ操作が利用可能で、trusted modeでは逆にnamespace内の全Workerで無効化され、`request.cf`も参照できなくなる",
+          "wrongFeedback": "逆です。`caches.default`はnamespace内の全Workerで無効化されており、これはuntrusted/trusted両方に共通する制約です。また`request.cf`が参照できるようになるのはtrusted modeのほうです。"
         }
       ],
       "correctIndex": 1,
@@ -18634,7 +18634,7 @@
           "text": "PeerConnectionの状態が`connected`であることが必要で、操作はその状態になるまで最大5秒間ブロックされたうえでタイムアウトする"
         },
         {
-          "text": "PeerConnectionの状態確認には上限時間が一切設けられておらず、`connected`になるまでいつまでも無制限に待ち続けてしまう",
+          "text": "PeerConnectionの状態確認には上限時間が設けられておらず、`connected`になるまで待ち続け、`connecting`のままのSessionでは操作が永久にブロックされる",
           "wrongFeedback": "待機時間には上限があり、最大5秒待っても`connected`にならなければタイムアウトします。"
         },
         {
@@ -20630,7 +20630,7 @@
           "wrongFeedback": "これらはPipelinesの構成要素ではありません。"
         },
         {
-          "text": "オンプレミス接続用のTunnel・プライベート接続用のVPC Service・仮想ネットワークのVPC Networkの組み合わせ",
+          "text": "オンプレミス接続用のTunnel・プライベートリソースを定義するVPC Service・それらを束ねる仮想ネットワークであるVPC Networkの組み合わせ",
           "wrongFeedback": "これらはWorkers VPCの構成要素です。Pipelinesの構成要素とは異なります。"
         }
       ],
@@ -20791,7 +20791,7 @@
           "text": "オープンベータ段階であり、Workers Paidプランの開発者であれば追加の申請なしに誰でも利用を開始できる"
         },
         {
-          "text": "オープンベータ段階だが、Workers Freeプランのユーザーであっても追加の申請なしにすぐ利用できる",
+          "text": "オープンベータ段階だが、Workers Freeプランのユーザーであっても無料枠の範囲内なら追加の申請なしにすぐ利用できる",
           "wrongFeedback": "Workers Paidプランが必要です。Freeプランでは利用できません。"
         },
         {
@@ -23971,7 +23971,7 @@
           "text": "GoogleやPingdomなど、Cloudflareが逆引きDNS検証などを通じて維持している「良性ボットの許可リスト」に一致するリクエストでtrueになる"
         },
         {
-          "text": "サイト運営者がダッシュボードで個別に「信頼できるIP」を登録した場合にのみtrueになり、Cloudflare側での自動的な検証プロセスは存在しない",
+          "text": "サイト運営者がダッシュボードで個別に「信頼できるIP」やUser-Agentを登録した場合にのみtrueになり、Cloudflare側での逆引きDNS検証などの自動的な検証プロセスは存在しない",
           "wrongFeedback": "サイト運営者による個別登録が唯一の方法ではありません。Cloudflareは逆引きDNS検証などを通じて自動的にVerified botを判定・維持しています。"
         }
       ],
@@ -24164,8 +24164,8 @@
           "wrongFeedback": "ソースコードの公開やEnterpriseプランの契約は条件ではありません。正直な自己識別と非悪用的な振る舞いの2点が条件です。"
         },
         {
-          "text": "`X-RateLimit`ヘッダーで示される1週間あたりのリクエスト数が一定の上限を超えないこと、および運営者の所在国がCloudflareの認定国リストに含まれること",
-          "wrongFeedback": "リクエスト数の上限や所在国リストといった条件はありません。正直な自己識別と非悪用的な振る舞いの2点が条件です。"
+          "text": "`X-RateLimit`ヘッダーで示される1週間あたりのリクエスト数が一定の上限を超えないこと、および`robots.txt`の遵守は任意で、運営者の所在国がCloudflareの認定国リストに含まれること",
+          "wrongFeedback": "リクエスト数の上限や所在国リストといった条件はありません。また`robots.txt`やクロール指示の遵守は任意ではなく、「非悪用的な振る舞い」として求められる条件の一部です。条件は正直な自己識別と非悪用的な振る舞いの2点です。"
         },
         {
           "text": "運営者が年間契約料を支払っていること、および専用のIPアドレス帯を保有していること",
@@ -24264,7 +24264,7 @@
           "wrongFeedback": "Corporate Proxyフィールドは全プラン共通ではなく、Enterprise限定の機能です。"
         },
         {
-          "text": "Corporate Proxyフィールドが真になったリクエストは、ボットスコアの計算対象から自動的に完全除外される",
+          "text": "Corporate Proxyフィールドが真になったリクエストは、WAFカスタムルールを書かなくてもボットスコアの計算対象から自動的に完全除外される",
           "wrongFeedback": "Corporate Proxyであることをもって自動的にスコア計算から除外されるという仕様はありません。このフィールドを使って自分でルールを組む必要があります。"
         },
         {
@@ -24833,7 +24833,7 @@
           "wrongFeedback": "`OPTIONS`のプリフライトリクエストは認証情報を含まないのが通常のため、ブロックを避けたい場合はルールに`or http.request.method eq \"OPTIONS\"`を追加することが推奨されています。"
         },
         {
-          "text": "JWT検証を使うには、対象のエンドポイントをあらかじめEndpoint Managementに登録しておく必要がある",
+          "text": "JWT検証を使うには、対象のエンドポイントをあらかじめEndpoint Managementに登録し、オペレーションごとにJWT検証ルールを作成しておく必要がある",
           "wrongFeedback": "トークン設定を作った時点で、Cloudflareはゾーン内の全リクエストを設定した場所でチェックします。検証そのものにEndpoint Managementへの登録もルールも不要です。登録が要るのは、特定のオペレーションだけに`log`/`block`を効かせるJWT検証ルールを使う場合だけです。"
         }
       ],
@@ -25029,7 +25029,7 @@
           "wrongFeedback": "「常に許可」「常に拒否」という単純な二択ではありません。positiveは期待するパターン以外を拒否し、negativeは既知の悪性パターンだけを拒否します。"
         },
         {
-          "text": "positive security modelとnegative security modelはどちらもEnterprise Sequence Mitigationの正式リリース後にのみ利用可能で、現在はまだ選択できない",
+          "text": "positive security modelとnegative security modelはどちらもEnterprise Sequence Mitigationの正式リリース(GA)後にのみ利用可能で、Beta期間中はどちらのモデルもダッシュボードの選択肢に表示されない",
           "wrongFeedback": "Sequence Mitigationは現在Betaですが、positive・negativeいずれのモデルも現時点で利用できます。"
         }
       ],
@@ -27088,7 +27088,7 @@
           "wrongFeedback": "別事業者のネームサーバーが前提条件ではありません。DNSレコードがCloudflareでプロキシされている必要があります。"
         },
         {
-          "text": "Rules製品群はEnterpriseプラン限定の機能であり、Free・Pro・Businessプランでは一切利用できない",
+          "text": "Rules製品群はEnterpriseプラン限定の機能であり、Free・Pro・Businessプランではダッシュボードに項目自体が表示されない",
           "wrongFeedback": "Rules製品群はEnterprise限定ではなく、全プランで基本的な機能を利用できます。"
         },
         {
@@ -27341,7 +27341,7 @@
           "wrongFeedback": "説明が逆です。`cookie`ヘッダーは値の設定・変更はできませんが、削除は許可されています。"
         },
         {
-          "text": "`cookie`ヘッダーに関する操作はすべて禁止されており、値の設定・変更・削除のいずれも行うことができない",
+          "text": "`cookie`ヘッダーに関する操作はすべて禁止されており、値の設定・変更・削除のいずれもルールのアクション一覧に表示されない",
           "wrongFeedback": "すべて禁止されているわけではありません。`cookie`ヘッダーの削除は許可されています。"
         },
         {
@@ -27643,7 +27643,7 @@
           "wrongFeedback": "順序が逆です。Bulk RedirectsはWAFより後に実行されるため、WAFがブロックしたリクエストに対してリダイレクトが実行されることはありません。"
         },
         {
-          "text": "WAFルールがリクエストをログ記録またはチャレンジし、その後リクエストが通過した場合、そのリクエストに関するセキュリティイベントの記録は取り消され、ログには一切残らない",
+          "text": "WAFルールがリクエストをログ記録またはチャレンジし、その後リクエストが通過した場合、そのリクエストに関するセキュリティイベントの記録は取り消され、Security EventsにもLogpushにも一切残らない",
           "wrongFeedback": "セキュリティイベントの記録が取り消されることはありません。後でリダイレクトされたとしても、ログ記録・チャレンジのイベントはSecurity EventsやLogpushに残ります。"
         },
         {
@@ -30810,7 +30810,7 @@
           "wrongFeedback": "1本ではありません。cloudflaredは複数の接続を並行して確立するため、単一障害点にはなりにくい設計です。"
         },
         {
-          "text": "4本の接続を確立するが、すべて同一のデータセンター内のサーバーに接続されるため冗長化の効果は限定的である",
+          "text": "4本の接続を確立するが、すべて最寄りの同一データセンター内の4台のサーバーに接続されるため、データセンター単位の障害には耐えられない",
           "wrongFeedback": "同一データセンターに限定されません。少なくとも2つの異なるデータセンターに分散して接続されるため、データセンター単位の障害にも耐えられます。"
         },
         {
@@ -31111,8 +31111,8 @@
           "text": "ingressルールは上から下へ順に評価され、hostnameやpathを指定しないルールはすべてに一致するため、設定ファイルの最後には必ずcatch-allルールを置く必要がある"
         },
         {
-          "text": "ワイルドカードは`*.example.com`のようにホスト名の先頭でのみ使用でき、`test.*.example.com`のようにホスト名の途中に置くこともサポートされている",
-          "wrongFeedback": "ホスト名の途中に置くワイルドカードはサポートされていません。`test.*.example.com`のような形式は使用できません。"
+          "text": "ワイルドカードは`*.example.com`のようにホスト名の先頭でのみ使用でき、`test.*.example.com`のようにホスト名の途中に置くこともサポートされており、末尾のワイルドカードルールがcatch-allを兼ねる",
+          "wrongFeedback": "ホスト名の途中に置くワイルドカードはサポートされていません。またワイルドカードルールはcatch-allの代わりにはならず、設定ファイルの最後にはhostnameを指定しないcatch-allルールが必須です。"
         },
         {
           "text": "ingressルールはリスト内でランダムな順序で評価され、最初に一致したものではなく最も条件が厳しいものが優先される",
@@ -33505,7 +33505,7 @@
       "question": "Gatewayのポリシーの優先順位(order of precedence)に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "複数のポリシーが一致した場合、Gatewayはすべての一致したポリシーの内容を合成し、それらを組み合わせた結果として最終的なアクションを決定する",
+          "text": "複数のポリシーが一致した場合、Gatewayはすべての一致したポリシーの内容を合成し、最も制限の強いアクション(Block)を最終的なアクションとして採用する",
           "wrongFeedback": "合成は行われません。最初に一致したポリシーでただちに評価が停止し(first match)、それ以降のポリシーは適用されません。"
         },
         {
@@ -34193,7 +34193,7 @@
       "question": "DLPプロファイルの信頼度しきい値(confidence thresholds)に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "信頼度しきい値はすべての検知エントリに対して一律に適用され、Exact Data Match(EDM)のような完全一致方式の検知エントリにも同様に適用される",
+          "text": "信頼度しきい値はすべての検知エントリに対して一律に適用され、Exact Data Match(EDM)のような完全一致方式の検知エントリでもLowかMediumのいずれかを必ず選択する必要がある",
           "wrongFeedback": "EDMのような完全一致(exact match)方式を使う検知エントリの一部は、信頼度スコアという概念自体が適用されず、しきい値の設定対象になりません。"
         },
         {
@@ -34403,7 +34403,7 @@
       "question": "ペイロードログのマスキング設定(Payload log masking)に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "選択したマスキングレベルは、ポリシーに一致した検知結果そのものにのみ適用され、同じペイロードウィンドウ内で検知された他の機密データには適用されない",
+          "text": "選択したマスキングレベルは、ポリシーに一致した検知結果そのものにのみ適用され、同じペイロードウィンドウ内で検知された他の機密データは常にClear Textのまま記録される",
           "wrongFeedback": "選択したマスキングレベルは、ペイロードウィンドウ内で見つかったすべての機密データの一致に適用されます。ポリシーの引き金となった一致だけに限定されるわけではありません。"
         },
         {
@@ -34951,8 +34951,8 @@
           "wrongFeedback": "KeyboardとPrintingは独立した設定であり、連動して自動的に変更されることはありません。"
         },
         {
-          "text": "Keyboardの入力をDo not allowに設定すると、マウス操作を含むすべての入力手段が無効化され、リンクをたどることもできなくなる",
-          "wrongFeedback": "マウス操作(リンクのクリックやスクロール)は無効化されません。無効化されるのはキーボード入力のみです。"
+          "text": "Keyboardの入力をDo not allowに設定すると、マウス操作を含むすべての入力手段が無効化され、サードパーティ製の仮想キーボードへの入力も確実に防げる",
+          "wrongFeedback": "マウス操作(リンクのクリックやスクロール)は無効化されません。またサードパーティ製の仮想キーボードへの入力までは防げません。"
         },
         {
           "text": "Do not allowに設定してもマウス操作(クリックやスクロール)は引き続き利用でき、サードパーティ製の仮想キーボードへの入力までは防げない"
@@ -35758,7 +35758,7 @@
           "text": "後からDLPプロファイルを追加した場合、CASBはプロファイル有効化後に変更イベント(内容・ファイル名・公開設定の変更など)があった公開ファイルのみをスキャン対象とする"
         },
         {
-          "text": "後からDLPプロファイルを追加した場合でも、インテグレーション内に存在するすべての公開ファイルが、追加した瞬間に過去の作成日時に関わらず即座に全件スキャンされる",
+          "text": "後からDLPプロファイルを追加した場合でも、インテグレーション内に存在するすべての公開ファイルが追加した瞬間に即座に全件スキャンされ、初期セットアップ時に有効化した場合と同じ結果になる",
           "wrongFeedback": "後から追加した場合、スキャン対象はプロファイル有効化後に変更イベントがあった公開ファイルのみに限定されます。"
         },
         {
@@ -36234,7 +36234,7 @@
           "wrongFeedback": "逆です。送信対象になるのはPosture findingsで、Content findingsは送信できません。"
         },
         {
-          "text": "CASB Webhooksはfindingの種類に関わらず、インテグレーションに関するすべてのイベント(ログイン試行やAPI呼び出しなど)を送信できる",
+          "text": "CASB WebhooksはPosture findingsとContent findingsの両方に加え、インテグレーションに関するすべてのイベント(ログイン試行やAPI呼び出しなど)を送信できる",
           "wrongFeedback": "送信対象はPosture findingsのインスタンスに限定されています。"
         }
       ],
@@ -37182,7 +37182,7 @@
           "wrongFeedback": "ISPのIPアドレスは、Zero Trust PIIロールを持つユーザーにのみ表示されます。"
         },
         {
-          "text": "IP visibilityへのアクセス制御は、テスト結果の閲覧に必要なCloudflare Zero Trust Reportingロールと全く同じロールで管理されている",
+          "text": "IP visibilityへのアクセス制御は、テスト結果の閲覧に必要なCloudflare Zero Trust Reportingロールと全く同じロールで管理されており、Zero Trust PIIロールを別途付与する必要はない",
           "wrongFeedback": "ISPのIPアドレスの閲覧にはZero Trust PIIロールが必要であり、テスト結果閲覧に必要なReportingロールとは別のロールです。"
         },
         {
@@ -38955,7 +38955,7 @@
           "wrongFeedback": "healthyへの復帰には直近30回のプローブの失敗率が0.1%未満である必要があり、1回の成功だけでは条件を満たしません。"
         },
         {
-          "text": "down状態はdegraded状態より優先度が低い判定であり、down状態でもトラフィックはそのトンネルに送られ続ける",
+          "text": "down状態はdegraded状態より優先度が低い判定であり、down状態でも優先度へのペナルティは加算されずトラフィックが送られ続ける",
           "wrongFeedback": "down判定はdegraded判定より優先され、トンネルはhealthy・degraded・downのいずれか1つの状態になります。down状態のトンネルには優先度への大きなペナルティが加算されます。"
         },
         {
@@ -39659,7 +39659,7 @@
       "question": "SpectrumのPROXY Protocolに関する説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "PROXY Protocolは仮想ネットワークオリジン(virtual_network_id指定)を使うSpectrumアプリケーションでも常に利用できる",
+          "text": "PROXY Protocolは仮想ネットワークオリジン(virtual_network_id指定)を使うSpectrumアプリケーションでも利用でき、proxy_protocolにv2を指定すればよい",
           "wrongFeedback": "仮想ネットワークオリジンを使うSpectrumアプリケーションではPROXY Protocolは現時点でサポートされておらず、proxy_protocolをoffにする必要があります。"
         },
         {
@@ -41530,7 +41530,7 @@
           "wrongFeedback": "1つのアクションの「Firing Triggers」には複数のトリガーを選択でき、選択したいずれかのトリガーが一致すればアクションが発火します。"
         },
         {
-          "text": "アクションが発火条件(ページビューやクリックなど)を定義し、トリガーはツールが実行する具体的な処理内容を指す",
+          "text": "アクションが発火条件(ページビューやクリックなど)を定義し、トリガーはツールが実行するデータ送信などの具体的な処理内容を指す",
           "wrongFeedback": "説明が逆です。発火条件を定義するのはトリガー、ツールが実行する具体的な処理を指すのがアクションです。"
         },
         {
@@ -41571,7 +41571,7 @@
       "question": "Zarazのトリガーで利用できるルールタイプの説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "「Match rule」は任意のJavaScriptコードを条件式として自由に記述できるルールタイプである",
+          "text": "「Match rule」は変数名を使わずに任意のJavaScriptコードを条件式として自由に記述できるルールタイプである",
           "wrongFeedback": "Match ruleは「変数名」「一致条件」「一致文字列」を組み合わせて条件を作る仕組みで、任意のJavaScriptを自由記述できるものではありません。"
         },
         {
