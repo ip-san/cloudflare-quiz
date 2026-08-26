@@ -560,9 +560,15 @@ function printQualityReport(issues) {
  * 「長い方を選ぶ」は変わらず当たる。マージンだけを見る検査では
  * ここを取りこぼす。
  *
- * 偶然なら約25%（4択）。40%までを許容とする。
+ * 偶然なら約25%（4択）。許容は 15%〜40% の**両側**とする。
+ *
+ * 下限がある理由: 反転させすぎると今度は「最長の選択肢は誤答」が手がかりになる。
+ * 例えば 10% まで下げると、最長を避けて残り3つから選ぶだけで 33% 当たり、
+ * 当てずっぽう（25%）より有利になってしまう。手がかりを消すのが目的であって、
+ * 逆向きの手がかりを作るのが目的ではない。
  */
-const LONGEST_IS_CORRECT_LIMIT = 0.4
+const LONGEST_IS_CORRECT_MAX = 0.4
+const LONGEST_IS_CORRECT_MIN = 0.15
 
 function lintLengthCue(quizzes) {
   const singles = quizzes.filter((q) => q.type !== 'multi')
@@ -572,16 +578,28 @@ function lintLengthCue(quizzes) {
     if (lens[quiz.correctIndex] === Math.max(...lens)) longest++
   }
   const rate = longest / singles.length
-  if (rate <= LONGEST_IS_CORRECT_LIMIT) return []
-  return [
-    {
-      id: '(corpus)',
-      type: 'longest-option-is-correct',
-      message:
-        `正解が最長の選択肢である割合が ${(rate * 100).toFixed(1)}% (${longest}/${singles.length}) — ` +
-        `「一番長い選択肢を選ぶ」だけでこの割合の問題に正解できる。偶然なら約25%、許容は${LONGEST_IS_CORRECT_LIMIT * 100}%`,
-    },
-  ]
+  const shown = `${(rate * 100).toFixed(1)}% (${longest}/${singles.length})`
+  const band = `偶然なら約25%、許容は${LONGEST_IS_CORRECT_MIN * 100}%〜${LONGEST_IS_CORRECT_MAX * 100}%`
+
+  if (rate > LONGEST_IS_CORRECT_MAX) {
+    return [
+      {
+        id: '(corpus)',
+        type: 'longest-option-is-correct',
+        message: `正解が最長の選択肢である割合が ${shown} — 「一番長い選択肢を選ぶ」だけでこの割合の問題に正解できる。${band}`,
+      },
+    ]
+  }
+  if (rate < LONGEST_IS_CORRECT_MIN) {
+    return [
+      {
+        id: '(corpus)',
+        type: 'longest-option-is-wrong',
+        message: `正解が最長の選択肢である割合が ${shown} と低すぎる — 「最長を避けて残りから選ぶ」が当てずっぽうより有利になり、逆向きの手がかりになる。${band}`,
+      },
+    ]
+  }
+  return []
 }
 
 function lintDistractors(quizzes) {
