@@ -560,23 +560,29 @@ function lintDistractors(quizzes) {
     const correctLen = quiz.options[ci].text.length
     const wrongOpts = quiz.options.filter((_, i) => i !== ci)
     const wrongLens = wrongOpts.map((o) => o.text.length)
-    const avgWrongLen = wrongLens.reduce((s, v) => s + v, 0) / wrongLens.length
 
-    // Ratio/length thresholds calibrated against this corpus (2026-07-22):
-    // a 2x/30-char rule flagged 41 questions, but reviewing all of them
-    // found the same shape every time — a precise, technically nuanced
-    // correct answer next to shorter-but-specific (not lazy-filler) wrong
-    // claims. That asymmetry is inherent to explaining real, nuanced
-    // Cloudflare behavior accurately and isn't a fixable "giveaway"; padding
-    // distractors or trimming correct answers to chase a length ratio would
-    // degrade content quality rather than improve it. Raised to 2.5x/60 to
-    // keep this an occasional spot-check signal instead of routine noise —
-    // see known-issues.md for the full review.
-    if (correctLen > avgWrongLen * 2.5 && correctLen > 60) {
+    // 【2026-07-22 の判断を 2026-08-26 に改訂】
+    // 旧実装は「正解 vs 不正解の“平均”」を 2.5倍/60字 で見ており、756問中17問しか
+    // 挙がらなかった。そのため「この非対称は正確さの代償で修正不能」と結論していた。
+    //
+    // しかし平均との比較は、悪用のしやすさを測る指標として間違っている。
+    // 受験者は平均と比べない——**一番長いものを選ぶ**。2位の選択肢と比べ直すと:
+    //   正解が単独最長          636/756 (84.1%)   ※偶然なら約25%
+    //   2位より50%以上長い      367/756 (48.5%)   ← 見ただけで分かる
+    // 模擬ユーザー(busy-intermediate)も「内容を知らなくても文体だけで正解できた」と
+    // 5問中3問で報告しており、実際に悪用可能であることが裏付けられた。
+    //
+    // また「不正解の水増しは質を下げる」という前提も、実例を見ると強すぎた。
+    // 実際には (1)正解にだけ付いた補足の丸括弧を解説へ移す、
+    // (2)正解が4項目の列挙で不正解が「〜のみ」の2項目 → 不正解も同じ形にする、
+    // といった、内容を薄めずに差を消せる型が多い。
+    const secondLongest = Math.max(...wrongLens)
+    const margin = (correctLen - secondLongest) / secondLongest
+    if (margin >= 0.5) {
       issues.push({
         id: quiz.id,
-        type: 'correct-too-long',
-        message: `正解(${correctLen}文字)が不正解の平均(${Math.round(avgWrongLen)}文字)の2倍以上`,
+        type: 'correct-longest-by-margin',
+        message: `正解(${correctLen}文字)が2番目に長い選択肢(${secondLongest}文字)より${Math.round(margin * 100)}%長い — 文体だけで選べてしまう`,
       })
     }
 

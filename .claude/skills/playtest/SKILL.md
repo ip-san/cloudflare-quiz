@@ -52,6 +52,16 @@ argument-hint: "[--persona ...] [--count N] [--report-only] [--no-build] [--prog
    bun run build && (bun run preview &)   # http://localhost:4173/cloudflare-quiz/
    ```
    起動待ち（`until curl -sf http://localhost:4173/cloudflare-quiz/ >/dev/null; do sleep 1; done` 相当）
+
+   **`--no-build` の場合でも、ペルソナを起動する前に必ず次を実行すること:**
+   ```bash
+   node scripts/check-preview-fresh.mjs   # exit 1 なら再ビルドするまで進まない
+   ```
+   preview は `dist/` を配信するため、ビルドが古いと模擬ユーザーは
+   **修正済みの問題を修正前の状態でプレイ**する。2026-08-26 に実際これが起き、
+   ac-008 / ac-009 / ag-001 の3件が「修正済みなのに再指摘」として戻ってきた。
+   結果からは「古いビルドを見ていた」と「本当にまだ直っていない」を区別できないので、
+   走らせる前に落とす。
 2. 対象ペルソナごとに `user-simulator` を **同一メッセージ内で同時に** `run_in_background: true` 起動:
    ```
    Agent(subagent_type: "user-simulator", model: "sonnet",
