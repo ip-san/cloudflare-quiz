@@ -7377,7 +7377,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "nodejs_compatフラグは、workerdランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをネイティブに使えるようにし、未対応のAPIについてはWranglerがポリフィルを自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\n有効化には`compatibility_date`を2024-09-23以降にする必要があります。\n{{diagram:1}}",
+      "explanation": "nodejs_compatフラグは、workerdランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをネイティブに使えるようにし、未対応のAPIについてはWranglerがポリフィルを自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\nなお `compatibility_date` が `2026-08-04` 以降のプロジェクトでは、このフラグはデフォルトで有効になっているため明示的な指定は不要です。それより前の日付では明示が必要で、フラグを使うには日付が2024-09-23以降である必要があります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/nodejs/",
       "hint": "ランタイムそのものを丸ごと変えるのか、一部の機能だけ後から追加するのか考えましょう。",
       "tags": [
@@ -8665,19 +8665,19 @@
           "wrongFeedback": "そのようなフラグはなく、Workersランタイム自体はNode.jsとは異なる実行環境です。"
         },
         {
-          "text": "`compatibility_flags = [\"nodejs_compat\"]` を追加する"
+          "text": "`compatibility_date` が `2026-08-04` 以降なら追加設定は不要で、それより前の日付なら `compatibility_flags = [\"nodejs_compat\"]` を追加する"
         },
         {
           "text": "`[vars]` に `NODE_COMPAT = true` を追加する",
           "wrongFeedback": "`[vars]`は単なる環境変数であり、ランタイムの互換性機能を切り替えるものではありません。"
         },
         {
-          "text": "何も追加しなくても、`compatibility_date` を最新の日付にするだけで自動的に使えるようになる",
-          "wrongFeedback": "`compatibility_date`を新しくするだけでは有効になりません。明示的な互換性フラグの指定が必要です。"
+          "text": "`compatibility_date` の値に関わらず、常に `compatibility_flags = [\"nodejs_compat\"]` を明示的に追加しなければ `node:` 系のモジュールは一切使えない",
+          "wrongFeedback": "`compatibility_date` が `2026-08-04` 以降のプロジェクトでは `nodejs_compat` がデフォルトで有効になるため、フラグの明示は不要です。常に必要というのは、この日付より前の挙動です。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Workersは独自のランタイム上で動作しますが、`compatibility_flags` に `\"nodejs_compat\"` を指定すると、`node:buffer` や `node:events` といった一部のNode.js組み込みAPIが利用できるようになります。\n{{diagram:0}}\n互換性フラグは `compatibility_date` と組み合わせて `wrangler.toml` に明示的に記述する必要があり、書かなければ有効になりません。",
+      "explanation": "Cloudflare Workersは独自のランタイム上で動作しますが、`nodejs_compat` が有効だと `node:buffer` や `node:events` といった一部のNode.js組み込みAPIが利用できます。\n{{diagram:0}}\n`compatibility_date` が `2026-08-04` 以降のWorkers/Pagesプロジェクトでは、`nodejs_compat` と `nodejs_compat_v2` の両方がデフォルトで有効になり、追加設定なしに組み込みAPIとポリフィルが使えます。それより前の日付を使っている場合のみ、`compatibility_flags = [\"nodejs_compat\"]` を明示して opt-in する必要があります(既存プロジェクトが日付を更新する際、書いてあるフラグを消す必要はありません)。",
       "referenceUrl": "https://developers.cloudflare.com/workers/configuration/compatibility-dates/",
       "hint": "日付だけでなく、機能を個別にオン/オフする配列の設定項目を考えましょう。",
       "tags": [
@@ -24164,7 +24164,7 @@
           "wrongFeedback": "ソースコードの公開やEnterpriseプランの契約は条件ではありません。正直な自己識別と非悪用的な振る舞いの2点が条件です。"
         },
         {
-          "text": "`X-RateLimit`ヘッダーで示される1週間あたりのリクエスト数が一定の上限を超えないこと、および`robots.txt`の遵守は任意で、運営者の所在国がCloudflareの認定国リストに含まれること",
+          "text": "`X-RateLimit`ヘッダーで示される1週間あたりのリクエスト数が一定の上限を超えないこと、および運営者の所在国がCloudflareの認定国リストに含まれ、年次の再審査を通過していること",
           "wrongFeedback": "リクエスト数の上限や所在国リストといった条件はありません。また`robots.txt`やクロール指示の遵守は任意ではなく、「非悪用的な振る舞い」として求められる条件の一部です。条件は正直な自己識別と非悪用的な振る舞いの2点です。"
         },
         {
@@ -24683,7 +24683,7 @@
           "wrongFeedback": "逆です。フォールスルールールは、Endpoint Managementに登録された既知のエンドポイントに一致「しない」リクエストに対して発動する仕組みです。"
         },
         {
-          "text": "フォールスルールールはEnterpriseプラン限定の機能であり、`cf.api_gateway.fallthrough_detected`フィールドもFree・Pro・Businessプランのカスタムルールでは一切利用できない",
+          "text": "フォールスルールールはEnterpriseプラン限定の機能であり、`Security rules`ページのSchema validation設定自体がFree・Pro・Businessプランのダッシュボードでは一切表示されない",
           "wrongFeedback": "フォールスルールールはEnterprise限定という記載はなく、Schema validation自体は全プランで利用できる機能の一部として設定できます。"
         },
         {
@@ -25421,7 +25421,7 @@
       "question": "Randomステアリングを使ってアクティブ-アクティブ構成(いわゆるラウンドロビン)を実現する方法として正しいものはどれですか？",
       "options": [
         {
-          "text": "Weightの設定は`endpoint_steering`という別のオブジェクトを使い、Pool内の個々のエンドポイント単位でのみ可能で、`random_steering`によるPoolレベルの調整は一切できない",
+          "text": "Weightの設定は`endpoint_steering`という別のオブジェクトを使い、Pool内の個々のエンドポイント単位でのみ可能で、Poolレベルでの重み付けはどのオブジェクトを使っても一切設定できない",
           "wrongFeedback": "Poolレベルでも`random_steering`オブジェクトを使ってWeightを設定できます。エンドポイント単位に限定されているわけではありません。"
         },
         {
@@ -26044,7 +26044,7 @@
       "question": "非Enterpriseプランにおける Load Balancing の主な上限値の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Load Balancer・Pool・Endpointの上限はそれぞれ最大20個までだが、Monitorの上限だけはPool数に関わらず常に固定で10個までに制限され、Poolを増やしても増えない",
+          "text": "Load Balancer・Pool・Endpointの上限にはそれぞれ差があるが、Monitorの上限だけはPool数に関わらず常に固定で10個までに制限され、Poolを増やしても増えない",
           "wrongFeedback": "Monitorの上限は固定10個ではなく、Pool数の1.5倍という変動する計算式です。"
         },
         {
@@ -27190,7 +27190,7 @@
           "wrongFeedback": "複数のURL Rewrite Rulesを連続して適用しても、ホスト名自体を書き換えることはできません。"
         },
         {
-          "text": "URL Rewrite Rulesの設定画面で、パス・クエリ文字列に加えてホスト名も直接指定して書き換えることができ、Origin Rulesを使わずにリクエストの解決先を変更できる",
+          "text": "URL Rewrite Rulesの設定画面で、パス・クエリ文字列に加えてホスト名も直接指定して書き換えることができ、リクエストの解決先もそのまま変更できる",
           "wrongFeedback": "URL Rewrite Rulesではホスト名を書き換えることはできません。パスとクエリ文字列のみが対象です。"
         },
         {
@@ -28456,7 +28456,7 @@
           "wrongFeedback": "Free・Enterpriseにも上限は存在します。Freeはゾーン単位、Enterpriseはアカウント単位のクォータが適用されます。"
         },
         {
-          "text": "プランに関わらず、常にゾーン単位とアカウント単位の両方のクォータが同時に適用され、たとえばFreeゾーンではゾーン単位の200件とアカウント単位の上限が同時に評価され、より小さい方の値がそのゾーンの上限として採用される",
+          "text": "プランに関わらず、常にゾーン単位とアカウント単位の両方のクォータが同時に適用され、たとえばFreeゾーンではゾーン単位の上限とアカウント単位の上限が同時に評価され、より小さい方の値がそのゾーンの上限として採用される",
           "wrongFeedback": "両方が同時に適用されることはありません。プランに応じて、ゾーン単位またはアカウント単位のいずれか一方でクォータが適用されます。"
         },
         {
@@ -29636,7 +29636,7 @@
           "wrongFeedback": "TLS 1.0やTLS 1.1も最小値として指定可能です。TLS 1.2以上に制限されているわけではありません。"
         },
         {
-          "text": "設定できるのはゾーン単位のみで、Advanced Certificate Managerを購入してもホスト名(サブドメイン)ごとに異なる最小TLSバージョンを設定することはできない",
+          "text": "設定できるのはゾーン単位のみで、上位プランで提供されるアドオンを購入したとしても、ホスト名(サブドメイン)ごとに異なる最小TLSバージョンを個別に設定することはできない",
           "wrongFeedback": "Advanced Certificate Managerを使えば、ホスト名ごとに異なる最小TLSバージョンを設定できます。ゾーン単位のみに限定されているわけではありません。"
         }
       ],
@@ -30241,7 +30241,7 @@
           "wrongFeedback": "逆です。Early Hintsはオリジンが完全な応答を準備している「待ち時間」を利用して、その前に送信される予備的なレスポンスです。"
         },
         {
-          "text": "Early Hintsは`EARLY`のような新しいHTTPメソッドをRFC 8297で定義するものであり、既存の`GET`や`POST`とは別の専用メソッドをブラウザが使う",
+          "text": "Early Hintsは`EARLY`のような新しいHTTPメソッドを定義するものであり、既存の`GET`や`POST`とは別の専用メソッドをブラウザとサーバーの双方が実装する必要がある",
           "wrongFeedback": "新しいHTTPメソッドではなく、`103`という新しいステータスコードを使う仕組みです。"
         }
       ],
@@ -30598,7 +30598,7 @@
           "text": "0-RTTはGET・HEAD・OPTIONSに対応するがPOSTには対応しておらず、0-RTTを使ったリクエストには`Early-Data: 1`ヘッダーが付与される"
         },
         {
-          "text": "0-RTTの接続再開は、訪問者とCloudflare間だけでなく、`Early-Data: 1`ヘッダーを付けたCloudflareとオリジンサーバー間の接続にも同様に適用される",
+          "text": "0-RTTの接続再開は、訪問者とCloudflare間だけでなく、Cloudflareとオリジンサーバー間の接続にも同様に適用されるため、オリジンまでの往復ハンドシェイクがすべて省略される",
           "wrongFeedback": "0-RTTは訪問者とCloudflare間でのみ確立され、オリジンサーバーまで拡張されるわけではありません。"
         },
         {
@@ -35809,7 +35809,7 @@
           "wrongFeedback": "画像ファイルはサポートされていません。スキャン対象はドキュメント・スプレッドシート・PDFのようなテキストベースのファイルです。"
         },
         {
-          "text": "JavaやRのソースコードファイルは、5KB未満の小さいものも含めファイルサイズの大小に関わらず例外なくすべてDLPスキャンの対象になり、100MBの上限も適用されない",
+          "text": "JavaやRのソースコードファイルは、5KB未満の小さいものも含めファイルサイズの大小に関わらず例外なくすべてDLPスキャンの対象になり、サイズによるスキップは発生しない",
           "wrongFeedback": "JavaやRのソースコードファイルは、5KB以上のものだけがスキャン対象で、5KB未満の小さいファイルはスキップされます。また100MB以下という上限はすべてのファイルに適用されます。"
         },
         {
@@ -36179,7 +36179,7 @@
           "wrongFeedback": "この機能を利用するには、事前にGatewayのHTTPフィルタリングを有効化しておく必要があります。"
         },
         {
-          "text": "この機能はインテグレーションの種類やアプリケーション、findingタイプの組み合わせに関わらず、Google Workspace以外のSaaSインテグレーションで検知されたfindingも含め、CASBが検知したあらゆる種類のfindingに対して同様に利用できる",
+          "text": "この機能はインテグレーションの種類やアプリケーション、findingタイプの組み合わせに関わらず、CASBが検知したあらゆる種類のfindingに対して同様に利用でき、どのSaaSインテグレーションでも同じ手順で使える汎用的な機能として設計されている",
           "wrongFeedback": "この機能はGoogle Workspaceの特定の4種類のPosture findingsに限定されています。すべてのfindingで使えるわけではありません。"
         },
         {
@@ -36920,7 +36920,7 @@
           "text": "Last seen ISPはmacOSとWindowsでのみ利用可能な項目で、DEXがデバイスのIPアドレスをジオロケーションデータベースで検索してASO・ASNを返す"
         },
         {
-          "text": "Last seen ISPはすべてのOS(Windows・macOS・Linux・iOS・Android・ChromeOS)で利用でき、いずれのOSでもジオロケーションデータベースからASO・ASNが返される",
+          "text": "Last seen ISPはすべてのOS(Windows・macOS・Linux・iOS・Android・ChromeOS)で利用でき、OSによって取得できる情報の内容や精度に差が出ることもない",
           "wrongFeedback": "Last seen ISPはmacOSとWindowsでのみ利用できます。"
         }
       ],
@@ -37182,7 +37182,7 @@
           "wrongFeedback": "ISPのIPアドレスは、Zero Trust PIIロールを持つユーザーにのみ表示されます。"
         },
         {
-          "text": "IP visibilityへのアクセス制御は、テスト結果の閲覧に必要なCloudflare Zero Trust Reportingロールと全く同じロールで管理されており、Zero Trust PIIロールを別途付与する必要はない",
+          "text": "IP visibilityへのアクセス制御は、テスト結果の閲覧に必要なCloudflare Zero Trust Reportingロールと全く同じロールで管理されており、追加のロールを別途付与する必要はない",
           "wrongFeedback": "ISPのIPアドレスの閲覧にはZero Trust PIIロールが必要であり、テスト結果閲覧に必要なReportingロールとは別のロールです。"
         },
         {
@@ -41755,7 +41755,7 @@
       "question": "ユーザーの同意設定(Consent Management platform)の保存方法に関する記述として、正しいものはどれですか?",
       "options": [
         {
-          "text": "一度非表示にした同意モーダルは、`zaraz.showConsentModal()`を呼び出してもCookieに保存済みの同意状態が優先されるため二度と再表示できない",
+          "text": "一度非表示にした同意モーダルは、`zaraz.showConsentModal()`を呼び出しても記録済みの選択が優先されるため、二度と再表示することはできない",
           "wrongFeedback": "`zaraz.showConsentModal()`を呼び出すことで、同意モーダルをボタンなどに紐づけて再表示させることができます。"
         },
         {
@@ -41993,7 +41993,7 @@
           "wrongFeedback": "Debug Modeの有効化はHTTPリクエストヘッダーではなく、ブラウザコンソールでの`zaraz.debug()`関数の実行によって行います。"
         },
         {
-          "text": "設定ページでDebug Keyを取得したうえでダッシュボードの「有効化」ボタンをクリックするだけでよく、ブラウザコンソールでのコマンド実行は不要である",
+          "text": "ダッシュボードのZaraz設定画面にある「有効化」ボタンをクリックするだけでよく、ブラウザのコンソールでのコマンド実行やキーの取得は一切不要である",
           "wrongFeedback": "Debug Modeの有効化には、ブラウザのコンソールで`zaraz.debug(\"YOUR_DEBUG_KEY\")`を実行する操作が必要です。ダッシュボードのボタンだけでは有効化できません。"
         },
         {
@@ -42595,7 +42595,7 @@
           "text": "新規に作成されたAgentインスタンスが最初に使う既定の状態を定義するもので、既に永続化された状態を持つ既存インスタンスはSQLiteに保存された状態を代わりに読み込む"
         },
         {
-          "text": "すべてのAgentインスタンスに対して起動のたびに強制的に適用される固定値であり、`this.setState()`でSQLiteに保存しても次回アクセス時にはinitialStateへリセットされる",
+          "text": "すべてのAgentインスタンスに対して起動のたびに強制的に適用される固定値であり、`this.setState()`で上書きしても次回アクセス時にはinitialStateの値へ戻される",
           "wrongFeedback": "initialStateは新規インスタンスの既定値にすぎません。`setState()`で更新した状態はSQLiteに永続化され、リセットされません。"
         },
         {
@@ -42869,7 +42869,7 @@
       "question": "AgentがWebSocket接続を処理する際のライフサイクルフックの組み合わせとして正しいものはどれですか?",
       "options": [
         {
-          "text": "`onConnect(connection, ctx)`は接続の確立時ではなく、クライアントが最初のメッセージを送った直後に`onMessage`より先に一度だけ呼ばれる",
+          "text": "`onConnect(connection, ctx)`は接続の確立時ではなく、クライアントが最初のメッセージを送った直後に一度だけ呼ばれ、それ以降は呼ばれない",
           "wrongFeedback": "`onConnect`はWebSocket接続が確立した時点で呼ばれ、最初のメッセージ送信を待つ必要はありません。"
         },
         {
