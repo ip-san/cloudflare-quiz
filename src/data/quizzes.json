@@ -24121,7 +24121,7 @@
         },
         {
           "text": "有効化するかどうかに関わらず常に発動し、Definitely automated・Likely automated・Verified botsの3カテゴリがすべて`Allow`に設定されていても、サイト内のすべてのパスとファイル種別に対して同じように効果を発揮する",
-          "wrongFeedback": "3カテゴリすべてが`Allow`の場合、Static resource protectionは効果を発揮しません。少なくとも1つのカテゴリが`Allow`以外である必要があります。"
+          "wrongFeedback": "2点とも誤りです。3カテゴリすべてが`Allow`の場合、Static resource protectionは効果を発揮しません(少なくとも1つが`Allow`以外である必要があります)。また対象はサイト内の全パス・全ファイル種別ではなく、`jpg`・`css`・`js`・`pdf`などの拡張子を持つ静的ファイルと`/.well-known/`パスに限られます。"
         }
       ],
       "correctIndex": 1,
@@ -24582,8 +24582,8 @@
           "text": "デフォルトの上限はFreeプランで1KB、Pro・Businessプランで8KB、Enterpriseプランで128KBであり、上限を超えたボディはスキーマとの照合自体が行われない"
         },
         {
-          "text": "デフォルトの上限はFreeプランで1KB、Pro・Businessプランで8KB、Enterpriseプランで128KBであり、上限を超えたボディはスキーマ違反として自動的にブロックされる",
-          "wrongFeedback": "プランごとの数値は正しいですが、上限を超えたボディは「スキーマ違反として自動ブロック」されるのではなく、検証自体が行われず、設定されたアクションも適用されません。"
+          "text": "デフォルトの上限はFreeプランで8KB、Pro・Businessプランで32KB、Enterpriseプランで512KBであり、上限を超えたボディはスキーマ違反として自動的にブロックされる",
+          "wrongFeedback": "数値も挙動も誤りです。正しくはFree 1KB・Pro/Business 8KB・Enterprise 128KBで、上限を超えたボディは「スキーマ違反として自動ブロック」されるのではなく、検証自体が行われず設定されたアクションも適用されません。"
         }
       ],
       "correctIndex": 2,
@@ -25173,11 +25173,11 @@
         },
         {
           "text": "API Shieldを契約していないEnterpriseプランのルールアクションは`Log`のみが選択可能で、より強い`Block`アクションは追加契約なしには選択できず、保存済みエンドポイント数も100までに制限される",
-          "wrongFeedback": "API Shieldを契約していないEnterpriseプランでも`Log`と`Block`の両方を選択でき、保存済みエンドポイント数は500です。`Block`のみに制限されているのはFree・Pro・Businessプランです。"
+          "wrongFeedback": "API Shieldを契約していないEnterpriseプランでも`Log`と`Block`の両方を選択でき、保存済みエンドポイント数は3,000です。`Block`のみに制限されているのはFree・Pro・Businessプランです。"
         },
         {
           "text": "保存済みエンドポイント数の上限はFree・Pro・Business・Enterpriseのどのプランでも一律で同じ500であり、プランによる差はまったく存在しない",
-          "wrongFeedback": "プランによって上限は異なります。Free 100・Pro 250・Business 500・Enterprise(API Shieldなし)500・Enterprise(API Shieldあり)10,000です。"
+          "wrongFeedback": "プランによって上限は異なります。Free 100・Pro 250・Business 500・Enterprise(API Shieldなし)3,000・Enterprise(API Shieldあり)10,000です。"
         },
         {
           "text": "Freeプランは保存済みエンドポイント数・アップロード可能なスキーマ数のいずれにも上限がなく、上限が課されるのはEnterpriseプランのみという逆転した仕様になっている",
