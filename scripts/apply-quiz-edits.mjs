@@ -1,0 +1,127 @@
+#!/usr/bin/env node
+
+/**
+ * エージェントが提案した選択肢編集を一括適用する。
+ *
+ * 選択肢長バイアス（正解が一番長いので文体だけで選べてしまう）の是正では
+ * 数百問を触る。エージェントに直接 quizzes.json を書かせると並列書き込みで
+ * 壊れるため、提案は JSON で受け取り、適用はここだけで行う。
+ *
+ * Usage: node scripts/apply-quiz-edits.mjs <proposals.json> [--dry-run]
+ *
+ * proposals.json の形:
+ *   [{ "id": "wk-004",
+ *      "edits": [{ "field": "option.3", "value": "新しい本文" }],
+ *      "skipped": false }]
+ *
+ * field: option.N | wrongFeedback.N | explanation | question
+ */
+
+import { readFileSync, writeFileSync } from 'fs'
+import { dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const QUIZ_PATH = resolve(ROOT, 'src/data/quizzes.json')
+
+const [proposalPath, ...flags] = process.argv.slice(2)
+const dryRun = flags.includes('--dry-run')
+
+if (!proposalPath) {
+  console.error('Usage: node scripts/apply-quiz-edits.mjs <proposals.json> [--dry-run]')
+  process.exit(1)
+}
+
+const proposals = JSON.parse(readFileSync(resolve(proposalPath), 'utf8'))
+const data = JSON.parse(readFileSync(QUIZ_PATH, 'utf8'))
+const byId = new Map(data.quizzes.map((q) => [q.id, q]))
+
+/** 正解が2位の選択肢よりどれだけ長いか（悪用のしやすさ） */
+function margin(quiz) {
+  const lens = quiz.options.map((o) => o.text.length)
+  const c = lens[quiz.correctIndex]
+  const second = Math.max(...lens.filter((_, i) => i !== quiz.correctIndex))
+  return { correct: c, second, pct: Math.round(((c - second) / second) * 100) }
+}
+
+let applied = 0
+let skipped = 0
+const errors = []
+const results = []
+
+for (const p of proposals) {
+  const quiz = byId.get(p.id)
+  if (!quiz) {
+    errors.push(`${p.id}: quizzes.json に存在しない`)
+    continue
+  }
+  if (p.skipped || !p.edits || p.edits.length === 0) {
+    skipped++
+    continue
+  }
+
+  const before = margin(quiz)
+
+  for (const edit of p.edits) {
+    const { field, value } = edit
+    if (typeof value !== 'string' || value.length === 0) {
+      errors.push(`${p.id}: ${field} の value が空`)
+      continue
+    }
+    const optMatch = field.match(/^(option|wrongFeedback)\.(\d+)$/)
+    if (optMatch) {
+      const [, kind, idxRaw] = optMatch
+      const idx = Number(idxRaw)
+      if (!quiz.options[idx]) {
+        errors.push(`${p.id}: ${field} — 選択肢 ${idx} が存在しない`)
+        continue
+      }
+      if (kind === 'option') quiz.options[idx].text = value
+      else quiz.options[idx].wrongFeedback = value
+    } else if (field === 'explanation' || field === 'question') {
+      // 図のマーカーを落とすと解説から図が消えるので、数が変わったら拒否する
+      if (field === 'explanation') {
+        const oldMarkers = (quiz.explanation.match(/\{\{diagram:\d+\}\}/g) ?? []).sort().join(',')
+        const newMarkers = (value.match(/\{\{diagram:\d+\}\}/g) ?? []).sort().join(',')
+        if (oldMarkers !== newMarkers) {
+          errors.push(`${p.id}: explanation の図マーカーが変化 (${oldMarkers} → ${newMarkers})`)
+          continue
+        }
+      }
+      quiz[field] = value
+    } else {
+      errors.push(`${p.id}: 未知の field "${field}"`)
+      continue
+    }
+    applied++
+  }
+
+  // 正解の選択肢に wrongFeedback が付いていたら外す（正解に不正解フィードバックは不要）
+  if (quiz.options[quiz.correctIndex]?.wrongFeedback) {
+    delete quiz.options[quiz.correctIndex].wrongFeedback
+  }
+
+  const after = margin(quiz)
+  results.push({ id: p.id, before, after })
+}
+
+console.log(`適用: ${applied}件の編集 / ${results.length}問  (skipped: ${skipped})`)
+if (errors.length > 0) {
+  console.log(`\n⚠️  ${errors.length}件のエラー:`)
+  for (const e of errors) console.log(`  - ${e}`)
+}
+
+const stillBad = results.filter((r) => r.after.pct >= 50)
+console.log(`\n閾値(+50%)を超えたまま: ${stillBad.length}問`)
+for (const r of stillBad) {
+  console.log(`  - ${r.id}: +${r.before.pct}% → +${r.after.pct}% (正解${r.after.correct}字 / 2位${r.after.second}字)`)
+}
+
+if (dryRun) {
+  console.log('\n--dry-run のためファイルは変更していません')
+} else {
+  writeFileSync(QUIZ_PATH, `${JSON.stringify(data, null, 2)}\n`)
+  console.log('\nsrc/data/quizzes.json を更新しました')
+}
+
+if (errors.length > 0) process.exitCode = 1
