@@ -21,7 +21,7 @@
           "wrongFeedback": "Workersは単一のデータセンターではなく、Cloudflareのグローバルネットワーク上にある多数のエッジロケーションで実行されます。"
         },
         {
-          "text": "世界中のCloudflareエッジロケーションでV8アイソレート上にコードを実行し、ユーザーに近い場所でリクエストを処理するサーバーレス実行モデル"
+          "text": "世界中のエッジロケーションでV8アイソレート上にコードを実行し、ユーザーに近い場所でリクエストを処理するサーバーレス実行モデル"
         }
       ],
       "correctIndex": 3,
@@ -9674,7 +9674,7 @@
           "wrongFeedback": "Durable Objectsは無関係です。R2はwrangler CLIやダッシュボード、S3互換APIから直接操作できます。"
         },
         {
-          "text": "Cloudflareダッシュボードの画面操作のみが唯一の方法であり、CLIからの操作はサポートされていない",
+          "text": "Cloudflareダッシュボードの画面操作のみが唯一の方法であり、バケット作成もファイルアップロードもCLIからは操作できない",
           "wrongFeedback": "ダッシュボードでの操作に加え、wrangler CLIからバケット作成やオブジェクトのアップロードが可能です。"
         },
         {
@@ -11344,14 +11344,14 @@
       "question": "SaaS事業者が、顧客(テナント)ごとに異なるカスタムロジックを安全に実行できるプラットフォームを構築したい。数千テナント分のコードを分離して管理しやすくするために、Cloudflareが提供する仕組みとして適したものはどれですか？",
       "options": [
         {
-          "text": "Workers for Platformsのdispatch namespaceを使い、テナントごとのWorkerスクリプトを動的にアップロード・実行して、独立した環境に分離する"
+          "text": "Workers for Platformsのdispatch namespaceにテナントごとのWorkerスクリプトを動的にアップロードし、独立した環境で実行する"
         },
         {
           "text": "テナントごとに個別のCloudflareアカウントを契約してもらう",
           "wrongFeedback": "運用上現実的ではありません。Cloudflareにはマルチテナント向けに設計された仕組みが用意されています。"
         },
         {
-          "text": "すべてのテナントのコードを1つのGitHubリポジトリにまとめ、CI/CDで1つのWorkerとしてバンドルする",
+          "text": "すべてのテナントのコードを1つのGitHubリポジトリにまとめ、CI/CDでビルドして1つのWorkerとしてバンドルしデプロイする",
           "wrongFeedback": "コードをバンドルしても実行時に1つのWorker内で全テナントのコードが動くことに変わりはなく、実行環境の分離にはなりません。"
         },
         {
@@ -11588,7 +11588,7 @@
           "wrongFeedback": "サーバー側のログ調査を行わずにクライアント側だけに原因を求めるのは、切り分けとして不十分です。"
         },
         {
-          "text": "Workers Logsなどでエラーの発生箇所を確認し、Worker自体の実行エラー(例外)なのか、fetch()等のサブリクエスト先(外部APIやDBなど)のエラーなのかをまず切り分ける"
+          "text": "Workers Logsなどでエラーの発生箇所を確認し、Worker自体の実行エラー(例外)なのか、fetch()等のサブリクエスト先のエラーなのかをまず切り分ける"
         },
         {
           "text": "エラーはすべてCloudflareのネットワーク障害が原因と判断し、Cloudflareサポートの対応を待つだけにする",
@@ -12731,10 +12731,10 @@
           "wrongFeedback": "単発の軽量なジョブを大量にさばくならQueuesのバッチ処理が適しています。要件によって使い分けます。"
         },
         {
-          "text": "単発メッセージの非同期処理やバッチ配信はQueues、複数ステップにまたがり状態保持・ステップ単位のリトライ・長時間の待機が必要な処理はWorkflowsが適する"
+          "text": "単発メッセージの非同期処理やバッチ配信はQueues、複数ステップの状態保持・ステップ単位のリトライ・長時間の待機が必要な処理はWorkflowsが適する"
         },
         {
-          "text": "Workflowsは読み取り専用の処理しか実行できないため、書き込みを伴う処理はQueues一択である",
+          "text": "Workflowsは読み取り専用の処理しか実行できないため、決済や在庫更新のような書き込みを伴う処理はQueues一択である",
           "wrongFeedback": "Workflowsに読み取り専用という制約はありません。むしろ決済や在庫更新のような書き込みを伴う多段処理こそWorkflowsの得意分野です。"
         },
         {
@@ -14522,7 +14522,7 @@
           "wrongFeedback": "Workers Trace Events LogpushはWorkers Paidプラン以上で利用可能な機能であり、Freeプランでは有効にできません。"
         },
         {
-          "text": "Workers Paidプラン以上を契約したうえで、Logpushジョブをダッシュボードまたはcurlで作成し、Workerのwrangler設定に`\"logpush\": true`を追加してデプロイする"
+          "text": "Workers Paidプラン以上を契約し、Logpushジョブを作成したうえで、Workerのwrangler設定に`\"logpush\": true`を追加してデプロイする"
         }
       ],
       "correctIndex": 3,
@@ -15000,7 +15000,7 @@
       "question": "Container対応Workerで`wrangler deploy`を実行したときの流れとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Dockerでコンテナイメージをビルドし、Cloudflareのコンテナイメージレジストリにプッシュしたうえで、Workerをデプロイしてネットワーク側にインスタンス起動の準備をする"
+          "text": "Dockerでイメージをビルドし、Cloudflareのコンテナイメージレジストリへプッシュしたうえで、Workerをデプロイしてインスタンス起動の準備をする"
         },
         {
           "text": "コンテナイメージのビルドは行わず、事前にDocker Hubへ手動でプッシュしておいたイメージを参照するだけでよい",
@@ -16545,10 +16545,10 @@
       "question": "ローカルで動かしているdynamic dispatch Workerを、本番にデプロイ済みのuser Workerに接続してテストするための正しい設定はどれですか？",
       "options": [
         {
-          "text": "`dispatch_namespaces`バインディングに`\"remote\": true`を指定し、`wrangler dev`実行時にローカルのdispatch Workerからリモートのuser Workerへルーティングする"
+          "text": "`dispatch_namespaces`バインディングに`\"remote\": true`を指定し、`wrangler dev`のローカルdispatch Workerからリモートのuser Workerへルーティングする"
         },
         {
-          "text": "user Worker側のwrangler設定に`\"local_test\": true`を追加し、dispatch Worker側は何も変更しない",
+          "text": "user Worker側のwrangler設定に`\"local_test\": true`を追加してデプロイし直し、dispatch Worker側は何も変更しない",
           "wrongFeedback": "`local_test`のような設定項目はありません。dispatch Worker側の`dispatch_namespaces`バインディングに`remote: true`を設定します。"
         },
         {
@@ -17037,10 +17037,10 @@
       "question": "AI Gatewayのrate limitingにおける「fixed(固定)」と「sliding(スライディング)」の違いに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "fixedは時計の区切りごとにカウントがリセットされるため区切りをまたぐと上限の倍近くが通ることがあるが、slidingは常に直近の時間幅で数えるためその抜け道が生じにくい"
+          "text": "fixedは時計の区切りごとにカウントがリセットされ区切りをまたぐと上限の倍近く通ることがあるが、slidingは常に直近の時間幅で数えるため抜け道が生じにくい"
         },
         {
-          "text": "fixedは常に直近の時間幅で件数を数え、slidingは時計の区切り(例: 10分ごと)でリセットされる",
+          "text": "fixedは常に直近の時間幅で件数を数え、slidingは時計の区切り(例: 12:00-12:10のような10分ごと)でリセットされる",
           "wrongFeedback": "説明が逆です。時計の区切りでリセットされるのがfixed、常に直近の時間幅で数えるのがslidingです。"
         },
         {
@@ -17516,11 +17516,11 @@
           "wrongFeedback": "クレジットの読み込みに加えて、ゲートウェイの**Workers AI Billing**設定を**Unified billing**に変更する必要があります。"
         },
         {
-          "text": "Workers AIモデルはUnified Billingの対象外で、設定に関わらず常に通常のWorkers AI料金が別請求される",
+          "text": "Workers AIモデルはUnified Billingの対象外であり、ゲートウェイ側の設定に関わらず常に通常のWorkers AI料金が前払いクレジットとは別に請求される",
           "wrongFeedback": "ゲートウェイの**Workers AI Billing**設定を**Unified billing**にすれば、Workers AIの利用分も前払いクレジットから差し引けます。"
         },
         {
-          "text": "ゲートウェイの**Workers AI Billing**設定を**Unified billing**にすると、そのゲートウェイ経由のWorkers AIリクエストが前払いクレジットからリアルタイムで差し引かれる"
+          "text": "ゲートウェイの**Workers AI Billing**設定を**Unified billing**にすると、そのゲートウェイ経由のWorkers AIリクエストが前払いクレジットから差し引かれる"
         },
         {
           "text": "Workers AIモデルはAI Gateway経由では一切課金されず、常に無料で利用できる",
@@ -18733,14 +18733,14 @@
           "wrongFeedback": "VPC Networksは`fetch()`によるHTTPだけでなく、`connect()`によるraw TCP接続もサポートします。"
         },
         {
-          "text": "VPC Servicesは特定のホストとポートの組み合わせごとに個別のバインディングを事前登録する必要があるのに対し、VPC Networksはトンネルやメッシュ全体にバインドし、実行時に指定するURL/アドレスで接続先が決まる"
+          "text": "VPC Servicesは特定のホストとポートの組み合わせごとにバインディングを事前登録するのに対し、VPC Networksはトンネルやメッシュ全体にバインドし、実行時のURL/アドレスで接続先が決まる"
         },
         {
           "text": "VPC ServicesとVPC Networksはどちらも同じ設定方法で、名前が違うだけで実質的な違いはない",
           "wrongFeedback": "実質的な違いがあります。事前登録が必要かどうか、アクセス範囲の広さが異なります。"
         },
         {
-          "text": "VPC Servicesはネットワーク全体への広いアクセスを提供し、VPC Networksは特定のホスト・ポートに限定されたアクセスを提供する",
+          "text": "VPC Servicesはトンネルやメッシュ全体への広いアクセスを提供し、VPC Networksは事前登録した特定のホスト・ポートに限定されたアクセスを提供する",
           "wrongFeedback": "説明が逆です。特定のホスト・ポートに限定されるのがVPC Services、ネットワーク全体への広いアクセスを提供するのがVPC Networksです。"
         }
       ],
@@ -18889,10 +18889,10 @@
       "question": "Workers VPCで必要な権限(ロール)に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "既存のVPC Serviceにバインドするだけなら「Connectivity Directory Bind」ロールで十分だが、新しくVPC Serviceを作成するには「Connectivity Directory Admin」ロールが必要"
+          "text": "既存のVPC Serviceにバインドするだけなら「Connectivity Directory Bind」で十分だが、新しくVPC Serviceを作成するには「Connectivity Directory Admin」ロールが必要"
         },
         {
-          "text": "VPC Serviceの作成にもバインドにも、常に同じ「Connectivity Directory Admin」ロールが必要で、権限の使い分けはない",
+          "text": "VPC Serviceの作成にも既存サービスへのバインドにも、常に同じ「Connectivity Directory Admin」ロールが必要で、ロールによる権限の使い分けはない",
           "wrongFeedback": "バインドのみなら「Connectivity Directory Bind」ロールで十分です。作成には「Connectivity Directory Admin」が必要という使い分けがあります。"
         },
         {
@@ -19052,11 +19052,11 @@
           "wrongFeedback": "Cloudflare Origin CA証明書は、ブラウザには信頼されませんが、Workers VPCからの接続では信頼されます。"
         },
         {
-          "text": "TLS証明書の種類に関わらず、`cert-verification-mode`を`disabled`に設定しない限りすべての接続が失敗する",
+          "text": "TLS証明書の種類に関わらず、トンネル側で`cert-verification-mode`を`disabled`に設定しない限りすべてのHTTPS接続が失敗する",
           "wrongFeedback": "`disabled`にしなくても、公的に信頼されたCAの証明書やCloudflare Origin CA証明書であれば接続は成功します。"
         },
         {
-          "text": "Let's EncryptやDigiCertなど公的に信頼された認証局(CA)が発行した証明書、またはCloudflare Origin CA証明書のいずれかが必要で、それ以外の証明書ではTLSハンドシェイクが失敗する"
+          "text": "Let's EncryptやDigiCertなど公的に信頼された認証局(CA)の証明書、またはCloudflare Origin CA証明書のいずれかが必要で、それ以外ではTLSハンドシェイクが失敗する"
         }
       ],
       "correctIndex": 3,
@@ -20518,14 +20518,14 @@
       "question": "同じホスト名・同じ証明書タイプの証明書が複数存在する場合の、Cloudflareの証明書デプロイの優先順位に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "基本的には最も新しく発行された証明書が優先されるが、証明書の削除が発生した場合は、残っている証明書のうち有効期限が最も遅いものが優先される"
+          "text": "基本的には最も新しく発行された証明書が優先されるが、削除が発生した場合は残っている証明書のうち有効期限が最も遅いものが優先される"
         },
         {
           "text": "常に最も古く発行された証明書が優先され、新しく発行された証明書は無視される",
           "wrongFeedback": "逆です。基本的には最も新しく発行された証明書が優先されます。"
         },
         {
-          "text": "証明書の削除が発生した場合は、残っている証明書の中で最も有効期限が早いものが優先される",
+          "text": "証明書の削除が発生した場合は、発行日時に関わらず残っている証明書の中で最も有効期限が早いものが優先される",
           "wrongFeedback": "逆です。削除が発生した場合は、有効期限が最も遅い(遠い)証明書が優先されます。"
         },
         {
@@ -22665,11 +22665,11 @@
           "wrongFeedback": "現時点でダッシュボードはゾーンレベルのカスタムルールセットの操作をサポートしておらず、APIを使う必要があります。"
         },
         {
-          "text": "カスタムルールセットはEnterpriseプラン専用の機能であり、他のプランでは一切利用できない",
+          "text": "カスタムルールセットはゾーンレベルのものもEnterpriseプラン専用の機能であり、他のプランでは一切利用できない",
           "wrongFeedback": "ゾーンレベルのカスタムルールセットはすべてのプランで利用できます。Enterpriseが必要なのはアカウントレベルのカスタムルールセットです。"
         },
         {
-          "text": "ゾーンレベルのカスタムルールセットはすべての顧客が作成・デプロイできるが、アカウントレベルのカスタムルールセットはEnterpriseプランが必要である"
+          "text": "ゾーンレベルのカスタムルールセットはすべての顧客が作成・デプロイできるが、アカウントレベルのものはEnterpriseプランが必要である"
         }
       ],
       "correctIndex": 3,
@@ -23867,7 +23867,7 @@
           "wrongFeedback": "単一のエンジンではありません。Bot ManagementはHeuristics・機械学習・異常検知など複数の検出エンジンを組み合わせてスコアを算出します。"
         },
         {
-          "text": "Heuristics(既知の悪性フィンガープリントとの照合)・機械学習・異常検知(サイト固有のベースラインとの比較)・JavaScript detections・Cloudflare Service"
+          "text": "Heuristics(既知の悪性フィンガープリントとの照合)・機械学習・異常検知・JavaScript detections・Cloudflare Service"
         }
       ],
       "correctIndex": 3,
@@ -25892,7 +25892,7 @@
           "wrongFeedback": "APIの`Create Monitor`エンドポイントからも`consecutive_up`・`consecutive_down`を設定できます。ダッシュボード限定ではありません。"
         },
         {
-          "text": "エンドポイントを健全から不健全に切り替えるには`consecutive_down`で指定した回数だけ連続して不健全と判定される必要があり、不健全から健全への切り替えには`consecutive_up`で指定した回数の連続した健全判定が必要である"
+          "text": "健全から不健全への切り替えには`consecutive_down`で指定した回数の連続した不健全判定が、不健全から健全への切り替えには`consecutive_up`で指定した回数の連続した健全判定が必要である"
         },
         {
           "text": "これらのパラメータは、ヘルスチェックの成否ではなく、リクエストのレイテンシの平均値をもとに健全性を切り替えるための設定である",
@@ -26725,7 +26725,7 @@
           "wrongFeedback": "制限付きヘッダーは、カスタムヘッダーとは異なり1〜3個の具体的な値の指定が必須です。"
         },
         {
-          "text": "`accept`・`accept-encoding`・`referer`・`user-agent`などの制限付きヘッダーは、値を指定せずにヘッダー名だけを登録することはできず、1〜3個の具体的な値を指定する必要がある"
+          "text": "`accept`や`user-agent`などの制限付きヘッダーは、値を指定せずヘッダー名だけを登録することはできず、1〜3個の具体的な値を指定する必要がある"
         }
       ],
       "correctIndex": 3,
@@ -27239,7 +27239,7 @@
           "wrongFeedback": "対象範囲による区分ではありません。静的・動的のどちらも、URIパス・クエリ文字列のいずれか、または両方を対象にできます。"
         },
         {
-          "text": "静的な書き換えはURLの一部を固定の文字列に置き換えるのに対し、動的な書き換えはリクエストのプロパティに基づく数式(rewrite expression)を使って結果のパスやクエリ文字列を定義する"
+          "text": "静的な書き換えはURLの一部を固定の文字列に置き換えるのに対し、動的な書き換えはリクエストのプロパティに基づく数式で結果のパスやクエリ文字列を定義する"
         },
         {
           "text": "静的な書き換えはAPI経由でのみ設定でき、動的な書き換えはダッシュボード経由でのみ設定できるという、設定手段による区分である",
@@ -28513,10 +28513,10 @@
           "wrongFeedback": "即座に完全停止し二度と有効化できなくなるという仕様はありません。バッファを持ってクォータが適用され、サービスの中断を避ける設計になっています。"
         },
         {
-          "text": "自動作成レコードもクォータの対象としてカウントされるが、サービスの中断を避けるために若干の余裕(バッファ)を持って上限が適用され、結果としてゾーンが表面上の上限をわずかに超えて保持することがある"
+          "text": "自動作成レコードもクォータの対象としてカウントされるが、サービスの中断を避けるため若干の余裕(バッファ)を持って上限が適用され、ゾーンが表面上の上限をわずかに超えることがある"
         },
         {
-          "text": "こうした自動作成レコードはクォータの対象外として完全に除外され、いくつ作成されてもクォータの消費には一切カウントされない",
+          "text": "Email Routingなどが作成するTXT・MXレコードはクォータの対象外として完全に除外され、いくつ作成されてもクォータの消費には一切カウントされない",
           "wrongFeedback": "完全に除外されるわけではありません。自動作成レコードもクォータの対象としてカウントされますが、サービスの中断を避けるための若干の余裕(バッファ)が設けられています。"
         },
         {
@@ -29931,14 +29931,14 @@
           "wrongFeedback": "RUMはFreeプランでも自動的に有効化されています。Enterprise限定というのは誤りです。"
         },
         {
-          "text": "Freeプランでは自動的にRUMが有効化されており、デフォルトではEUのトラフィックが除外されるが、この設定はオフに切り替えることができる"
+          "text": "Freeプランでは自動的にRUMが有効化され、デフォルトではEUのトラフィックが除外されるが、この設定はオフに切り替えられる"
         },
         {
           "text": "Freeプランでは、RUMは明示的に有効化しない限り常に無効のままである",
           "wrongFeedback": "Freeプランでは自動的にRUMが有効化されています。明示的な有効化操作は不要です。"
         },
         {
-          "text": "Freeプランでは、EUのトラフィックを含むすべての地域のデータが自動的に収集される",
+          "text": "Freeプランでは、EUを含むすべての地域のトラフィックデータが例外なく自動的に収集される",
           "wrongFeedback": "Freeプランではデフォルトで EUのトラフィックが除外されます。すべての地域が自動的に含まれるわけではありません。"
         }
       ],
@@ -30595,10 +30595,10 @@
           "wrongFeedback": "逆です。0-RTTはデフォルトで無効になっており、有効化するには明示的な設定変更が必要です。"
         },
         {
-          "text": "0-RTTはGET・HEAD・OPTIONSリクエストに対応しているがPOSTリクエストには対応しておらず、0-RTTを使ったリクエストには`Early-Data: 1`ヘッダーが付与される"
+          "text": "0-RTTはGET・HEAD・OPTIONSに対応するがPOSTには対応しておらず、0-RTTを使ったリクエストには`Early-Data: 1`ヘッダーが付与される"
         },
         {
-          "text": "0-RTTの接続再開は、訪問者とCloudflare間だけでなく、Cloudflareとオリジン間にも同様に適用される",
+          "text": "0-RTTの接続再開は、訪問者とCloudflare間だけでなく、Cloudflareとオリジンサーバー間の接続にも同様に適用される",
           "wrongFeedback": "0-RTTは訪問者とCloudflare間でのみ確立され、オリジンサーバーまで拡張されるわけではありません。"
         },
         {
@@ -30699,7 +30699,7 @@
       "question": "圧縮方式によって基準が異なる可能性を踏まえると、Cloudflareがレスポンスを圧縮する際の最小サイズの制約に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "Gzipについては48バイト以上、Brotli・Zstandardについては50バイト以上のレスポンスサイズが必要で、これを下回るレスポンスはコンテンツタイプに関わらず圧縮されない"
+          "text": "Gzipは48バイト以上、Brotli・Zstandardは50バイト以上のレスポンスサイズが必要で、これを下回るとコンテンツタイプに関わらず圧縮されない"
         },
         {
           "text": "最小サイズの制約が存在するのはBrotli・Zstandardのみであり、Gzipには最小サイズの制約が存在しない",
@@ -31334,11 +31334,11 @@
           "wrongFeedback": "自動的な保護はされません。管理者が明示的にGatewayのブロック/許可ポリシーを設定する必要があります。"
         },
         {
-          "text": "プライベートネットワークルートは、公開アプリケーション(published application)と同様にHTTPトラフィックのみを公開でき、非HTTPサービスは公開できない",
+          "text": "プライベートネットワークルートは、公開アプリケーション(published application)と同様にHTTPトラフィックのみを公開でき、非HTTPのTCPサービスは一切公開できない",
           "wrongFeedback": "逆です。プライベートネットワークルートはHTTP・非HTTPの両方のリソースを公開できます(公開アプリケーションと異なる点です)。"
         },
         {
-          "text": "Cloudflare One Clientユーザーがプライベートネットワーク全体へアクセスできてしまうのを防ぐため、プライベートIP空間に対するcatch-allのGatewayブロックポリシーを作成し、その上に個別アプリケーションへのAllowポリシーを重ねることが推奨される"
+          "text": "Cloudflare One Clientユーザーがネットワーク全体へアクセスできてしまうのを防ぐため、プライベートIP空間へのcatch-allのGatewayブロックポリシーを作成し、その上に個別アプリケーションへのAllowポリシーを重ねる構成が推奨される"
         }
       ],
       "correctIndex": 3,
@@ -32793,10 +32793,10 @@
           "wrongFeedback": "DNSリゾルバ設定のみでは、DNSポリシーだけが適用されます。Network・HTTPポリシーの適用にはCloudflare One Client(WARP)などの接続方式が必要です。"
         },
         {
-          "text": "Cloudflare One Client(WARP)で接続した場合はDNS・Network・HTTPのすべてのポリシーが適用されるのに対し、DNSリゾルバの設定のみを変更した場合はDNSポリシーのみが適用される"
+          "text": "Cloudflare One Client(WARP)で接続した場合はDNS・Network・HTTPのすべてが適用されるのに対し、DNSリゾルバの設定のみを変更した場合はDNSポリシーのみが適用される"
         },
         {
-          "text": "PACファイル経由のプロキシエンドポイントで接続した場合、ブラウザのHTTPトラフィックだけでなくNetworkポリシーも適用される",
+          "text": "PACファイル経由のプロキシエンドポイントで接続した場合、ブラウザのHTTPトラフィックだけでなくDNS・Networkポリシーも同様に適用される",
           "wrongFeedback": "PACファイル経由のプロキシエンドポイントはブラウザのHTTPトラフィックのみが対象で、Networkポリシーは適用されません。"
         },
         {
@@ -35162,7 +35162,7 @@
           "wrongFeedback": "これらのセレクタによる一致はGatewayのログには表示されません。"
         },
         {
-          "text": "Destination Continent IP Geolocation・Destination Country IP Geolocation・Destination IPというセレクタはIsolateポリシーの対象として利用できず、これらのセレクタに基づく一致はGatewayのログにも表示されないうえ、いったん分離された通信に対してこれらのセレクタに基づく他のポリシー(宛先IPによるBlockなど)を適用することもできない"
+          "text": "Destination Continent/Country IP Geolocation・Destination IPというセレクタはIsolateポリシーの対象として利用できず、これらに基づく一致はGatewayのログにも表示されないうえ、分離された通信に対してこれらに基づく他のポリシー(宛先IPによるBlockなど)を適用することもできない"
         },
         {
           "text": "この制約はHTTPポリシー全般に一律に適用されるものであり、Isolate以外のAllow・Blockといった他のアクションにも同様に及ぶ",
@@ -35858,7 +35858,7 @@
           "wrongFeedback": "そのような自動的な公開設定の変更は行われません。"
         },
         {
-          "text": "CASBは、インテグレーション内で公開アクセス可能(publicly accessible)なファイルのみをDLPプロファイルと照合してスキャンし、非公開のファイルはスキャン対象に含まれない"
+          "text": "CASBは、インテグレーション内で公開アクセス可能なファイルのみをDLPプロファイルと照合してスキャンし、非公開のファイルはスキャン対象に含まれない"
         },
         {
           "text": "CASBはアクセス権限の設定に関わらず、インテグレーション内のすべてのファイル(非公開のものも含む)をスキャン対象にする",
@@ -35913,7 +35913,7 @@
           "wrongFeedback": "説明が入れ替わっています。設定不備・不正なユーザー活動を指すのはPosture findings、DLPによって検知されたデータ露出インスタンスを指すのはContent findingsです。"
         },
         {
-          "text": "Posture findingsは設定不備・不正なユーザー活動などのセキュリティ問題を指し、severity(重要度)・件数・関連インテグレーション・ステータス・検知日といった情報が表示される。一方Content findingsはDLPによって検知されたデータ露出のインスタンスを指し、ファイル名・ファイルへのリンク・一致したDLPプロファイル・関連インテグレーション・検知日といった情報が表示される"
+          "text": "Posture findingsは設定不備・不正なユーザー活動などのセキュリティ問題を指し、severity・件数・関連インテグレーション・ステータス・検知日が表示される。一方Content findingsはDLPが検知したデータ露出を指し、ファイル名・ファイルへのリンク・一致したDLPプロファイル・関連インテグレーション・検知日が表示される"
         }
       ],
       "correctIndex": 3,
@@ -35966,7 +35966,7 @@
           "wrongFeedback": "説明が入れ替わっています。Criticalは「今日中に対応すべき」、Lowは「情報提供的、または定期レビューの一環」というレベルです。"
         },
         {
-          "text": "severityレベルはCritical(今日中に対応すべき)・High(今週中に対応すべき)・Medium(今月中にレビューされるべき)・Low(情報提供的、または定期レビューの一環)の4段階に分かれている"
+          "text": "severityレベルはCritical(今日中に対応)・High(今週中に対応)・Medium(今月中にレビュー)・Low(情報提供・定期レビュー)の4段階に分かれている"
         }
       ],
       "correctIndex": 3,
@@ -36082,7 +36082,7 @@
           "wrongFeedback": "権限が不足している場合、修復はRejectedステータスになるなど、権限不足による失敗が発生しえます。"
         },
         {
-          "text": "CASBはアプリケーション内のfindingを直接修復する機能を持っており、この機能を利用するにはインテグレーションをRead-Writeモードに設定しておく必要がある"
+          "text": "CASBはアプリケーション内のfindingを直接修復する機能を持ち、利用にはインテグレーションをRead-Writeモードに設定する必要がある"
         }
       ],
       "correctIndex": 3,
@@ -37810,7 +37810,7 @@
           "wrongFeedback": "detectionは脅威を識別するプロセス、dispositionはその結果として付与される最終的な1つの判定であり、明確に異なる概念です。"
         },
         {
-          "text": "1通のメールは複数のdetectionを持つことができるが、最終的なdispositionは常に1つに定まる。SPAMと判定されたメールのdispositionヘッダーには「SPAM」ではなく「UCE」(unsolicited commercial emails)という値がタグ付けされる"
+          "text": "1通のメールは複数のdetectionを持つことができるが、最終的なdispositionは常に1つに定まる。SPAMと判定されたメールのdispositionヘッダーには「SPAM」ではなく「UCE」という値がタグ付けされる"
         },
         {
           "text": "1通のメールは複数のdispositionを同時に持つことができ、代わりにdetectionの方が常に1つに限定されるという関係になっている",
@@ -38425,7 +38425,7 @@
           "wrongFeedback": "現時点でプレビューに対応しているのはPDFファイルのみです。"
         },
         {
-          "text": "Advanced screenでは、Subjectを除くすべてのフィールドに単一の値のみを入力できるという制約があり、また添付ファイルのプレビューは現時点でPDFファイルのみに対応している"
+          "text": "Advanced screenではSubjectを除くすべてのフィールドに単一の値のみを入力でき、添付ファイルのプレビューは現時点でPDFファイルのみに対応している"
         },
         {
           "text": "Advanced screenでは、Subjectを含むすべてのフィールドに複数のキーワードをカンマ区切りで入力できる",
@@ -39089,7 +39089,7 @@
           "wrongFeedback": "/24のプレフィックス要件を満たさない小規模なネットワークを保護したい場合は、Cloudflare所有のIPアドレスを使う選択肢も提供されています。"
         },
         {
-          "text": "Cloudflare WANは拠点・オフィス・クラウドリソースをCloudflare経由で接続するサイト間接続サービスであるのに対し、Magic TransitはBGPでアドバタイズした顧客のIPプレフィックスをCloudflareのグローバルネットワークでDDoS攻撃から保護するサービスである"
+          "text": "Cloudflare WANは拠点・オフィス・クラウドリソースをCloudflare経由で接続するサイト間接続サービスであるのに対し、Magic TransitはBGPでアドバタイズした顧客のIPプレフィックスをDDoS攻撃から保護するサービスである"
         }
       ],
       "correctIndex": 3,
@@ -42481,7 +42481,7 @@
       "question": "Cloudflare Agentsの説明として最も適切なものはどれですか?",
       "options": [
         {
-          "text": "耐久性のある識別子・組み込みSQLストレージ・リアルタイム接続・スケジュール実行・復旧可能な実行を備え、状態を持つAIエージェントをホストするためのランタイム"
+          "text": "耐久性のある識別子・組み込みSQLストレージ・リアルタイム接続・スケジュール実行などを備え、状態を持つAIエージェントをホストするためのランタイム"
         },
         {
           "text": "オリジンサーバーへのリクエストを地理的に近いデータセンターへ振り分けるロードバランシング機能",
@@ -42492,7 +42492,7 @@
           "wrongFeedback": "これはZarazの説明です。AgentsはAIエージェントの実行基盤であり、タグマネージャーではありません。"
         },
         {
-          "text": "ステートレスなWorkersスクリプトを、リクエストごとに毎回ゼロから初期化して実行するための仕組み",
+          "text": "ステートレスなWorkersスクリプトを、リクエストごとに毎回ゼロから初期化し、状態を残さずに実行するための仕組み",
           "wrongFeedback": "Agentsはむしろその逆で、リクエストをまたいで状態や接続を保持し続けることを目的としています。"
         }
       ],
@@ -43207,7 +43207,7 @@
       "question": "Agentの`this.schedule()`メソッドで指定できるスケジュール方式の組み合わせとして正しいものはどれですか?",
       "options": [
         {
-          "text": "秒数を指定した遅延実行、Dateオブジェクトを指定した日時実行、cron文字列を指定した定期実行の3種類に対応し、一定間隔での繰り返し実行には別途`this.scheduleEvery()`を使う"
+          "text": "秒数を指定した遅延実行、Dateオブジェクトによる日時実行、cron文字列による定期実行の3種類に対応し、一定間隔の繰り返しには別途`this.scheduleEvery()`を使う"
         },
         {
           "text": "cron文字列による定期実行のみに対応しており、指定した秒数後や特定の日時に1回だけ実行するような使い方はできない",
@@ -43218,7 +43218,7 @@
           "wrongFeedback": "実用上、1Agentあたり数万件程度が目安とされており、無制限ではありません。"
         },
         {
-          "text": "スケジュールされたタスクはAgentインスタンスのメモリ上のタイマーとして管理されるため、インスタンスが再起動すると失われる",
+          "text": "スケジュールされたタスクはAgentインスタンスのメモリ上のタイマーとして管理されるため、インスタンスが休止・再起動すると予約内容が失われる",
           "wrongFeedback": "スケジュールされたタスクはSQLiteのテーブルに保存され、Durable Objectの`alarm`を使って正しいタイミングでAgentを起こす仕組みになっているため、再起動をまたいでも失われません。"
         }
       ],
