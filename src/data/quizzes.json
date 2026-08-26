@@ -1203,15 +1203,15 @@
       "question": "`wrangler.toml`（または`wrangler.jsonc`）に必ず設定する必要がある基本項目の組み合わせとして最も適切なものはどれですか？",
       "options": [
         {
-          "text": "`name`（Workerの名前）と `compatibility_date`（互換性日付）"
+          "text": "`name`（Workerの名前）、`main`（エントリーポイント）、`compatibility_date`（互換性日付）"
         },
         {
           "text": "`docker_image`（コンテナイメージ名）と `port`（公開ポート）",
           "wrongFeedback": "WorkersはDockerコンテナではなくV8アイソレート上で動作するため、コンテナイメージやポートの指定は不要です。"
         },
         {
-          "text": "`region`（デプロイ先リージョン）と `memory_limit`（1インスタンスあたりのメモリ上限）",
-          "wrongFeedback": "Cloudflare Workersはエッジ上で自動的に世界中に分散実行されるため、リージョンやメモリ上限を指定する項目は`wrangler.toml`の基本項目にはありません。"
+          "text": "`region`（デプロイ先リージョン）と `memory_limit`（1インスタンスあたりのメモリ上限）を必ず指定しないとデプロイできない",
+          "wrongFeedback": "デプロイに必須なのは`name`・`main`・`compatibility_date`です。`placement.region`のような配置ヒントの設定は実在しますが必須項目ではなく、`memory_limit`という項目自体がありません。"
         },
         {
           "text": "`database_url`（DB接続文字列）と `secret_key`（秘密鍵）",
@@ -1219,7 +1219,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`wrangler.toml`（または`wrangler.jsonc`）は、Workerの設定を定義する中心的なファイルです。\n{{diagram:0}}\n最低限、Workerを識別する `name` と、Workersランタイムの挙動を固定する `compatibility_date` が必要です。`main`（エントリーポイント）も実質的に必須です。それ以外の項目（bindingsや環境変数など）は必要に応じて追加します。",
+      "explanation": "`wrangler.toml`（または`wrangler.jsonc`）は、Workerの設定を定義する中心的なファイルです。\n{{diagram:0}}\n公式ドキュメントは、Workerをデプロイするのに最低限必要なキーとして `name`（Workerの識別名）、`main`（エントリーポイント）、`compatibility_date`（ランタイムの挙動を固定する互換性日付）の3つを挙げています。それ以外の項目（bindingsや環境変数など）は必要に応じて追加します。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
       "hint": "Workerを一意に識別する項目と、ランタイムの動作バージョンを固定する項目を考えましょう。",
       "tags": [
@@ -17619,7 +17619,7 @@
       "question": "AI Gatewayの制限値に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "キャッシュ可能なリクエストサイズは1リクエストあたり100MBまで、キャッシュTTLは最大1年まで、カスタムメタデータは1ゲートウェイあたり最大10エントリまでという制限がある",
+          "text": "キャッシュ可能なリクエストサイズは100MBまで、キャッシュTTLは最大1年、カスタムメタデータは1ゲートウェイあたり10エントリまで",
           "wrongFeedback": "3つとも実際の上限と異なります。キャッシュ可能なリクエストサイズは25MB、キャッシュTTLは最大1か月、カスタムメタデータは「1ゲートウェイあたり」ではなく「1リクエストあたり」5エントリまでです。"
         },
         {
