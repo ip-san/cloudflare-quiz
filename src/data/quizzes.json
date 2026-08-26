@@ -19995,7 +19995,7 @@
         },
         {
           "text": "Sectigoのみが利用可能で、他のCAは一切利用できない",
-          "wrongFeedback": "SectigoはBackup証明書専用のCAであり、SSL for SaaSでは利用されません。"
+          "wrongFeedback": "SectigoはBackup証明書専用のCAであり、SSL for SaaSでは利用されません。SSL for SaaSで利用できるのはLet's Encrypt・Google Trust Services・SSL.comの3つで、これらから選択できます。"
         },
         {
           "text": "Let's Encrypt、Google Trust Services、SSL.comのいずれかが利用可能で、Sectigoは利用されない"
@@ -32860,7 +32860,7 @@
         },
         {
           "text": "DNSポリシーでのブロックは同じドメインを対象とするHTTPポリシーへ自動的に反映されるため、IP直接指定によるアクセスも含めて別途HTTPポリシーを作成する必要はない",
-          "wrongFeedback": "DNSポリシーとHTTPポリシーは別々に評価される独立したポリシービルダーであり、自動的に反映される仕組みはありません。"
+          "wrongFeedback": "DNSポリシーとHTTPポリシーは別々に評価される独立したポリシービルダーであり、自動的に反映される仕組みはありません。またDNSポリシーはDNSクエリ(名前解決)の段階で作用するため、宛先のIPアドレスを直接指定して名前解決を伴わずにアクセスされた場合は対象になりません。IP直接指定も遮断するには、対応するHTTPポリシーやNetworkポリシーを別途作成する必要があります。"
         },
         {
           "text": "DNSポリシーとResolverポリシーは単独で機能するため、対応するHTTPポリシーがない場合、宛先のIPアドレスを知っているユーザーはアクセスできてしまう"
@@ -41308,7 +41308,7 @@
         },
         {
           "text": "この機能(`enabled_origin_commands`)はダッシュボードから常時デフォルトで有効になっており、追加の設定なしにオリジンからのすべてのレスポンスヘッダーを解析してセッションを無効化する",
-          "wrongFeedback": "この機能はデフォルトでは無効で、ダッシュボードで明示的に有効化するか、APIで`enabled_origin_commands`に`revoke`を含める必要があります。"
+          "wrongFeedback": "この機能はデフォルトでは無効で、ダッシュボードで明示的に有効化するか、APIで`enabled_origin_commands`に`revoke`を含める必要があります。また、解析されるのはオリジンからのすべてのレスポンスヘッダーではなく、`Cf-Waiting-Room-Command: revoke`という特定のヘッダーのみです。"
         },
         {
           "text": "セッション無効化コマンドはリクエストヘッダーにのみ付与でき、レスポンスヘッダーに付与しても効果はない",
