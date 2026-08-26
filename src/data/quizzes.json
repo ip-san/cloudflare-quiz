@@ -2830,7 +2830,7 @@
           "wrongFeedback": "これはWorkers KVの説明です。D1はSQLを使ってテーブル同士をJOINできるリレーショナルデータベースです。"
         },
         {
-          "text": "Cloudflareのグローバルネットワーク上で動作する、SQLiteベースのサーバーレスリレーショナルデータベース"
+          "text": "Cloudflare上で動作する、SQLiteベースのサーバーレスリレーショナルデータベース"
         }
       ],
       "correctIndex": 3,
@@ -2970,7 +2970,7 @@
           "wrongFeedback": "これはWorkers KV用のコマンドであり、D1データベースの作成には使えません。"
         },
         {
-          "text": "`wrangler d1 create <name>` でデータベースを作成し、出力された `database_id` を `wrangler.toml` の `[[d1_databases]]` に設定する"
+          "text": "`wrangler d1 create` でデータベースを作成し、`database_id` を `wrangler.toml` の `[[d1_databases]]` に設定する"
         },
         {
           "text": "`package.json`のdependenciesに `@cloudflare/d1` を追加するだけで自動的にバインディングされる",
@@ -4036,7 +4036,7 @@
           "wrongFeedback": "S3互換API用にはR2専用のアクセスキーID/シークレットアクセスキーを別途発行する必要があります。"
         },
         {
-          "text": "R2ダッシュボードでAPIトークン（アクセスキーID/シークレットアクセスキー）を発行し、アカウント固有のS3互換エンドポイントを指定する"
+          "text": "R2ダッシュボードでアクセスキーID/シークレットアクセスキーを発行し、アカウント固有のS3互換エンドポイントを指定する"
         },
         {
           "text": "S3互換APIは提供されておらず、専用SDKの利用が必須である",
@@ -9475,7 +9475,7 @@
           "wrongFeedback": "D1のClient APIには実行時にデータベースを切り替える引数はありません。バインディングごとに別々の名前を割り当てます。"
         },
         {
-          "text": "`wrangler.toml`に`[[d1_databases]]`ブロックを複数記述し、それぞれに異なる`binding`名(例: `DB_MAIN`, `DB_ANALYTICS`)を設定する"
+          "text": "`[[d1_databases]]`ブロックを複数記述し、それぞれに異なる`binding`名(例: `DB_MAIN`, `DB_ANALYTICS`)を設定する"
         },
         {
           "text": "1つの`[[d1_databases]]`ブロックの`database_id`に複数のIDを配列で指定する",
@@ -12459,7 +12459,7 @@
           "wrongFeedback": "デフォルトでもリトライは行われます。リトライさせたくない場合に明示的な設定が必要です。"
         },
         {
-          "text": "最大5回まで、初回10秒の遅延から指数バックオフ(exponential backoff)でリトライする"
+          "text": "最大5回まで、初回10秒の遅延から指数バックオフ(exponential)でリトライする"
         }
       ],
       "correctIndex": 3,
@@ -13324,7 +13324,7 @@
           "wrongFeedback": "エンドユーザーのアップロードに対応しています。Direct Creator Uploads がまさにその用途の機能です。"
         },
         {
-          "text": "Direct Creator Uploads を使い、ユーザーごとに発行した一時的なアップロード先URLへ、動画を自分のサーバーを経由させずに直接アップロードさせる"
+          "text": "Direct Creator Uploads を使い、ユーザーごとに発行した一時的なアップロードURLへ、サーバーを経由させず直接アップロードさせる"
         }
       ],
       "correctIndex": 3,
@@ -13548,7 +13548,7 @@
           "wrongFeedback": "Workers バインディング(`send_email` / `env.EMAIL.send()`)でも送信できます。REST API や SMTP は追加の選択肢です。"
         },
         {
-          "text": "Wrangler 設定に `send_email` バインディングを追加し、Worker から `env.EMAIL.send(...)` で送信する。Email Service の利用には Cloudflare DNS を使っている必要がある"
+          "text": "Wrangler 設定に `send_email` バインディングを追加し、Worker から `env.EMAIL.send(...)` で送信する。利用には Cloudflare DNS を使っている必要がある"
         },
         {
           "text": "バインディングは不要で、任意のSMTPサーバーのアドレスをコードに直接書けばそのまま送れる",
@@ -13755,7 +13755,7 @@
           "wrongFeedback": "脆弱性スキャンはWorkers Logsの機能ではありません。Workers Logsはあくまでログの収集・分析に特化しています。"
         },
         {
-          "text": "Workerから出力されるログ(リクエスト情報や`console.log`、例外)を自動的に収集・保存し、ダッシュボードでフィルタ・分析できるようにする機能"
+          "text": "Workerから出力されるログ(リクエスト情報や`console.log`、例外)を自動収集し、ダッシュボードでフィルタ・分析できる機能"
         },
         {
           "text": "KVやD1に保存されたデータを自動的に別リージョンへバックアップする機能",
@@ -14191,7 +14191,7 @@
           "wrongFeedback": "Tail Workerの呼び出しはCloudflareのランタイムが自動的に行うため、`fetch()`を手動で書く必要はありません。"
         },
         {
-          "text": "Producer Worker側のwrangler設定に`\"tail_consumers\": [{ \"service\": \"<TAIL_WORKER_NAME>\" }]`を追加し、Tail Worker側には`tail()`ハンドラを実装する"
+          "text": "Producer Worker側のwrangler設定に`tail_consumers`でTail Workerのサービス名を指定し、Tail Worker側には`tail()`ハンドラを実装する"
         },
         {
           "text": "Tail Worker側のwrangler設定に`\"producers\": [{ \"service\": \"<PRODUCER_NAME>\" }]`を追加する",
@@ -14737,7 +14737,7 @@
           "wrongFeedback": "静的アセット配信はWorkers Static Assetsなどの役割であり、Containersはコンテナプロセスの実行が目的です。"
         },
         {
-          "text": "任意の言語・ランタイムで書かれたコードやDockerイメージとして配布された既存アプリケーションを、Workerと連携させてCloudflareのネットワーク上で実行できるようにする"
+          "text": "任意の言語・ランタイムで書かれたコードやDockerイメージのアプリケーションを、Workerと連携させてCloudflareのネットワーク上で実行できるようにする"
         },
         {
           "text": "KVやD1に保存済みのデータを丸ごとコンテナ化して、別リージョンへ定期的に複製するためのバックアップ専用の仕組み",
@@ -14861,7 +14861,7 @@
           "wrongFeedback": "`Container`クラスは`DurableObject`を継承しているため無関係ではありません。"
         },
         {
-          "text": "`Container`クラスは`DurableObject`を継承しており、Durable Objectがルーティング・永続状態・ライフサイクルを管理する一方、コンテナプロセス自体はLinux VM内で実行される"
+          "text": "`Container`は`DurableObject`を継承し、Durable Objectがルーティング・永続状態・ライフサイクルを管理し、コンテナプロセスはLinux VM内で実行される"
         }
       ],
       "correctIndex": 3,
@@ -15287,7 +15287,7 @@
           "wrongFeedback": "デフォルトは一括ではなく、2段階(10%→90%)の段階的なロールアウトです。"
         },
         {
-          "text": "Worker本体のコードは即座に更新される一方、コンテナインスタンスはデフォルトで2段階(まず10%、その後残り90%)のローリングデプロイで更新される"
+          "text": "Workerのコードは即座に更新される一方、コンテナインスタンスはデフォルトで2段階(10%→90%)のローリングデプロイで更新される"
         },
         {
           "text": "ロールアウト中のインスタンスは即座に強制終了(`SIGKILL`)され、猶予期間は一切与えられない",
@@ -17410,7 +17410,7 @@
           "wrongFeedback": "`skipCache`は真偽値(boolean)で、そのリクエストのキャッシュ利用自体をスキップするかどうかを指定します。保存期間を指定するのは`cacheTtl`です。"
         },
         {
-          "text": "`cacheTtl`でキャッシュの保持秒数、`cacheKey`でカスタムのキャッシュキー、`collectLog`でそのリクエストのログを収集するかどうか、`metadata`でログに付与するカスタムメタデータを指定できる"
+          "text": "`cacheTtl`でキャッシュ保持秒数、`cacheKey`でカスタムキャッシュキー、`collectLog`でログ収集の有無、`metadata`でログに付与するカスタムメタデータを指定できる"
         },
         {
           "text": "`gateway`オブジェクトの`id`は省略可能で、省略した場合はデフォルトで一切ゲートウェイを経由せずにプロバイダーへ直接リクエストが送られる",
@@ -19786,7 +19786,7 @@
           "wrongFeedback": "説明が逆です。所有権検証には`ownership_verification`系、証明書検証には`ssl.validation_records`が使われます。"
         },
         {
-          "text": "所有権検証には`ownership_verification`系が使われて`status`に影響し、証明書検証には`ssl.validation_records`が使われて`ssl.status`に影響する"
+          "text": "所有権検証は`ownership_verification`系で`status`に、証明書検証は`ssl.validation_records`で`ssl.status`に影響する"
         },
         {
           "text": "どちらも同じAPIフィールド(`ssl.validation_records`)を使って検証され、区別はない",
@@ -20674,7 +20674,7 @@
           "wrongFeedback": "Streamは耐久性のあるバッファであり、下流の処理が遅延・失敗してもデータが失われないよう設計されています。"
         },
         {
-          "text": "HTTPエンドポイントやWorkerバインディング経由でイベントを受け取る、耐久性のあるバッファ済みキューであり、1つのStreamを複数のPipelineから読み取ってデータを異なる宛先に振り分けることができる"
+          "text": "HTTPエンドポイントやWorkerバインディング経由でイベントを受け取る耐久性のあるバッファ済みキューで、1つのStreamを複数のPipelineから読み取って異なる宛先に振り分けられる"
         },
         {
           "text": "Streamが受け付けられるデータ形式はProtocol Buffers(protobuf)のみで、JSON形式のデータは受け付けられない",
@@ -21431,7 +21431,7 @@
           "wrongFeedback": "Sink配信の課金対象は、実際にSinkへ配信される(変換後の)データ量である300GBです。"
         },
         {
-          "text": "SQL変換の課金対象は変換前の入力データ量である500GB、Sink配信の課金対象は変換後にIcebergへ書き込まれる300GBである"
+          "text": "SQL変換の課金対象は変換前の入力データ量である500GB、Sink配信の課金対象は変換後の300GBである"
         },
         {
           "text": "SQL変換・Sink配信のどちらも、削減後の300GBが課金対象データ量になる",
@@ -21590,7 +21590,7 @@
           "wrongFeedback": "リクエスト処理経路のコンポーネントではありません。Accessポリシーを構成する4要素とは異なります。"
         },
         {
-          "text": "何が起きるかを決めるAction、条件の組み合わせ方を決めるRule type、判定に使う属性のSelector、その具体的な値であるValues"
+          "text": "何が起きるかを決めるAction、条件の組み合わせ方のRule type、判定に使う属性のSelector、その値のValues"
         }
       ],
       "correctIndex": 3,
@@ -22765,7 +22765,7 @@
           "wrongFeedback": "レスポンスのカスタマイズはProプラン以上の機能です。すべてのプランで無条件に使えるわけではありません。"
         },
         {
-          "text": "多くのセキュリティ機能では`403`が返されるが、レート制限ルールによるBlockでは`429`が返され、Proプラン以上ではカスタムルール・レート制限ルールごとにレスポンス内容やステータスコードを変更できる"
+          "text": "多くのセキュリティ機能では`403`、レート制限ルールによるBlockでは`429`が返され、Proプラン以上ではルールごとにレスポンス内容やステータスコードを変更できる"
         },
         {
           "text": "レート制限ルールによるBlockは他のセキュリティ機能と同じく常に`403`を返し、`429`というステータスコードが使われることはない",
@@ -22867,7 +22867,7 @@
           "wrongFeedback": "Sensitive Data Detectionはレスポンスフェーズで動作し、ダウンロードされるレスポンスの内容(機密データなど)を監視します。"
         },
         {
-          "text": "Cloudflare Managed Ruleset・OWASP Core Ruleset・Free Managed Ruleset(全プランで利用可)に加え、レスポンスフェーズで動作するSensitive Data Detection"
+          "text": "Cloudflare Managed Ruleset・OWASP Core Ruleset・Free Managed Rulesetに加え、レスポンスフェーズのSensitive Data Detection"
         },
         {
           "text": "OWASP Core Rulesetのみが提供されており、Cloudflare独自のマネージドルールセットは存在しない",
@@ -23744,7 +23744,7 @@
       "question": "Bot Analyticsで確認できる「ボットグルーピング(bot groupings)」に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "Proプラン以上の顧客であれば、`Security`>`Bots`から自動的にボットグルーピングを確認でき、区分は「Not computed」「Automated」「Likely automated」「Likely human」「Verified bot」の5つである"
+          "text": "Proプラン以上であれば`Security`>`Bots`から自動的に確認でき、区分は「Not computed」「Automated」「Likely automated」「Likely human」「Verified bot」の5つである"
         },
         {
           "text": "ボットグルーピングは`cf.bot_management.score`の1〜99の生の値をそのまま表示するものであり、区分ラベルには変換されない",
@@ -24362,7 +24362,7 @@
       "question": "API ShieldのドキュメントがAPIセキュリティの課題として挙げているものはどれですか？",
       "options": [
         {
-          "text": "多くの企業が把握していないエンドポイントを含む大量のAPIを抱えており、負のセキュリティモデルによる保護はクレデンシャルスタッフィング攻撃に弱く、高度な多段階攻撃は使用パターンの把握が難しいため見逃されやすい"
+          "text": "多くの企業が把握していないエンドポイントを含む大量のAPIを抱えており、負のセキュリティモデルはクレデンシャルスタッフィング攻撃に弱く、高度な多段階攻撃は見逃されやすい"
         },
         {
           "text": "APIはHTMLページと違って必ずキャッシュされないため、CDNのキャッシュヒット率が下がることが最大の課題である",
@@ -25429,7 +25429,7 @@
           "wrongFeedback": "トラフィックが複製されて全Poolに同時送信されるわけではありません。ランダムに選ばれた1つの健全なPoolへ送られます。"
         },
         {
-          "text": "Randomステアリングを選択すると、健全なPoolの中からランダムに1つが選ばれてトラフィックが送られ、APIの`random_steering`オブジェクトでPoolごとにWeightを設定すれば、各Poolへ送られるトラフィックの割合を調整できる"
+          "text": "Randomステアリングを選択すると健全なPoolの中からランダムに1つが選ばれ、`random_steering`オブジェクトでPoolごとにWeightを設定すればトラフィックの割合を調整できる"
         },
         {
           "text": "Randomステアリングは名前の通り常に完全に均等な確率でPoolを選ぶ仕様であり、Weightによる比率の調整はできない",
@@ -26473,7 +26473,7 @@
           "wrongFeedback": "エラーにはなりません。複数のルールがマッチした場合は、それぞれの設定が組み合わさって適用されます。"
         },
         {
-          "text": "Cache Rulesはスタック可能で、複数のマッチするルールの設定が組み合わさって適用され、同じ設定項目が競合する場合は最後にマッチしたルールの値が優先される"
+          "text": "Cache Rulesはスタック可能で、マッチする複数のルールの設定が組み合わさって適用され、競合時は最後にマッチしたルールの値が優先される"
         },
         {
           "text": "Cache Rulesは最初にマッチした1つのルールのみが適用され、それ以降のルールは一切評価されない",
@@ -28102,7 +28102,7 @@
       "question": "DNSレコードを「プロキシ済み(オレンジクラウド)」にすることで得られる利点として正しいものはどれですか？",
       "options": [
         {
-          "text": "オリジンIPアドレスを隠しつつDDoS攻撃から保護でき、WAFルール・キャッシュ・リダイレクトルールといったCloudflare製品の設定がトラフィックに適用される"
+          "text": "オリジンIPアドレスを隠しつつDDoS攻撃から保護でき、WAFルール・キャッシュ・リダイレクトルールなどの設定がトラフィックに適用される"
         },
         {
           "text": "DNSクエリへの応答速度が上がるだけで、DDoS保護やWAF・キャッシュなどの製品機能は一切適用されない",
@@ -29786,7 +29786,7 @@
           "wrongFeedback": "コスト削減が主な理由ではありません。鍵の漏洩リスクの限定と、自動化の促進というセキュリティ上の理由が挙げられています。"
         },
         {
-          "text": "鍵が漏洩したり誤って発行されたりした場合の被害期間を限定できることと、更新作業の頻度が上がることで自動化が促進され、証明書の期限切れや鍵材料の不適切な管理を防ぎやすくなることの2つが理由である"
+          "text": "鍵が漏洩・誤発行された場合の被害期間を限定できることと、更新頻度が上がることで自動化が促進され期限切れや鍵材料の不適切な管理を防げることの2つが理由である"
         },
         {
           "text": "証明書の有効期間が短いほど、Webサイトの表示速度(パフォーマンス)が向上するという直接的な技術的因果関係があるためである",
@@ -32863,7 +32863,7 @@
           "wrongFeedback": "DNSポリシーとHTTPポリシーは別々に評価される独立したポリシービルダーであり、自動的に反映される仕組みはありません。"
         },
         {
-          "text": "DNSポリシーとResolverポリシーは単独で機能するため、対応するHTTPポリシーを作成していない場合、宛先のIPアドレスを知っているユーザーはそのサイトへアクセスできてしまう"
+          "text": "DNSポリシーとResolverポリシーは単独で機能するため、対応するHTTPポリシーがない場合、宛先のIPアドレスを知っているユーザーはアクセスできてしまう"
         },
         {
           "text": "対応するHTTPポリシーやNetworkポリシーがなくても、DNSポリシーだけで完全にそのドメインへのアクセスを防げる",
@@ -33182,7 +33182,7 @@
           "wrongFeedback": "サンドボックスはWindows OS環境でファイルを実行し、ネットワーク活動の監視(データ持ち出しの検知など)も行います。"
         },
         {
-          "text": "AVスキャンでマルウェアが検出されなかったダウンロードファイルのうち、初めて検出されたファイルはサンドボックス内で挙動を監視され、以降同じファイルが再度ダウンロードされた際には、その時の判定結果(許可/ブロック)がそのまま適用される"
+          "text": "AVスキャンでマルウェアが検出されなかったファイルのうち、初めて検出されたものはサンドボックス内で挙動を監視され、同じファイルの再ダウンロード時はその判定結果がそのまま適用される"
         }
       ],
       "correctIndex": 3,
@@ -34955,7 +34955,7 @@
           "wrongFeedback": "マウス操作(リンクのクリックやスクロール)は無効化されません。無効化されるのはキーボード入力のみです。"
         },
         {
-          "text": "Keyboardの入力をDo not allowに設定してもマウス操作(ハイパーリンクのクリックやスクロール)は引き続き利用でき、また分離されたWebサイト内のサードパーティ製の仮想キーボードへの入力までは防げない"
+          "text": "Do not allowに設定してもマウス操作(クリックやスクロール)は引き続き利用でき、サードパーティ製の仮想キーボードへの入力までは防げない"
         },
         {
           "text": "Keyboardの設定を変更すると、分離されたWebサイト内のあらゆる入力手段(仮想キーボードを含む)が一律に無効化される",
@@ -35314,7 +35314,7 @@
           "wrongFeedback": "`*.browser.run`へのポート443でのHTTPS通信の許可も必要です。WebRTCの通信だけでは完結しません。"
         },
         {
-          "text": "ローカルブラウザとリモートブラウザ間の低遅延通信にはUDPを使うWebRTCが使われており、このトラフィックは標準的なHTTP/HTTPSプロキシ設定を経由しないため、接続するデバイスは指定されたIP範囲(ポート10000〜59999)へ直接UDP接続できる必要がある"
+          "text": "低遅延通信にはUDPを使うWebRTCが使われており、このトラフィックは標準的なHTTP/HTTPSプロキシ設定を経由しないため、デバイスは指定されたIP範囲(ポート10000〜59999)へ直接UDP接続できる必要がある"
         },
         {
           "text": "リモートブラウザセッションに割り当てられるポート番号は常に固定されており、ユーザーごとに変わることはない",
@@ -36443,7 +36443,7 @@
           "wrongFeedback": "Configure画面で「Scan for findings」をオフ→オンに切り替えることで、再スキャンをトリガーできます。"
         },
         {
-          "text": "CASBインテグレーションはリアルタイムで更新されるわけではなく、初回スキャンには数時間かかることがあり、それ以降のスキャンはおおむね24〜48時間ごとに定期的に実行される"
+          "text": "リアルタイムで更新されるわけではなく、初回スキャンには数時間かかることがあり、以降のスキャンはおおむね24〜48時間ごとに実行される"
         }
       ],
       "correctIndex": 3,
@@ -36540,7 +36540,7 @@
           "wrongFeedback": "完全な削除ではなく、証拠を確認したうえでCloudflareサポートへ報告し、対応を待つ間はfindingを一時的に非表示にするという流れが推奨されています。"
         },
         {
-          "text": "誤検知が疑われる場合は、まずSaaSプラットフォーム側での実際の状態を確認し(表示されているステータスが不正確な場合があるため)、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みを使ってそのfindingを一時的に非表示にすることが推奨されている"
+          "text": "誤検知が疑われる場合は、まずSaaSプラットフォーム側での実際の状態を確認し、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みでそのfindingを一時的に非表示にすることが推奨されている"
         },
         {
           "text": "誤検知はCASBの仕組み上そもそも発生しえない性質のものであるとされているため、それを想定した報告のための手順自体があらかじめ用意されていない",
@@ -37537,7 +37537,7 @@
       "question": "Email Securityのデプロイモデルである「配信前(pre-delivery)」と「配信後(post-delivery)」の違いに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "配信前(pre-delivery、MX/Inline)はMXレコードをCloudflareへ向けることでメールが受信箱に届く前にスキャンするのに対し、配信後(post-delivery、API/BCC-Journaling)はメールが受信箱に届いた後にスキャンする"
+          "text": "配信前(pre-delivery、MX/Inline)はMXレコードをCloudflareへ向けて受信箱に届く前にスキャンし、配信後(post-delivery、API/BCC-Journaling)は受信箱に届いた後にスキャンする"
         },
         {
           "text": "配信前・配信後のどちらのデプロイモデルでも、MXレコードをCloudflareへ向ける設定が必須である",
@@ -40742,7 +40742,7 @@
           "wrongFeedback": "Default waiting roomでは日本語を含む複数言語から選択でき、Custom waiting roomではHTML/CSSを編集して独自のブランディングを施すことも可能です。"
         },
         {
-          "text": "Default waiting roomでは推定待機時間を表示する未装飾のページを言語選択のみで利用でき、Custom waiting roomではHTML/CSSを編集して独自のテンプレートを作成でき、推定待機時間を表示するには`<h2 id=\"time-remaining\">`を含むテンプレートのコードを残しておく必要がある"
+          "text": "Default waiting roomでは推定待機時間を表示する未装飾のページを言語選択のみで利用でき、Custom waiting roomではHTML/CSSを編集してテンプレートを作成できる。推定待機時間の表示には`<h2 id=\"time-remaining\">`を含むコードを残しておく"
         },
         {
           "text": "JSON応答(`json_response_enabled`)を有効にするトグルは、Custom waiting roomを選択した場合にのみ利用可能であり、Default waiting roomでは利用できない",
@@ -40845,7 +40845,7 @@
           "wrongFeedback": "`shuffle_at_event_start`を`true`にすると、プリキュー期間中に到達した訪問者はイベント開始時にランダムにシャッフルされて順番が決まります。FIFOのまま固定されるわけではありません。"
         },
         {
-          "text": "`prequeue_start_time`は`event_start_time`の少なくとも5分前に設定し、`shuffle_at_event_start`を`true`にすることで、プリキュー期間中に到達した訪問者をイベント開始時にランダムな順番でオリジンへ通過させられる"
+          "text": "`prequeue_start_time`は`event_start_time`の少なくとも5分前に設定し、`shuffle_at_event_start`を`true`にすると、プリキュー中の訪問者がイベント開始時にランダムな順番になる"
         },
         {
           "text": "`prequeue_start_time`は`event_start_time`より後の時刻でなければならず、イベント開始後にプリキューを始めることで遅れて来た訪問者を優先する",
@@ -43273,7 +43273,7 @@
           "wrongFeedback": "既存のスケジュールは維持されたまま返されるだけで、キャンセルや無効化は行われません。"
         },
         {
-          "text": "デフォルトで冪等(idempotent)に扱われ、重複したスケジュールが新たに作られるのではなく、既存のスケジュールがそのまま返される"
+          "text": "デフォルトで冪等(idempotent)に扱われ、重複したスケジュールは作られず既存のものがそのまま返される"
         },
         {
           "text": "常に新しいスケジュールとして追加登録され、同じ条件のジョブが実行のたびに増え続ける",
