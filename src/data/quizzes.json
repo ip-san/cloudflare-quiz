@@ -2281,7 +2281,7 @@
           "wrongFeedback": "put()メソッドは存在し、書き込み自体は可能です。問題は書き込み自体の可否ではなく、頻度への適性です。"
         },
         {
-          "text": "KVはread-heavy/低頻度書き込みのワークロードに最適化された設計であり、同一キーへの高頻度な更新(write-heavyな用途)には向いていない"
+          "text": "KVはread-heavy/低頻度書き込みのワークロードに最適化されており、同一キーへの高頻度な更新には向いていない"
         },
         {
           "text": "KVの値のサイズ上限が極端に小さく(数バイト程度)、カウンタの数値すら保存できないため",
@@ -6516,7 +6516,7 @@
       "question": "Cloudflare AI Gatewayを導入する主な目的として正しいものはどれですか？",
       "options": [
         {
-          "text": "AIプロバイダーへのリクエストをキャッシュ・レート制限・ログ記録し、複数プロバイダーを統一的に管理・可視化すること"
+          "text": "AIプロバイダーへのリクエストをキャッシュ・レート制限・ログ記録し、統一的に管理・可視化すること"
         },
         {
           "text": "Vectorizeのインデックスを自動的に再構築すること",
@@ -6527,7 +6527,7 @@
           "wrongFeedback": "それはD1やCache APIの役割です。AI GatewayはAIモデルへのリクエストを対象としたゲートウェイです。"
         },
         {
-          "text": "Workers AIのモデルを独自にファインチューニングすること",
+          "text": "Workers AIのモデルを独自のデータセットでファインチューニングすること",
           "wrongFeedback": "AI Gatewayはリクエストを中継・管理するプロキシ的な機能であり、モデルのファインチューニング機能ではありません。"
         }
       ],
@@ -11114,7 +11114,7 @@
           "wrongFeedback": "ソースコードの変更履歴はGitなどのバージョン管理システムで管理するものであり、AI Gatewayのログ機能の対象ではありません。"
         },
         {
-          "text": "プロンプトやレスポンス内容に加え、トークン使用量・推定コスト・レイテンシ・プロバイダー情報などのリクエスト単位の詳細な統計"
+          "text": "プロンプトやレスポンス内容に加え、トークン使用量・推定コスト・レイテンシなどの統計"
         },
         {
           "text": "D1データベースのスロークエリログ",
@@ -12277,11 +12277,11 @@
       "question": "Cloudflare Workflowsはどのようなサービスですか？",
       "options": [
         {
-          "text": "GitHub Actionsと連携してCI/CDパイプラインを実行するサービス",
+          "text": "GitHub Actionsなどと連携してCI/CDパイプラインを実行するマネージドサービス",
           "wrongFeedback": "CI/CDのためのサービスではありません。アプリケーションの複数ステップ処理を確実に実行するためのランタイムです。"
         },
         {
-          "text": "複数ステップの処理を、失敗時の自動リトライと状態の永続化によって確実に完了まで実行する「耐久実行(durable execution)」エンジン"
+          "text": "複数ステップの処理を、失敗しても状態を保ったまま確実に完了まで実行する「耐久実行(durable execution)」エンジン"
         },
         {
           "text": "Pagesのビルドプロセスをカスタマイズする仕組み",
@@ -12835,7 +12835,7 @@
       "question": "Turnstile のウィジェットモード(Managed / Non-Interactive / Invisible)に関する説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "Invisible は最もセキュリティが高く、Managed はテスト専用でボット対策には使えない",
+          "text": "Invisible は最もセキュリティが高く、Managed はテスト専用のモードで本番のボット対策には使えない",
           "wrongFeedback": "Managed こそ推奨モードで本番のボット対策に使えます。可視性の違いはあってもテスト専用のモードではありません。"
         },
         {
@@ -12843,11 +12843,11 @@
           "wrongFeedback": "Non-Interactive と Invisible はクリックを要求しません。Managed もリスクが低ければ非対話で完了します。"
         },
         {
-          "text": "モードによって判定に使う技術が異なり、Managed だけがサーバーサイド検証を必要とする",
+          "text": "モードによって判定に使う技術が異なり、Managed だけがサーバーサイド検証(Siteverify)を必要とする",
           "wrongFeedback": "サーバーサイド検証(Siteverify)はモードに関わらず全モードで必須です。Managed だけの要件ではありません。"
         },
         {
-          "text": "Managed は訪問者のリスクに応じてチェックボックス表示か非対話かをCloudflareが自動で選ぶ推奨モードで、Invisible はウィジェットを一切表示せず背景で判定する"
+          "text": "Managed はリスクに応じて対話の要否をCloudflareが自動で選ぶ推奨モードで、Invisible はウィジェットを表示せず背景で判定する"
         }
       ],
       "correctIndex": 3,
@@ -13047,7 +13047,7 @@
       "question": "Cloudflare Images の「Transformations(変換)」と「Hosted images(ホスト画像)」の違いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Transformations はブラウザ側で画像を加工し、Hosted images はサーバー側で加工する",
+          "text": "Transformations はブラウザ側で画像を加工し、Hosted images はサーバー側で加工するという処理場所の違いである",
           "wrongFeedback": "どちらもCloudflareのエッジで処理します。違いは「元画像がどこにあるか」であって処理場所ではありません。"
         },
         {
@@ -13055,11 +13055,11 @@
           "wrongFeedback": "どちらも静止画像の機能です。動画は Stream が扱います。両者の違いは画像の保存場所です。"
         },
         {
-          "text": "Transformations は有料、Hosted images は完全無料という料金上の区分である",
+          "text": "Transformations は有料、Hosted images は完全無料という料金体系上の区分である",
           "wrongFeedback": "料金区分ではなく、画像の保存場所と管理方法の違いです(リモート画像の最適化か、Images へのホストか)。"
         },
         {
-          "text": "Transformations は R2 など任意のオリジンに置いた画像(リモート画像)をその場で最適化するのに対し、Hosted images は画像を Images 側に保存して配信まで一括で任せる"
+          "text": "Transformations は任意のオリジンに置いたリモート画像をその場で最適化し、Hosted images は画像を Images 側に保存して配信まで任せる"
         }
       ],
       "correctIndex": 3,
@@ -14677,11 +14677,11 @@
       "question": "Workers Logpushで、1件のログイベントにおける`logs`と`exceptions`フィールドの合計文字数が上限(16,384文字)を超えた場合の挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "`logs`と`exceptions`は別々に16,384文字までカウントされ、互いの文字数は影響し合わない",
+          "text": "`logs`と`exceptions`はそれぞれ別々に16,384文字までカウントされ、互いの文字数は影響し合わない",
           "wrongFeedback": "`logs`と`exceptions`は合算されて1つの16,384文字上限としてカウントされます。別々の上限ではありません。"
         },
         {
-          "text": "`exception.name`→`exception.message`→`log.message`の順にカウントし、上限に達した項目をLogpushの切り詰め用メッセージに置き換えて以降は記録しない"
+          "text": "`exception.name`→`exception.message`→`log.message`の順に合算し、上限到達後は切り詰めメッセージに置き換える"
         },
         {
           "text": "上限に達すると自動的に文字列が圧縮(gzip等)され、サイズが縮小された状態でそのまま送信される",
@@ -15549,7 +15549,7 @@
       "question": "Containerからの外向き(outbound)HTTP通信を、Worker側でインターセプト・制御する仕組みについて正しい説明はどれですか？",
       "options": [
         {
-          "text": "`Container`サブクラスに`static outbound`や`static outboundByHost`を定義することで、コンテナが行う外向きリクエストをWorker側のコードでインターセプト・モック・ブロックでき、サンドボックス化やテスト、プロキシに応用できる"
+          "text": "`Container`サブクラスに`static outbound`や`static outboundByHost`を定義することで、コンテナの外向きリクエストをWorker側のコードでインターセプト・モック・ブロックできる"
         },
         {
           "text": "アウトバウンド通信のインターセプトは、コンテナ内のDockerfileに専用のプロキシ設定を書くことでのみ実現できる",
@@ -15560,7 +15560,7 @@
           "wrongFeedback": "`static outboundByHost`はホスト名ごとに個別のハンドラを割り当てる仕組みです。全リクエスト共通の処理には`static outbound`を使います。"
         },
         {
-          "text": "`enableInternet`を`true`に設定した場合のみアウトバウンド通信のインターセプトが可能で、`false`の場合は設定自体が無効になる",
+          "text": "`enableInternet`を`true`に設定した場合のみアウトバウンド通信のインターセプトが可能で、`false`の場合は`static outbound`の設定自体が無効になる",
           "wrongFeedback": "`enableInternet`が`false`の場合、そもそもコンテナの外向き通信自体がブロックされます。インターセプトの設定はどちらの値でも定義できます。"
         }
       ],
@@ -15818,14 +15818,14 @@
           "wrongFeedback": "再デプロイのスケジューラではありません。リクエストが来るたびにルーティングを判断する役割です。"
         },
         {
-          "text": "全リクエストの入り口となり、ホスト名やパスなどをもとにどのuser Workerが処理すべきかを判断してルーティングし、認証やレート制限などのプラットフォーム側のロジックも実行する"
+          "text": "全リクエストの入り口となり、どのuser Workerが処理すべきかを判断してルーティングし、認証やレート制限などのロジックも実行する"
         },
         {
           "text": "顧客がアップロードしたコードの構文エラーを事前にチェックする静的解析専用のWorker",
           "wrongFeedback": "静的解析専用の仕組みではありません。リクエストのルーティングとプラットフォームロジックの実行が役割です。"
         },
         {
-          "text": "顧客が書いたコードを直接実行するWorkerそのものであり、user Workerと同一のものを指す",
+          "text": "顧客が書いたコードを直接実行するWorkerそのものであり、user Workerと同一のものを指す用語である",
           "wrongFeedback": "dynamic dispatch Workerとuser Workerは別物です。dynamic dispatch Workerはリクエストの入り口となり、適切なuser Workerへ振り分ける役割を持ちます。"
         }
       ],
@@ -17365,7 +17365,7 @@
           "wrongFeedback": "リトライの遅延はミリ秒単位で指定し、最大5秒までという制約があります。"
         },
         {
-          "text": "タイムアウトは`cf-aig-request-timeout`で、リトライは`cf-aig-max-attempts`・`cf-aig-retry-delay`・`cf-aig-backoff`という3つの別ヘッダーの組み合わせで指定する"
+          "text": "タイムアウトは`cf-aig-request-timeout`で、リトライは`cf-aig-max-attempts`など3つの別ヘッダーの組み合わせで指定する"
         }
       ],
       "correctIndex": 3,
@@ -18299,7 +18299,7 @@
       "question": "Cloudflare Realtime SFUのDataChannelにおける`waitForAck`(確認応答ゲート)の正しい説明はどれですか？",
       "options": [
         {
-          "text": "サブスクライバー側のリモートDataChannel作成時に`waitForAck: true`を指定すると、サブスクライバーが最初のメッセージ(確認応答)を送るまでSFUはそのDataChannelにメッセージを転送しない"
+          "text": "リモートDataChannel作成時に`waitForAck: true`を指定すると、サブスクライバーが確認応答を送るまでSFUはメッセージを転送しない"
         },
         {
           "text": "確認応答はパブリッシャーにも転送され、パブリッシャー側でどのサブスクライバーが準備完了したかを直接確認できる",
@@ -19422,7 +19422,7 @@
           "wrongFeedback": "レプリカは高可用性・フェイルオーバーのためのものであり、`cloudflared`自体はレプリカ間の負荷分散を行いません。"
         },
         {
-          "text": "`cloudflared`はレプリカ間の負荷分散を行わず、レプリカはあくまで高可用性のためのものであるため、ダウンスケール(レプリカ削除)時に既存の接続が切断される可能性がありオートスケーリング環境での利用は推奨されない"
+          "text": "`cloudflared`はレプリカ間の負荷分散を行わず、ダウンスケール時に既存の接続が切断されるためオートスケーリング環境での利用は推奨されない"
         }
       ],
       "correctIndex": 3,
@@ -20311,15 +20311,15 @@
       "question": "Cloudflare for SaaSのカスタムホスト名クォータに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "割り当てられたクォータはハードリミットであり、到達した瞬間にすべてのプランで新規作成APIが即座に失敗する",
+          "text": "割り当てられたクォータはハードリミットであり、到達した瞬間にすべてのプランで新規作成APIが即座に失敗する仕様である",
           "wrongFeedback": "割り当てられたクォータ(`allocated`)自体はソフトリミットです。ハードな強制がかかるのは非Enterpriseプランの`hard_cap`到達時です。"
         },
         {
-          "text": "Enterpriseプランも含め、`hard_cap`に到達すると以後は一切カスタムホスト名を作成できなくなる",
+          "text": "Enterpriseプランも含め、`hard_cap`に到達すると以後は一切カスタムホスト名を作成できなくなる仕様である",
           "wrongFeedback": "Enterpriseプランは`hard_cap`到達後もカスタムホスト名を作成し続けられます。"
         },
         {
-          "text": "割り当てられたクォータ(`allocated`)はソフトリミットで超過後も作成は継続できるが課金警告が付与され、非Enterpriseプランには`hard_cap`という強制的な作成拒否のしきい値がある"
+          "text": "クォータ(`allocated`)はソフトリミットで超過後も作成を継続でき、非Enterpriseプランには`hard_cap`という強制的なしきい値がある"
         },
         {
           "text": "クォータはゾーン単位でのみ設定でき、アカウント全体でのクォータという概念は存在しない",
@@ -20581,7 +20581,7 @@
           "wrongFeedback": "データのライフサイクル管理(自動削除)機能ではありません。ストリーミングデータの取り込み・変換・配信を行う仕組みです。"
         },
         {
-          "text": "サーバーログ・モバイルアプリのイベント・IoTテレメトリなどのストリーミングデータを取り込み、SQLで変換し、Apache IcebergテーブルやParquet/JSONファイルとしてR2に配信する"
+          "text": "ストリーミングデータを取り込み、SQLで変換し、Apache IcebergテーブルやParquet/JSONファイルとしてR2に配信する"
         }
       ],
       "correctIndex": 3,
@@ -21216,7 +21216,7 @@
           "wrongFeedback": "同じStreamを参照する複数の`INSERT INTO ... SELECT ...`文を1つのPipeline内に書くことで、宛先ごとにStreamを分ける必要はありません。"
         },
         {
-          "text": "同じStreamをFROM句として参照する複数の`INSERT INTO sink SELECT ... FROM stream WHERE ...`文をセミコロンで区切って1つのPipelineに記述し、条件ごとに異なるSinkへ振り分ける"
+          "text": "同じStreamを参照する複数の`INSERT ... SELECT ... WHERE ...`文をセミコロンで区切って1つのPipelineに記述する"
         },
         {
           "text": "条件による振り分けはPipelinesのSQLでは実現できず、Worker側でロジックを実装してStreamを使い分ける必要がある",
@@ -21371,14 +21371,14 @@
           "wrongFeedback": "SQL変換・Sink配信のどちらにも月間の無料枠(それぞれ50GB)があります。"
         },
         {
-          "text": "Streamへの取り込みは無料で、SQL変換は月50GBまで無料でその後$0.04/GB、Sinkへの配信は月50GBまで無料でその後出力形式に応じて$0.03/GB(JSON)または$0.06/GB(Parquet/Iceberg)が課金される"
+          "text": "Streamへの取り込みは無料、SQL変換とSinkへの配信はそれぞれ月50GBまで無料で、超過分はSQL変換$0.04/GB、配信はJSON $0.03/GB・Parquet/Iceberg $0.06/GB"
         },
         {
-          "text": "Streamへのデータ取り込み(ingress)にも、SQL変換と同じ$0.04/GBという単価でデータ量に応じた課金が発生する",
+          "text": "Streamへのデータ取り込み(ingress)にも、SQL変換と同じ$0.04/GBという単価でデータ量に応じた従量課金が発生する",
           "wrongFeedback": "Streamへのingressは無料で、データ量に関わらず課金されません。"
         },
         {
-          "text": "Sinkへの配信料金は出力形式に関わらず一律の単価であり、JSON・Parquet・Icebergのどの形式で書き出しても同じ料金になる",
+          "text": "Sinkへの配信料金は出力形式に関わらず一律の単価であり、JSON・Parquet・Icebergのどの形式で書き出しても同じ$0.03/GBの料金になる",
           "wrongFeedback": "出力形式によって単価が異なります。JSONは$0.03/GB、Parquet/Icebergは$0.06/GBです。"
         }
       ],
@@ -26204,7 +26204,7 @@
       "question": "Cloudflareがレスポンスをキャッシュしない条件として正しいものはどれですか？",
       "options": [
         {
-          "text": "オリジンのレスポンスに`Cache-Control`ヘッダーが一切含まれていない場合、Cloudflareは常にキャッシュを完全にスキップする",
+          "text": "オリジンのレスポンスに`Cache-Control`ヘッダーが一切含まれていない場合、Cloudflareはステータスコードに関わらず常にキャッシュを完全にスキップする",
           "wrongFeedback": "`Cache-Control`ヘッダーがなくても、ステータスコードに基づいてキャッシュされることがあります。常にスキップされるわけではありません。"
         },
         {
@@ -26216,7 +26216,7 @@
           "wrongFeedback": "User-Agentがボットかどうかは、レスポンスをキャッシュするかどうかの判定基準ではありません。"
         },
         {
-          "text": "`Cache-Control`が`private`・`no-store`・`no-cache`・`max-age=0`のいずれかである場合、`Set-Cookie`ヘッダーが存在する場合、またはリクエストメソッドが`GET`以外の場合はキャッシュされない"
+          "text": "`Cache-Control`が`private`・`no-store`・`no-cache`・`max-age=0`の場合、`Set-Cookie`が存在する場合、またはメソッドが`GET`以外の場合はキャッシュされない"
         }
       ],
       "correctIndex": 3,
@@ -26566,7 +26566,7 @@
       "question": "Page RulesからCache Rulesへ移行する際の重要な挙動の違いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Cache Ruleで`Eligible for cache`を選択しても、Cache Everything相当の挙動を有効にするには別途明示的なチェックボックスを追加でオンにする必要がある",
+          "text": "Cache Ruleで`Eligible for cache`を選択しても、Cache Everything相当の挙動を有効にするには別途明示的なチェックボックスを追加でオンにする必要があり、選択しただけでは有効にならない",
           "wrongFeedback": "追加のチェックボックス操作は不要です。`Eligible for cache`を選択した時点でCache Everything相当の挙動が自動的に有効になります。"
         },
         {
@@ -26578,7 +26578,7 @@
           "wrongFeedback": "完全に同じ挙動ではありません。`Eligible for cache`を選択すると、Page Rulesでは手動有効化が必要だったCache Everything相当の挙動が自動的に有効になるという違いがあります。"
         },
         {
-          "text": "Cache Ruleで`Eligible for cache`を選択すると、Page Rulesとは異なり自動的にCache Everything相当の挙動が有効になるため、Page Rules時代と同じ挙動を再現するには「Bypass everything」ルールと「デフォルト拡張子のみキャッシュ」ルールを、この順番で作成する必要がある"
+          "text": "`Eligible for cache`を選択すると、Page Rulesとは異なり自動的にCache Everything相当の挙動が有効になるため、同じ挙動を再現するには「Bypass everything」ルールと「デフォルト拡張子のみキャッシュ」ルールをこの順番で作成する必要がある"
         }
       ],
       "correctIndex": 3,
@@ -29262,7 +29262,7 @@
           "wrongFeedback": "Universal SSL証明書は、ドメインがCloudflare上でアクティブになった後に発行されます。移行前の段階では発行されません。"
         },
         {
-          "text": "無料で自動発行されるDomain Validated(DV)証明書で、Fullセットアップではルートドメインと第1階層のサブドメインをカバーし、Partial(CNAME)セットアップではプロキシ済みの各サブドメインごとに個別の証明書が発行される"
+          "text": "無料で自動発行されるDomain Validated(DV)証明書で、Fullセットアップではルートドメインと第1階層のサブドメインをカバーする"
         },
         {
           "text": "Universal SSLはOrganization Validated(OV)証明書であり、組織の実在性を検証したうえで発行される",
@@ -29875,18 +29875,18 @@
       "question": "リアルユーザーモニタリング(RUM)が提供する指標のうち、合成テストでは取得できないものとして正しいものはどれですか？",
       "options": [
         {
-          "text": "First Input Delay(FID)やInteraction to Next Paint(INP)といった、実際のユーザー操作に関わる指標"
+          "text": "First Input Delay(FID)やInteraction to Next Paint(INP)といったユーザー操作に関わる指標"
         },
         {
           "text": "ページの読み込みに使われたHTTPステータスコードの一覧",
           "wrongFeedback": "HTTPステータスコードの一覧はRUM特有の指標として説明されているわけではありません。RUM特有の指標として挙げられているのはFIDやINPといったユーザー操作関連の指標です。"
         },
         {
-          "text": "合成テストとRUMは全く同じ指標セットを提供し、取得できる指標に違いは一切ない",
+          "text": "合成テストとRUMは全く同じ指標セットを提供し、取得できる指標に違いは一切存在しない",
           "wrongFeedback": "違いはあります。RUMはFirst Input Delay(FID)やInteraction to Next Paint(INP)という、合成テストにはないユーザー操作に関する指標を提供します。"
         },
         {
-          "text": "Lighthouseスコアそのものであり、これはRUMのみが計算できる指標である",
+          "text": "Lighthouseスコアそのものであり、これは合成テストでは取得できずRUMのみが計算できる指標である",
           "wrongFeedback": "Lighthouseスコアは合成テストのBrowser testが提供するものであり、RUM特有の指標ではありません。"
         }
       ],
@@ -30139,11 +30139,11 @@
           "wrongFeedback": "競合する製品ではありません。両者は異なる役割を持ち、互いに補完し合う関係にあります。"
         },
         {
-          "text": "Cloudflare Imagesで生成した画像には、すでに最適化済みであるかどうかに関わらず、さらにPolishによる追加の最適化を必ず適用する必要がある",
+          "text": "Cloudflare Imagesで生成した画像には、すでに最適化済みであるかどうかに関わらず、さらにPolishによる追加の最適化を必ず適用する必要があるとされている",
           "wrongFeedback": "Cloudflare Imagesで生成された画像はすでに最適化済みであり、Polishを追加で適用する必要はないとされています。"
         },
         {
-          "text": "Polishはオリジンから配信される画像をキャッシュ内で自動的に最適化する仕組みでURLは変わらないが、Cloudflare Imagesはリサイズ・切り抜き・透かしなどを適用した新しい画像を新しいURLで生成する仕組みであり、Images側の出力にPolishを適用する必要はない"
+          "text": "PolishはURLを変えずにオリジン画像をキャッシュ内で自動最適化する仕組みで、Cloudflare Imagesは加工した新しい画像を新しいURLで生成するため、Images側の出力にPolishを適用する必要はない"
         }
       ],
       "correctIndex": 3,
@@ -30396,7 +30396,7 @@
           "wrongFeedback": "オリジンへ転送されるリクエストではありません。これはCloudflare内部で完結するサブリクエストです。"
         },
         {
-          "text": "これはEarly Hintsのキャッシュを確認するための内部的なサブリクエストであり、エンドユーザーへのリクエストでもオリジンへのリクエストでもなく、キャッシュミス(該当するEarly Hintsが存在しない)を示す想定内・無害な応答である"
+          "text": "Early Hintsのキャッシュを確認するための内部的なサブリクエストであり、キャッシュミス(該当するEarly Hintsが存在しない)を示す想定内・無害な応答である"
         }
       ],
       "correctIndex": 3,
@@ -31764,14 +31764,14 @@
           "wrongFeedback": "ディープパケットインスペクションではなく、ブラウザが送信するCSP違反レポートをもとに検知します。"
         },
         {
-          "text": "ページに専用のJavaScriptエージェントを注入するのではなく、CSP(Content Security Policy)のreport-onlyヘッダーをHTMLレスポンスの一部に付与し、ブラウザが生成する違反レポートをもとにスクリプトや接続の一覧を構築する"
+          "text": "専用のJavaScriptを注入するのではなく、CSPのreport-onlyヘッダーをHTMLレスポンスの一部に付与し、ブラウザが生成する違反レポートをもとにスクリプトや接続の一覧を構築する"
         },
         {
           "text": "訪問者のブラウザにMutationObserverベースの監視スクリプトを注入し、DOMの変化をリアルタイムでCloudflareへ送信する",
           "wrongFeedback": "MutationObserverベースの監視スクリプトを注入する仕組みではありません。ブラウザネイティブのCSP report-onlyヘッダーを使う方式です。"
         },
         {
-          "text": "すべてのHTMLレスポンスに対して常にCSPヘッダーをブロックモードで付与するため、モニタリング中は未知のスクリプトの読み込みが常にブロックされる",
+          "text": "すべてのHTMLレスポンスに対して常にCSPヘッダーをブロックモードで付与するため、モニタリング中は未知のスクリプトの読み込みが常にブロックされてしまう",
           "wrongFeedback": "モニタリング用ヘッダーはreport-onlyであり、何もブロックしません。また全レスポンスではなくサンプルに付与されます。"
         }
       ],
@@ -32578,14 +32578,14 @@
           "wrongFeedback": "証明書関連のアラート種別は存在しません。定義されているのは新規リソースアラート・コード変更アラート・悪性リソースアラートの3グループです。"
         },
         {
-          "text": "新規リソースアラートにはBusiness以上のプランが必要で、コード変更アラートと悪性リソースアラートはClient-Side Security Advanced限定であり、悪性リソースアラートはActiveステータスのリソースのみを対象とする"
+          "text": "新規リソースアラートはBusiness以上、コード変更・悪性リソースアラートはClient-Side Security Advancedが必要で、悪性リソースアラートはActiveなリソースのみが対象"
         },
         {
           "text": "3種類のアラートグループはすべてFreeプランを含むあらゆるプランで利用でき、プランによる制限は一切ない",
           "wrongFeedback": "新規リソースアラートにはBusiness以上、コード変更アラートと悪性リソースアラートにはClient-Side Security Advancedが必要という制限があります。"
         },
         {
-          "text": "悪性リソースアラートは、InfrequentやInactiveステータスのリソースも含め、検知されたすべてのリソースを対象に送信される",
+          "text": "悪性リソースアラートは、InfrequentやInactiveステータスのリソースも含め、検知されたすべてのリソースを対象に送信される仕様である",
           "wrongFeedback": "悪性リソースアラートはActiveステータスのリソースのみを対象とします。InfrequentやInactiveのリソースはアラートの対象外です。"
         }
       ],
@@ -33390,7 +33390,7 @@
       "question": "ポリシー評価とパケット送信のタイミングの違いを踏まえると、GatewayのTCP SYNパケットに関する既知の制約(ギャップ)として正しい説明はどれですか?",
       "options": [
         {
-          "text": "Cloudflare Network FirewallはNetworkポリシーやHTTPポリシーの後に評価されるため、SYNパケットの送信自体を防ぐことはできない",
+          "text": "Cloudflare Network FirewallはNetworkポリシーやHTTPポリシーの後に評価されるため、SYNパケットの送信自体を防ぐことはできない仕組みである",
           "wrongFeedback": "Cloudflare Network FirewallはEgressポリシーやTCP SYNの到達性チェックより前に評価されるパケットレベルの制御であり、SYNパケットの送信自体を防ぐことができます。"
         },
         {
@@ -33398,11 +33398,11 @@
           "wrongFeedback": "Enterpriseユーザー向けにCloudflare Network Firewallというパケットレベルでのフィルタリング機能が提供されています。"
         },
         {
-          "text": "GatewayはNetworkポリシーやHTTPポリシーを評価してからTCP SYNパケットを宛先サーバーへ送信するため、ブロック対象の宛先へSYNパケットが届くことはない",
+          "text": "GatewayはNetworkポリシーやHTTPポリシーを評価してからTCP SYNパケットを宛先サーバーへ送信するため、ブロック対象の宛先へSYNパケットが届くことはない仕組みになっている",
           "wrongFeedback": "逆です。Gatewayはポリシーを評価する前に宛先へTCP SYNパケットを送信するため、ブロック対象の宛先であってもSYNパケット自体は届いてしまいます。"
         },
         {
-          "text": "GatewayはNetworkポリシーやHTTPポリシーを評価する前に宛先サーバーへTCP SYNパケットを送信するため、これらのポリシーだけでは最初のSYNパケットが宛先へ届くこと自体は防げず、パケットレベルで防ぐにはEnterprise限定のCloudflare Network Firewallが必要である"
+          "text": "GatewayはNetwork/HTTPポリシーを評価する前に宛先へTCP SYNパケットを送信するため、ポリシーだけではSYNの到達は防げず、パケットレベルで防ぐにはEnterprise限定のCloudflare Network Firewallが必要"
         }
       ],
       "correctIndex": 3,
@@ -34354,14 +34354,14 @@
           "wrongFeedback": "逆です。ペイロードロギングは全プランで利用でき、Logpushフォレンジックコピーの方がEnterpriseプラン限定です。"
         },
         {
-          "text": "ペイロードロギングは編集(redact)されたマッチ内容と前後75バイトの文脈のみを記録し全プランで利用できるのに対し、Logpushフォレンジックコピーは完全なHTTPリクエスト(ヘッダーとボディ)を記録しEnterpriseプラン限定で、1アカウントあたり最大4つのジョブまで設定できる"
+          "text": "ペイロードロギングは編集されたマッチ内容と前後75バイトの文脈のみを記録し全プランで利用できるのに対し、Logpushフォレンジックコピーは完全なHTTPリクエストを記録しEnterprise限定で最大4つのジョブまで設定できる"
         },
         {
           "text": "Logpushフォレンジックコピーの設定台数に上限は設けられておらず、1つのアカウントで際限なくジョブを作成し続けることができる",
           "wrongFeedback": "1アカウントあたり最大4つのDLP Forensic Copy Logpushジョブという上限が設定されています。"
         },
         {
-          "text": "ペイロードロギングもLogpushフォレンジックコピーも、どちらもマッチした内容を編集せず、完全なHTTPリクエストをそのままの形で記録するという点で共通している",
+          "text": "ペイロードロギングもLogpushフォレンジックコピーも、どちらもマッチした内容を編集せず、完全なHTTPリクエストをそのままの形で記録するという点で共通しており、記録内容に違いはない",
           "wrongFeedback": "完全なHTTPリクエストを記録するのはLogpushフォレンジックコピーのみです。ペイロードロギングは編集されたマッチ内容と前後75バイトの文脈のみを記録します。"
         }
       ],
@@ -34568,7 +34568,7 @@
           "wrongFeedback": "インテグレーションプロファイル内の検知エントリはサードパーティ側(Microsoft Purviewなど)によって管理されており、Cloudflare側から手動で追加・編集・削除することはできません。"
         },
         {
-          "text": "Microsoft側での感度ラベルの追加・編集は24時間以内にCloudflare DLPへ反映されるが、Microsoft側でラベルを削除しても、Cloudflare DLPプロファイル内のエントリは自動的には削除されない"
+          "text": "Microsoft側でのラベルの追加・編集は24時間以内にCloudflare DLPへ反映されるが、削除は反映されずプロファイル内のエントリは残る"
         },
         {
           "text": "Microsoft側での感度ラベルの追加・編集・削除は、いずれもリアルタイムで即座にCloudflare DLPへ反映される",
@@ -36379,7 +36379,7 @@
       "question": "CASB Webhookの「Test delivery(テスト配信)」機能に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "テスト配信が成功しても、それは送信先URLへ到達できたことを意味するだけで、それ以上の情報は得られない",
+          "text": "テスト配信が成功しても、それは送信先URLへ到達できたことを意味するだけで、応答内容などそれ以上の情報は得られない",
           "wrongFeedback": "テスト配信の成功は、Cloudflareが送信先URLへ到達し、送信先から応答を受け取ったことを意味します。"
         },
         {
@@ -36387,10 +36387,10 @@
           "wrongFeedback": "テスト配信は実際の環境からのfindingインスタンスを送信するものではありません。"
         },
         {
-          "text": "テスト配信が成功したことは、Cloudflareが送信先URLへ到達し、送信先が応答を返したことを意味するが、テスト配信では実際の環境からのライブなfindingインスタンスは送信されない"
+          "text": "Cloudflareが送信先URLへ到達し送信先が応答を返したことを意味するが、実際の環境からのライブなfindingインスタンスは送信されない"
         },
         {
-          "text": "テスト配信の機能はEnterpriseプランのユーザーのみが利用でき、無料プランのユーザーは利用できない",
+          "text": "テスト配信の機能はEnterpriseプランのユーザーのみが利用でき、無料プランのユーザーは一切利用できない",
           "wrongFeedback": "そのようなプラン制限は文書化されていません。"
         }
       ],
@@ -37063,11 +37063,11 @@
       "question": "DEXの通知に使われるSLO(service-level objective)による評価の仕組みに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "SLOは(有効なイベント数 / 成功したイベント数) × 100という、成功数と有効数の位置が入れ替わった計算式で求められる",
+          "text": "SLOは(有効なイベント数 / 成功したイベント数) × 100という、成功数と有効数の位置が入れ替わった計算式で求められる指標である",
           "wrongFeedback": "計算式が逆です。正しくは(成功したイベント数 / 有効なイベント数) × 100です。"
         },
         {
-          "text": "SLOは(成功したイベント数 / 有効なイベント数) × 100として定義され、DEXの通知は5分間(短い時間枠)と1時間(長い時間枠)の両方で可用性を評価し、いずれかの時間枠でSLOのしきい値を下回った場合にアラートを発生させる"
+          "text": "SLOは(成功したイベント数 / 有効なイベント数) × 100で定義され、DEXの通知は5分間と1時間の両方で評価し、いずれかでしきい値を下回るとアラートを出す"
         },
         {
           "text": "SLOによる評価は1時間という長い時間枠のみで行われ、5分間のような短い時間枠での評価は行われない",
@@ -37915,7 +37915,7 @@
           "wrongFeedback": "`BEC`属性はimpersonation registryに登録されたリストに含まれるアドレスに関連して付与され、`MALICIOUS`または`SPOOF`のdispositionと関連します。"
         },
         {
-          "text": "Attributeはdispositionとは独立して付与される付加的な情報で、1通のメールに複数付与されることがある。例として、新規登録ドメインからの送信を示す`NEW_DOMAIN_SENDER`や、実行可能ファイルを含むことを示す`EXECUTABLE`などがある"
+          "text": "Attributeはdispositionとは独立して付与される付加的な情報で、1通のメールに複数付与されることがある。例として`NEW_DOMAIN_SENDER`や`EXECUTABLE`などがある"
         },
         {
           "text": "Attributeはdispositionと同じ概念であり、1通のメールに複数付与されることはない",
@@ -38692,10 +38692,10 @@
       "question": "Cloudflare WANのIPsecトンネルでIKEv2がトンネルを確立する際のステージに関する説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "IKE_SA_INITでIKE SAのパラメータをネゴシエートして共有シークレットを導出した後、両ピアがRFC 9370に対応していればIKE_INTERMEDIATEでpost-quantum鍵交換を追加し、最後にIKE_AUTHで相互認証を行いIPsecトンネル(Child SA)を確立する"
+          "text": "IKE_SA_INITでパラメータをネゴシエートし共有シークレットを導出、両ピアがRFC 9370に対応していればIKE_INTERMEDIATEでpost-quantum鍵交換を追加、最後にIKE_AUTHで相互認証を行いChild SAを確立する"
         },
         {
-          "text": "IKE_INTERMEDIATEは両ピアの対応状況にかかわらず必ず実行される必須のステージであり、post-quantum鍵交換専用ではなく通常の鍵交換にも使われる",
+          "text": "IKE_INTERMEDIATEは両ピアの対応状況にかかわらず必ず実行される必須のステージであり、post-quantum鍵交換専用ではなく通常の鍵交換にも使われるため省略できない",
           "wrongFeedback": "IKE_INTERMEDIATEは両ピアがRFC 9370に対応している場合にのみ実行される、post-quantum鍵交換のためのステージです。"
         },
         {
@@ -39181,7 +39181,7 @@
       "question": "Magic Transit on-demandによるプレフィックスアドバタイズに関する説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "攻撃発生時にプレフィックスのアドバタイズを有効化してCloudflareの保護を受け、インシデント解消後に無効化するという運用が一般的で、動的アドバタイズはBGP制御によるアドバタイズを使うプレフィックスには対応していない"
+          "text": "攻撃発生時にアドバタイズを有効化し、インシデント解消後に無効化する運用が一般的で、動的アドバタイズはBGP制御を使うプレフィックスには対応していない"
         },
         {
           "text": "プレフィックスのアドバタイズ方法(on-demandか常時か)は、オンボーディング後にいつでも自由に切り替えられる",
@@ -39287,7 +39287,7 @@
       "question": "Magic TransitでAS prependingを使って別プロバイダへトラフィックを移行する典型的な流れに関する説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "asn_prepend_countはCloudflareのASN(13335)を最大10回までAS_PATHにprependでき、回数を増やすほど細かく優先度を調整できる",
+          "text": "asn_prepend_countはCloudflareのASN(13335)を最大10回までAS_PATHにprependでき、回数を増やすほど細かく優先度を調整できる仕組みである",
           "wrongFeedback": "asn_prepend_countが受け付ける値は0から3までで、AS13335を最大3回までprependできます。10回までではありません。"
         },
         {
@@ -39295,7 +39295,7 @@
           "wrongFeedback": "逆です。AS_PATHへのASNのprepend回数(asn_prepend_count)が多いほど経路は長く見え、外部ネットワークからは選ばれにくくなります。"
         },
         {
-          "text": "最初はprepend 0でCloudflare経由をデフォルト優先度でアドバタイズし、次にasn_prepend_countを増やしてAS_PATHを長くし選ばれにくくする。その間に代替プロバイダから短いAS_PATHで同じプレフィックスをアドバタイズし始め、外部ネットワークを段階的に新しい経路へ移行させる"
+          "text": "prepend 0でCloudflare経由をアドバタイズし、次にasn_prepend_countを増やしてAS_PATHを長くし選ばれにくくする。その間に代替プロバイダから短いAS_PATHで同じプレフィックスをアドバタイズし始める"
         },
         {
           "text": "AS prependingはBGPコミュニティを使う方法にのみ対応しており、APIから直接prepend回数を指定することはできない仕組みになっている",
@@ -40127,11 +40127,11 @@
           "wrongFeedback": "エッジ範囲内の特定ポートへの接続は、オリジン範囲内で対応するオフセットのポートへプロキシされます。常に先頭ポートへ固定的に転送されるわけではありません。"
         },
         {
-          "text": "protocolフィールドで指定したポート範囲の数と、オリジン側(origin_directやorigin_port)で指定したポート範囲の数は一致している必要があり、エッジの各ポートはオリジン範囲内の対応するオフセットのポートへプロキシされる"
+          "text": "protocolフィールドとオリジン側で指定するポート数は一致している必要があり、エッジの各ポートはオリジン範囲内の対応するオフセットのポートへプロキシされる"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Spectrumアプリケーションはポート範囲でトラフィックをプロキシするよう構成できます。オリジンのポート範囲内のポート数は、protocolフィールドで指定したポート数と一致している必要があります。エッジのポート範囲内の特定ポートへの接続は、オリジン範囲内の対応するオフセットのポートへプロキシされます(例: range.example.com:1005 は origin範囲の 3005 番へ)。",
+      "explanation": "Spectrumアプリケーションはポート範囲でトラフィックをプロキシするよう構成できます。オリジン側(`origin_direct`や`origin_port`)のポート範囲内のポート数は、protocolフィールドで指定したポート数と一致している必要があります。エッジのポート範囲内の特定ポートへの接続は、オリジン範囲内の対応するオフセットのポートへプロキシされます(例: range.example.com:1005 は origin範囲の 3005 番へ)。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「エッジのポート番号」と「オリジンのポート番号」がどう対応づけられるかを考えましょう。",
       "tags": [
@@ -42203,14 +42203,14 @@
       "question": "Zaraz Web APIの`zaraz.track()`・`zaraz.set()`・`zaraz.ecommerce()`の役割の違いを正しく説明しているものはどれですか?",
       "options": [
         {
-          "text": "`zaraz.track()`はイベントをその場で記録し、`zaraz.set()`は変数を一度設定して以降のTrack呼び出しに自動付与し、`zaraz.ecommerce()`はEコマースデータをトリガー設定なしで送信できる統一メソッドである"
+          "text": "`zaraz.track()`はイベントを記録し、`zaraz.set()`は変数を以降のTrack呼び出しに自動付与し、`zaraz.ecommerce()`はEコマースデータをトリガー設定なしで送信できる統一メソッドである"
         },
         {
-          "text": "`zaraz.ecommerce()`はEコマース専用のトリガーとアクションを個別に設定しない限り、一切データを送信できない関数である",
+          "text": "`zaraz.ecommerce()`はEコマース専用のトリガーとアクションを個別に設定しない限り、一切データを送信できず何も起きない関数である",
           "wrongFeedback": "`zaraz.ecommerce()`はトリガーやアクションを個別に設定しなくても、Eコマース関連データを複数ツールへ送信できる統一メソッドです。"
         },
         {
-          "text": "`zaraz.track()`は変数を一度定義すれば、以降のすべてのTrack呼び出しに自動的に付与される値を設定するための関数である",
+          "text": "`zaraz.track()`は変数を一度定義すれば、以降のすべてのTrack呼び出しに自動的に付与される値を設定するための関数であり、イベントをその場で記録する役割は持たない",
           "wrongFeedback": "その説明は`zaraz.set()`の役割です。`zaraz.track()`はカスタムイベントをその場で記録するための関数です。"
         },
         {
