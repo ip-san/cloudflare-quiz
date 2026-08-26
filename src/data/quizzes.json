@@ -15560,7 +15560,7 @@
           "wrongFeedback": "`static outboundByHost`はホスト名ごとに個別のハンドラを割り当てる仕組みです。全リクエスト共通の処理には`static outbound`を使います。"
         },
         {
-          "text": "`enableInternet`を`true`に設定した場合のみアウトバウンド通信のインターセプトが可能で、`false`の場合は`static outbound`や`static outboundByHost`の設定自体が無効として無視される",
+          "text": "`enableInternet`を`true`に設定した場合のみアウトバウンド通信のインターセプトが可能で、`false`の場合はWorker側に書いたインターセプト用のハンドラ定義が無効として無視されるため、通信を制御したい場合は必ず`enableInternet`を有効にする必要がある",
           "wrongFeedback": "`enableInternet`が`false`の場合、そもそもコンテナの外向き通信自体がブロックされます。インターセプトの設定はどちらの値でも定義できます。"
         }
       ],
@@ -22254,7 +22254,7 @@
           "wrongFeedback": "ヘッダー部分の確認だけでは不十分です。なりすましを防ぐには、署名まで含めてJWT全体を検証する必要があります。"
         },
         {
-          "text": "オリジン側でJWTの署名検証を行う必要はなく、`Cf-Access-Jwt-Assertion`ヘッダーが存在すればCloudflareを通過した証拠として安全性が保証される",
+          "text": "オリジン側でJWTの署名検証を行う必要はなく、Cloudflareのネットワークを通過したリクエストであればヘッダーの存在を確認するだけで安全性が保証される",
           "wrongFeedback": "Cloudflare Tunnel経由でない場合、オリジン側でJWTの署名検証を行う必要があります。ヘッダーの存在だけを確認しても、なりすましを防げません。"
         },
         {
