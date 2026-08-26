@@ -768,7 +768,7 @@
       "question": "レガシーのService Worker形式(`addEventListener('fetch', ...)`)と比べて、モジュール形式(ESM)のWorkerの特徴として正しいものはどれですか?",
       "options": [
         {
-          "text": "ESM形式ではRequest/Responseオブジェクトが使用できず、独自のペイロード形式を使う",
+          "text": "ESM形式では標準Fetch APIのRequest/Responseオブジェクトが使用できず、`env`から取得する独自のペイロード形式へ変換してから処理する必要がある",
           "wrongFeedback": "ESM形式でも標準Fetch APIのRequest/Responseオブジェクトがそのまま使われます。"
         },
         {
@@ -2973,7 +2973,7 @@
           "text": "`wrangler d1 create` でデータベースを作成し、`database_id` を `wrangler.toml` の `[[d1_databases]]` に設定する"
         },
         {
-          "text": "`package.json`のdependenciesに `@cloudflare/d1` を追加するだけで自動的にバインディングされる",
+          "text": "`package.json`のdependenciesに `@cloudflare/d1` を追加すると`database_id`が自動検出されるため、`wrangler.toml`への追記は不要でそのままバインディングされる",
           "wrongFeedback": "npmパッケージを追加するだけでは不十分で、`wrangler.toml`(または`wrangler.jsonc`)でのバインディング設定が必須です。"
         },
         {
@@ -5881,7 +5881,7 @@
       "question": "Next.js の SSR(サーバーサイドレンダリング)アプリケーションを Cloudflare 上で動かす際、現在推奨されているアプローチとして正しいものはどれか。",
       "options": [
         {
-          "text": "Next.js プロジェクトはDockerコンテナとしてビルドし、Cloudflareのコンテナ実行基盤に直接デプロイする以外に方法がない",
+          "text": "Next.js プロジェクトはDockerコンテナとしてビルドし、Cloudflareのコンテナ実行基盤に直接デプロイする以外に方法がなく、Workers上でSSRを動かすためのビルドアダプタは提供されていない",
           "wrongFeedback": "コンテナ実行に頼らずとも、OpenNextなどのアダプタでNext.jsをCloudflareのエッジ環境向けにビルドしデプロイできます。"
         },
         {
@@ -8711,7 +8711,7 @@
       "question": "新しいコードをいきなり100%のユーザーに公開するのではなく、まず一部のトラフィックだけに新バージョンを届けて問題がないか確認してから徐々に広げたい（Gradual Deployments）場合、どのような使い方が適切ですか？",
       "options": [
         {
-          "text": "段階的リリースはCloudflareダッシュボードの専用画面からのみ設定でき、Wrangler CLIのコマンドからはトラフィック配分を一切操作できない",
+          "text": "段階的リリースはCloudflareダッシュボードのDeployments画面からのみ設定でき、`wrangler versions`のようなWrangler CLIのコマンドからはバージョンのアップロードはできてもトラフィック配分を一切操作できない",
           "wrongFeedback": "Wrangler CLIの`wrangler versions`コマンド群からも段階的リリースを操作できます。"
         },
         {
@@ -10364,7 +10364,7 @@
       "question": "SQLiteバックエンドのDurable Objectsが備えるPoint-in-Time Recovery(PITR)について正しい説明はどれですか？",
       "options": [
         {
-          "text": "PITRはKVバックエンドのDurable Objectsでのみ利用でき、SQLiteバックエンドでは利用できない",
+          "text": "PITRはKVバックエンドのDurable Objectsでのみ利用でき、SQLiteバックエンドではSQL形式のデータもKV形式のデータも過去の時点へ復元する手段が提供されていない",
           "wrongFeedback": "逆です。PITRはSQLiteバックエンドのDurable Objectsで提供される機能であり、従来のKV-backedストレージにはありません。"
         },
         {
@@ -11591,7 +11591,7 @@
           "text": "Workers Logsなどでエラーの発生箇所を確認し、Worker自体の実行エラー(例外)なのか、fetch()等のサブリクエスト先のエラーなのかをまず切り分ける"
         },
         {
-          "text": "エラーはすべてCloudflareのネットワーク障害が原因と判断し、Cloudflareサポートの対応を待つだけにする",
+          "text": "エラー率の急上昇はすべてCloudflareのネットワーク障害が原因と判断し、Workers Logsは確認せずCloudflareのステータスページとサポートの対応を待つだけにする",
           "wrongFeedback": "原因の多くはアプリケーションコードや接続先サービス側にあることも多く、まずは自分たちで切り分けを行うべきです。"
         }
       ],
@@ -13871,7 +13871,7 @@
           "text": "対象となるWorker(producer)の実行が完了した後に自動的に呼び出され、そのリクエスト/レスポンスの状況や`console.log`出力、例外情報を受け取れる"
         },
         {
-          "text": "本番Workerへのリクエストを受信する前に実行され、リクエスト内容を書き換えるミドルウェアとして機能する",
+          "text": "`tail_consumers`で紐づけられた本番Workerへのリクエストを受信する前に実行され、リクエストのヘッダーやボディを書き換えてから対象Workerへ渡すミドルウェアとして機能する",
           "wrongFeedback": "Tail Workerはリクエストの「前」ではなく、対象Worker(producer)の実行が完了した後に呼び出されます。"
         },
         {
@@ -14304,7 +14304,7 @@
           "wrongFeedback": "`indexes`は配列で渡せますが、複数指定するとそのデータポイントは記録されません。実質1件のみです。"
         },
         {
-          "text": "`blobs`は数値専用のフィールドで、`doubles`は文字列専用のフィールドである",
+          "text": "`blobs`は気温や湿度のような記録したい数値専用のフィールドで、`doubles`は都市名や国名などグルーピング・フィルタの次元として使う文字列専用のフィールドである",
           "wrongFeedback": "逆です。`blobs`は文字列(グルーピング・フィルタ用の次元)、`doubles`は数値です。"
         },
         {
@@ -14510,7 +14510,7 @@
       "question": "Workers Logpush(Workers Trace Events Logpush)を有効にする条件として正しいものはどれですか？",
       "options": [
         {
-          "text": "Logpushジョブの作成は不要で、`\"logpush\": true`を設定するだけで宛先の指定なしに自動的にログが送られ始める",
+          "text": "Logpushジョブの作成は不要で、wrangler設定に`\"logpush\": true`を追加してデプロイするだけで、宛先の指定なしにCloudflareが用意した既定のバケットへ自動的にログが送られ始める",
           "wrongFeedback": "`\"logpush\": true`を設定するだけでは不十分で、事前にLogpushジョブを作成し送信先を設定しておく必要があります。"
         },
         {
@@ -14729,7 +14729,7 @@
       "question": "Cloudflare Containersの役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "Workersのコールドスタートを完全になくすための専用キャッシュ機構で、実行するコードやランタイムには一切関与しない",
+          "text": "Workerのコードとその依存関係を事前にコンパイルして常駐させることでコールドスタートを完全になくすための専用キャッシュ機構であり、実行するコードやランタイムそのものには一切関与しない",
           "wrongFeedback": "コールドスタート対策の仕組みではありません。Containersは任意の言語・ランタイムで書かれたコードをWorkerと組み合わせて実行するための仕組みです。"
         },
         {
@@ -14787,7 +14787,7 @@
           "text": "`containers`配列、対応する`durable_objects`バインディング、`migrations`での`new_sqlite_classes`指定"
         },
         {
-          "text": "`containers`配列に`image`を指定するだけで完結し、Durable Objectsの設定は一切不要",
+          "text": "`containers`配列に`image`と`class_name`を指定するだけで完結し、`durable_objects`バインディングや`migrations`の設定は一切不要",
           "wrongFeedback": "ContainerはDurable Objectと1対1で結びつくため、`durable_objects`バインディングと`migrations`の設定も必須です。"
         },
         {
@@ -14907,7 +14907,7 @@
           "text": "特定の実体に紐づけたい場合は名前を指定して`getContainer()`を使い、どのインスタンスが処理しても構わないステートレスな負荷分散には`getRandom()`を使う"
         },
         {
-          "text": "`getContainer()`は毎回ランダムなインスタンスを選び、`getRandom()`は名前で固定のインスタンスを取得する",
+          "text": "`getContainer()`は指定した台数の中から毎回ランダムなインスタンスを選ぶステートレスな負荷分散向けで、`getRandom()`は名前で固定のインスタンスを取得するセッション管理向けである",
           "wrongFeedback": "説明が逆です。名前で固定インスタンスを取得するのは`getContainer()`、ランダム選択するのは`getRandom()`です。"
         },
         {
@@ -15003,7 +15003,7 @@
           "text": "Dockerでイメージをビルドし、Cloudflareのコンテナイメージレジストリへプッシュしたうえで、Workerをデプロイしてインスタンス起動の準備をする"
         },
         {
-          "text": "コンテナイメージのビルドは行わず、事前にDocker Hubへ手動でプッシュしておいたイメージを参照するだけでよい",
+          "text": "`image`にDockerfileへのパスを指定していてもコンテナイメージのビルドは行われず、事前にDocker Hubへ手動でプッシュしておいたイメージを参照するだけでよい",
           "wrongFeedback": "`image`にDockerfileへのパスを指定していれば、`wrangler deploy`が自動でビルド・プッシュを行います。手動プッシュが必須ではありません。"
         },
         {
@@ -17854,7 +17854,7 @@
           "wrongFeedback": "Trackの概念は音声・映像だけでなく、DataChannelを使った任意のデータ送信にも関係します。"
         },
         {
-          "text": "TrackはSession内でのみ有効なIDを持ち、他のSessionから参照することはできない",
+          "text": "TrackはそれをpushしたSession内でのみ有効なIDを持つため、他のSessionから参照するには一度そのSessionを閉じたうえでTrackを再pushし直す必要がある",
           "wrongFeedback": "Trackにはグローバルに一意なIDが割り当てられ、そのIDを使えば別のSessionからでもpull(取得)できます。"
         },
         {
@@ -18124,7 +18124,7 @@
           "wrongFeedback": "映像・音声を問わず、メディアパケットの受信がなければ同じ30秒のタイムアウトが適用されます。"
         },
         {
-          "text": "Trackはメディアパケットの受信が10秒間なくても、明示的に削除するまでずっと保持され続ける",
+          "text": "Trackはメディアパケットの受信が10秒間なくても自動的なガベージコレクションの対象にはならず、APIで明示的に削除するまでずっと保持され続ける",
           "wrongFeedback": "Trackはメディアパケットの受信がない状態が30秒続くと自動的にタイムアウトし、ガベージコレクションされます。明示的な削除は不要です。"
         }
       ],
@@ -18789,7 +18789,7 @@
           "wrongFeedback": "ポートを公開する必要はありません。Cloudflare Tunnelはプライベートネットワーク側からの永続的なアウトバウンド接続によって成立します。"
         },
         {
-          "text": "プライベートネットワーク側でインバウンドのファイアウォールルールを開放し、パブリックIPアドレスを割り当てる必要がある",
+          "text": "プライベートネットワーク側でインバウンドのファイアウォールルールを開放してCloudflareのIP範囲からの接続を許可し、対象ホストにパブリックIPアドレスを割り当てる必要がある",
           "wrongFeedback": "Cloudflare Tunnelを使うことで、インバウンドのファイアウォールルールの開放やパブリックIPアドレスの割り当ては不要になります。"
         },
         {
@@ -18841,7 +18841,7 @@
       "question": "TCPタイプのVPC ServiceとHyperdriveの関係として正しいものはどれですか？",
       "options": [
         {
-          "text": "Hyperdriveはこのバインディングの`app_protocol`設定を自動生成するため、手動での指定は一切不要である",
+          "text": "Hyperdriveは接続先のワイヤープロトコルを検出して`app_protocol`(postgresql/mysqlなど)を自動生成するため、VPC Service作成時に手動で指定する必要は一切ない",
           "wrongFeedback": "`app_protocol`(postgresql/mysqlなど)はVPC Service作成時に手動で指定するものです。Hyperdriveが自動生成するわけではありません。"
         },
         {
@@ -19000,7 +19000,7 @@
           "wrongFeedback": "一致している必要はありません。ルーティングは常にVPC Service設定側の値で行われます。"
         },
         {
-          "text": "`fetch()`に渡したURLのホスト名・ポートが常に優先され、VPC Service設定側の値は無視される",
+          "text": "`fetch()`に渡したURLのホスト名・ポートが実際の接続先として常に優先され、VPC Service設定側のホスト・ポートは`Host`ヘッダーを決めるためだけに使われる",
           "wrongFeedback": "逆です。実際の接続先(ルーティング)にはVPC Service設定側のホスト・ポートが常に使われます。"
         },
         {
@@ -19629,7 +19629,7 @@
           "wrongFeedback": "アカウントを分割する仕組みではありません。顧客が自分の独自ドメインをSaaS事業者のサービスに向けられるようにする仕組みです。"
         },
         {
-          "text": "SaaS事業者のインフラをすべてCloudflareのゾーンに移行し、オンプレミス環境を完全に廃止するための移行支援サービス",
+          "text": "SaaS事業者のインフラをすべてCloudflareのゾーンに移行し、オンプレミスやクラウド上のサーバーを完全に廃止してWorkersとR2へ置き換えるための、専任チームによる移行支援サービス",
           "wrongFeedback": "インフラ移行支援サービスではありません。顧客の独自ドメインにCloudflareの機能を拡張する仕組みです。"
         },
         {
@@ -19782,7 +19782,7 @@
           "wrongFeedback": "所有権検証が完了していない場合、Cloudflareはそのホスト名のトラフィックをプロキシできません。"
         },
         {
-          "text": "所有権検証は`ssl.validation_records`を使い、証明書検証は`ownership_verification`を使う",
+          "text": "所有権検証は`ssl.validation_records`を使って`ssl.status`に影響し、証明書検証は`ownership_verification`系を使ってカスタムホスト名の`status`に影響する",
           "wrongFeedback": "説明が逆です。所有権検証には`ownership_verification`系、証明書検証には`ssl.validation_records`が使われます。"
         },
         {
@@ -19891,7 +19891,7 @@
           "wrongFeedback": "DNSレコードの削除が必須というわけではありません。DNSのCNAMEターゲットをSaaS事業者側に向ける設定が必要です。"
         },
         {
-          "text": "制約は一切なく、顧客は追加前と全く同じようにすべてのCloudflare機能を自分のダッシュボードから制御できる",
+          "text": "制約は一切なく、カスタムホスト名として管理されるようになった後も、顧客側の設定はSaaS事業者の設定より常に優先されるため、すべてのCloudflare機能を自分のダッシュボードから制御できる",
           "wrongFeedback": "制約があります。カスタムホスト名として管理されるホスト名では、顧客が制御できなくなる機能があります。"
         },
         {
@@ -19949,7 +19949,7 @@
           "text": "標準構成ではAレコードでターゲットを指す設定はサポートされず、Apexドメインの直接サポートには「Apex Proxying」というEnterpriseアドオンが必要"
         },
         {
-          "text": "AレコードでSaaS事業者のターゲットを指す設定は、Apex Proxyingを使わなくても標準構成でサポートされている",
+          "text": "AレコードでSaaS事業者のターゲットを指す設定は、ApexへのCNAMEを許可しないDNSプロバイダーのためにCloudflareが標準で対応しており、Apex Proxyingを使わなくてもサポートされている",
           "wrongFeedback": "標準構成ではAレコードを使った設定はサポートされていません。Apex Proxingという追加対応が必要です。"
         }
       ],
@@ -21896,7 +21896,7 @@
           "wrongFeedback": "Rule groupにはIPアドレスだけでなく、個々のユーザーやIdPグループ、サービストークンなど多様な要素を含められます。"
         },
         {
-          "text": "Rule groupはOktaやMicrosoft Entra IDなどのIdPが管理するグループそのものを指し、Access側で独自に作成することはできない",
+          "text": "Rule groupはOktaやMicrosoft Entra IDなどのIdPが管理するグループそのものを指し、IdP側でグループを作成するとAccessへ自動的に同期されるため、Access側で独自に作成することはできない",
           "wrongFeedback": "Rule groupはAccess側で作成する独自の概念であり、IdPが管理するグループとは別物です。"
         },
         {
@@ -22303,7 +22303,7 @@
           "wrongFeedback": "署名鍵は6週間ごとにローテーションされます。ハードコードは推奨されておらず、`https://<team-name>.cloudflareaccess.com/cdn-cgi/access/certs`から都度取得するべきです。"
         },
         {
-          "text": "`public_cert`エンドポイントは現行と直前の両方の鍵を返すため、その値を使えば鍵のローテーションによるキャッシュの不整合を心配する必要は一切ない",
+          "text": "`public_cert`エンドポイントは現行と直前の両方の鍵を返すため、その値をアプリ側にキャッシュしておけば、6週間ごとのローテーション後もJWTの`kid`を突き合わせることなく検証でき、不整合を心配する必要は一切ない",
           "wrongFeedback": "`public_cert`は最新鍵のみを返すため、キャッシュが古いままだと不整合が起きえます。`kid`を`public_certs`と突き合わせる方法が推奨されます。"
         },
         {
@@ -22407,7 +22407,7 @@
           "wrongFeedback": "サービストークンによる認証はシートを消費しません。シートを消費するのは、認証イベントを起こした人間のユーザーです。"
         },
         {
-          "text": "ユーザーを「Revoke(取り消し)」すると、そのユーザーのシート消費は即座に解放され、他のユーザーが新たにそのシートを使えるようになる",
+          "text": "ユーザーを「Revoke(取り消し)」すると、セッションの無効化と同時にそのユーザーのシート消費も即座に解放され、「Remove(削除)」を行わなくても他のユーザーが新たにそのシートを使えるようになる",
           "wrongFeedback": "Revokeはセッションを無効化するだけでシート消費は解放されません。シートを解放するには「Remove(削除)」する必要があります。"
         },
         {
@@ -22617,7 +22617,7 @@
           "text": "`http_request_firewall_custom`フェーズに属するすべてのルール(カスタムルール本体+カスタムルールセット内のルール)を合算して数え、ゾーンスコープとアカウントスコープはそれぞれ別に上限が設定される"
         },
         {
-          "text": "カスタムルール本体のみが`http_request_firewall_custom`フェーズの上限のカウント対象であり、カスタムルールセット内のルールはこの上限には一切含まれない",
+          "text": "カスタムルール本体のみが`http_request_firewall_custom`フェーズの上限のカウント対象であり、ゾーンレベル・アカウントレベルのどちらのカスタムルールセット内のルールもこの上限には一切含まれず、別枠で管理される",
           "wrongFeedback": "カスタムルールセット内のルールも上限のカウント対象に含まれます。カスタムルール本体だけではありません。"
         }
       ],
@@ -23398,7 +23398,7 @@
           "text": "Bot Fight Mode(Free、全ドメイン一括)、Super Bot Fight Mode(Pro以上、カテゴリ別)、Bot Management(Enterpriseアドオン、リクエスト単位のスコア)"
         },
         {
-          "text": "IP Access Rules・Zone Lockdown・User Agent Blockingという、Ruleset Engineの外で動く3つのアクセス制御機能",
+          "text": "IP Access Rules(IP単位のブロック)・Zone Lockdown(特定URLの許可IP限定)・User Agent Blocking(UA文字列によるブロック)という、Ruleset Engineの外で動く3つのアクセス制御機能",
           "wrongFeedback": "これらはRuleset Engine外で動く別のセキュリティ機能です。Bot対策製品の組み合わせとは異なります。"
         },
         {
@@ -24008,7 +24008,7 @@
       "question": "Bot ManagementのJA3/JA4フィンガープリントフィールドに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "JA3/JA4フィンガープリントは、同じクライアントであっても`cf.bot_management.ja3_hash`の値は接続先が変わるたびに毎回異なる値になり、再現性がない",
+          "text": "JA3/JA4フィンガープリントは、同じクライアントであっても`cf.bot_management.ja3_hash`の値は宛先IP・ポート・X509証明書が変わるたびに毎回異なる値になるため、複数の宛先を使い分ける自動化ツールの追跡には使えない",
           "wrongFeedback": "JA3/JA4フィンガープリントは、宛先IP・ポート・証明書が変わっても同一クライアントであれば同じ値になるという再現性が特徴です。"
         },
         {
@@ -24120,7 +24120,7 @@
           "wrongFeedback": "この機能を有効化すると、メールクライアントのように静的ファイルを定期的に取得する良性ボットまで誤ってブロックしてしまう可能性があります。"
         },
         {
-          "text": "有効化するかどうかに関わらず常に発動し、Definitely automated・Likely automated・Verified botsの3カテゴリがすべて`Allow`に設定されていても効果を発揮する",
+          "text": "有効化するかどうかに関わらず常に発動し、Definitely automated・Likely automated・Verified botsの3カテゴリがすべて`Allow`に設定されていても、サイト内のすべてのパスとファイル種別に対して同じように効果を発揮する",
           "wrongFeedback": "3カテゴリすべてが`Allow`の場合、Static resource protectionは効果を発揮しません。少なくとも1つのカテゴリが`Allow`以外である必要があります。"
         }
       ],
@@ -25726,7 +25726,7 @@
       "question": "ヘルスモニターリクエストで使われるHostヘッダーの優先順位に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "MonitorとEndpointの両方にHostヘッダーが指定されている場合は、両方の値がカンマ区切りで結合されて1つのヘッダーとして送信される",
+          "text": "MonitorとEndpointの両方にHostヘッダーが指定されている場合は、両方の値がカンマ区切りで結合されて1つのHostヘッダーとして送信されるため、オリジン側でどちらのホスト名を使うか選択できる",
           "wrongFeedback": "値が結合されるわけではありません。Endpoint側の設定がMonitor側の設定より優先され、Endpoint側の値のみが使われます。"
         },
         {
@@ -26622,7 +26622,7 @@
           "wrongFeedback": "訪問者のIPアドレスはデフォルトのキャッシュキーには含まれません。"
         },
         {
-          "text": "`http.request.uri.path`が示すURLのパス部分のみで構成され、スキームやホスト名、クエリ文字列は一切含まれない",
+          "text": "`http.request.uri.path`が示すURLのパス部分のみで構成され、スキームやホスト名、クエリ文字列は一切含まれないため、同じパスであればホストが異なっても同一のキャッシュエントリが使われる",
           "wrongFeedback": "パス部分のみではありません。スキーム・ホスト・URI・クエリ文字列を含むフルURLに加え、`Origin`ヘッダーや一部のルーティングヘッダーも含まれます。"
         },
         {
@@ -27047,7 +27047,7 @@
           "wrongFeedback": "即座にエラーが返されるわけではありません。2件目以降のリクエストは、最初のリクエストが完了するのを待ってから、同じレスポンスを受け取ります。"
         },
         {
-          "text": "到着したリクエストの数だけオリジンへのリクエストが並行して送信され、最初に返ってきたレスポンスがすべてのリクエストに使い回される",
+          "text": "到着したリクエストの数だけオリジンへのリクエストが並行して送信され、最初に返ってきたレスポンスがすべてのリクエストに使い回されたうえで、残りのオリジン応答はキャッシュに保存されず破棄される",
           "wrongFeedback": "並行して複数送信されるわけではありません。キャッシュロックにより、最初の1件のみがオリジンへ転送されます。"
         }
       ],
@@ -27958,7 +27958,7 @@
           "text": "Snippetsは実行時間5ms・メモリ2MB・パッケージサイズ32KBという上限を持つ軽量な宣言的処理向けで、永続ストレージ(KV・Durable Objects・D1など)へのアクセスは想定されていない"
         },
         {
-          "text": "SnippetsはWorkersよりも高機能で、KV・Durable Objects・D1といったストレージへの直接アクセスや複数言語ランタイムをサポートしている",
+          "text": "SnippetsはWorkersよりも高機能で、KV・Durable Objects・D1といったストレージへの直接アクセスや複数言語ランタイム、CLIでの開発とバージョン管理までサポートしており、実行時間やメモリの上限もWorkersより緩い",
           "wrongFeedback": "説明が逆です。KV・Durable Objects・D1などのストレージアクセスや複数言語ランタイムのサポートはWorkersの特徴であり、Snippetsは軽量な宣言的処理に特化しています。"
         }
       ],
@@ -30649,8 +30649,8 @@
           "wrongFeedback": "プランによって異なります。Freeプランのデフォルトの圧縮方式はZstandard、Pro・BusinessはBrotli、EnterpriseはGzipです。"
         },
         {
-          "text": "Enterpriseプランのデフォルトの圧縮方式はZstandardであり、Freeプランのデフォルトの圧縮方式はGzipである",
-          "wrongFeedback": "説明が逆です。Freeプランのデフォルトの圧縮方式はZstandard、Enterpriseプランのデフォルトの圧縮方式はGzipです。"
+          "text": "Enterpriseプランのデフォルトの圧縮方式はZstandardであり、Freeプランのデフォルトの圧縮方式はGzipで、訪問者の`accept-encoding`ヘッダーに関わらず常にこの方式が適用される",
+          "wrongFeedback": "説明が逆です。Freeプランのデフォルトの圧縮方式はZstandard、Enterpriseプランのデフォルトの圧縮方式はGzipです。また実際に適用される方式は、訪問者が`accept-encoding`ヘッダーで対応を示している方式にも依存します。"
         },
         {
           "text": "Freeプランはデフォルトでランダムに圧縮方式を切り替え、Pro以上のプランでは常にGzipのみが使われる",
@@ -34361,8 +34361,8 @@
           "wrongFeedback": "1アカウントあたり最大4つのDLP Forensic Copy Logpushジョブという上限が設定されています。"
         },
         {
-          "text": "ペイロードロギングもLogpushフォレンジックコピーも、どちらもマッチした内容を編集せず、完全なHTTPリクエストをそのままの形で記録するという点で共通しており、記録内容に違いはない",
-          "wrongFeedback": "完全なHTTPリクエストを記録するのはLogpushフォレンジックコピーのみです。ペイロードロギングは編集されたマッチ内容と前後75バイトの文脈のみを記録します。"
+          "text": "ペイロードロギングもLogpushフォレンジックコピーも、どちらもマッチした内容を編集せず、ヘッダーとボディを含む完全なHTTPリクエストをそのままの形で記録するという点で共通しており、記録内容にも利用できるプランにもジョブ数の上限にも違いはない",
+          "wrongFeedback": "完全なHTTPリクエストを記録するのはLogpushフォレンジックコピーのみです。ペイロードロギングは編集されたマッチ内容と前後75バイトの文脈のみを記録します。また利用できるプランも異なり、Logpushフォレンジックコピーはenterprise限定です。"
         }
       ],
       "correctIndex": 1,
@@ -35389,7 +35389,7 @@
           "wrongFeedback": "IsolateはGatewayのHTTPポリシービルダーの中のアクションの1つとして設定します。専用の別ビルダーは存在しません。"
         },
         {
-          "text": "Browser Isolationのアドオンを契約して有効化した時点で、Isolateポリシーの追加など追加の設定なしにすべてのHTTPトラフィックが自動的に分離される",
+          "text": "Browser Isolationのアドオンを契約して有効化した時点で、Isolateポリシーの追加など追加の設定なしに、インライン方式・クライアントレス方式のどちらを使う場合もすべてのHTTPトラフィックが自動的に分離される",
           "wrongFeedback": "Isolateポリシーを追加するまでは、デフォルトでは一切のトラフィックが分離されません。"
         },
         {
@@ -35962,7 +35962,7 @@
           "wrongFeedback": "Critical・High・Medium・Lowの4段階が存在します。2段階ではありません。"
         },
         {
-          "text": "Criticalは「今月中にレビューされるべき」項目を指し、Lowは「今日中に対応すべき」項目を指す",
+          "text": "Criticalは「今月中にレビューされるべき」項目、Highは「情報提供的または定期レビューの一環」、Mediumは「今週中に対応すべき」、Lowは「今日中に対応すべき」項目を指す",
           "wrongFeedback": "説明が入れ替わっています。Criticalは「今日中に対応すべき」、Lowは「情報提供的、または定期レビューの一環」というレベルです。"
         },
         {
@@ -36328,7 +36328,7 @@
       "question": "検証が行われるタイミングを踏まえると、CASB Webhookの送信先URLに関する制約として正しい説明はどれですか?",
       "options": [
         {
-          "text": "送信先URLとしてlocalhostやループバック、プライベートアドレスのような予約済みアドレスも、他の一般的なURLと同様に問題なく設定できる",
+          "text": "送信先URLとしてlocalhostやループバック、プライベートアドレスのような予約済みアドレスも、社内ネットワーク内のエンドポイントへ配信する用途のために、他の一般的なURLと同様に問題なく設定できる",
           "wrongFeedback": "localhost・ループバック・プライベート・その他の予約済みアドレスに解決されるURLは拒否されます。"
         },
         {
@@ -36584,7 +36584,7 @@
       "question": "DEXの基本的な役割と前提条件に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "DEXはCloudflare One Clientのインストールも組織への登録も必要とせず、エンドユーザーのデバイスに一切何も導入することなく機能する",
+          "text": "DEXはCloudflare One Clientのインストールも組織への登録も必要とせず、ブラウザ拡張やエージェントを含めエンドユーザーのデバイスに一切何も導入することなく、ダッシュボードから接続品質を計測できる",
           "wrongFeedback": "DEXの利用にはCloudflare One Clientのインストールと組織への登録が必要です。"
         },
         {
@@ -37802,7 +37802,7 @@
       "question": "Email Securityにおける「Detection」と「Disposition」の関係、およびSPAM判定時のヘッダー表記に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "SPAMと判定されたメールのdispositionヘッダーには、他のdispositionと同様に、判定名称であるそのままの「SPAM」という値が特に変換されることなくタグ付けされる",
+          "text": "SPAMと判定されたメールのdispositionヘッダーには、他のdispositionと同様に判定名称そのままの「SPAM」という値が変換されることなくタグ付けされるため、受信側はヘッダー値からdetectionの名称をそのまま読み取ることができる",
           "wrongFeedback": "SPAMと判定された場合、ヘッダーには「SPAM」ではなく「UCE」という値がタグ付けされます。"
         },
         {
@@ -38167,7 +38167,7 @@
           "text": "Outlook Webアプリや新しいデスクトップクライアントでは安定して動作するが、旧バージョンのデスクトップクライアントでは動作せず、モバイルクライアントでも不安定になる"
         },
         {
-          "text": "モバイルクライアント(iOS・Android)でのOutbound DLPの動作は、デスクトップクライアントと全く同じ安定性を持つ",
+          "text": "モバイルクライアント(iOS・Android)でのOutbound DLPの動作は、AppleやMicrosoftの制限を受けないため、新しいOutlookデスクトップクライアントと全く同じ安定性を持つ",
           "wrongFeedback": "モバイルクライアントでは、AppleやMicrosoftの制限により動作が不安定になるとされています。"
         }
       ],
@@ -39765,7 +39765,7 @@
           "wrongFeedback": "設定したプロトコルと異なる種類のフラッド(例: TCPアプリケーションに対するUDPフラッド)のパケットは、オリジンへ転送されずドロップされます。"
         },
         {
-          "text": "SYN cookieチャレンジのようなLinuxネットワークスタックの仕組みはSpectrumのDDoS緩和には利用されていない",
+          "text": "SYN cookieチャレンジのようなLinuxネットワークスタックの仕組みはSpectrumのDDoS緩和には利用されておらず、SYNフラッドの緩和はすべてCloudflare独自のパケットフィルタで行われる",
           "wrongFeedback": "SpectrumはSYNフラッドなどへの対策として、Linuxネットワークスタックの一部であるSYN cookieチャレンジの仕組みを活用しています。"
         }
       ],
@@ -40064,7 +40064,7 @@
       "question": "SpectrumでSMTPサーバーを保護する場合の注意点として、正しいものはどれですか?",
       "options": [
         {
-          "text": "Spectrumはメールサーバーの一種として動作し、SMTPプロトコル自体を解釈してスパムフィルタリングを行う",
+          "text": "Spectrumは仲介メールサーバーの一種として動作し、SMTPプロトコル自体を解釈してヘッダーを書き換えたうえで、スパムフィルタリングとウイルススキャンを行ってからオリジンへ配送する",
           "wrongFeedback": "SpectrumはSMTPを含むアプリケーション層のプロトコルを解釈・処理しません。あくまでTCPのペイロードをそのままオリジンへ転送するL4プロキシです。"
         },
         {
@@ -40604,7 +40604,7 @@
       "question": "Waiting Roomの4つのキューイングメソッド(FIFO・Random・Passthrough・Reject)の挙動を対比したとき、正しい組み合わせはどれですか?",
       "options": [
         {
-          "text": "Randomは早く並んだ訪問者ほど長く待つことを保証する方式であり、FIFOは在庫やサービスをより公平に配分する目的で使う",
+          "text": "Randomは待機室に入ったタイムスタンプ順に通すことで早く並んだ訪問者ほど先に出られることを保証する方式であり、FIFOは空きが出るたびに訪問者を選び在庫やサービスをより公平に配分する目的で使う",
           "wrongFeedback": "説明が逆です。早く並んだ訪問者が長く待つ(=先に出られる)ことを保証するのはFIFOで、より公平な配分を目的とするのはRandomです。"
         },
         {
@@ -41467,7 +41467,7 @@
       "question": "Cloudflare Zarazが解決する主な課題として、最も適切な説明はどれですか?",
       "options": [
         {
-          "text": "サードパーティツールをブラウザから完全に排除し、あらゆる形でのデータ収集自体を不可能にする",
+          "text": "Google AnalyticsやFacebook Pixelのようなサードパーティツールをブラウザから完全に排除し、エッジ側でも動作させないことであらゆる形でのデータ収集自体を不可能にする",
           "wrongFeedback": "Zarazはサードパーティツールの実行場所をエッジ側に移すものであり、データ収集そのものをすべて禁止する機能ではありません。むしろツールは引き続き動作します。"
         },
         {
@@ -41711,7 +41711,7 @@
           "wrongFeedback": "`zaraz.showConsentModal()`関数を呼び出すことで、同意モーダルを再表示させることができます。"
         },
         {
-          "text": "1つのツールを複数のPurposeに自由に割り当てることができ、Purposeとツールは常に多対多の関係になる",
+          "text": "1つのツールを複数のPurposeに自由に割り当てることができ、Purposeとツールは常に多対多の関係になるため、同意状況に応じて同じツールを異なる目的で読み込み分けられる",
           "wrongFeedback": "1つのPurposeには複数のツールを割り当てられますが、1つのツールが割り当てられるPurposeは1つだけです。"
         },
         {
@@ -41816,7 +41816,7 @@
           "wrongFeedback": "Zarazはデフォルトでは変更をリアルタイムに反映する設計です。`Preview & Publish`はあえて有効化するオプション機能です。"
         },
         {
-          "text": "Preview & Publishモードを無効化する際、未公開の変更は必ず自動的に`Publish`され、破棄するという選択肢は用意されていない",
+          "text": "Preview & Publishモードを無効化する際、未公開の変更は確認モーダルを挟むことなく必ず自動的に`Publish`されて全ユーザーへ即座に反映され、破棄するという選択肢は用意されていない",
           "wrongFeedback": "Preview & Publishを無効化する際には、未公開の変更をすべて削除するか、公開するかをモーダルで選択できます。自動的にどちらかへ強制されるわけではありません。"
         }
       ],
@@ -43004,7 +43004,7 @@
           "text": "`this.state`に保存された状態、WebSocket接続ごとに`connection.setState()`で設定した状態、`this.sql`に保存されたSQLiteのデータ"
         },
         {
-          "text": "Agentクラスのメンバー変数として保持していたインメモリの一時変数や、`setInterval`/`setTimeout`で登録したタイマー",
+          "text": "Agentクラスのメンバー変数として保持していたインメモリの一時変数や、`setInterval`/`setTimeout`で登録したタイマーは、Durable Objectのスナップショットとして保存されるため復帰後もそのまま継続する",
           "wrongFeedback": "インメモリの変数やタイマーはハイバネーションを挟むと失われます。ハイバネーションを越えて保持されるのは`this.state`・接続の状態・SQLiteのデータです。"
         },
         {
@@ -43062,7 +43062,7 @@
           "wrongFeedback": "Agentクラス名は自動的にkebab-caseに変換されてURLにマッチします。"
         },
         {
-          "text": "`https://your-worker.workers.dev/{インスタンス名}` という形式で、Agent名を含めずインスタンス名のみでルーティングされる",
+          "text": "`https://your-worker.workers.dev/{インスタンス名}` という形式で、Agent名を含めずインスタンス名のみでルーティングされ、Agentクラスは`routeAgentRequest()`の第2引数で指定する",
           "wrongFeedback": "デフォルトのルーティングパターンには`/agents/`というプレフィックスとAgent名の両方が含まれます。"
         }
       ],
@@ -43218,7 +43218,7 @@
           "wrongFeedback": "実用上、1Agentあたり数万件程度が目安とされており、無制限ではありません。"
         },
         {
-          "text": "スケジュールされたタスクはAgentインスタンスのメモリ上のタイマーとして管理されるため、インスタンスが休止・再起動すると予約内容が失われる",
+          "text": "スケジュールされたタスクはAgentインスタンスのメモリ上のタイマーとして管理され、SQLiteやDurable Objectの`alarm`には記録されないため、インスタンスが休止・再起動すると予約内容が失われる",
           "wrongFeedback": "スケジュールされたタスクはSQLiteのテーブルに保存され、Durable Objectの`alarm`を使って正しいタイミングでAgentを起こす仕組みになっているため、再起動をまたいでも失われません。"
         }
       ],
