@@ -20619,14 +20619,14 @@
       "question": "Cloudflare Pipelinesを構成する3つの主要コンポーネントの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "非同期処理のためのキューであるWorker・キーバリューストアであるKV・リレーショナルデータベースであるD1の組み合わせで、いずれもPipelinesのSQL変換内に自動的に組み込まれる",
+          "text": "非同期処理のためのキューであるWorker・キーバリューストアであるKV・リレーショナルデータベースであるD1の組み合わせで、いずれも単体では動作せず互いに依存し合う構成になっている",
           "wrongFeedback": "これらはPipelinesの構成要素ではありません。Pipelinesの構成要素はStreams・Pipelines(SQL変換)・Sinksです。"
         },
         {
           "text": "データを受け取り一時的に蓄えるStreams、SQLでデータを変換するPipelines、変換後のデータの配信先を定義するSinks"
         },
         {
-          "text": "メッセージングを担うQueues・状態保持を担うDurable Objects・キャッシュを担うCache APIの組み合わせで、いずれもPipelinesの内部処理として自動的に組み込まれる",
+          "text": "メッセージングを担うQueues・状態保持を担うDurable Objects・キャッシュを担うCache APIの組み合わせで、いずれも単一のエンドポイントに統合されて提供されている",
           "wrongFeedback": "これらはPipelinesの構成要素ではありません。"
         },
         {
