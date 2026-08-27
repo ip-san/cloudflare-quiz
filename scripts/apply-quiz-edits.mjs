@@ -36,6 +36,21 @@ const proposals = JSON.parse(readFileSync(resolve(proposalPath), 'utf8'))
 const data = JSON.parse(readFileSync(QUIZ_PATH, 'utf8'))
 const byId = new Map(data.quizzes.map((q) => [q.id, q]))
 
+/**
+ * 選択肢を長さの降順に並べたときの正解の順位（0 = 最長）。
+ *
+ * 2026-08-26 の反転作業では margin（正解が2位よりどれだけ長いか）だけを見ており、
+ * 正解が1位から2位へ移ったことは分かっても「正解は相変わらず長い方の2つに入る」
+ * ことが見えなかった。順位も一緒に出す。
+ */
+function lengthRank(quiz) {
+  const lens = quiz.options.map((o) => o.text.length)
+  return lens
+    .map((l, i) => ({ l, i }))
+    .sort((a, b) => b.l - a.l)
+    .findIndex((x) => x.i === quiz.correctIndex)
+}
+
 /** 正解が2位の選択肢よりどれだけ長いか（悪用のしやすさ） */
 function margin(quiz) {
   const lens = quiz.options.map((o) => o.text.length)
@@ -61,6 +76,7 @@ for (const p of proposals) {
   }
 
   const before = margin(quiz)
+  const rankBefore = lengthRank(quiz)
 
   for (const edit of p.edits) {
     const { field, value } = edit
@@ -113,13 +129,21 @@ for (const p of proposals) {
   }
 
   const after = margin(quiz)
-  results.push({ id: p.id, before, after })
+  results.push({ id: p.id, before, after, rankBefore, rankAfter: lengthRank(quiz) })
 }
 
 console.log(`適用: ${applied}件の編集 / ${results.length}問  (skipped: ${skipped})`)
 if (errors.length > 0) {
   console.log(`\n⚠️  ${errors.length}件のエラー:`)
   for (const e of errors) console.log(`  - ${e}`)
+}
+
+const moved = results.filter((r) => r.rankAfter !== r.rankBefore)
+console.log(`\n正解の長さ順位が動いた: ${moved.length}問 / ${results.length}問`)
+const unmoved = results.filter((r) => r.rankAfter === r.rankBefore)
+if (unmoved.length > 0) {
+  console.log(`  動かなかった ${unmoved.length}問（伸ばし足りない可能性）:`)
+  for (const r of unmoved) console.log(`    - ${r.id}: rank${r.rankBefore} のまま`)
 }
 
 const stillBad = results.filter((r) => r.after.pct >= 50)
