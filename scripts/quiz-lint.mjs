@@ -660,6 +660,9 @@ const LONGEST_IS_CORRECT_MIN = 0.15
  * 分布そのものを見る。
  */
 const CORRECT_IN_LONGER_HALF_MAX = 0.7
+// 下限も要る。行き過ぎると今度は「短い方の2つに絞る」が手がかりになる。
+// 反転作業では rank0 の下限を置き忘れかけたので、こちらは最初から両側で見る。
+const CORRECT_IN_LONGER_HALF_MIN = 0.3
 
 /** 選択肢を長さの降順に並べたときの正解の順位（0 = 最長） */
 function correctLengthRank(quiz) {
@@ -702,14 +705,21 @@ function lintLengthCue(quizzes) {
     })
   }
 
+  const halfShown = `${(halfRate * 100).toFixed(1)}% (${longerHalf}/${n})`
+  const halfBand =
+    `偶然なら50%、許容は${CORRECT_IN_LONGER_HALF_MIN * 100}%〜${CORRECT_IN_LONGER_HALF_MAX * 100}%。` +
+    `長さ順位の分布: ${dist}（一様なら各25%）`
   if (halfRate > CORRECT_IN_LONGER_HALF_MAX) {
     issues.push({
       id: '(corpus)',
       type: 'correct-in-longer-half',
-      message:
-        `正解が「長い方の半分」に入る割合が ${(halfRate * 100).toFixed(1)}% (${longerHalf}/${n}) — ` +
-        `「長い方の2つに絞る」だけで4択が2択になる。偶然なら50%、許容は${CORRECT_IN_LONGER_HALF_MAX * 100}%まで。` +
-        `長さ順位の分布: ${dist}（一様なら各25%）`,
+      message: `正解が「長い方の半分」に入る割合が ${halfShown} — 「長い方の2つに絞る」だけで4択が2択になる。${halfBand}`,
+    })
+  } else if (halfRate < CORRECT_IN_LONGER_HALF_MIN) {
+    issues.push({
+      id: '(corpus)',
+      type: 'correct-in-shorter-half',
+      message: `正解が「長い方の半分」に入る割合が ${halfShown} と低すぎる — 今度は「短い方の2つに絞る」が手がかりになる。${halfBand}`,
     })
   }
   return issues
