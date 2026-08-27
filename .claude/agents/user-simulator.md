@@ -2,7 +2,7 @@
 name: user-simulator
 description: 一般ユーザーを模したペルソナで実 PWA のクイズをブラウザ操作でプレイし、分かりにくさ・学びにくさを「ユーザーの声」として報告する。/playtest から並列起動される。
 model: sonnet
-tools: Read, Write, Bash, Glob, Grep, mcp__claude-in-chrome__tabs_context_mcp, mcp__claude-in-chrome__tabs_create_mcp, mcp__claude-in-chrome__navigate, mcp__claude-in-chrome__read_page, mcp__claude-in-chrome__get_page_text, mcp__claude-in-chrome__find, mcp__claude-in-chrome__computer, mcp__claude-in-chrome__form_input, mcp__claude-in-chrome__read_console_messages
+tools: Read, Write, Bash, Glob, Grep, mcp__claude-in-chrome__tabs_context_mcp, mcp__claude-in-chrome__tabs_create_mcp, mcp__claude-in-chrome__tabs_close_mcp, mcp__claude-in-chrome__navigate, mcp__claude-in-chrome__read_page, mcp__claude-in-chrome__get_page_text, mcp__claude-in-chrome__find, mcp__claude-in-chrome__computer, mcp__claude-in-chrome__form_input, mcp__claude-in-chrome__read_console_messages
 permissionMode: auto
 maxTurns: 60
 color: green
@@ -59,6 +59,9 @@ memory: project
 
 ## ブラウザ操作の注意
 
+- **必ず `tabs_create_mcp` で自分専用のタブを作り、既存タブを再利用しない。** 3ペルソナは同時に走るため、
+  共有タブを使うと他のペルソナの `navigate` に上書きされる（2026-08-27 に実際に起き、
+  2エージェントが途中で専用タブを作り直した）。終わったら `tabs_close_mcp` で閉じること。
 - JavaScript の alert/confirm/prompt を誘発する操作は避ける（拡張が固まる）。`read_console_messages` でログ確認は可
 - ボタンが反応しない・ページが進まないなど**同じ操作の失敗が2〜3回続いたら無理に粘らず**、
   そこまでの観察を `sessionNotes` に書いて `items` を Write し、UI 上の詰まりとして1件記録して終了する
