@@ -21907,7 +21907,7 @@
       "correctIndex": 0,
       "explanation": "Rule groupは、IPアドレスや個々のユーザー、IdP(Identity Provider＝Google WorkspaceやOktaなど、社員のログインを預かる認証サービス)のグループ、サービストークンといった要素の組み合わせを1か所にまとめ、複数のAccessポリシーで再利用できるようにしたものです。IdP側のグループ(Oktaグループなど)とは異なる、Access独自の概念です。IPアドレスベースのルールなど、変更が発生しやすい条件をRule groupに集約しておくと、修正箇所を1か所に絞れます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/groups/",
-      "hint": "「複数のポリシーで何度も同じ条件を書くのを避けるため、部品化しておく」という発想を考えましょう。",
+      "hint": "「複数のポリシーで何度も同じ条件を書くのを避けるため、部品化しておく」という発想を考えましょう。なお、IdP(Identity Provider)とは、Google WorkspaceやOktaなど、社員のログインを預かる認証サービスのことです。",
       "tags": [
         "zero-trust-access",
         "practical"
