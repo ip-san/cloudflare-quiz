@@ -11507,7 +11507,7 @@
       "question": "APIのレート制限を「1ユーザーあたり1分間に100リクエストまで」のように正確にカウントして実装したい場合、Durable ObjectsとWorkers KVのどちらでカウンタを実装するのが適切ですか？",
       "options": [
         {
-          "text": "Workers KV。結果整合性(eventual consistency)のおかげで、複数エッジからの同時書き込みでも常に正確な合計値が得られる",
+          "text": "Workers KV。同じキーへの書き込みはグローバルに直列化されるため、複数エッジからの同時書き込みでも常に正確な合計値が得られる",
           "wrongFeedback": "KVは結果整合性のストアで、ある拠点での変更が他の拠点に伝播するまで最大60秒程度かかることがあります。同じキーへの高頻度な更新やアトミックな読み書きには向きません。"
         },
         {
@@ -21897,7 +21897,7 @@
         },
         {
           "text": "Rule groupはOktaやMicrosoft Entra IDなどのIdPが管理するグループそのものを指し、IdP側でグループを作成するとAccessへ自動的に同期されるため、Access側で独自に作成することはできない",
-          "wrongFeedback": "Rule groupはAccess側で作成する独自の概念であり、IdPが管理するグループとは別物です。"
+          "wrongFeedback": "Rule groupはAccess側で作成する独自の概念であり、IdPが管理するグループとは別物です。IdP側でグループを作っても Rule group として自動同期されることはなく、Access のダッシュボードで Rule group を作り、その中に含める1要素としてIdPグループを指定します。"
         },
         {
           "text": "Rule groupを作成すると、既存のすべてのAccessポリシーに自動的に適用される",

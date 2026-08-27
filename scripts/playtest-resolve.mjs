@@ -48,7 +48,11 @@ function main() {
     const persona = session.persona || file.replace(/^requests-|\.json$/g, '')
     byPersona[persona] = (byPersona[persona] || 0) + (session.items?.length || 0)
     for (const item of session.items || []) {
-      const quizId = item.domain === 'ux' ? (item.quizId ?? null) : resolveId(item.questionSnippet, quizzes)
+      // ターゲットモードでは user-simulator が quizId を直接記録する。
+      // スニペット名寄せは通常モード用のフォールバックで、
+      // 設問が長いと 40字の切り出しが一致せず未解決になる
+      // （2026-08-27 に ag-015 で実際に起きた）。直記録があればそれを使う。
+      const quizId = item.quizId ?? (item.domain === 'ux' ? null : resolveId(item.questionSnippet, quizzes))
       const enriched = { quizId, persona, ...item }
       const domain = ['content', 'learning', 'ux'].includes(item.domain) ? item.domain : 'content'
       byDomain[domain].push(enriched)

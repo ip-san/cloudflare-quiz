@@ -132,8 +132,8 @@
       {
         "persona": "busy-intermediate",
         "outcome": "friction",
-        "at": "2026-08-15",
-        "fp": "80da0a82f122"
+        "at": "2026-08-27",
+        "fp": "8d93cc26e156"
       }
     ],
     "ag-018": [
@@ -156,8 +156,8 @@
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-16",
-        "fp": "ebecfecf81f0"
+        "at": "2026-08-27",
+        "fp": "4d99c1239fdd"
       }
     ],
     "ai-008": [
@@ -221,23 +221,23 @@
         "persona": "reviewer",
         "outcome": "clean",
         "at": "2026-08-27",
-        "fp": "0aa04b034a39"
+        "fp": "6ffaf33f6fb6"
       }
     ],
     "ac-006": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-25",
-        "fp": "a341917704c9"
+        "at": "2026-08-27",
+        "fp": "493f2dd13687"
       }
     ],
     "ac-012": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
-        "at": "2026-08-25",
-        "fp": "a6da70974e10"
+        "outcome": "clean",
+        "at": "2026-08-27",
+        "fp": "44dc030cc632"
       }
     ],
     "ac-013": [
@@ -275,9 +275,9 @@
     "ar-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
-        "at": "2026-08-25",
-        "fp": "f60ec92b9c3f"
+        "outcome": "clean",
+        "at": "2026-08-27",
+        "fp": "32eb9b662a4b"
       }
     ],
     "ar-008": [
@@ -316,8 +316,8 @@
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "c4fd170e8ef3"
+        "at": "2026-08-27",
+        "fp": "db5d2022cd5e"
       }
     ],
     "ai-011": [
@@ -331,9 +331,9 @@
     "ai-012": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
-        "at": "2026-08-26",
-        "fp": "4d19e583ff93"
+        "outcome": "clean",
+        "at": "2026-08-27",
+        "fp": "09322a06a5d2"
       }
     ],
     "ac-004": [
@@ -341,7 +341,7 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "2026-08-27",
-        "fp": "75cd9cff93c4"
+        "fp": "81a7c3d120d7"
       }
     ],
     "ac-008": [
@@ -349,7 +349,7 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "2026-08-27",
-        "fp": "2ea5ec2a6038"
+        "fp": "bd328d9ca9b6"
       }
     ],
     "ac-009": [
@@ -357,7 +357,7 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "2026-08-27",
-        "fp": "ffb7becc2ecb"
+        "fp": "66ef8b032948"
       }
     ],
     "ac-011": [
@@ -409,9 +409,9 @@
     "ar-016": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "b3c5b0c20bf3"
+        "outcome": "friction",
+        "at": "2026-08-27",
+        "fp": "fc411169abe4"
       }
     ],
     "as-003": [
@@ -434,32 +434,32 @@
       {
         "persona": "beginner",
         "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "afd2758c4b0f"
+        "at": "2026-08-27",
+        "fp": "fd376e4a6ae2"
       }
     ],
     "ag-004": [
       {
         "persona": "beginner",
         "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "7fb74daffc59"
+        "at": "2026-08-27",
+        "fp": "45931d89b786"
       }
     ],
     "ag-005": [
       {
         "persona": "beginner",
         "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "7864abd0dab0"
+        "at": "2026-08-27",
+        "fp": "a4ea3148d142"
       }
     ],
     "as-005": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "044535712c95"
+        "outcome": "friction",
+        "at": "2026-08-27",
+        "fp": "d20675332102"
       }
     ],
     "as-007": [
@@ -473,9 +473,9 @@
     "as-010": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
-        "at": "2026-08-26",
-        "fp": "174c97ef0d5f"
+        "outcome": "clean",
+        "at": "2026-08-27",
+        "fp": "405a548a978f"
       }
     ],
     "as-013": [
@@ -506,8 +506,8 @@
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "1c66a16ff495"
+        "at": "2026-08-27",
+        "fp": "7ce57fb35ccf"
       }
     ],
     "ar-012": [
