@@ -485,10 +485,51 @@ const MEMORIZATION_PATTERNS = [
   /の正式名称は(何|どれ)ですか/,
 ]
 
+/**
+ * QuizText が解釈するのは改行と `code` だけで、Markdown は素通しする。
+ * 本文に `**強調**` を書くとアスタリスクがそのまま画面に出る。
+ *
+ * 2026-08-27 に reviewer ペルソナが ag-016 で実際に発見した（4層に混入）。
+ * ドキュメントの文面を引き写すときに紛れ込みやすい。強調は「」で書く。
+ */
+const RAW_MARKDOWN_PATTERNS = [
+  { re: /\*\*[^*]+\*\*/, what: '**強調**（「」を使う）' },
+  { re: /(?:^|\s)__[^_]+__(?:\s|$)/, what: '__強調__（「」を使う）' },
+  { re: /\[[^\]]+\]\([^)]+\)/, what: '[表示文字](URL) 形式のリンク' },
+  { re: /^#{1,6}\s/m, what: '# 見出し' },
+]
+
+function lintRawMarkdown(quiz) {
+  const layers = { question: quiz.question, hint: quiz.hint, explanation: quiz.explanation }
+  quiz.options.forEach((o, i) => {
+    layers[`options[${i}].text`] = o.text
+    if (o.wrongFeedback) layers[`options[${i}].wrongFeedback`] = o.wrongFeedback
+  })
+
+  const issues = []
+  for (const [field, text] of Object.entries(layers)) {
+    if (typeof text !== 'string') continue
+    for (const { re, what } of RAW_MARKDOWN_PATTERNS) {
+      if (re.test(text)) {
+        issues.push({
+          id: quiz.id,
+          type: 'raw-markdown',
+          field,
+          value: text.match(re)?.[0]?.slice(0, 40) ?? '',
+          message: `${what} がそのまま画面に出る — QuizText は改行と \`code\` しか解釈しない`,
+        })
+        break
+      }
+    }
+  }
+  return issues
+}
+
 function lintQuality(quizzes) {
   const issues = []
 
   for (const quiz of quizzes) {
+    issues.push(...lintRawMarkdown(quiz))
     const correctSet = quiz.type === 'multi' ? new Set(quiz.correctIndices || []) : new Set([quiz.correctIndex])
 
     quiz.options.forEach((opt, i) => {

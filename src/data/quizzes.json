@@ -17513,14 +17513,14 @@
       "options": [
         {
           "text": "クレジットを読み込むだけで自動的に適用され、ゲートウェイ側の設定は不要である",
-          "wrongFeedback": "クレジットの読み込みに加えて、ゲートウェイの**Workers AI Billing**設定を**Unified billing**に変更する必要があります。"
+          "wrongFeedback": "クレジットの読み込みに加えて、ゲートウェイの「Workers AI Billing」設定を「Unified billing」に変更する必要があります。"
         },
         {
           "text": "Workers AIモデルはUnified Billingの対象外であり、前払いクレジットはOpenAIやAnthropicなどサードパーティプロバイダーの利用分にしか使えず、Workers AIには常に通常料金が別途請求される",
-          "wrongFeedback": "ゲートウェイの**Workers AI Billing**設定を**Unified billing**にすれば、Workers AIの利用分も前払いクレジットから差し引けます。"
+          "wrongFeedback": "ゲートウェイの「Workers AI Billing」設定を「Unified billing」にすれば、Workers AIの利用分も前払いクレジットから差し引けます。"
         },
         {
-          "text": "ゲートウェイの**Workers AI Billing**設定を**Unified billing**にすると、そのゲートウェイ経由のWorkers AIリクエストが前払いクレジットから差し引かれる"
+          "text": "ゲートウェイの「Workers AI Billing」設定を「Unified billing」にすると、そのゲートウェイ経由のWorkers AIリクエストが前払いクレジットから差し引かれる"
         },
         {
           "text": "Workers AIモデルはAI Gateway経由では一切課金されず、常に無料で利用できる",
@@ -17528,7 +17528,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "AI Gatewayの前払いクレジットをWorkers AIにも使うには、ゲートウェイの**Workers AI Billing**設定を**Unified billing**に変更します。これでそのゲートウェイを経由したWorkers AIリクエストが、クレジット残高からリアルタイムで差し引かれるようになります。呼び出し側では`env.AI.run()`の第3引数にゲートウェイIDを渡すか、REST APIなら`cf-aig-gateway-id`ヘッダーを付けます。\n{{diagram:0}}\n個人開発では「前払いクレジットがあれば、本来Workers Paidプランが必要なモデルも使えるようになり、フロンティアモデルのレート制限も緩和される」点が効いてきます。支払い方法を1つに集約でき、使いすぎもクレジット残高で頭打ちにできます。",
+      "explanation": "AI Gatewayの前払いクレジットをWorkers AIにも使うには、ゲートウェイの「Workers AI Billing」設定を「Unified billing」に変更します。これでそのゲートウェイを経由したWorkers AIリクエストが、クレジット残高からリアルタイムで差し引かれるようになります。呼び出し側では`env.AI.run()`の第3引数にゲートウェイIDを渡すか、REST APIなら`cf-aig-gateway-id`ヘッダーを付けます。\n{{diagram:0}}\n個人開発では「前払いクレジットがあれば、本来Workers Paidプランが必要なモデルも使えるようになり、フロンティアモデルのレート制限も緩和される」点が効いてきます。支払い方法を1つに集約でき、使いすぎもクレジット残高で頭打ちにできます。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/unified-billing/#use-unified-billing",
       "hint": "クレジットを入れるだけで全部に効くのか、それとも「どの支払いに使うか」をゲートウェイ側で指定する必要があるのかを考えましょう。",
       "tags": [
@@ -24692,7 +24692,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "フォールスルールールは、Endpoint Management(現在のダッシュボードでは **Web Assets > Operations**)に登録された既知のオペレーションに一致しないリクエストへの、キャッチオール(受け皿)ルールです。すべてのエンドポイントを登録しておくことで、開発チームが把握していないレガシー・ゾンビエンドポイントへの攻撃を防げます。`cf.api_gateway.fallthrough_detected`フィールドを使えば、このロジックをカスタムルールに組み込み、独自の条件と組み合わせることもできます。\n{{diagram:0}}",
+      "explanation": "フォールスルールールは、Endpoint Management(現在のダッシュボードでは「Web Assets > Operations」)に登録された既知のオペレーションに一致しないリクエストへの、キャッチオール(受け皿)ルールです。すべてのエンドポイントを登録しておくことで、開発チームが把握していないレガシー・ゾンビエンドポイントへの攻撃を防げます。`cf.api_gateway.fallthrough_detected`フィールドを使えば、このロジックをカスタムルールに組み込み、独自の条件と組み合わせることもできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#add-validation-by-adding-a-fallthrough-rule",
       "hint": "「登録されているものに一致した場合」ではなく「一致しなかった場合」に発動するルールだと考えましょう。",
       "tags": [
