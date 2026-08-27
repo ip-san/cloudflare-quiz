@@ -44,7 +44,9 @@ const base = JSON.parse(baseRaw.toString('utf8'))
 const baseById = new Map(base.quizzes.map((q) => [q.id, q]))
 
 /** 主張を継ぎ足すときに使われる接続表現 */
-const ADDITIVE = /(?:かつ、?|また、|さらに、?|加えて、?|そのうえ、?|同時に、?|うえに、?|とともに)/g
+// 「同時に」は単なる同時性の副詞としても頻出し（「最終レスポンスと同時に届き」など）、
+// 主張の継ぎ足しの合図にはならなかったので外した。
+const ADDITIVE = /(?:かつ、?|また、|さらに、?|加えて、?|そのうえ、?|うえに、?|とともに)/g
 
 /** 反駁の対象になりうる具体語だけを見る（一般的な日本語は対象外） */
 function features(text) {
