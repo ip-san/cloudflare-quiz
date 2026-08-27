@@ -22,12 +22,18 @@
       "suggestion": "どう直せば分かりやすく / 学びやすくなるか"
     }
   ],
+  "played": [{ "id": "ac-008", "outcome": "clean | friction" }],
   "sessionNotes": "セッション全体のフロー・UX 観察"
 }
 ```
 
 - `domain`: content=設問/選択肢/解説の文言・事実、learning=難易度/出題順/図/構成、ux=画面・操作フロー
 - 詰まりがなかった問題は `items` に入れない
+- **`played` は必須**。`items` は詰まりが出た問題だけなので、`played` が無いと
+  「詰まらなかった問題をプレイした」という事実が消える。`playtest-coverage.mjs mark-batch` が
+  読むのはこちらで、`items` ではない。`playedCount` と件数を一致させること
+  （2026-08-26 に busy-intermediate が `played` を落とし、5問分の記録が失われかけた。
+  現在は mark-batch が `playedCount>0` かつ `played` 無しを検出して落とす）
 
 ## 2. 名寄せ・集約（playtest-resolve.mjs → `requests.json`）
 

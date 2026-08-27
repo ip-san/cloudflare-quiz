@@ -22079,7 +22079,7 @@
             {
               "from": 1,
               "to": 0,
-              "text": "CF_Authorizationクッキー(JWT)を発行"
+              "text": "CF_Authorizationクッキー(JWT＝JSON Web Token)を発行"
             }
           ]
         }

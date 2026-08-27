@@ -35,8 +35,7 @@ memory: project
 - **ターゲットモード（プログレッシブ）**: リードエージェントから `ids` と `deepLinks`（`?q=<id>` 形式）の
   リストを渡された場合は、**指定された問題だけを順に**プレイする。各問題は対応する deep link を
   `navigate` で開き、初見で回答→解説を読む。`items[]` の各エントリに **`quizId` を直接記録**できる
-  （スニペット名寄せ不要）。全 ID を消化したら、テストした ID と結果（friction の有無）を
-  最終メッセージの `played: [{id, outcome:"clean|friction"}]` に必ず含める（カバレッジ記録に使う）。
+  （スニペット名寄せ不要）。
 
 ## 手順（通常モード）
 
@@ -53,6 +52,10 @@ memory: project
    - 詰まり・学びにくさがあれば `items[]` に1件記録（`questionSnippet` は設問冒頭〜40字を verbatim で。名寄せキーになる）
 5. セッション全体の UX・フロー観察を `sessionNotes` に残す
 6. 結果を **`.claude/tmp/playtest/requests-<persona>.json`** に Write（スキーマ厳守）
+   - **`played: [{id, outcome:"clean｜friction"}]` を必ず含める**。両モード共通・省略不可。
+     カバレッジを記録する `playtest-coverage.mjs mark-batch` が読むのは**このファイルの `played`** であって
+     最終メッセージでも `items` でもない。`items` は詰まった問題だけなので、`played` を落とすと
+     「詰まらずにプレイした問題」がまるごと記録から消える。`playedCount` と件数を一致させること。
 
 ## ブラウザ操作の注意
 
@@ -64,5 +67,5 @@ memory: project
 ## 出力フォーマット（最終メッセージ）
 
 ```json
-{ "persona": "...", "playedCount": 9, "itemsRecorded": 4, "file": ".claude/tmp/playtest/requests-<persona>.json", "topFrictions": ["...", "..."] }
+{ "persona": "...", "playedCount": 9, "itemsRecorded": 4, "playedRecorded": 9, "file": ".claude/tmp/playtest/requests-<persona>.json", "topFrictions": ["...", "..."] }
 ```

@@ -18,7 +18,10 @@
  *     → 1問をテスト済みに記録
  *   node scripts/playtest-coverage.mjs mark-batch <file.json>
  *     → [{id, persona, outcome}] の配列をまとめて記録
+ *   node scripts/playtest-coverage.mjs stale [persona]
+ *     → テスト後に中身が変わった問題を ?q= ディープリンク付きで出力（再テスト対象）
  */
+import crypto from 'node:crypto'
 import fs from 'node:fs'
 
 const QUIZ = 'src/data/quizzes.json'
@@ -36,6 +39,42 @@ const PERSONA_DIFFICULTY = {
 
 function loadQuizzes() {
   return JSON.parse(fs.readFileSync(QUIZ, 'utf8')).quizzes
+}
+
+/**
+ * 「テストした時点の問題の中身」を表す指紋。
+ *
+ * covered に問題 ID だけを積むと、その後に本文や選択肢を書き換えても
+ * カバレッジは「テスト済み」のまま据え置かれる。実際 2026-08-26 の
+ * 選択肢長バイアス反転で、テスト済み52問のうち32問の選択肢が総取り替えになったが、
+ * カバレッジの数字は1つも動かなかった。**見た内容と今の内容が違う**ことを
+ * 数字の側から言えるようにする。
+ *
+ * `quiz:randomize` が選択肢順と correctIndex を毎回入れ替えるため、
+ * 順序に依存しない形（選択肢はソートし correctIndex は含めない）で取る。
+ */
+function fingerprint(quiz) {
+  const payload = {
+    question: quiz.question,
+    hint: quiz.hint,
+    explanation: quiz.explanation,
+    difficulty: quiz.difficulty,
+    diagrams: quiz.diagrams ?? null,
+    options: quiz.options.map((o) => `${o.text}\u0000${o.wrongFeedback ?? ''}`).sort(),
+  }
+  return crypto.createHash('sha1').update(JSON.stringify(payload)).digest('hex').slice(0, 12)
+}
+
+/** テスト後に中身が変わった (id, persona) を挙げる。fp 未記録のものは判定不能として除く */
+function staleEntries(quizzes, store) {
+  const out = []
+  for (const q of quizzes) {
+    const fp = fingerprint(q)
+    for (const c of store.covered[q.id] ?? []) {
+      if (c.fp && c.fp !== fp) out.push({ id: q.id, persona: c.persona, outcome: c.outcome, at: c.at })
+    }
+  }
+  return out
 }
 function loadStore() {
   if (!fs.existsSync(STORE)) return { covered: {} }
@@ -88,6 +127,47 @@ function cmdStatus(quizzes, store) {
     .flat()
     .filter((c) => c.outcome === 'friction').length
   console.log(`  friction recorded: ${friction}`)
+
+  // テスト後に中身が変わった記録 —「テスト済み」の数字だけでは見えない
+  const stale = staleEntries(quizzes, store)
+  const noFp = Object.values(store.covered)
+    .flat()
+    .filter((c) => !c.fp).length
+  if (stale.length) {
+    console.log(`  ⚠️  テスト後に内容が変わった: ${stale.length}件（\`stale\` で一覧・再テスト対象）`)
+  }
+  if (noFp) {
+    console.log(`  指紋なし（変更を検出できない古い記録）: ${noFp}件`)
+  }
+}
+
+function cmdStale(quizzes, store, persona) {
+  const all = staleEntries(quizzes, store)
+  const rows = persona ? all.filter((r) => r.persona === persona) : all
+  if (!rows.length) {
+    console.log('テスト後に内容が変わった記録はありません。')
+    return
+  }
+  const byPersona = {}
+  for (const r of rows) {
+    if (!byPersona[r.persona]) byPersona[r.persona] = []
+    byPersona[r.persona].push(r.id)
+  }
+  console.log(
+    JSON.stringify(
+      {
+        stale: rows.length,
+        byPersona: Object.fromEntries(
+          Object.entries(byPersona).map(([p, ids]) => [
+            p,
+            { count: ids.length, ids, deepLinks: ids.map((id) => `${BASE_URL}?q=${id}`) },
+          ])
+        ),
+      },
+      null,
+      2
+    )
+  )
 }
 
 function cmdNext(quizzes, store, n, persona) {
@@ -105,11 +185,27 @@ function cmdNext(quizzes, store, n, persona) {
   console.log(JSON.stringify(out, null, 2))
 }
 
-function recordOne(store, id, persona, outcome) {
+function recordOne(store, id, persona, outcome, quizzes) {
   if (!PERSONAS.includes(persona)) throw new Error(`unknown persona: ${persona}`)
   if (!['clean', 'friction'].includes(outcome)) throw new Error(`outcome must be clean|friction`)
+  const quiz = quizzes?.find((q) => q.id === id)
+  if (quizzes && !quiz) throw new Error(`unknown quiz id: ${id}`)
+  // ペルソナの担当難易度から外れた問題は、記録しても cmdStatus の分母に入らないため
+  // 進捗が1問も動かない。実際 2026-08-26 に beginner が ag-001 をプレイしたが、
+  // その直前に ag-001 が intermediate へ変わっていて記録が無言で死んだ。
+  if (quiz && !PERSONA_DIFFICULTY[persona].includes(quiz.difficulty)) {
+    console.warn(
+      `  [warn] ${id} は difficulty=${quiz.difficulty}、${persona} の担当は ${PERSONA_DIFFICULTY[persona].join('/')}。` +
+        `記録はするが ${persona} の進捗は進まない（担当ペルソナで再プレイが要る）`
+    )
+  }
   store.covered[id] = (store.covered[id] || []).filter((c) => c.persona !== persona)
-  store.covered[id].push({ persona, outcome, at: process.env.PLAYTEST_STAMP || 'unstamped' })
+  store.covered[id].push({
+    persona,
+    outcome,
+    at: process.env.PLAYTEST_STAMP || 'unstamped',
+    fp: quiz ? fingerprint(quiz) : null,
+  })
 }
 
 function main() {
@@ -124,8 +220,11 @@ function main() {
     case 'next':
       cmdNext(quizzes, store, Number(a) || 5, b)
       break
+    case 'stale':
+      cmdStale(quizzes, store, a)
+      break
     case 'mark':
-      recordOne(store, a, b, c)
+      recordOne(store, a, b, c, quizzes)
       saveStore(store)
       console.log(`marked ${a} [${b}] ${c}`)
       break
@@ -138,9 +237,22 @@ function main() {
       const items = Array.isArray(raw)
         ? raw
         : (raw.played || []).map((p) => ({ id: p.id, persona: raw.persona, outcome: p.outcome }))
+      // `played` を落としたセッションを黙って0件として通すと、プレイした事実が
+      // 記録されないままカバレッジだけが据え置かれる。数字は正常に見えるので気づけない。
+      // 実際 2026-08-26 の busy-intermediate が playedCount:5 なのに played 無しで、
+      // 5問分の記録が失われかけた。落とす。
+      if (!Array.isArray(raw) && (raw.playedCount ?? 0) > 0 && items.length === 0) {
+        throw new Error(
+          `${a}: playedCount=${raw.playedCount} だが played[] が無い。` +
+            `user-simulator に played:[{id,outcome}] を出力させること（feedback-schema.md 参照）`
+        )
+      }
+      if (!Array.isArray(raw) && raw.playedCount != null && items.length !== raw.playedCount) {
+        console.warn(`  [warn] playedCount=${raw.playedCount} と played[] の件数 ${items.length} が一致しない`)
+      }
       for (const it of items) {
         const outcome = it.outcome === 'ok' ? 'clean' : it.outcome
-        recordOne(store, it.id, it.persona, outcome)
+        recordOne(store, it.id, it.persona, outcome, quizzes)
       }
       saveStore(store)
       console.log(`marked ${items.length} items`)
@@ -148,10 +260,16 @@ function main() {
     }
     default:
       console.log(
-        'Usage: playtest-coverage.mjs <status|next [N] [persona]|mark <id> <persona> <clean|friction>|mark-batch <file>>'
+        'Usage: playtest-coverage.mjs <status|next [N] [persona]|stale [persona]|mark <id> <persona> <clean|friction>|mark-batch <file>>'
       )
       process.exit(1)
   }
 }
 
-main()
+try {
+  main()
+} catch (err) {
+  // スタックトレースより、何が壊れているかを先に読ませる
+  console.error(`\n✗ ${err.message}\n`)
+  process.exit(1)
+}

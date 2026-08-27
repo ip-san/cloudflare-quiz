@@ -14,23 +14,43 @@ const TMP = '.claude/tmp/playtest'
 const QUIZ = 'src/data/quizzes.json'
 const DRY = process.argv.includes('--dry-run')
 
-function getField(q, field) {
-  const m = field.match(/^options\[(\d+)\]\.(text|wrongFeedback)$/)
-  if (m) return q.options?.[Number(m[1])]?.[m[2]]
-  if (field === 'diagrams') return JSON.stringify(q.diagrams)
-  return q[field]
-}
-function setField(q, field, to) {
-  const m = field.match(/^options\[(\d+)\]\.(text|wrongFeedback)$/)
-  if (m) {
-    q.options[Number(m[1])][m[2]] = to
-    return
+/**
+ * `options[2].text` / `diagrams[0].messages[1].text` のような添字つきパスを辿る。
+ *
+ * 以前は options[n] だけを正規表現で特別扱いしており、それ以外の添字パスは
+ * 静かに `q[field]` = undefined に落ちて「from 不一致」としてスキップされていた。
+ * 安全側ではあるが、レビュアーが図のラベル1箇所を直す提案を出しても
+ * 理由の分からないスキップになる（2026-08-27 の ac-011 で実際に起きた）。
+ */
+function parsePath(field) {
+  const parts = []
+  for (const seg of field.split('.')) {
+    const m = seg.match(/^([A-Za-z_][A-Za-z0-9_]*)((?:\[\d+\])*)$/)
+    if (!m) return null
+    parts.push(m[1])
+    for (const idx of m[2].matchAll(/\[(\d+)\]/g)) parts.push(Number(idx[1]))
   }
+  return parts
+}
+
+function getField(q, field) {
+  if (field === 'diagrams') return JSON.stringify(q.diagrams)
+  const parts = parsePath(field)
+  if (!parts) return undefined
+  return parts.reduce((cur, key) => (cur == null ? undefined : cur[key]), q)
+}
+
+function setField(q, field, to) {
   if (field === 'diagrams') {
     q.diagrams = typeof to === 'string' ? JSON.parse(to) : to
     return
   }
-  q[field] = to
+  const parts = parsePath(field)
+  if (!parts) throw new Error(`unsupported field path: ${field}`)
+  const last = parts.pop()
+  const target = parts.reduce((cur, key) => (cur == null ? undefined : cur[key]), q)
+  if (target == null) throw new Error(`path not found: ${field}`)
+  target[last] = to
 }
 
 function main() {
@@ -52,14 +72,16 @@ function main() {
         continue
       }
       const cur = getField(q, v.change.field)
-      // diagrams は文字列比較、それ以外は厳密一致
-      const curCmp = v.change.field === 'diagrams' ? cur : cur
-      if (curCmp !== v.change.from) {
+      if (cur === undefined) {
+        skipped.push({ quizId: v.quizId, field: v.change.field, reason: 'field path not found' })
+        continue
+      }
+      if (cur !== v.change.from) {
         skipped.push({
           quizId: v.quizId,
           field: v.change.field,
           reason: 'from mismatch',
-          cur: String(curCmp).slice(0, 60),
+          cur: String(cur).slice(0, 60),
         })
         continue
       }
