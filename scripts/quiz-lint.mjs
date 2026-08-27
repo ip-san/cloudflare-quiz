@@ -499,6 +499,38 @@ const RAW_MARKDOWN_PATTERNS = [
   { re: /^#{1,6}\s/m, what: '# 見出し' },
 ]
 
+/**
+ * 選択肢が「これは誤解だ」と自分で名乗ってしまうのを検出する。
+ *
+ * 誤答を厚くする作業（2026-08-27）で、エージェントが
+ * 「`$in` なら配列指定で値以外も除外できると**誤解しやすい**」のように
+ * 自己申告を足して長さを稼いだ。141肢中47肢がこの形になっていた。
+ * こう書かれた選択肢は読んだ瞬間に誤答と分かり、4択が成立しない。
+ *
+ * 原因は手順書の「なぜそう思ってしまうのか（もっともらしい理由づけ）」という
+ * 言い回しで、**信念について語れ**と読まれた。誤答は
+ * **学習者が信じうる主張として、正解と同じ語り口で**書かれなければならない。
+ */
+const SELF_LABELING =
+  /誤解(され)?(が|し)?(ちで|やすい|がち)|誤解されがち|勘違い|思われがち|考えられがち|誤認されがち|と誤って|誤りである|間違いである/
+
+function lintSelfLabeling(quiz) {
+  const issues = []
+  quiz.options.forEach((opt, i) => {
+    const m = opt.text.match(SELF_LABELING)
+    if (m) {
+      issues.push({
+        id: quiz.id,
+        type: 'option-self-labeling',
+        field: `options[${i}].text`,
+        value: opt.text.slice(0, 50),
+        message: `選択肢が「${m[0]}」と自分で誤りだと名乗っている — 読んだ瞬間に外せるので4択が成立しない`,
+      })
+    }
+  })
+  return issues
+}
+
 function lintRawMarkdown(quiz) {
   const layers = { question: quiz.question, hint: quiz.hint, explanation: quiz.explanation }
   quiz.options.forEach((o, i) => {
@@ -530,6 +562,7 @@ function lintQuality(quizzes) {
 
   for (const quiz of quizzes) {
     issues.push(...lintRawMarkdown(quiz))
+    issues.push(...lintSelfLabeling(quiz))
     const correctSet = quiz.type === 'multi' ? new Set(quiz.correctIndices || []) : new Set([quiz.correctIndex])
 
     quiz.options.forEach((opt, i) => {

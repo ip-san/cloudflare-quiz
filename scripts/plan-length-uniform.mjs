@@ -61,7 +61,19 @@ function costTo(quiz, want) {
   return { cost: targets.reduce((n, t) => n + t.addChars, 0), targets }
 }
 
-const singles = quizzes.filter((q) => q.type !== 'multi')
+/**
+ * 選択肢が短い値・コード片の列挙になっている問題は対象外にする。
+ *
+ * `$eq` / `$ne` / `$in` のように選択肢が演算子や設定値そのものである問題では、
+ * 散文を足すと選択肢の形が壊れる（2026-08-27 に ai-015 / kv-015 で実際に起きた:
+ * 「`$in` なら配列指定で値以外も除外できると誤解しやすい」という自己申告文が
+ * コード片の代わりに入り、読んだ瞬間に誤答と分かる状態になった）。
+ * そもそもこの形の問題では、誰も長さで選ばないので手がかりにもならない。
+ */
+const SHORT_ENUM_MAX = 30
+const isShortEnum = (q) => q.options.every((o) => o.text.length <= SHORT_ENUM_MAX)
+
+const singles = quizzes.filter((q) => q.type !== 'multi' && !isShortEnum(q))
 const N = singles.length
 const NUM_RANKS = 4
 const quota = Math.round(N / NUM_RANKS)
@@ -148,8 +160,10 @@ if (args.includes('--verify')) {
 } else {
   const now = distribution(singles)
   const after = projected()
+  const excluded = quizzes.filter((q) => q.type !== 'multi' && isShortEnum(q)).length
   console.log('=== 長さ順位の一様化 計画 ===')
-  console.log(`対象: ${N}問（単一正解のみ）  1順位あたりの定員: ${quota}`)
+  console.log(`対象: ${N}問（単一正解のみ。選択肢が${SHORT_ENUM_MAX}字以下の列挙だけの${excluded}問は除外）`)
+  console.log(`1順位あたりの定員: ${quota}`)
   console.log(`現状 : ${now.map((c, i) => `rank${i}=${pct(c)}`).join(' ')}  長い方の半分=${pct(now[0] + now[1])}`)
   console.log(
     `計画後: ${after.map((c, i) => `rank${i}=${pct(c)}`).join(' ')}  長い方の半分=${pct(after[0] + after[1])}`
