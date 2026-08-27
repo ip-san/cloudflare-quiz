@@ -129,7 +129,10 @@ for (const p of proposals) {
   }
 
   const after = margin(quiz)
-  results.push({ id: p.id, before, after, rankBefore, rankAfter: lengthRank(quiz) })
+  // 選択肢本文に触っていない提案（wrongFeedback だけ直したものなど）で
+  // 「順位が動かなかった」と報告しても意味がないので、対象を分けて数える
+  const touchedOptionText = p.edits.some((e) => /^option\.\d+$/.test(e.field))
+  results.push({ id: p.id, before, after, rankBefore, rankAfter: lengthRank(quiz), touchedOptionText })
 }
 
 console.log(`適用: ${applied}件の編集 / ${results.length}問  (skipped: ${skipped})`)
@@ -138,9 +141,12 @@ if (errors.length > 0) {
   for (const e of errors) console.log(`  - ${e}`)
 }
 
-const moved = results.filter((r) => r.rankAfter !== r.rankBefore)
-console.log(`\n正解の長さ順位が動いた: ${moved.length}問 / ${results.length}問`)
-const unmoved = results.filter((r) => r.rankAfter === r.rankBefore)
+const lengthWork = results.filter((r) => r.touchedOptionText)
+const moved = lengthWork.filter((r) => r.rankAfter !== r.rankBefore)
+if (lengthWork.length > 0) {
+  console.log(`\n正解の長さ順位が動いた: ${moved.length}問 / ${lengthWork.length}問（選択肢本文を触ったもの）`)
+}
+const unmoved = lengthWork.filter((r) => r.rankAfter === r.rankBefore)
 if (unmoved.length > 0) {
   console.log(`  動かなかった ${unmoved.length}問（伸ばし足りない可能性）:`)
   for (const r of unmoved) console.log(`    - ${r.id}: rank${r.rankBefore} のまま`)
