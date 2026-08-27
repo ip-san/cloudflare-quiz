@@ -78,6 +78,11 @@ explanation と wrongFeedback が矛盾している場合のみ。
 
 ## H. 不正解選択肢の妥当性（Distractor Quality）
 
+> **選択肢をまとまった数、書き換えたあとは `/quiz-audit <baseline>` を使うこと。**
+> 機械検査を全て通過した肢からでも約5%の欠陥が出る。
+> 欠陥の実例カタログ: `.claude/skills/quiz-audit/defect-taxonomy.md`
+> 書き手向けの手順: `.claude/skills/quiz-audit/rewriting-distractors.md`
+
 - 各不正解選択肢が「ありそうだが間違い」の水準を満たしているか
 - 正解だけが著しく長い/具体的で、不正解が明らかに雑なフィラーになっていないか
 - 技術的に全く関係のない選択肢がないか
