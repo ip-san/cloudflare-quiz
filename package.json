@@ -31,6 +31,7 @@
     "quiz:fact-check": "node scripts/quiz-fact-check.mjs",
     "quiz:cross-check": "node scripts/quiz-cross-check.mjs",
     "quiz:audit": "node scripts/quiz-audit.mjs",
+    "quiz:screen": "node scripts/screen-distractor-risk.mjs",
     "docs:fetch": "node scripts/fetch-docs.mjs",
     "verify:free-tier": "node scripts/verify-free-tier.mjs",
     "check:architecture": "node scripts/check-architecture.mjs",
