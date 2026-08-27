@@ -19,13 +19,21 @@
  * 表面に出た指紋しか見ていないため。**全数を見たことにはならない。**
  * 上から潰したあと、残りをどうするかは別の判断が要る。
  *
- * H1（誤った前提の上に本当のことが乗る）の指紋:
- *   誤答が、設問文にも正解にも出てこない**別の製品名**に言及している。
- *   別プロダクトの正しい説明を書いてしまう型がこれで浮く。
+ * **実測の再現率は 10%**（`node scripts/screen-recall.mjs`）。
+ * 既知の陽性30件のうち3件しか挙がらない。理由ははっきりしている:
+ * H1 の本体は「別製品の振る舞いを**名前を出さずに**説明している」ことで、
+ * ここが見ているのはその逆（名前が出ている場合）だけだから。
  *
- * H2（自己矛盾）の指紋:
- *   1つの誤答の中で「できない/存在しない」と言いながら
- *   その能力を前提にした動作を述べている。
+ *   dq-001[2]「各レプリカが非同期に同期する結果整合性モデルのため…」← KV を名指ししない
+ *   wf-001[1]「応答しなくなったオリジンを自動的に切り離す」← Load Balancing を名指ししない
+ *
+ * **H1 は語彙では拾えない。読み手が要る。**
+ * この道具が実際に役立つのは H2（定義と量化の衝突）で、`ar-016[0]` を検出できた。
+ *
+ * 見ている指紋:
+ *   - 誤答が、設問文にも正解にも出てこない別の製品名に言及している（弱い）
+ *   - 「できない/存在しない」と言いながらその能力を前提にした動作を述べている
+ *   - 定義と量化が衝突している（`結果整合性` × `常に正確` など）
  *
  * Usage:
  *   node scripts/screen-distractor-risk.mjs                  # 上位30件
@@ -152,100 +160,126 @@ if (excludeRef) {
   }
 }
 
-const rows = []
-
-for (const quiz of quizzes) {
-  if (quiz.type === 'multi' || excluded.has(quiz.id)) continue
+/**
+ * 1つの誤答に点数をつける。`screen-recall.mjs` が再現率を測るのに使う。
+ */
+export function scoreOption(quiz, i) {
+  const text = quiz.options[i].text
   const context = `${quiz.question} ${quiz.options[quiz.correctIndex].text} ${quiz.explanation ?? ''}`
+  const signals = []
+  let score = 0
 
-  quiz.options.forEach((opt, i) => {
-    if (i === quiz.correctIndex) return
-    const text = opt.text
-    const signals = []
-    let score = 0
+  // 別製品名への言及。
+  //
+  // **これは H1 の指紋としては弱い。** 実測の再現率は 10%（`screen-recall.mjs`）。
+  // H1 の本体は「別製品の振る舞いを**名前を出さずに**説明している」ことで、
+  // この指標はその逆（名前が出ている場合）しか見ていない。
+  //   dq-001[2]「各レプリカが非同期に同期する結果整合性モデルのため…」← KV を名指ししない
+  //   wf-001[1]「応答しなくなったオリジンを自動的に切り離す」← Load Balancing を名指ししない
+  // それでも 1,233肢を十数肢に絞る足切りとしては働くので残している。
+  //
+  // 「どの製品を使うか」を問う設問では、誤答が別製品名なのは当然で欠陥ではない
+  // （`kv-001[0]` の選択肢はそのものずばり `Durable Objects`）ため、散文に限る。
+  const isProse = text.length >= 40
+  const foreign = isProse ? distinctMentions(VOCAB.filter((n) => text.includes(n) && !context.includes(n))) : []
+  if (foreign.length > 0) {
+    score += 3 * foreign.length
+    signals.push(`他製品の振る舞いを説明している疑い: ${foreign.join(' / ')}`)
+  }
 
-    // H1: 設問にも正解にも出てこない製品名を、誤答だけが名指ししている。
-    //
-    // ただし「どの製品を使うか」を問う設問では、誤答が別製品名なのは当然で欠陥ではない
-    // （`kv-001[0]` の選択肢はそのものずばり `Durable Objects`）。
-    // 問題になるのは、**別製品の振る舞いを説明しながら設問の主語に帰属させている**場合。
-    // 散文になっている誤答に限る。
-    const isProse = text.length >= 40
-    const foreign = isProse ? distinctMentions(VOCAB.filter((n) => text.includes(n) && !context.includes(n))) : []
-    if (foreign.length > 0) {
-      score += 3 * foreign.length
-      signals.push(`他製品の振る舞いを説明している疑い: ${foreign.join(' / ')}`)
+  // H2: 能力の否定と、その能力を前提にした動作の同居
+  if (CANNOT.test(text) && THEN_DOES.test(text)) {
+    score += 2
+    signals.push('「できない」と「する必要がある」が同居')
+  }
+
+  // H2: 定義と量化の衝突。`ar-016[0]` を実際に検出できた指標
+  for (const [a, b] of CONTRADICTION_PAIRS) {
+    if (a.test(text) && b.test(text)) {
+      score += 4
+      signals.push(`定義と衝突する量化: ${text.match(a)?.[0]} × ${text.match(b)?.[0]}`)
     }
+  }
 
-    // H2: 能力の否定と、その能力を前提にした動作の同居
-    if (CANNOT.test(text) && THEN_DOES.test(text)) {
-      score += 2
-      signals.push('「できない」と「する必要がある」が同居')
-    }
+  return { score, signals }
+}
 
-    // H2: 定義と量化の衝突
-    for (const [a, b] of CONTRADICTION_PAIRS) {
-      if (a.test(text) && b.test(text)) {
-        score += 4
-        signals.push(`定義と衝突する量化: ${text.match(a)?.[0]} × ${text.match(b)?.[0]}`)
+// `screen-recall.mjs` が scoreOption を import するので、
+// 直接実行されたときだけレポートを出す（import の副作用で出力が混ざらないように）
+const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+if (!isMain) {
+  // モジュールとして読まれた場合はここまで（scoreOption だけを提供する）
+} else {
+  runReport()
+}
+
+function runReport() {
+  const rows = []
+
+  for (const quiz of quizzes) {
+    if (quiz.type === 'multi' || excluded.has(quiz.id)) continue
+
+    quiz.options.forEach((opt, i) => {
+      if (i === quiz.correctIndex) return
+      const text = opt.text
+      const { score, signals } = scoreOption(quiz, i)
+
+      if (score > 0) {
+        rows.push({
+          id: quiz.id,
+          optionIndex: i,
+          score,
+          signals,
+          question: quiz.question,
+          correctText: quiz.options[quiz.correctIndex].text,
+          referenceUrl: quiz.referenceUrl ?? null,
+          text,
+          wrongFeedback: opt.wrongFeedback ?? null,
+        })
       }
-    }
-
-    if (score > 0) {
-      rows.push({
-        id: quiz.id,
-        optionIndex: i,
-        score,
-        signals,
-        question: quiz.question,
-        correctText: quiz.options[quiz.correctIndex].text,
-        referenceUrl: quiz.referenceUrl ?? null,
-        text,
-        wrongFeedback: opt.wrongFeedback ?? null,
-      })
-    }
-  })
-}
-
-rows.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
-
-console.log('=== 誤答のリスク・スクリーニング ===')
-console.log(`語彙: DOC_PAGES から ${VOCAB.length} 語`)
-if (excludeRef) console.log(`除外: ${excludeRef} から誤答が変わった ${excluded.size}問（監査済みのため）`)
-console.log(`対象: ${quizzes.filter((q) => q.type !== 'multi' && !excluded.has(q.id)).length}問`)
-console.log(`候補: ${rows.length}肢（上位${Math.min(top, rows.length)}件を表示）`)
-console.log('')
-console.log('※ これは検出器ではなく優先度づけ。高スコア＝欠陥ではない。')
-console.log('')
-
-for (const r of rows.slice(0, top)) {
-  console.log(`[${r.score}] ${r.id} [option.${r.optionIndex}]`)
-  for (const s of r.signals) console.log(`     ${s}`)
-  console.log(`     ${r.text.slice(0, 100)}`)
-  console.log('')
-}
-
-if (jsonPath) {
-  const byQuiz = new Map()
-  for (const r of rows.slice(0, top)) {
-    if (!byQuiz.has(r.id)) {
-      byQuiz.set(r.id, {
-        id: r.id,
-        question: r.question,
-        correctText: r.correctText,
-        referenceUrl: r.referenceUrl,
-        changed: [],
-      })
-    }
-    byQuiz.get(r.id).changed.push({
-      optionIndex: r.optionIndex,
-      before: null,
-      after: r.text,
-      wrongFeedback: r.wrongFeedback,
-      screenSignals: r.signals,
     })
   }
-  const items = [...byQuiz.values()]
-  writeFileSync(resolve(jsonPath), `${JSON.stringify(items, null, 2)}\n`)
-  console.log(`監査エージェント用の入力を書き出した: ${jsonPath}（${items.length}問）`)
+
+  rows.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
+
+  console.log('=== 誤答のリスク・スクリーニング ===')
+  console.log(`語彙: DOC_PAGES から ${VOCAB.length} 語`)
+  if (excludeRef) console.log(`除外: ${excludeRef} から誤答が変わった ${excluded.size}問（監査済みのため）`)
+  console.log(`対象: ${quizzes.filter((q) => q.type !== 'multi' && !excluded.has(q.id)).length}問`)
+  console.log(`候補: ${rows.length}肢（上位${Math.min(top, rows.length)}件を表示）`)
+  console.log('')
+  console.log('※ これは検出器ではなく優先度づけ。高スコア＝欠陥ではない。')
+  console.log('')
+
+  for (const r of rows.slice(0, top)) {
+    console.log(`[${r.score}] ${r.id} [option.${r.optionIndex}]`)
+    for (const s of r.signals) console.log(`     ${s}`)
+    console.log(`     ${r.text.slice(0, 100)}`)
+    console.log('')
+  }
+
+  if (jsonPath) {
+    const byQuiz = new Map()
+    for (const r of rows.slice(0, top)) {
+      if (!byQuiz.has(r.id)) {
+        byQuiz.set(r.id, {
+          id: r.id,
+          question: r.question,
+          correctText: r.correctText,
+          referenceUrl: r.referenceUrl,
+          changed: [],
+        })
+      }
+      byQuiz.get(r.id).changed.push({
+        optionIndex: r.optionIndex,
+        before: null,
+        after: r.text,
+        wrongFeedback: r.wrongFeedback,
+        screenSignals: r.signals,
+      })
+    }
+    const items = [...byQuiz.values()]
+    writeFileSync(resolve(jsonPath), `${JSON.stringify(items, null, 2)}\n`)
+    console.log(`監査エージェント用の入力を書き出した: ${jsonPath}（${items.length}問）`)
+  }
 }
