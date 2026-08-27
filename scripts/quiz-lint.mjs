@@ -531,6 +531,40 @@ function lintSelfLabeling(quiz) {
   return issues
 }
 
+/**
+ * 誤答どうしだけが同じ言い回しで終わっているのを検出する。
+ *
+ * 「2つの選択肢が同じことを言っているなら、正解は1つなのでどちらも誤り」
+ * は古典的な消去法。正解も同じ形で終わっている場合（並列構造の設問）は正常で、
+ * **誤答2つだけが揃っている**ときに限って手がかりになる。
+ *
+ * 2026-08-27 の長さ一様化で、書き手のエージェント自身が
+ * dn-006[2] を書きながらこれに気づいて言い回しを変えた。
+ * 誤答を厚くする作業は語尾を揃えやすいので、機械でも見る。
+ */
+const TAIL_LEN = 12
+
+function lintParallelDistractorTails(quiz) {
+  if (quiz.type === 'multi') return []
+  const tails = quiz.options.map((o) => o.text.slice(-TAIL_LEN))
+  const correctTail = tails[quiz.correctIndex]
+  const issues = []
+  for (let i = 0; i < tails.length; i++) {
+    for (let j = i + 1; j < tails.length; j++) {
+      if (i === quiz.correctIndex || j === quiz.correctIndex) continue
+      if (tails[i] !== tails[j] || tails[i] === correctTail) continue
+      issues.push({
+        id: quiz.id,
+        type: 'parallel-distractor-tails',
+        field: `options[${i}].text / options[${j}].text`,
+        value: tails[i],
+        message: `誤答${i}と誤答${j}だけが「${tails[i]}」で終わっている — 同じことを言う2肢はまとめて外せる`,
+      })
+    }
+  }
+  return issues
+}
+
 function lintRawMarkdown(quiz) {
   const layers = { question: quiz.question, hint: quiz.hint, explanation: quiz.explanation }
   quiz.options.forEach((o, i) => {
@@ -563,6 +597,7 @@ function lintQuality(quizzes) {
   for (const quiz of quizzes) {
     issues.push(...lintRawMarkdown(quiz))
     issues.push(...lintSelfLabeling(quiz))
+    issues.push(...lintParallelDistractorTails(quiz))
     const correctSet = quiz.type === 'multi' ? new Set(quiz.correctIndices || []) : new Set([quiz.correctIndex])
 
     quiz.options.forEach((opt, i) => {
