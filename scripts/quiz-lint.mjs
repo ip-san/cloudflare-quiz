@@ -570,36 +570,75 @@ function printQualityReport(issues) {
 const LONGEST_IS_CORRECT_MAX = 0.4
 const LONGEST_IS_CORRECT_MIN = 0.15
 
+/**
+ * 【2026-08-27 追加】rank0 だけを見るのは、またしても指標が狭すぎた。
+ *
+ * 2026-08-26 の反転作業で rank0（正解が最長）は 84.0% → 28.6% まで落ちたが、
+ * **正解が「長い方の半分」に入る割合は 95.5% のまま1ポイントも動かなかった**。
+ * 誤答を1つだけ正解より長くしたので、正解が1位から2位へ移っただけで、
+ * 下位2つ（rank2/rank3）は 2.1% / 2.4% と作業前から変化なし。
+ *
+ *   cf98392（反転前） rank0=84.0% rank1=11.5% rank2=2.1% rank3=2.4%  top-half=95.5%
+ *   0b75eec（反転後） rank0=28.6% rank1=66.9% rank2=2.1% rank3=2.4%  top-half=95.5%
+ *
+ * 受験者から見れば「長い方の2つに絞る」だけで 95.5%（偶然なら50%）— 4択が2択になる。
+ * rank0 だけを合格判定にすると、この状態が「目標帯に着地」と表示されてしまう。
+ * 分布そのものを見る。
+ */
+const CORRECT_IN_LONGER_HALF_MAX = 0.7
+
+/** 選択肢を長さの降順に並べたときの正解の順位（0 = 最長） */
+function correctLengthRank(quiz) {
+  const lens = quiz.options.map((o) => o.text.length)
+  return lens
+    .map((l, i) => ({ l, i }))
+    .sort((a, b) => b.l - a.l)
+    .findIndex((x) => x.i === quiz.correctIndex)
+}
+
 function lintLengthCue(quizzes) {
   const singles = quizzes.filter((q) => q.type !== 'multi')
-  let longest = 0
+  const n = singles.length
+  const rankCounts = []
+  let longerHalf = 0
   for (const quiz of singles) {
-    const lens = quiz.options.map((o) => o.text.length)
-    if (lens[quiz.correctIndex] === Math.max(...lens)) longest++
+    const rank = correctLengthRank(quiz)
+    rankCounts[rank] = (rankCounts[rank] ?? 0) + 1
+    if (rank < quiz.options.length / 2) longerHalf++
   }
-  const rate = longest / singles.length
-  const shown = `${(rate * 100).toFixed(1)}% (${longest}/${singles.length})`
+  const longest = rankCounts[0] ?? 0
+  const rate = longest / n
+  const halfRate = longerHalf / n
+  const shown = `${(rate * 100).toFixed(1)}% (${longest}/${n})`
   const band = `偶然なら約25%、許容は${LONGEST_IS_CORRECT_MIN * 100}%〜${LONGEST_IS_CORRECT_MAX * 100}%`
+  const dist = rankCounts.map((c, i) => `rank${i}=${(((c ?? 0) / n) * 100).toFixed(1)}%`).join(' ')
 
+  const issues = []
   if (rate > LONGEST_IS_CORRECT_MAX) {
-    return [
-      {
-        id: '(corpus)',
-        type: 'longest-option-is-correct',
-        message: `正解が最長の選択肢である割合が ${shown} — 「一番長い選択肢を選ぶ」だけでこの割合の問題に正解できる。${band}`,
-      },
-    ]
+    issues.push({
+      id: '(corpus)',
+      type: 'longest-option-is-correct',
+      message: `正解が最長の選択肢である割合が ${shown} — 「一番長い選択肢を選ぶ」だけでこの割合の問題に正解できる。${band}`,
+    })
+  } else if (rate < LONGEST_IS_CORRECT_MIN) {
+    issues.push({
+      id: '(corpus)',
+      type: 'longest-option-is-wrong',
+      message: `正解が最長の選択肢である割合が ${shown} と低すぎる — 「最長を避けて残りから選ぶ」が当てずっぽうより有利になり、逆向きの手がかりになる。${band}`,
+    })
   }
-  if (rate < LONGEST_IS_CORRECT_MIN) {
-    return [
-      {
-        id: '(corpus)',
-        type: 'longest-option-is-wrong',
-        message: `正解が最長の選択肢である割合が ${shown} と低すぎる — 「最長を避けて残りから選ぶ」が当てずっぽうより有利になり、逆向きの手がかりになる。${band}`,
-      },
-    ]
+
+  if (halfRate > CORRECT_IN_LONGER_HALF_MAX) {
+    issues.push({
+      id: '(corpus)',
+      type: 'correct-in-longer-half',
+      message:
+        `正解が「長い方の半分」に入る割合が ${(halfRate * 100).toFixed(1)}% (${longerHalf}/${n}) — ` +
+        `「長い方の2つに絞る」だけで4択が2択になる。偶然なら50%、許容は${CORRECT_IN_LONGER_HALF_MAX * 100}%まで。` +
+        `長さ順位の分布: ${dist}（一様なら各25%）`,
+    })
   }
-  return []
+  return issues
 }
 
 function lintDistractors(quizzes) {
