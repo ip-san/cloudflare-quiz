@@ -29875,7 +29875,7 @@
       "question": "リアルユーザーモニタリング(RUM)が提供する指標のうち、合成テストでは取得できないものとして正しいものはどれですか？",
       "options": [
         {
-          "text": "First Input Delay(FID)やInteraction to Next Paint(INP)といったユーザー操作に関わる指標"
+          "text": "Interaction to Next Paint(INP)のような、合成テストでは取得できない実際のユーザー操作の応答性を示す指標"
         },
         {
           "text": "ページの読み込みに使われたHTTPステータスコードの一覧",
@@ -29891,7 +29891,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "RUMは、実際に世界中のさまざまな環境からアクセスするユーザーのデータを収集するため、合成テストでは再現できない多様な条件を反映できます。加えて、First Input Delay(FID)やInteraction to Next Paint(INP)という、実際のユーザー操作に関わる2つの指標を提供しますが、これらは合成テストでは取得できません。\n{{diagram:0}}",
+      "explanation": "RUMは、実際に世界中のさまざまな環境からアクセスするユーザーのデータを収集するため、合成テストでは再現できない多様な条件を反映できます。加えて、Interaction to Next Paint(INP)という、実際のユーザー操作に関わる指標を提供しますが、これは合成テストでは取得できません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
       "hint": "「実際に人が操作したときの反応の速さ」を測るには、本物のユーザーからのデータが必要だと考えましょう。",
       "tags": [
