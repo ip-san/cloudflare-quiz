@@ -123,6 +123,7 @@ const VALID_DOC_PAGES = [
   'cloudflare-for-platforms/cloudflare-for-saas/domain-support/create-custom-hostnames/',
   'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/',
   'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/realtime-validation/',
+  'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/pre-validation/',
   'cloudflare-for-platforms/cloudflare-for-saas/quotas-and-billing/',
   'cloudflare-for-platforms/cloudflare-for-saas/security/waf-for-saas/',
   'cloudflare-for-platforms/cloudflare-for-saas/saas-customers/how-it-works/',

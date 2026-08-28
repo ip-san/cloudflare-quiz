@@ -176,6 +176,7 @@ export const DOC_PAGES = [
   { name: 'cloudflare-for-platforms/cloudflare-for-saas/domain-support/create-custom-hostnames' },
   { name: 'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation' },
   { name: 'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/realtime-validation' },
+  { name: 'cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/pre-validation' },
   { name: 'ssl/reference/certificate-authorities' },
   { name: 'ssl/reference/certificate-statuses' },
   { name: 'ssl/reference/certificate-and-hostname-priority' },
