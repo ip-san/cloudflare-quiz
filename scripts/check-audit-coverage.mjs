@@ -58,12 +58,13 @@ function checkOne(inputPath, verdictPath) {
   const seen = new Set()
   const badVerdict = []
   const noVerifiedBy = []
-  const byVerification = { docs: 0, internal: 0 }
+  const byVerification = { docs: 0, internal: 0, standard: 0 }
   for (const v of verdicts) {
     seen.add(`${v.id}:${v.optionIndex}`)
     if (!VALID.has(v.verdict)) badVerdict.push(`${v.id}[${v.optionIndex}]=${v.verdict}`)
-    if (v.verifiedBy === 'docs' || v.verifiedBy === 'internal') byVerification[v.verifiedBy]++
-    else noVerifiedBy.push(`${v.id}[${v.optionIndex}]`)
+    if (v.verifiedBy === 'docs' || v.verifiedBy === 'internal' || v.verifiedBy === 'standard') {
+      byVerification[v.verifiedBy]++
+    } else noVerifiedBy.push(`${v.id}[${v.optionIndex}]`)
   }
 
   const missing = [...expected].filter((k) => !seen.has(k))
@@ -133,7 +134,8 @@ for (const r of results) {
   const summary = Object.entries(r.counts)
     .map(([k, v]) => `${k}=${v}`)
     .join(' ')
-  const verif = `docs=${r.byVerification.docs} internal=${r.byVerification.internal}`
+  const std = r.byVerification.standard ? ` standard=${r.byVerification.standard}` : ''
+  const verif = `docs=${r.byVerification.docs} internal=${r.byVerification.internal}${std}`
   if (r.status === 'ok') {
     console.log(`  ✓ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}  [裏取り: ${verif}]`)
   } else if (r.status === 'unverified-basis') {
@@ -159,9 +161,11 @@ for (const r of results) {
 
 const totalDocs = results.reduce((n, r) => n + (r.byVerification?.docs ?? 0), 0)
 const totalInternal = results.reduce((n, r) => n + (r.byVerification?.internal ?? 0), 0)
+const totalStandard = results.reduce((n, r) => n + (r.byVerification?.standard ?? 0), 0)
 console.log('')
 console.log(`合計 ${totalSeen}/${totalExpected}肢が判定済み`)
 console.log(`  うち docs で裏取り: ${totalDocs}肢 / 設問内の整合性のみ: ${totalInternal}肢`)
+if (totalStandard) console.log(`  Web標準（RFC等）で裏取り: ${totalStandard}肢`)
 if (totalInternal > totalDocs) {
   console.log('')
   console.log('※ 設問内の整合性チェックは独立検証ではない。')

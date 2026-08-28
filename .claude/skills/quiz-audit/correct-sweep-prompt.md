@@ -85,7 +85,30 @@ docs が更新され、正解が現在の仕様と合わなくなっているこ
 
 **この層は `internal` 判定を認めません。** 正解と解説は
 「設問内の整合性」では検証できません（同じ書き手が書いているため）。
-**必ず docs に当ててください。** 当てられない場合は `unclear` です。
+**必ず docs に当ててください。**
+
+### `verifiedBy: "standard"` — Cloudflare docs に原理的に載らない事実
+
+HTTP・DNS・TLS などの **Web 標準そのもの**についての事実は、
+Cloudflare docs には書かれないことがあります。この場合に限り
+`verifiedBy: "standard"` を使ってください。
+
+```
+ru-010  正解「301(恒久的)と302(一時的)はリクエストメソッドがPOSTからGETへ
+             ダウングレードされることがあるのに対し、307と308はメソッドを保持する」
+        → RFC 7231 §6.4.2/6.4.3（301/302 は "a user agent MAY change the request
+          method from POST to GET"）と RFC 7231 §6.4.7 / RFC 7538 §3（307/308 は保持）
+        → Cloudflare docs には載らない。`standard` で裏取り
+```
+
+**条件は2つ:**
+
+1. **標準の名前と該当箇所を `rationale` に必ず書くこと**（「RFC 7231 §6.4.7」など）。
+   「よく知られた仕様だから」は不可です
+2. **Cloudflare 固有の挙動には使えません。** プラン別の上限、既定値、
+   製品の手順などは必ず `docs` です
+
+裏が取れない場合は `unclear` のままにしてください。
 
 ---
 
@@ -106,6 +129,7 @@ docs が更新され、正解が現在の仕様と合わなくなっているこ
 [
   { "id": "cb-018", "optionIndex": 1,
     "verdict": "C1 | C2 | C3 | C4 | C5 | ok | unclear",
+    "verifiedBy": "docs | standard",
     "problem": "何が問題か（1〜2文）",
     "rationale": "判定の根拠。docs のどのファイルのどの記述かを必ず書く",
     "edits": [{ "field": "option.1", "value": "直した正解本文" },
