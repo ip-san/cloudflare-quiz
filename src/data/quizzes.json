@@ -5882,7 +5882,7 @@
       "options": [
         {
           "text": "Next.js プロジェクトはDockerコンテナとしてビルドし、Cloudflareのコンテナ実行基盤に直接デプロイする以外に方法がなく、Workers上でSSRを動かすためのビルドアダプタは提供されていない",
-          "wrongFeedback": "コンテナ実行に頼らずとも、OpenNextなどのアダプタでNext.jsをCloudflareのエッジ環境向けにビルドしデプロイできます。"
+          "wrongFeedback": "コンテナ実行に頼らずとも、vinextなどのアダプタでNext.jsをCloudflareのWorkers環境向けにビルドしデプロイできます。"
         },
         {
           "text": "SSR には対応せず、必ず `next export` で完全な静的サイトに変換してからデプロイする以外の方法はない",
@@ -5913,7 +5913,7 @@
               "text": "Next.jsプロジェクト作成"
             },
             {
-              "text": "OpenNextアダプタでビルド"
+              "text": "vinextでビルド"
             },
             {
               "text": "Cloudflare向け成果物を生成"
@@ -5925,7 +5925,7 @@
         },
         {
           "type": "layer",
-          "label": "SSR対応の技術スタック",
+          "label": "既存OpenNextアプリの技術スタック",
           "layers": [
             {
               "text": "Next.js アプリケーションコード"
@@ -24429,7 +24429,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "エンドポイントはSchema validationによる保護を受けるために、事前にEndpoint Managementへ登録されている必要があります。Cloudflareダッシュボード経由でスキーマをアップロードした場合はエンドポイントが自動的に追加されますが、APIやTerraform経由でアップロードする場合は、スキーマを自分で解析し、含まれるエンドポイントを手動でEndpoint Managementに追加する必要があります。\n{{diagram:0}}",
+      "explanation": "エンドポイントはSchema validationによる保護を受けるために、事前にEndpoint Management(ダッシュボードでは Web Assets > Operations)へ登録されている必要があります。Cloudflareダッシュボード経由でスキーマをアップロードした場合はエンドポイントが自動的に追加されますが、APIやTerraform経由でアップロードする場合は、スキーマを自分で解析し、含まれるエンドポイントを手動で追加する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#configure-an-uploaded-schema",
       "hint": "「ダッシュボードがやってくれる自動処理」を、API経由の場合は自分で肩代わりする必要があると考えましょう。",
       "tags": [
@@ -39980,7 +39980,7 @@
         },
         {
           "text": "Argo Smart RoutingはHTTP/HTTPSタイプのアプリケーションにのみ提供され、TCP/UDPタイプのアプリケーションには提供されない",
-          "wrongFeedback": "argo_smart_routingフィールドは、traffic_typeがdirectに設定されたTCPタイプのSpectrumアプリケーションで利用可能なフィールドです。HTTP/HTTPSタイプ限定の機能ではありません。"
+          "wrongFeedback": "Argo Smart RoutingはTCP(およびベータのUDP)のSpectrumアプリケーションで利用できる機能であり、HTTP/HTTPSタイプ限定ではありません。ただし`argo_smart_routing`フィールド自体はtraffic_typeがdirectのTCPアプリケーション向けと記載されています。"
         }
       ],
       "correctIndex": 2,
