@@ -63,6 +63,11 @@ const DIFF_CHECKS = [
     what: '層をまたいだ数値の取り残し',
     why: 'ある層で直した数値が別の層に古いまま残っていないか',
   },
+  {
+    script: 'check-refutation-drift.mjs',
+    what: '反駁だけの書き換え',
+    why: '反駁を絞り込んで、誤答がまだ主張している点を落としていないか',
+  },
 ]
 
 function run(cmd, cmdArgs) {
@@ -111,6 +116,29 @@ function changedDistractors() {
   return items
 }
 
+/** 本文は変わらず wrongFeedback だけが変わった誤答の数 */
+function countRefutationOnly() {
+  const old = new Map(
+    JSON.parse(
+      execFileSync('git', ['show', `${baseRef}:${QUIZ_REL}`], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 }).toString()
+    ).quizzes.map((q) => [q.id, q])
+  )
+  const cur = JSON.parse(readFileSync(resolve(ROOT, QUIZ_REL), 'utf8'))
+  let n = 0
+  for (const q of cur.quizzes) {
+    const o = old.get(q.id)
+    if (!o) continue
+    for (let i = 0; i < q.options.length; i++) {
+      if (i === q.correctIndex) continue
+      const a = o.options[i]
+      const b = q.options[i]
+      if (!a || !b) continue
+      if (a.text === b.text && (a.wrongFeedback ?? '') !== (b.wrongFeedback ?? '')) n++
+    }
+  }
+  return n
+}
+
 console.log('=== 誤答書き換えの監査パイプライン ===')
 console.log(`baseline: ${baseRef}`)
 console.log('')
@@ -118,6 +146,12 @@ console.log('')
 const items = changedDistractors()
 const limbs = items.reduce((n, it) => n + it.changed.length, 0)
 console.log(`変更された誤答: ${limbs}肢 / ${items.length}問`)
+// 反駁だけを直した場合、本文の差分は0になる。そこで「0肢」とだけ出すと
+// **何も検査せずに全項目 OK** を返しているように読める（2026-08-28 に実際に起きた。
+// internal 判定の再検査で直した12件のうち11件が反駁だけの修正で、
+// パイプラインは「変更された誤答: 0肢」のまま4本すべて OK と表示した）。
+const refOnly = countRefutationOnly()
+if (refOnly > 0) console.log(`うち反駁だけが変わった誤答: ${refOnly}肢（本文の差分には現れない）`)
 console.log('')
 
 let flagged = 0

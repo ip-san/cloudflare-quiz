@@ -53,6 +53,10 @@ function features(text) {
   const out = new Set()
   for (const m of (text ?? '').matchAll(/`([^`]+)`/g)) out.add(m[1].trim())
   for (const m of (text ?? '').matchAll(/\b[A-Za-z][A-Za-z0-9._-]{2,}\b/g)) out.add(m[0])
+  // Cloudflare の製品名は2文字が多い（D1 / R2 / KV / DO / AI）。
+  // 一般の英単語まで拾わないよう、`[A-Za-z]{1}[A-Za-z0-9]{1,}` を無条件に許すのではなく
+  // **既知の短い製品名だけ**を明示的に足す。
+  for (const m of (text ?? '').matchAll(/\b(?:D1|R2|KV|DO|AI|CA|MX|TXT|TLS|DNS|WAF|CDN)\b/g)) out.add(m[0])
   for (const m of (text ?? '').matchAll(/\d[\d,._]*\s*(?:%|GB|MB|KB|MiB|GiB|TB|秒|分|時間|日|件|個|本|回|倍)/g)) {
     out.add(m[0].replace(/\s+/g, ''))
   }
