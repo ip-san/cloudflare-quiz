@@ -16772,7 +16772,7 @@
         },
         {
           "text": "`metadata.cost`のようなカスタムディメンションでリクエストにかかった金額を追跡し、予算を超えたら安いモデルに自動的に切り替える",
-          "wrongFeedback": "それはRate limitingではなくSpend limitsの説明です。Rate limitingはリクエストの件数を制限します。"
+          "wrongFeedback": "それはRate limitingではなくSpend limitsの説明です。ただしSpend limitsは予算超過時に安いモデルへ自動的に切り替える機能ではなく、`429`を返してリクエストをブロックする機能です。"
         },
         {
           "text": "リクエストの内容を検査し、有害なコンテンツを含む場合にブロックする",
