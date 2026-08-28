@@ -60,8 +60,8 @@ const DIFF_CHECKS = [
   },
   {
     script: 'check-number-drift.mjs',
-    what: '層をまたいだ数値の取り残し',
-    why: 'ある層で直した数値が別の層に古いまま残っていないか',
+    what: '層をまたいだ取り残し（数値・固有語）',
+    why: 'ある層で直した数値や名称が、別の層や図に古いまま残っていないか',
   },
   {
     script: 'check-refutation-drift.mjs',

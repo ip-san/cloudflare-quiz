@@ -29883,7 +29883,7 @@
         },
         {
           "text": "合成テストとRUMは全く同じ指標セットを提供し、取得できる指標に違いは一切存在しない",
-          "wrongFeedback": "違いはあります。RUMはFirst Input Delay(FID)やInteraction to Next Paint(INP)という、合成テストにはないユーザー操作に関する指標を提供します。"
+          "wrongFeedback": "違いはあります。RUMはInteraction to Next Paint(INP)という、合成テストにはないユーザー操作に関する指標を提供します。"
         },
         {
           "text": "Lighthouseスコアそのものであり、これは実ユーザーの環境でしか算出できないため合成テストのBrowser testでは取得できず、RUMのみが計算できる指標である",
@@ -29906,8 +29906,8 @@
             {
               "heading": "RUMのみで取得可能",
               "items": [
-                "FID(First Input Delay)",
-                "INP(Interaction to Next Paint)"
+                "INP(Interaction to Next Paint)",
+                "実ユーザーの操作応答性"
               ]
             },
             {
