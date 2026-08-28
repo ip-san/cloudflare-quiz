@@ -33009,7 +33009,7 @@
       "options": [
         {
           "text": "Do Not Inspectに一致した通信も、Isolateポリシーが設定されていれば必ずリモートブラウザへ転送される",
-          "wrongFeedback": "Do Not Inspectに一致した通信はIsolateポリシーを含む他のすべてのHTTPポリシーをバイパスします。"
+          "wrongFeedback": "Do Not Inspectに一致した通信はIsolateポリシーを含む他のすべてのHTTPポリシーをバイパスします。唯一の例外はClientless Web Isolationで、この場合はリモートブラウザ内の全サイトがDo Not Inspectに一致していても暗黙的に分離されます。"
         },
         {
           "text": "Do Not InspectポリシーはSNI以外の情報(URLパスなど)にも一致条件を設定でき、TLSのSNIとは無関係に評価される",
