@@ -22716,8 +22716,8 @@
           "wrongFeedback": "`log`アクションはEnterpriseプラン限定であり、終端アクションでもありません。マッチしたリクエストを記録するだけです。"
         },
         {
-          "text": "`execute`アクションはダッシュボードのアクション選択のドロップダウンに表示され、任意のマネージドルールセットを直接実行できる",
-          "wrongFeedback": "`execute`アクションはダッシュボードのアクション選択ドロップダウンには表示されません。指定したルールセットを実行する内部的な仕組みです。"
+          "text": "`execute`アクションはダッシュボードのアクション選択のドロップダウンに表示され、選ぶだけで既定のマネージドルールセットが自動的に実行される",
+          "wrongFeedback": "`execute`アクションはダッシュボードのアクション選択ドロップダウンには表示されません。また実行するルールセットはルール設定で明示的に指定するもので、既定のルールセットが自動で選ばれる仕組みもありません。"
         },
         {
           "text": "`js_challenge`・`managed_challenge`・`challenge`・`block`はいずれも終端アクションで、`log`はEnterprise限定の非終端アクションである"
@@ -25185,7 +25185,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Free・Pro・Businessプランのルールアクションは`Block`のみに限られますが、API Shieldを契約していないEnterpriseプランでは`Log`または`Block`を選択できます。保存済みエンドポイント数は、Free 100・Pro 250・Business 500・API Shieldなしのenterprise 500ですが、API Shieldを契約したEnterpriseプランでは10,000まで拡大されます。\n{{diagram:0}}",
+      "explanation": "Free・Pro・Businessプランのルールアクションは`Block`のみに限られますが、API Shieldを契約していないEnterpriseプランでは`Log`または`Block`を選択できます。保存済みエンドポイント数は、Free 100・Pro 250・Business 500・API Shieldなしのenterprise 3,000ですが、API Shieldを契約したEnterpriseプランでは10,000まで拡大されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/plans/",
       "hint": "「アクションの選択肢の広さ」と「保存できるエンドポイント数」の両方が、プランに応じて段階的に広がっていくことを考えましょう。",
       "tags": [
@@ -35108,7 +35108,7 @@
         },
         {
           "text": "H.265/HEVC形式の動画再生には対応しているが、H.264形式には対応していない",
-          "wrongFeedback": "文書ではH.265/HEVCが現時点でサポートされていない形式として明記されています。"
+          "wrongFeedback": "文書ではH.265/HEVCのみが現時点でサポートされていない形式として明記されており、H.264が非対応だとする記述はありません。"
         },
         {
           "text": "Webカメラ・マイクの利用に関する制限は明記されておらず、ビデオ会議アプリケーションも問題なく利用できるため、ZoomやGoogle Meetもそのまま利用できる",
@@ -43396,8 +43396,8 @@
           "wrongFeedback": "MCPはモデルにツールを提供するためのプロトコルで、開発者は`addMcpServer()`や`this.mcp.getAITools()`を明示的に呼び出して利用します。"
         },
         {
-          "text": "AgentクラスをそのままMCPサーバーとして公開する専用の`McpAgent`クラスが提供されており、Agent自身をMCPサーバー化するのが主なユースケースである",
-          "wrongFeedback": "Agentのドキュメントで説明されているのはMCPクライアントとしての機能(`addMcpServer()`)であり、Agent自身をMCPサーバーとして構築する場合は別のMCPサーバー向けドキュメントを参照する必要があります。"
+          "text": "Agentを MCP サーバーとして公開する専用クラスは提供されておらず、サーバー化するには生の WebSocket ハンドラを自前で実装する必要がある",
+          "wrongFeedback": "`McpAgent`という専用クラスが提供されているため、自前で WebSocket ハンドラを書く必要はありません。ただしこの設問が扱っているのは MCP クライアントとしての機能(`addMcpServer()`)のほうです。"
         },
         {
           "text": "`addMcpServer()`を使って外部のMCPサーバーに接続し、そのサーバーが公開するツールを`this.mcp.getAITools()`で取得してAI SDKのモデル呼び出しに渡す、MCPクライアントとしての機能が提供されている"
