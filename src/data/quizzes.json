@@ -29931,7 +29931,7 @@
           "wrongFeedback": "RUMはFreeプランでも自動的に有効化されています。Enterprise限定というのは誤りです。"
         },
         {
-          "text": "Freeプランでは自動的にRUMが有効化され、デフォルトではEUのトラフィックが除外されるが、この設定はオフに切り替えられる"
+          "text": "Freeプランでは自動的にRUMが有効化され、デフォルトではEEA/UK/スイスのトラフィックが除外されるが、この設定はオフに切り替えられる"
         },
         {
           "text": "Freeプランでは、RUMは明示的に有効化しない限り常に無効のままである",
@@ -29943,7 +29943,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Freeプランでは、RUMが自動的に有効化されており、デフォルトではEUのトラフィックが除外されます。この挙動は必要に応じてオフに切り替えることができます。Free以外のプランでは、必要に応じてRUMを有効化します。\n{{diagram:0}}",
+      "explanation": "Freeプランでは、RUMが自動的に有効化されており、デフォルトではEEA/UK/スイスのトラフィックが除外されます。この挙動は必要に応じてオフに切り替えることができます。Free以外のプランでは、必要に応じてRUMを有効化します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
       "hint": "「デフォルトで有効」なのに、「特定の地域だけ除外」されているという2段階の初期設定を考えましょう。",
       "tags": [
@@ -43266,7 +43266,7 @@
       "id": "at-015",
       "category": "agents",
       "difficulty": "advanced",
-      "question": "Agentの`this.schedule()`でcron文字列によるスケジュールを、同じタスク名・同じcron式で再度登録するとどうなりますか?",
+      "question": "Agentの`this.schedule()`でcron文字列によるスケジュールを、同じタスク名・同じcron式・同じペイロードで再度登録するとどうなりますか?",
       "options": [
         {
           "text": "既存のスケジュールが自動的にキャンセルされ、cronスケジュールそのものが無効化されるため、再度有効にするには最初から登録し直す必要がある",
