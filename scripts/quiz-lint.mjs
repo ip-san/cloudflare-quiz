@@ -549,8 +549,25 @@ function lintSelfLabeling(quiz) {
  *     **鏡写し**（「AだけがX」「BだけがX」）で正解が「両方」という設計も定石
  * 実際に直すべきなのは「厚くする過程で**新しく**語尾が揃ってしまった」場合。
  * この検査は差分を見ないのでそこまでは区別できない。挙がったら判断すること。
+ *
+ * **判断した結果は下の REVIEWED に書き戻すこと。** 2026-08-28 に、
+ * 挙がっていた5件のうち2件（`dq-002` `wa-014`）が実際に長さ一様化で作った
+ * giveaway だったのに、残り3件が正常だったせいで**5件まとめて**
+ * 「事前からある advisory」と切り捨てて見落とした。
+ * 正常と判断したものを消し込まないと、毎回同じ数だけ並び、
+ * 新しく増えた1件が古い正常3件に埋もれる。
  */
 const TAIL_LEN = 12
+
+/**
+ * 精査して「正常」と判断済みの組。語尾ごと記録してあるので、
+ * 本文が書き換わって別の語尾で揃った場合は**再び挙がる**。
+ */
+const REVIEWED_PARALLEL_TAILS = [
+  { id: 'ar-012', tail: ': 1024 bytes', why: '設問が値と鍵のサイズの組み合わせを並べる形。単位で揃うのは当然' },
+  { id: 'dl-012', tail: 'することが推奨されている', why: '「どう設定するのが推奨か」を問う設問。推奨形で揃うのは当然' },
+  { id: 'em-014', tail: 'ションを一切利用できない', why: 'Google/Microsoft の鏡写しで正解が「どちらも使える」。定石' },
+]
 
 function lintParallelDistractorTails(quiz) {
   if (quiz.type === 'multi') return []
@@ -561,6 +578,7 @@ function lintParallelDistractorTails(quiz) {
     for (let j = i + 1; j < tails.length; j++) {
       if (i === quiz.correctIndex || j === quiz.correctIndex) continue
       if (tails[i] !== tails[j] || tails[i] === correctTail) continue
+      if (REVIEWED_PARALLEL_TAILS.some((r) => r.id === quiz.id && r.tail === tails[i])) continue
       issues.push({
         id: quiz.id,
         type: 'parallel-distractor-tails',
