@@ -72,10 +72,15 @@ function checkOne(inputPath, verdictPath) {
 
   return {
     label,
+    // 被覆（全肢に verdict があるか）と、裏取り根拠の記入は別物として扱う。
+    // 被覆が欠けていれば担当の割り直しが要るが、verifiedBy の未記入は
+    // 「どこまで裏を取ったかが台帳に残らない」問題で、対処が違う。
     status:
-      missing.length === 0 && extra.length === 0 && badVerdict.length === 0 && noVerifiedBy.length === 0
-        ? 'ok'
-        : 'incomplete',
+      missing.length > 0 || extra.length > 0 || badVerdict.length > 0
+        ? 'incomplete'
+        : noVerifiedBy.length > 0
+          ? 'unverified-basis'
+          : 'ok',
     expected: expected.size,
     seen: seen.size,
     missing,
@@ -111,6 +116,7 @@ console.log('「問題が無かった」と「見ていない」を区別する�
 console.log('')
 
 let bad = 0
+let basisMissing = 0
 let totalExpected = 0
 let totalSeen = 0
 for (const r of results) {
@@ -127,6 +133,13 @@ for (const r of results) {
   const verif = `docs=${r.byVerification.docs} internal=${r.byVerification.internal}`
   if (r.status === 'ok') {
     console.log(`  ✓ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}  [裏取り: ${verif}]`)
+  } else if (r.status === 'unverified-basis') {
+    basisMissing++
+    console.log(`  △ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}  — 被覆はOK、裏取り根拠が未記入`)
+    console.log(
+      `      verifiedBy 未記入 ${r.noVerifiedBy.length}肢: ${r.noVerifiedBy.slice(0, 5).join(' ')}${r.noVerifiedBy.length > 5 ? ' …' : ''}`
+    )
+    console.log('      → 割り直しではなく、担当者に「docs で裏を取ったのは何肢か」を聞くこと')
   } else {
     bad++
     console.log(`  ✗ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}`)
@@ -155,7 +168,11 @@ if (totalInternal > totalDocs) {
 }
 if (bad > 0) {
   console.log('')
-  console.log(`⚠️  ${bad}件のバッチが未完了。**担当を割り直すこと。**`)
+  console.log(`⚠️  ${bad}件のバッチが被覆不足。**担当を割り直すこと。**`)
   console.log('   「検出ゼロ」と「見ていない」は別物で、空の結果を成果として扱わないこと。')
   process.exitCode = 1
+}
+if (basisMissing > 0) {
+  console.log('')
+  console.log(`△ ${basisMissing}件のバッチが裏取り根拠を書いていない。担当者に確認すること。`)
 }

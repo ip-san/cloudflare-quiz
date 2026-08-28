@@ -42997,8 +42997,8 @@
       "question": "AgentインスタンスがDurable Objectのハイバネーション(非アクティブによる一時停止)を挟んだ際に、そのまま保持される情報はどれですか?",
       "options": [
         {
-          "text": "WebSocket接続そのものは維持されるが、接続に紐づく`uri`や`tags`などのメタデータは消去される",
-          "wrongFeedback": "`connection.uri`や`tags`などの接続メタデータはハイバネーションを挟んでも保持されます。"
+          "text": "WebSocket接続もそれに紐づく`uri`や`tags`などのメタデータも、ハイバネーションを挟むと両方とも消去される",
+          "wrongFeedback": "WebSocket接続自体も`connection.uri`や`tags`などの接続メタデータも、ハイバネーションを挟んで保持されます。"
         },
         {
           "text": "`this.state`に保存された状態、WebSocket接続ごとに`connection.setState()`で設定した状態、`this.sql`に保存されたSQLiteのデータ"
