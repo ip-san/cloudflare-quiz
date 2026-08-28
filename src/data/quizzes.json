@@ -36540,7 +36540,7 @@
           "wrongFeedback": "完全な削除ではなく、証拠を確認したうえでCloudflareサポートへ報告し、対応を待つ間はfindingを一時的に非表示にするという流れが推奨されています。"
         },
         {
-          "text": "誤検知が疑われる場合は、まずSaaSプラットフォーム側での実際の状態を確認し、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みでそのfindingを一時的に非表示にすることが推奨されている"
+          "text": "誤検知が疑われる場合は、まずfindingに添えられた証拠(evidence)を精査し、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みでそのfindingを一時的に非表示にすることが推奨されている"
         },
         {
           "text": "誤検知はCASBの仕組み上そもそも発生しえない性質のものであるとされているため、それを想定した報告のための手順自体があらかじめ用意されていない",
@@ -36552,7 +36552,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "誤検知が疑われる場合は、まずSaaSプラットフォーム側での実際の状態を確認します(表示されているステータスが不正確な場合があるため)。そのうえで、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みを使ってそのfindingを一時的に非表示にすることが推奨されています。\n{{diagram:0}}",
+      "explanation": "誤検知が疑われる場合は、まずfindingに添えられた証拠(evidence)を精査します。このとき、SaaSプラットフォーム側に表示されているオブジェクトの状態は正確とは限らないため、そちらを根拠にしないよう注意が必要です。そのうえで、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みを使ってそのfindingを一時的に非表示にすることが推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/troubleshoot-casb/#casb-is-generating-false-positives",
       "hint": "「確認する」→「報告する」→「一時的にしのぐ」という3段階の流れを考えましょう。",
       "tags": [
