@@ -35,7 +35,8 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
 
-const VALID = new Set(['H1', 'H2', 'H3', 'M2', 'ok', 'unclear'])
+// 誤答の掃引（H系・M2）と、正解・解説の掃引（C系）の両方を受ける
+const VALID = new Set(['H1', 'H2', 'H3', 'M2', 'C1', 'C2', 'C3', 'C4', 'C5', 'ok', 'unclear'])
 
 function checkOne(inputPath, verdictPath) {
   const label = inputPath.replace(/.*\//, '')
@@ -95,12 +96,14 @@ function checkOne(inputPath, verdictPath) {
 const results = []
 if (args[0] === '--dir') {
   const dir = resolve(ROOT, args[1] ?? '.claude/tmp/quiz-audit')
+  const prefix = args.includes('--layer') && args[args.indexOf('--layer') + 1] === 'correct' ? 'correct' : 'sweep'
+  const re = new RegExp(`^${prefix}-part\\d+\\.json$`)
   const inputs = readdirSync(dir)
-    .filter((f) => /^sweep-part\d+\.json$/.test(f))
+    .filter((f) => re.test(f))
     .sort((a, b) => Number(a.match(/\d+/)[0]) - Number(b.match(/\d+/)[0]))
   for (const f of inputs) {
     const n = f.match(/\d+/)[0]
-    results.push(checkOne(resolve(dir, f), resolve(dir, `sweep-verdicts${n}.json`)))
+    results.push(checkOne(resolve(dir, f), resolve(dir, `${prefix}-verdicts${n}.json`)))
   }
 } else {
   if (args.length < 2) {

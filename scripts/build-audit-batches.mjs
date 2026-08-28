@@ -9,10 +9,17 @@
  * 分割は**問題数ではなく肢数**で均等にする。1問あたりの誤答数は
  * 2〜3とばらつくため、問題数で割ると担当量が2割ほどずれる。
  *
+ * `--layer correct` は**正解・解説・設問文**を配る。誤答の掃引とは別物。
+ * 2026-08-28 の誤答掃引で `cb-018`（正解が docs と逆）と
+ * `as-018`（解説の数値が誤り）がレビュアーの担当外から偶然見つかった。
+ * **学習者が真実として読む層**なので実害が最も大きいのに、仕組みとして見ていなかった。
+ *
  * Usage:
  *   node scripts/build-audit-batches.mjs --parts 12 --out .claude/tmp/quiz-audit
  *   node scripts/build-audit-batches.mjs --parts 12 --out <dir> --exclude f7bb370
  *     → f7bb370 から変わった肢（監査済み）を除き、残りだけを配る
+ *   node scripts/build-audit-batches.mjs --parts 12 --out <dir> --layer correct
+ *     → 正解・解説・設問文を配る（ファイル名は correct-partN.json）
  */
 
 import { execFileSync } from 'node:child_process'
@@ -25,6 +32,7 @@ const args = process.argv.slice(2)
 const parts = Number(args[args.indexOf('--parts') + 1]) || 4
 const outDir = args.includes('--out') ? args[args.indexOf('--out') + 1] : '.claude/tmp/quiz-audit'
 const excludeRef = args.includes('--exclude') ? args[args.indexOf('--exclude') + 1] : null
+const layer = args.includes('--layer') ? args[args.indexOf('--layer') + 1] : 'distractor'
 
 const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes
 
@@ -44,6 +52,34 @@ const items = []
 let limbTotal = 0
 for (const quiz of quizzes) {
   if (quiz.type === 'multi') continue
+
+  if (layer === 'correct') {
+    // 正解・解説・設問文。1問=1単位として数える（誤答のように肢に割れない）
+    limbTotal += 1
+    items.push({
+      id: quiz.id,
+      category: quiz.category,
+      difficulty: quiz.difficulty,
+      referenceUrl: quiz.referenceUrl ?? null,
+      targets: [
+        {
+          optionIndex: quiz.correctIndex,
+          question: quiz.question,
+          correctText: quiz.options[quiz.correctIndex].text,
+          explanation: quiz.explanation ?? null,
+          hint: quiz.hint ?? null,
+          // 反駁は「正解と矛盾していないか」を見るために添える
+          wrongFeedbacks: quiz.options
+            .map((o, i) =>
+              i === quiz.correctIndex ? null : { optionIndex: i, text: o.text, wrongFeedback: o.wrongFeedback ?? null }
+            )
+            .filter(Boolean),
+        },
+      ],
+    })
+    continue
+  }
+
   const old = changedSince?.get(quiz.id)
   const targets = []
   quiz.options.forEach((opt, i) => {
@@ -76,14 +112,19 @@ for (const it of items) {
 }
 
 mkdirSync(resolve(ROOT, outDir), { recursive: true })
+const unit = layer === 'correct' ? '問' : '肢'
+const prefix = layer === 'correct' ? 'correct-part' : 'sweep-part'
 console.log('=== 監査バッチ ===')
+console.log(`層: ${layer === 'correct' ? '正解・解説・設問文' : '誤答'}`)
 if (excludeRef) console.log(`除外: ${excludeRef} から変わった肢（監査済み）`)
-console.log(`対象: ${limbTotal}肢 / ${items.length}問 → ${parts}分割`)
+console.log(`対象: ${limbTotal}${unit} / ${items.length}問 → ${parts}分割`)
 console.log('')
 buckets.forEach((b, n) => {
   // 各バケツの中は ID 順に戻す（レビュアーが追いやすいように）
   b.items.sort((a, z) => a.id.localeCompare(z.id))
-  const path = resolve(ROOT, outDir, `sweep-part${n + 1}.json`)
+  const path = resolve(ROOT, outDir, `${prefix}${n + 1}.json`)
   writeFileSync(path, `${JSON.stringify(b.items, null, 2)}\n`)
-  console.log(`  sweep-part${n + 1}.json  ${String(b.limbs).padStart(4)}肢 / ${String(b.items.length).padStart(3)}問`)
+  console.log(
+    `  ${prefix}${n + 1}.json  ${String(b.limbs).padStart(4)}${unit} / ${String(b.items.length).padStart(3)}問`
+  )
 })
