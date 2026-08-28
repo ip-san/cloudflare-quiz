@@ -3,15 +3,25 @@
 /**
  * 監査エージェントが「担当を本当に全部見たか」を機械で検証する。
  *
- * 2026-08-28 の全数掃引で、2体が **143肢の担当に対して空配列 `[]` を書き、
- * 報告もせずに終了**した。開始1分での出力で、読んだとは考えられない。
+ * 2026-08-28 の全数掃引で、2体が143肢の担当に対して空配列 `[]` を書いた。
+ * **私は「読んでいない」と決めつけたが、これは誤りだった。**
+ * 問い合わせたところ2体とも全肢を読んでおり、空だったのは
+ * 「問題があった肢だけを出力する」という**当時の契約に従った結果**だった。
  *
- * 手順書には「何肢中いくつ読んだか必ず報告せよ」と書いてあったが、
- * **報告しないという形で破られると検出できない**。自己申告に頼る検査は、
- * 申告しない相手には効かない。
+ * それでも空ファイルは「見ていない」と「問題が無かった」を区別できない。
+ * そこで契約を変えた: **担当した全肢について1エントリずつ verdict を返させる。**
  *
- * そこで契約を変えた: **問題のあった肢だけでなく、担当した全肢について
- * 1エントリずつ verdict を返させる。** ファイルの中身そのものが被覆の証拠になる。
+ * さらに、問い合わせで**本当の弱点**が出た。1体が正直に申告した:
+ *
+ *   「143肢中、docs で裏を取ったのは約20肢。残り123肢は同じ JSON 内の
+ *     `explanation` との整合性チェックのみ。`explanation` は `wrongFeedback` と
+ *     同じ書き手が書いている可能性があるので、独立検証になっていない」
+ *
+ * 読んだかどうかより、**何を根拠に ok としたか**のほうが重要だった。
+ * そこで `verifiedBy` を必須にし、`docs`（外部で裏を取った）と
+ * `internal`（設問内の整合性のみ）を分けて数える。
+ * 「143肢を監査した」ではなく「143肢を読み、うち20肢を docs で裏取りした」と
+ * 言えるようにする。
  *
  * Usage:
  *   node scripts/check-audit-coverage.mjs <input.json> <verdicts.json>
@@ -46,9 +56,13 @@ function checkOne(inputPath, verdictPath) {
 
   const seen = new Set()
   const badVerdict = []
+  const noVerifiedBy = []
+  const byVerification = { docs: 0, internal: 0 }
   for (const v of verdicts) {
     seen.add(`${v.id}:${v.optionIndex}`)
     if (!VALID.has(v.verdict)) badVerdict.push(`${v.id}[${v.optionIndex}]=${v.verdict}`)
+    if (v.verifiedBy === 'docs' || v.verifiedBy === 'internal') byVerification[v.verifiedBy]++
+    else noVerifiedBy.push(`${v.id}[${v.optionIndex}]`)
   }
 
   const missing = [...expected].filter((k) => !seen.has(k))
@@ -58,12 +72,17 @@ function checkOne(inputPath, verdictPath) {
 
   return {
     label,
-    status: missing.length === 0 && extra.length === 0 && badVerdict.length === 0 ? 'ok' : 'incomplete',
+    status:
+      missing.length === 0 && extra.length === 0 && badVerdict.length === 0 && noVerifiedBy.length === 0
+        ? 'ok'
+        : 'incomplete',
     expected: expected.size,
     seen: seen.size,
     missing,
     extra,
     badVerdict,
+    noVerifiedBy,
+    byVerification,
     counts,
   }
 }
@@ -105,8 +124,9 @@ for (const r of results) {
   const summary = Object.entries(r.counts)
     .map(([k, v]) => `${k}=${v}`)
     .join(' ')
+  const verif = `docs=${r.byVerification.docs} internal=${r.byVerification.internal}`
   if (r.status === 'ok') {
-    console.log(`  ✓ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}`)
+    console.log(`  ✓ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}  [裏取り: ${verif}]`)
   } else {
     bad++
     console.log(`  ✗ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}`)
@@ -116,11 +136,23 @@ for (const r of results) {
       )
     if (r.extra.length) console.log(`      担当外 ${r.extra.length}肢: ${r.extra.slice(0, 5).join(' ')}`)
     if (r.badVerdict.length) console.log(`      不正な verdict: ${r.badVerdict.slice(0, 5).join(' ')}`)
+    if (r.noVerifiedBy.length)
+      console.log(`      verifiedBy 未記入 ${r.noVerifiedBy.length}肢: ${r.noVerifiedBy.slice(0, 5).join(' ')}`)
   }
 }
 
+const totalDocs = results.reduce((n, r) => n + (r.byVerification?.docs ?? 0), 0)
+const totalInternal = results.reduce((n, r) => n + (r.byVerification?.internal ?? 0), 0)
 console.log('')
 console.log(`合計 ${totalSeen}/${totalExpected}肢が判定済み`)
+console.log(`  うち docs で裏取り: ${totalDocs}肢 / 設問内の整合性のみ: ${totalInternal}肢`)
+if (totalInternal > totalDocs) {
+  console.log('')
+  console.log('※ 設問内の整合性チェックは独立検証ではない。')
+  console.log('   `explanation` は `wrongFeedback` と同じ書き手が書いている可能性があり、')
+  console.log('   同じ誤解がそのまま両方に入っていれば整合してしまう。')
+  console.log('   「N肢を監査した」ではなく「N肢を読み、うちM肢を docs で裏取りした」と報告すること。')
+}
 if (bad > 0) {
   console.log('')
   console.log(`⚠️  ${bad}件のバッチが未完了。**担当を割り直すこと。**`)
