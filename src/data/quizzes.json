@@ -16619,7 +16619,7 @@
         },
         {
           "text": "Outbound Worker有効時でも`connect()` APIで開く外向きTCPソケットは使い続けられ、fetch()ではないため横取りされずに宛先へ到達する",
-          "wrongFeedback": "Outbound Workerを有効にすると、user Workerは`connect()` APIで外向きTCPソケットを作成できなくなります。すべての外向き通信をOutbound Workerのfetchに通すための制約です。"
+          "wrongFeedback": "Outbound Workerを有効にすると、user Workerは`connect()` APIで外向きTCPソケットを作成できなくなります。すべての外向き通信をOutbound Workerの`fetch`に通すための制約です。"
         },
         {
           "text": "user Worker本体のfetch()ハンドラから直接発行されるすべての外向きリクエストであり、Outbound Workerの介入を受けずに宛先へ到達する",
