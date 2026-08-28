@@ -31389,7 +31389,7 @@
       ],
       "correctIndex": 3,
       "explanation": "仮想ネットワークはアカウント内でのルーティング分離を提供する機能です。それぞれの仮想ネットワークが独自のルーティングテーブルを持つため、本番環境とステージング環境が同じプライベートIP範囲(例: 10.128.0.0/24)を使っていても、別の仮想ネットワークに割り当てることでCloudflareがどちらの環境宛てかを判別できます。ユーザーはCloudflare One Client上で接続先の仮想ネットワークを選択します。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared/tunnel-virtual-networks/",
       "hint": "同じIPアドレス範囲を使う複数の環境を、Cloudflareがどう区別しているかを考えましょう。",
       "tags": [
         "tunnel",

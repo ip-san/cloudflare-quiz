@@ -74,7 +74,14 @@ const ID_PREFIX_TO_CATEGORY: Record<string, string> = {
   at: 'agents',
 }
 
-/** 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること */
+/**
+ * 有効なドキュメントページパス — トピック差し替え時は quizzes.json と一緒に更新すること。
+ *
+ * **`scripts/topic-config.mjs` の `DOC_PAGES` の複製**（TS↔mjs 境界のため）。
+ * 片方だけ足すと、ここを通らない referenceUrl が生まれるか、
+ * fetch されないページを referenceUrl にできてしまう。
+ * ずれは `scripts/__tests__/doc-pages-sync.test.mjs` が検知する。
+ */
 const VALID_DOC_PAGES = [
   'analytics/analytics-engine/',
   'analytics/analytics-engine/get-started/',
@@ -163,6 +170,7 @@ const VALID_DOC_PAGES = [
   'hyperdrive/platform/pricing/',
   'hyperdrive/reference/supported-databases-and-features/',
   'browser-run/',
+  'browser-run/how-to/',
   'browser-run/how-to/deploy-worker/',
   'email-service/',
   'email-service/get-started/route-emails/',
@@ -321,6 +329,7 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/create-local-tunnel/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared/tunnel-virtual-networks/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/dns/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability/',

@@ -331,6 +331,9 @@ export const DOC_PAGES = [
   },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared' },
+  // tn-012 の referenceUrl が private-net（29行のナビゲーション用ページ）を指しており、
+  // 仮想ネットワークで重複CIDRを分離する説明の実体はこちらにある（2026-08-28 の正解層監査で判明）
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared/tunnel-virtual-networks' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/dns' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability' },

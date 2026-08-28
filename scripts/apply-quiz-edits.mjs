@@ -14,7 +14,7 @@
  *      "edits": [{ "field": "option.3", "value": "新しい本文" }],
  *      "skipped": false }]
  *
- * field: option.N | wrongFeedback.N | explanation | question
+ * field: option.N | wrongFeedback.N | explanation | question | referenceUrl
  */
 
 import { readFileSync, writeFileSync } from 'fs'
@@ -94,6 +94,14 @@ for (const p of proposals) {
       }
       if (kind === 'option') quiz.options[idx].text = value
       else quiz.options[idx].wrongFeedback = value
+    } else if (field === 'referenceUrl') {
+      // 出典ページの差し替え。2026-08-28 の正解層監査で、tn-012 の referenceUrl が
+      // 答えを含まないナビゲーション用ページを指していた（実体は下位ページにあった）。
+      if (!/^https:\/\/developers\.cloudflare\.com\//.test(value)) {
+        errors.push(`${p.id}: referenceUrl が developers.cloudflare.com 以外を指している`)
+        continue
+      }
+      quiz.referenceUrl = value
     } else if (field === 'explanation' || field === 'question') {
       // 図マーカーの扱い:
       // - 既存マーカーの削除は拒否する（解説の途中にあった図が消えてしまう）
