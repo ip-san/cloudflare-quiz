@@ -786,8 +786,59 @@ function lintLengthCue(quizzes) {
   return issues
 }
 
+/**
+ * 絶対語（一切・必ず・常に…）が誤答に偏ることで生まれる手がかりを測る。
+ *
+ * 長さバイアスと同じ「内容を読まずに当てられるか」の指標だが、**性質が違う**。
+ * 長さの水増しは真偽に中立なので一様まで潰せた。絶対語はそうではない:
+ * 誤答は「正しい記述を過度に一般化して偽にする」のが定石なので、
+ * 誤答に絶対語が多いこと自体が**書き方として正常**であり、
+ * 弱めると誤答が真になる（H1）。逆に正解へ絶対語を足すのは、
+ * docs がその絶対性を支持している場合しかできない。
+ * **一様化は原理的に届かない。**
+ *
+ * 実測（2026-08-28）:
+ *   セッション開始時 32.6% / 長さ一様化の直前 32.6% / 一様化後 33.4%（偶然 25.0%）
+ *
+ * つまり +7.6pt は元から在った構造的な残差で、長さ一様化が足したのは +0.8pt。
+ * 長さバイアス（+59pt）とは桁が違う。**目標は0ではなく、悪化させないこと。**
+ *
+ * 一文の中で同じ絶対語を繰り返す形（「一切影響しない…一切ない」）だけは
+ * 真偽を変えずに直せる水増しなので、見つけたら直すこと。
+ * ただし `wa-004` の「Passthroughは常に拒否し、Rejectは常に素通り」のような
+ * 鏡写しや、`ch-005` の3モード列挙は並列構造として正常。
+ */
+const ABSOLUTE_WORDS = /一切|必ず|常に|すべて|全て|全く|決して|唯一|いかなる|絶対に|例外なく|一つも/g
+// 「のみ」は「Enterprise限定」のような正確な限定表現に多用され、
+// 入れると該当が64問へ膨らんで大半が誤検出になる。意図的に外している。
+
+const ABSOLUTE_TELL_MAX = 0.38
+
+function lintAbsoluteWordTell(quizzes) {
+  const singles = quizzes.filter((q) => q.type !== 'multi')
+  let expected = 0
+  for (const quiz of singles) {
+    const counts = quiz.options.map((o) => (o.text.match(ABSOLUTE_WORDS) ?? []).length)
+    const min = Math.min(...counts)
+    // 「絶対語が最も少ない肢を選ぶ」戦略。同数なら等確率で当たるとみなす
+    if (counts[quiz.correctIndex] === min) expected += 1 / counts.filter((c) => c === min).length
+  }
+  const rate = expected / singles.length
+  if (rate <= ABSOLUTE_TELL_MAX) return []
+  return [
+    {
+      id: '(corpus)',
+      type: 'absolute-word-tell',
+      message:
+        `「絶対語が最も少ない選択肢を選ぶ」だけで期待正答率が ${(rate * 100).toFixed(1)}% になる ` +
+        `— 偶然は25%、許容上限は${ABSOLUTE_TELL_MAX * 100}%。誤答から絶対語を削ると真になりやすい(H1)ので、` +
+        `直すなら「正解側に docs が支持する絶対性を書く」か「一文内で重ねた絶対語を1つに減らす」で。`,
+    },
+  ]
+}
+
 function lintDistractors(quizzes) {
-  const issues = lintLengthCue(quizzes)
+  const issues = [...lintLengthCue(quizzes), ...lintAbsoluteWordTell(quizzes)]
 
   for (const quiz of quizzes) {
     if (quiz.type === 'multi') continue
