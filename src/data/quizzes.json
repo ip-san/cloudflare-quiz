@@ -43396,7 +43396,7 @@
           "wrongFeedback": "MCPはモデルにツールを提供するためのプロトコルで、開発者は`addMcpServer()`や`this.mcp.getAITools()`を明示的に呼び出して利用します。"
         },
         {
-          "text": "Agentを MCP サーバーとして公開する専用クラスは提供されておらず、サーバー化するには生の WebSocket ハンドラを自前で実装する必要がある",
+          "text": "Agentを MCP サーバーとして公開する専用クラスは提供されておらず、`WebSocketPair`を使った生のハンドラを自前で書き、ツール定義も手作業で JSON-RPC のメッセージへ変換する必要がある",
           "wrongFeedback": "`McpAgent`という専用クラスが提供されているため、自前で WebSocket ハンドラを書く必要はありません。ただしこの設問が扱っているのは MCP クライアントとしての機能(`addMcpServer()`)のほうです。"
         },
         {
