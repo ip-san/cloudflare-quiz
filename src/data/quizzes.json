@@ -23855,7 +23855,7 @@
       "question": "Bot Managementがボットスコアを算出するために使う検出エンジンの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "SQLインジェクション検出・クロスサイトスクリプティング検出・パストラバーサル検出という、WAFマネージドルールと共通の、脆弱性検出に特化した3つの検出エンジンの組み合わせ",
+          "text": "SQLインジェクション検出・クロスサイトスクリプティング検出・パストラバーサル検出のみで判定される、脆弱性スキャンに特化した3つの検出エンジンの組み合わせ",
           "wrongFeedback": "これらは脆弱性の種類を指す用語であり、Bot Managementの検出エンジンではありません。ボットスコアの算出にはHeuristics・機械学習・異常検知などが使われます。"
         },
         {
@@ -39134,8 +39134,8 @@
           "wrongFeedback": "順序が逆です。DDoS managed rulesetsが最初に適用され、Cloudflare Network Firewallは最後に適用されます。"
         },
         {
-          "text": "Advanced TCP ProtectionとAdvanced DNS Protectionはオプションの追加機能であり、DDoS managed rulesetsより先に適用される",
-          "wrongFeedback": "Advanced TCP Protection・Advanced DNS ProtectionはDDoS managed rulesetsの後に適用されます。"
+          "text": "Advanced TCP ProtectionとAdvanced DNS Protectionは常時有効でカスタマイズ不可な機能であり、DDoS managed rulesetsより先に適用される",
+          "wrongFeedback": "Advanced TCP Protection・Advanced DNS Protectionは常時有効ではなく、有効化やしきい値の調整が可能な設定項目です。また実行順序もDDoS managed rulesetsの後です。"
         },
         {
           "text": "DDoS managed rulesets(常時有効で無効化不可)、Advanced TCP Protection、Advanced DNS Protection、Cloudflare Network Firewallの順に適用される"
