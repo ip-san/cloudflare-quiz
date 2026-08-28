@@ -38,6 +38,18 @@ const args = process.argv.slice(2)
 // 誤答の掃引（H系・M2）と、正解・解説の掃引（C系）の両方を受ける
 const VALID = new Set(['H1', 'H2', 'H3', 'M2', 'C1', 'C2', 'C3', 'C4', 'C5', 'ok', 'unclear'])
 
+/** 「見つからなかった」系の記述は理由として認めない */
+const NON_REASONS = [/見つからな/, /記載が?な(い|かった)/, /確認できな/, /該当.*な(い|し)/, /探した/]
+
+function hasReason(rationale) {
+  if (typeof rationale !== 'string' || rationale.trim().length < 20) return false
+  // 「〜が見つからなかった」だけで終わっているものを弾く。
+  // 「存在しない機能の主張なので docs に否定形では書かれない」のような
+  // **構造的な理由**が書かれていれば、その語を含んでいても通す。
+  const isOnlyNotFound = NON_REASONS.some((re) => re.test(rationale)) && rationale.trim().length < 60
+  return !isOnlyNotFound
+}
+
 function checkOne(inputPath, verdictPath) {
   const label = inputPath.replace(/.*\//, '')
   if (!existsSync(verdictPath)) {
@@ -58,12 +70,20 @@ function checkOne(inputPath, verdictPath) {
   const seen = new Set()
   const badVerdict = []
   const noVerifiedBy = []
+  const thinInternal = []
   const byVerification = { docs: 0, internal: 0, standard: 0 }
   for (const v of verdicts) {
     seen.add(`${v.id}:${v.optionIndex}`)
     if (!VALID.has(v.verdict)) badVerdict.push(`${v.id}[${v.optionIndex}]=${v.verdict}`)
     if (v.verifiedBy === 'docs' || v.verifiedBy === 'internal' || v.verifiedBy === 'standard') {
       byVerification[v.verifiedBy]++
+      // `internal` を選ぶなら「なぜ docs に載り得ないのか」を書かせる。
+      // 書かせるだけでは守られないので、ここで機械的に見る。
+      // 「探したが見つからなかった」は理由ではない — docs にあるのに
+      // 見落とした場合と区別がつかず、ag-002 はまさにそれで起きた。
+      if (v.verifiedBy === 'internal' && !hasReason(v.rationale)) {
+        thinInternal.push(`${v.id}[${v.optionIndex}]`)
+      }
     } else noVerifiedBy.push(`${v.id}[${v.optionIndex}]`)
   }
 
@@ -89,6 +109,7 @@ function checkOne(inputPath, verdictPath) {
     extra,
     badVerdict,
     noVerifiedBy,
+    thinInternal,
     byVerification,
     counts,
   }
@@ -121,6 +142,7 @@ console.log('')
 
 let bad = 0
 let basisMissing = 0
+let thinTotal = 0
 let totalExpected = 0
 let totalSeen = 0
 for (const r of results) {
@@ -136,8 +158,17 @@ for (const r of results) {
     .join(' ')
   const std = r.byVerification.standard ? ` standard=${r.byVerification.standard}` : ''
   const verif = `docs=${r.byVerification.docs} internal=${r.byVerification.internal}${std}`
+  if (r.thinInternal?.length) {
+    thinTotal += r.thinInternal.length
+  }
   if (r.status === 'ok') {
     console.log(`  ✓ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}  [裏取り: ${verif}]`)
+    if (r.thinInternal?.length) {
+      console.log(
+        `      ⚠ internal のうち ${r.thinInternal.length}肢に理由が書かれていない: ` +
+          `${r.thinInternal.slice(0, 6).join(' ')}${r.thinInternal.length > 6 ? ' …' : ''}`
+      )
+    }
   } else if (r.status === 'unverified-basis') {
     basisMissing++
     console.log(`  △ ${r.label}: ${r.seen}/${r.expected}肢  ${summary}  — 被覆はOK、裏取り根拠が未記入`)
@@ -182,4 +213,11 @@ if (bad > 0) {
 if (basisMissing > 0) {
   console.log('')
   console.log(`△ ${basisMissing}件のバッチが裏取り根拠を書いていない。担当者に確認すること。`)
+}
+if (thinTotal > 0) {
+  console.log('')
+  console.log(`△ internal 判定のうち ${thinTotal}肢が「なぜ docs に載り得ないか」を書いていない。`)
+  console.log('   「探したが見つからなかった」は理由にならない。docs にあるのに見落とした場合と')
+  console.log('   区別がつかず、2026-08-28 の ag-002 はまさにそれで false を注入した。')
+  console.log('   構造的な理由（存在しない機能の主張なので否定形では書かれない、等）を書かせること。')
 }
