@@ -5889,7 +5889,7 @@
           "wrongFeedback": "静的エクスポート以外にも、アダプタを使ってSSRごとデプロイする方法が提供されています。"
         },
         {
-          "text": "OpenNext のようなアダプタを使って Next.js アプリケーションを Cloudflare Workers 向けにビルドし、SSR やAPI Routesを含めて動作させる"
+          "text": "vinext のようなアダプタを使って Next.js アプリケーションを Cloudflare Workers 向けにビルドし、SSR やAPI Routesを含めて動作させる"
         },
         {
           "text": "Next.js は静的エクスポート専用であり、SSR機能はCloudflare上では一切利用できない",
@@ -5897,7 +5897,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Next.js のような SSR フレームワークを Cloudflare の Workers/Pages 環境で動かすには専用のビルドアダプタが必要です。OpenNext for Cloudflare(`@opennextjs/cloudflare`)などのアダプタを使うことで、SSR や Route Handlers を含む Next.js アプリケーションを Cloudflare のエッジ環境向けにビルド・デプロイできます。\n{{diagram:0}}\nこれはフレームワーク対応の進化の一例であり、以前使われていたアダプタから移行が進められています。\n{{diagram:1}}",
+      "explanation": "Next.js のような SSR フレームワークを Cloudflare Workers 環境で動かすには専用のビルドツールが必要です。Cloudflareは現在、Next.jsのAPI表面を再実装したViteプラグインである vinext をデフォルトの推奨手段としており、`vinext init`で既存アプリに追加するか`create-vinext-app`で新規作成できます。\n{{diagram:0}}\nまだvinextへ移行できない既存のOpenNextアプリ(`@opennextjs/cloudflare`)向けには、引き続きOpenNextアダプタが提供されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/",
       "hint": "Node.js前提で書かれたSSRアプリを、そのままの形でCloudflare上で動かせるのか考えましょう。",
       "tags": [
