@@ -33,6 +33,15 @@ const parts = Number(args[args.indexOf('--parts') + 1]) || 4
 const outDir = args.includes('--out') ? args[args.indexOf('--out') + 1] : '.claude/tmp/quiz-audit'
 const excludeRef = args.includes('--exclude') ? args[args.indexOf('--exclude') + 1] : null
 const layer = args.includes('--layer') ? args[args.indexOf('--layer') + 1] : 'distractor'
+// `["ac-017[0]", "ag-014[2]", ...]` の JSON を渡すと、その肢だけを配る。
+// 監査を一度通したあとで「この条件のものだけ裏取りし直す」ときに使う
+// （2026-08-28 に、裏取り必須の条件を後から足したため 315肢を追いかけた）。
+const onlyPath = args.includes('--only') ? args[args.indexOf('--only') + 1] : null
+const onlySet = onlyPath
+  ? new Set(
+      JSON.parse(readFileSync(resolve(ROOT, onlyPath), 'utf8')).map((k) => k.replace(/[[\]]/g, ':').replace(/:$/, ''))
+    )
+  : null
 
 const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes
 
@@ -86,6 +95,7 @@ for (const quiz of quizzes) {
     if (i === quiz.correctIndex) return
     // 除外指定があるとき、その基準から変わった肢は監査済みなので飛ばす
     if (old && old.options[i]?.text !== opt.text) return
+    if (onlySet && !onlySet.has(`${quiz.id}:${i}`)) return
     targets.push({ optionIndex: i, text: opt.text, wrongFeedback: opt.wrongFeedback ?? null })
   })
   if (targets.length === 0) continue
@@ -113,7 +123,7 @@ for (const it of items) {
 
 mkdirSync(resolve(ROOT, outDir), { recursive: true })
 const unit = layer === 'correct' ? '問' : '肢'
-const prefix = layer === 'correct' ? 'correct-part' : 'sweep-part'
+const prefix = layer === 'correct' ? 'correct-part' : onlySet ? 'recheck-part' : 'sweep-part'
 console.log('=== 監査バッチ ===')
 console.log(`層: ${layer === 'correct' ? '正解・解説・設問文' : '誤答'}`)
 if (excludeRef) console.log(`除外: ${excludeRef} から変わった肢（監査済み）`)
