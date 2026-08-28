@@ -31,6 +31,16 @@ function reviewedEntries() {
   }))
 }
 
+function reviewedDifficulty() {
+  const src = readFileSync(LINT, 'utf8')
+  const block = src.match(/const REVIEWED_DIFFICULTY = \[([\s\S]*?)\n\]/)
+  if (!block) throw new Error('REVIEWED_DIFFICULTY が見つからない')
+  return [...block[1].matchAll(/\{\s*id: '([^']+)',\s*labeled: '([^']+)'/g)].map((m) => ({
+    id: m[1],
+    labeled: m[2],
+  }))
+}
+
 /** その設問で「誤答どうしだけ」が揃っている語尾の集合 */
 function distractorOnlyTails(quiz) {
   const tails = quiz.options.map((o) => o.text.slice(-TAIL_LEN))
@@ -71,6 +81,30 @@ describe('quiz-lint の精査済み抑制リスト', () => {
         '本文を書き換えたなら、その行を消してください。',
         '残しておくと「精査済み」の表示だけが生き残り、',
         '同じ設問に別の語尾の並びが生まれたとき見落とします。',
+      ].join('\n')
+    ).toEqual([])
+  })
+
+  it('難易度の抑制がすべて実在する（ラベルを付け替えたら残さない）', () => {
+    const dead = []
+    for (const { id, labeled } of reviewedDifficulty()) {
+      const quiz = byId.get(id)
+      if (!quiz) {
+        dead.push(`${id}: 設問そのものが存在しない`)
+      } else if (quiz.difficulty !== labeled) {
+        dead.push(`${id}: difficulty が "${labeled}" から "${quiz.difficulty}" に変わっている`)
+      }
+    }
+
+    expect(
+      dead,
+      [
+        '空振りしている難易度の抑制があります。',
+        ...dead.map((d) => `  - ${d}`),
+        '',
+        'ラベルを付け替えたなら、その行を消してください。',
+        '抑制は「このラベルで精査した」という記録なので、',
+        'ラベルが変われば判断ごと無効になります。',
       ].join('\n')
     ).toEqual([])
   })

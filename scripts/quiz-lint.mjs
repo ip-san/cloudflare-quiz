@@ -938,6 +938,32 @@ function assessComplexity(quiz) {
   return score
 }
 
+/**
+ * 精査して「ラベルのほうが正しい」と判断済みの設問。
+ *
+ * assessComplexity() は**設問文の言い回ししか見ない**。文の長さ、
+ * 「場合」「シナリオ」の有無、バッククォートの数で採点しているので、
+ * 「Cloudflareの Cache Reserve について正しい説明はどれですか？」のような
+ * 短く平易に書かれた設問は、扱っている概念がどれだけ高度でも beginner に落ちる。
+ * **話題の難しさは測っていない。**
+ *
+ * このコーパスの difficulty は話題基準で付いている（定義想起型23問は
+ * beginner 4 / intermediate 11 / advanced 8 に散らばっており、
+ * 設問の形ではなく扱う機能の高度さで分かれている）。
+ * したがってこの型の食い違いは構造的に出続ける。
+ *
+ * ラベル込みで記録してあるので、**難易度を付け替えれば再び挙がる**。
+ *
+ * 2026-08-28: parallel-distractor-tails で「正常3件に紛れて実害2件を
+ * まとめて切り捨てる」をやったので、こちらも同じ形で消し込む。
+ */
+const REVIEWED_DIFFICULTY = [
+  { id: 'dq-011', labeled: 'advanced', why: 'idFromName と newUniqueId の使い分けは DO の設計判断そのもの' },
+  { id: 'dq-012', labeled: 'advanced', why: 'バッチ内 ack の再配信セマンティクスは Queues の上級論点' },
+  { id: 'kv-017', labeled: 'advanced', why: 'Tiered Cache は階層構成を理解していないと答えられない' },
+  { id: 'kv-018', labeled: 'advanced', why: 'Cache Reserve は R2 上の永続層という実装まで問うている' },
+]
+
 function lintDifficulty(quizzes) {
   const issues = []
   const LEVEL_MAP = { beginner: 0, intermediate: 1, advanced: 2 }
@@ -955,6 +981,7 @@ function lintDifficulty(quizzes) {
 
     const gap = Math.abs(labeledLevel - expectedLevel)
     if (gap >= 2) {
+      if (REVIEWED_DIFFICULTY.some((r) => r.id === quiz.id && r.labeled === labeled)) continue
       issues.push({
         id: quiz.id,
         type: 'difficulty-mismatch',
