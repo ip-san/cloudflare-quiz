@@ -332,6 +332,7 @@ const VALID_DOC_PAGES = [
   'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared/tunnel-virtual-networks/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/dns/',
+  'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/protocols/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels/',
   'cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels/metrics/',

@@ -336,6 +336,10 @@ export const DOC_PAGES = [
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/cloudflared/tunnel-virtual-networks' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/dns' },
+  // tn-008 の bastion の定義がここにしか無い。routing-to-tunnel 本体は
+  // 「For a full list of supported service types, refer to Protocols for
+  // published applications」とこのページへ委譲している（2026-08-28）
+  { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/routing-to-tunnel/protocols' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels' },
   { name: 'cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-with-firewall' },
