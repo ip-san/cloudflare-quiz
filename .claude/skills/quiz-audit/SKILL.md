@@ -105,6 +105,27 @@ node scripts/quiz-audit.mjs <baseline> --json .claude/tmp/quiz-audit/changed.jso
 
 ---
 
+### 裏取りの落とし穴 — grep は行単位、docs は行をまたぐ
+
+**リードがエージェントの指摘を検証するときに2回踏んだ。**
+どちらも「docs にその記述は無い」と誤って結論しかけた:
+
+```
+wp-017  エージェントが引用: "connect() API to create outbound TCP Sockets"
+        grep → ヒット0件。**存在しない行を引用したと疑った**
+        実際は L25-26 に実在。docs がマークダウンのリンク直後で改行していた:
+            ...no longer be able to use the [`connect() API`](/workers/...)
+            to create outbound TCP Sockets.
+
+dn-004  "proxied records have a TTL of Auto" で grep → ヒット0件
+        実際は L20 に実在。あいだに <GlossaryTooltip> の記法が挟まっていた:
+            all <GlossaryTooltip term="proxy status" ...>proxied records</...> have a TTL of **Auto**
+```
+
+**短い語で grep して、周辺を目で読むこと。**
+文全体を検索語にすると、改行と記法の両方で外れる。
+外れたときに「記述が無い」と結論すると、**正しい指摘を却下する**。
+
 ## Phase 2: 適用
 
 ```bash
