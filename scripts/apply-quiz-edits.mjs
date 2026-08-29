@@ -152,11 +152,16 @@ for (const p of proposals) {
   results.push({ id: p.id, before, after, rankBefore, rankAfter: lengthRank(quiz), touchedOptionText })
 }
 
-console.log(`適用: ${applied}件の編集 / ${results.length}問  (skipped: ${skipped})`)
+// **エラーを先に出す。** 2026-08-29 に、ac-008 の hint 修正が
+// 「未知の field」で弾かれたのに、私が出力を `grep ... | head -3` で読んで
+// 成功行だけを見て通したことがある。パイプは終了コードも捨てるので
+// exit 1 も効かなかった。切り詰めて読まれても最初に目に入る位置へ移す。
 if (errors.length > 0) {
-  console.log(`\n⚠️  ${errors.length}件のエラー:`)
+  console.log(`⚠️  ${errors.length}件のエラー（適用されていません）:`)
   for (const e of errors) console.log(`  - ${e}`)
+  console.log('')
 }
+console.log(`適用: ${applied}件の編集 / ${results.length}問  (skipped: ${skipped}, エラー: ${errors.length})`)
 
 const lengthWork = results.filter((r) => r.touchedOptionText)
 const moved = lengthWork.filter((r) => r.rankAfter !== r.rankBefore)

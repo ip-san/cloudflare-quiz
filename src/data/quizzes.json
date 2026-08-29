@@ -21886,7 +21886,7 @@
       "id": "ac-008",
       "category": "zero-trust-access",
       "difficulty": "beginner",
-      "question": "Cloudflare AccessのRule group(ルールグループ)に関する正しい説明はどれですか？なお選択肢のIdP(Identity Provider)とはGoogle WorkspaceやOktaなど社員のログインを預かる認証サービス、サービストークンとはCI/CDなど人が操作しないシステムに配る認証情報です。",
+      "question": "Cloudflare AccessのRule group(ルールグループ)に関する正しい説明はどれですか？(IdP=Google WorkspaceやOktaなどの認証サービス、サービストークン=CI/CDなど人が操作しないシステムに配る認証情報)",
       "options": [
         {
           "text": "IPアドレスや個々のユーザー、IdPグループ、サービストークンなどの組み合わせを1か所にまとめ、複数のポリシーで再利用できるようにしたものであり、IdP側のグループ(Oktaグループなど)とは別物である"
@@ -21907,7 +21907,7 @@
       "correctIndex": 0,
       "explanation": "Rule groupは、IPアドレスや個々のユーザー、IdP(Identity Provider＝Google WorkspaceやOktaなど、社員のログインを預かる認証サービス)のグループ、サービストークンといった要素の組み合わせを1か所にまとめ、複数のAccessポリシーで再利用できるようにしたものです。IdP側のグループ(Oktaグループなど)とは異なる、Access独自の概念です。IPアドレスベースのルールなど、変更が発生しやすい条件をRule groupに集約しておくと、修正箇所を1か所に絞れます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/groups/",
-      "hint": "「複数のポリシーで何度も同じ条件を書くのを避けるため、部品化しておく」という発想を考えましょう。なお、IdP(Identity Provider)とは、Google WorkspaceやOktaなど、社員のログインを預かる認証サービスのことです。",
+      "hint": "「複数のポリシーで何度も同じ条件を書くのを避けるため、部品化しておく」という発想を考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
