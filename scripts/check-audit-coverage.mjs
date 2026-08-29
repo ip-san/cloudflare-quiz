@@ -35,8 +35,9 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
 
-// 誤答の掃引（H系・M2）と、正解・解説の掃引（C系）の両方を受ける
-const VALID = new Set(['H1', 'H2', 'H3', 'M2', 'C1', 'C2', 'C3', 'C4', 'C5', 'ok', 'unclear'])
+// 誤答の掃引(H系・M2)、正解・解説の掃引(C系)、図の掃引(D系) を受ける。
+// 2026-08-29 に D 系を足し忘れて、正常な提出を「被覆不足」と誤判定した
+const VALID = new Set(['H1', 'H2', 'H3', 'M2', 'C1', 'C2', 'C3', 'C4', 'C5', 'D1', 'D2', 'D3', 'D4', 'ok', 'unclear'])
 
 /** 「見つからなかった」系の記述は理由として認めない */
 const NON_REASONS = [/見つからな/, /記載が?な(い|かった)/, /確認できな/, /該当.*な(い|し)/, /探した/]

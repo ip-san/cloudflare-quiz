@@ -1186,7 +1186,7 @@
             },
             {
               "type": "response",
-              "text": "Published my-worker (0.45 sec)"
+              "text": "Deployed my-worker triggers (0.45 sec)"
             },
             {
               "type": "info",
@@ -31191,7 +31191,7 @@
               "heading": "バックエンドへ転送",
               "items": [
                 "http / https",
-                "tcp / ssh / rdp",
+                "tcp / ssh / rdp / smb",
                 "unix / unix+tls"
               ]
             },
