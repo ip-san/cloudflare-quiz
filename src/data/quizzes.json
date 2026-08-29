@@ -11948,7 +11948,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Hyperdriveは単に `SELECT` か `INSERT` かを見るだけでなく、データベースのワイヤプロトコルを解析して、変更を伴うクエリか読み取り専用かを判別します。読み取り専用クエリだけが設定された `max_age` の間キャッシュされ、書き込みや揮発性関数を含むクエリはキャッシュされません。\n{{diagram:0}}\nこの仕組みはデフォルトで有効なので、人気のあるクエリはデータベースへの往復なしで応答できます。",
+      "explanation": "Hyperdriveは単に `SELECT` か `INSERT` かを見るだけでなく、データベースのワイヤプロトコルを解析して、変更を伴うクエリか読み取り専用かを判別します。読み取り専用クエリだけが設定された `max_age` の間キャッシュされ、書き込みや、PostgreSQLが揮発性(volatile)・安定(stable)と分類する関数を含むクエリはキャッシュされません。`NOW()` は stable なのでキャッシュ対象外です。\n{{diagram:0}}\nこの仕組みはデフォルトで有効なので、人気のあるクエリはデータベースへの往復なしで応答できます。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/concepts/query-caching/",
       "hint": "キャッシュして安全なのは「実行しても状態が変わらない」クエリだけです。",
       "tags": [
@@ -15008,7 +15008,7 @@
       "question": "Container対応Workerで`wrangler deploy`を実行したときの流れとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Dockerでイメージをビルドし、Cloudflareのコンテナイメージレジストリへプッシュしたうえで、Workerをデプロイしてインスタンス起動の準備をする"
+          "text": "Workerをアップロードして有効化したうえで、Dockerでイメージをビルドしてコンテナイメージレジストリへプッシュし、インスタンスへのロールアウトを開始する"
         },
         {
           "text": "`image`にDockerfileへのパスを指定していてもコンテナイメージのビルドは行われず、事前にDocker Hubへ手動でプッシュしておいたイメージを参照するだけでよい",
@@ -15024,7 +15024,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`wrangler deploy`を実行すると、Dockerを使ってコンテナイメージがビルドされ、Cloudflareのコンテナイメージレジストリへプッシュされたうえで、Workerがデプロイされ、コンテナインスタンスを起動できる状態にネットワーク側が準備されます。初回デプロイ後は準備が完了するまで数分かかり、その間コンテナへの呼び出しはエラーになります。\n{{diagram:0}}\n2回目以降のデプロイはDockerのキャッシュ済みレイヤーを再利用するため高速です。",
+      "explanation": "`wrangler deploy`を実行すると、まず新しいWorkerバージョンがアップロードされて有効化され、続いてDockerでコンテナイメージがビルドされてCloudflareのコンテナイメージレジストリへプッシュされ、最後にコンテナインスタンスへのロールアウトが始まります。Worker本体はイメージとロールアウトの手順が始まる前に有効になっているため、ロールアウトが終わるまでは新しいWorkerコードが旧イメージのインスタンスへ届く時間帯が生じます。初回デプロイ後は準備が完了するまで数分かかり、その間コンテナへの呼び出しはエラーになります。\n{{diagram:0}}\n2回目以降のデプロイはDockerのキャッシュ済みレイヤーを再利用するため高速です。",
       "referenceUrl": "https://developers.cloudflare.com/containers/get-started/",
       "hint": "普段のWorkerデプロイと違い、イメージという「もう1つの成果物」をどこかに送る手順が挟まることを考えましょう。",
       "tags": [
@@ -40428,7 +40428,7 @@
           "nodes": [
             {
               "id": "spectrum_http",
-              "text": "SpectrumHTTP/HTTPSアプリ"
+              "text": "Spectrum HTTP/HTTPSアプリ"
             },
             {
               "id": "l7",
@@ -40440,7 +40440,7 @@
             },
             {
               "id": "spectrum_tcp",
-              "text": "SpectrumTCPアプリ"
+              "text": "Spectrum TCPアプリ"
             },
             {
               "id": "lb",
