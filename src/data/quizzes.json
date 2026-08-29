@@ -1473,11 +1473,15 @@
             },
             {
               "type": "response",
-              "text": "Uploaded my-worker (production) (1.10 sec)"
+              "text": "Uploaded my-worker-production"
             },
             {
               "type": "response",
-              "text": "Published my-worker (production)"
+              "text": "Deployed my-worker-production triggers"
+            },
+            {
+              "type": "info",
+              "text": "→ 環境ごとに<Worker名>-<環境名>のWorkerが作られる"
             }
           ]
         }
@@ -5052,8 +5056,8 @@
             {
               "heading": "従来のKV-backed",
               "items": [
-                "KV APIのみ",
-                "PITR等の機能なし"
+                "非同期KV API（同期KV APIなし）",
+                "SQL API・PITRは非対応"
               ]
             }
           ]
@@ -6751,13 +6755,13 @@
             {
               "from": 3,
               "to": 1,
-              "text": "関連文書ID/metadataを返却",
+              "text": "類似文書のID/metadataを返却",
               "dashed": true
             },
             {
               "from": 1,
               "to": 2,
-              "text": "文書をコンテキストに回答生成を依頼"
+              "text": "IDで引いた本文をコンテキストに回答生成を依頼"
             },
             {
               "from": 2,
@@ -7496,11 +7500,11 @@
             },
             {
               "text": "各拠点のマシン",
-              "sub": "複数のWorkerランタイムをホスト"
+              "sub": "Workersランタイムのインスタンスをホスト"
             },
             {
               "text": "V8 isolate",
-              "sub": "リクエストごとの軽量な実行コンテキスト"
+              "sub": "複数のリクエストを処理する軽量な実行コンテキスト"
             }
           ]
         }
@@ -11963,7 +11967,7 @@
               "heading": "対象外",
               "items": [
                 "INSERT / UPDATE などの書き込み",
-                "volatile関数を含むクエリ"
+                "volatile/stable関数(NOW()等)を含むクエリ"
               ]
             }
           ]
@@ -15029,14 +15033,14 @@
           "label": "wrangler deploy の流れ",
           "steps": [
             {
+              "text": "Workerをアップロードして有効化"
+            },
+            {
               "text": "Dockerでイメージをビルド"
             },
             {
               "text": "レジストリへプッシュ",
               "sub": "Cloudflareのコンテナレジストリ"
-            },
-            {
-              "text": "Workerをデプロイ"
             },
             {
               "text": "起動準備完了まで数分待機"
@@ -28751,6 +28755,9 @@
               "text": "ネームサーバーをCloudflareへ切り替え"
             },
             {
+              "text": "古いNSレコードのTTL失効を待つ"
+            },
+            {
               "text": "DNSSECを有効化し新DSレコードを追加"
             }
           ]
@@ -36154,13 +36161,15 @@
       "diagrams": [
         {
           "type": "flow",
-          "label": "修復ステータスの流れ",
+          "label": "修復ステータスの流れ(全6種)",
           "steps": [
             {
-              "text": "Pending(修復予定)"
+              "text": "Pending(修復予定)",
+              "sub": "権限不足ならRejected"
             },
             {
-              "text": "Processing(修復実行中)"
+              "text": "Processing(修復実行中)",
+              "sub": "失敗ならFailed"
             },
             {
               "text": "Validating(解決の確認待ち)"
@@ -37096,7 +37105,7 @@
       "diagrams": [
         {
           "type": "formula",
-          "label": "SLOの計算式",
+          "label": "SLOの計算式(比率を100倍して%で表す)",
           "result": "SLO(%)",
           "components": [
             {
@@ -37107,7 +37116,7 @@
               "text": "有効なイベント数"
             }
           ],
-          "operator": "÷ × 100"
+          "operator": "÷"
         }
       ]
     },
@@ -43428,7 +43437,7 @@
           "label": "AgentからMCPサーバーのツールを使うまでの流れ",
           "steps": [
             {
-              "text": "`addMcpServer(serverUrl)`で外部のMCPサーバーに接続"
+              "text": "`addMcpServer(name, serverUrl)`で外部のMCPサーバーに接続"
             },
             {
               "text": "接続先が公開するツールを検出",
