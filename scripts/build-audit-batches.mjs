@@ -62,6 +62,25 @@ let limbTotal = 0
 for (const quiz of quizzes) {
   if (quiz.type === 'multi') continue
 
+  if (layer === 'diagram') {
+    // 図は 876枚 / 756問。**一度も系統的に監査していない層**（2026-08-29 時点）。
+    // sp-002 の FID、pg-007 の OpenNext はどちらも図に残った古い記述で、
+    // どちらも別件の作業中に偶然見つかった。図は画面に出るので実害が大きい。
+    if (!quiz.diagrams?.length) continue
+    limbTotal += quiz.diagrams.length
+    items.push({
+      id: quiz.id,
+      category: quiz.category,
+      difficulty: quiz.difficulty,
+      referenceUrl: quiz.referenceUrl ?? null,
+      question: quiz.question,
+      correctText: quiz.options[quiz.correctIndex].text,
+      explanation: quiz.explanation ?? null,
+      targets: quiz.diagrams.map((d, i) => ({ optionIndex: i, diagram: d })),
+    })
+    continue
+  }
+
   if (layer === 'correct') {
     // 正解・解説・設問文。1問=1単位として数える（誤答のように肢に割れない）
     limbTotal += 1
@@ -122,10 +141,11 @@ for (const it of items) {
 }
 
 mkdirSync(resolve(ROOT, outDir), { recursive: true })
-const unit = layer === 'correct' ? '問' : '肢'
-const prefix = layer === 'correct' ? 'correct-part' : onlySet ? 'recheck-part' : 'sweep-part'
+const unit = layer === 'correct' ? '問' : layer === 'diagram' ? '枚' : '肢'
+const prefix =
+  layer === 'correct' ? 'correct-part' : layer === 'diagram' ? 'diagram-part' : onlySet ? 'recheck-part' : 'sweep-part'
 console.log('=== 監査バッチ ===')
-console.log(`層: ${layer === 'correct' ? '正解・解説・設問文' : '誤答'}`)
+console.log(`層: ${layer === 'correct' ? '正解・解説・設問文' : layer === 'diagram' ? '図' : '誤答'}`)
 if (excludeRef) console.log(`除外: ${excludeRef} から変わった肢（監査済み）`)
 console.log(`対象: ${limbTotal}${unit} / ${items.length}問 → ${parts}分割`)
 console.log('')
