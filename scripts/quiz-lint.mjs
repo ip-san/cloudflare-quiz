@@ -591,6 +591,80 @@ function lintParallelDistractorTails(quiz) {
   return issues
 }
 
+/**
+ * ヒントが答えそのものを述べていないかを見る。
+ *
+ * ヒントは「どう考えるか」を示すもので、「何が答えか」を述べたら
+ * 設問が成立しない。2026-08-29 に初めて機械で見たところ2件見つかった:
+ *
+ * ```
+ * at-006  設問「validateStateChange() の用途は？」
+ *         ヒント「「保存される前」に実行され、throwすると更新そのものを止められます。」
+ *         → 正解肢「永続化・ブロードキャストの前に同期実行され、throwで拒否できる」
+ *           ヒントを読むだけで、知識なしに正解を選べる
+ * at-007  ヒント「テンプレートリテラルの`${}`部分は自動的にプレースホルダとしてバインドされます。」
+ *         → 正解肢の内容そのもの。しかも誤答3「文字列連結を使う必要がある」を直接否定している
+ * ```
+ *
+ * ### 検出規則を絞った経緯（素朴にやると使えない）
+ *
+ * 「ヒントに正解だけの語が出る」だけでは **23件**挙がり、大半が正常だった。
+ * ヒントが正解の論点に触れるのは**当然**だからだ
+ * （`ar-002` の「CPUを使い切っている処理」など）。そこで2つ足した:
+ *
+ * 1. **問いかけで終わるヒントは除く。** `ましょう` `ください` `でしょうか`
+ *    `注目です` `ポイントです` は読み手に判断を委ねている
+ * 2. **対比を示すヒントは除く。** 「AとBは別物です」「違いを意識」は
+ *    論点の軸を示しているだけで、どちらが答えかを述べていない
+ *
+ * 23件 → 2件になり、その2件が実際の欠陥だった。
+ * ただし**この2件で調整した規則**なので、正常なヒントを挙げることは今後ありうる。
+ * その場合は REVIEWED_HINTS に理由つきで記録すること（空振り検知テスト付き）。
+ */
+const HINT_TOKEN = /`[^`]+`|\b[A-Za-z][A-Za-z0-9._-]{2,}\b|\b(?:D1|R2|KV|DO|AI)\b/g
+/** 読み手に判断を委ねる形 */
+const HINT_ASKS = /ましょう|ください|でしょうか|注目です|ポイントです/
+/** 「どちらが答えか」ではなく「論点の軸」を示している形 */
+const HINT_CONTRASTS = /別物|別の話|違い|区別|対照|分かれます|どちら/
+
+/** 精査して「正常」と判断済みのヒント。本文が変われば再び挙がる */
+const REVIEWED_HINTS = []
+
+function hintTokens(text) {
+  return new Set((text ?? '').match(HINT_TOKEN)?.map((t) => t.replace(/`/g, '')) ?? [])
+}
+
+function lintHintGiveaway(quiz) {
+  if (!quiz.hint || quiz.type === 'multi') return []
+  if (HINT_ASKS.test(quiz.hint) || HINT_CONTRASTS.test(quiz.hint)) return []
+
+  const inHint = hintTokens(quiz.hint)
+  if (!inHint.size) return []
+  const correct = hintTokens(quiz.options[quiz.correctIndex].text)
+  const question = hintTokens(quiz.question)
+  const others = new Set()
+  quiz.options.forEach((o, i) => {
+    if (i === quiz.correctIndex) return
+    for (const t of hintTokens(o.text)) others.add(t)
+  })
+  // 設問にも他の肢にも無く、正解にだけある語をヒントが名指ししている
+  const leaked = [...inHint].filter((t) => correct.has(t) && !question.has(t) && !others.has(t))
+  if (!leaked.length) return []
+  if (REVIEWED_HINTS.some((r) => r.id === quiz.id && r.hint === quiz.hint)) return []
+
+  return [
+    {
+      id: quiz.id,
+      type: 'hint-gives-away-answer',
+      field: 'hint',
+      value: leaked.join(' '),
+      message:
+        `ヒントが正解にしか無い「${leaked.join(' ')}」を断定の形で述べている — ` +
+        `ヒントは「どう考えるか」を示すもので、「何が答えか」を述べたら設問が成立しない`,
+    },
+  ]
+}
+
 function lintRawMarkdown(quiz) {
   const layers = { question: quiz.question, hint: quiz.hint, explanation: quiz.explanation }
   quiz.options.forEach((o, i) => {
@@ -624,6 +698,7 @@ function lintQuality(quizzes) {
     issues.push(...lintRawMarkdown(quiz))
     issues.push(...lintSelfLabeling(quiz))
     issues.push(...lintParallelDistractorTails(quiz))
+    issues.push(...lintHintGiveaway(quiz))
     const correctSet = quiz.type === 'multi' ? new Set(quiz.correctIndices || []) : new Set([quiz.correctIndex])
 
     quiz.options.forEach((opt, i) => {

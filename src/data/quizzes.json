@@ -42767,7 +42767,7 @@
       "correctIndex": 2,
       "explanation": "`validateStateChange(nextState, source)`は、状態の永続化・ブロードキャストが行われる前に同期的に呼ばれます。内部でエラーをthrowすると、その状態更新は拒否され、SQLiteへの保存やクライアントへのブロードキャストは行われません。\n{{diagram:0}}\n不正な値(例: スコアが負の数)を弾くバリデーションロジックの実装に使います。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
-      "hint": "「保存される前」に実行され、throwすると更新そのものを止められます。",
+      "hint": "メソッド名の`validate`と、引数が`nextState`(これから保存しようとしている状態)であることに注目しましょう。呼ばれるのは保存の前でしょうか、後でしょうか。",
       "tags": [
         "agents",
         "topic-state"
@@ -42832,7 +42832,7 @@
       "correctIndex": 0,
       "explanation": "`this.sql`は、各Agentインスタンスに個別に組み込まれたSQLiteデータベースへアクセスするためのAPIです。タグ付きテンプレートリテラルとして呼び出し、`${}`内の値はプレースホルダとして安全にバインドされます。\n{{diagram:0}}\n`this.state`とは別に、メッセージ履歴のような大きなデータの保存先として使うことが推奨されています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
-      "hint": "テンプレートリテラルの`${}`部分は自動的にプレースホルダとしてバインドされます。",
+      "hint": "SQLに値を埋め込むとき、文字列を自分で連結する書き方とプレースホルダに任せる書き方があります。`this.sql`がどちらの流儀かを考えましょう。",
       "tags": [
         "agents",
         "topic-sql"

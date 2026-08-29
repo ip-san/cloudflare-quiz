@@ -14,7 +14,7 @@
  *      "edits": [{ "field": "option.3", "value": "新しい本文" }],
  *      "skipped": false }]
  *
- * field: option.N | wrongFeedback.N | explanation | question | referenceUrl
+ * field: option.N | wrongFeedback.N | explanation | question | hint | referenceUrl
  */
 
 import { readFileSync, writeFileSync } from 'fs'
@@ -102,6 +102,15 @@ for (const p of proposals) {
         continue
       }
       quiz.referenceUrl = value
+    } else if (field === 'hint') {
+      // ヒントも監査の対象層になった（2026-08-29、ヒントが答えを述べている
+      // at-006 / at-007 を機械で検出したのがきっかけ）。それまで apply が
+      // hint を受け付けず、**修正案を作っても適用できなかった**
+      if (typeof value !== 'string' || value.trim() === '') {
+        errors.push(`${p.id}: hint が空`)
+        continue
+      }
+      quiz.hint = value
     } else if (field === 'explanation' || field === 'question') {
       // 図マーカーの扱い:
       // - 既存マーカーの削除は拒否する（解説の途中にあった図が消えてしまう）
