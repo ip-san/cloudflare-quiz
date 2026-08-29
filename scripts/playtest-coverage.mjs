@@ -18,6 +18,7 @@
  *     → 1問をテスト済みに記録
  *   node scripts/playtest-coverage.mjs mark-batch <file.json>
  *     → [{id, persona, outcome}] の配列をまとめて記録
+ *   node scripts/playtest-coverage.mjs retest [N] [persona]   # 内容が変わった問題を再テストへ流す
  *   node scripts/playtest-coverage.mjs stale [persona]
  *     → テスト後に中身が変わった問題を ?q= ディープリンク付きで出力（再テスト対象）
  */
@@ -170,6 +171,64 @@ function cmdStale(quizzes, store, persona) {
   )
 }
 
+/**
+ * 再テストが要る問題を `next` と同じ形で出す。
+ *
+ * `stale` は一覧するだけで、`next` は**未テスト問題しか選ばない**。
+ * そのため「テスト済みだが内容が変わった」問題は、
+ * 一覧に出続けるのに**プレイテストへ流す手段が無かった**（2026-08-29 に判明）。
+ * SKILL.md が言う「1周したら維持モードへ移行する」の維持モードが、
+ * コマンドとして存在していなかった。
+ *
+ * 出力を `next` と同じ形にしてあるのは、
+ * user-simulator へ渡すプロンプトの組み立てを変えずに済ませるため。
+ */
+function cmdRetest(quizzes, store, n, persona) {
+  const all = staleEntries(quizzes, store)
+  const rows = persona ? all.filter((r) => r.persona === persona) : all
+  if (!rows.length) {
+    console.log(JSON.stringify({ persona: null, count: 0, ids: [], deepLinks: [], remainingForPersona: 0 }, null, 2))
+    return
+  }
+  // 件数の多いペルソナから片付ける（next の pickPersona と同じ考え方）
+  const byPersona = {}
+  const orphaned = []
+  const diffOf = new Map(quizzes.map((q) => [q.id, q.difficulty]))
+  for (const r of rows) {
+    // 記録した後で difficulty が変わった問題は、そのペルソナで再プレイしても
+    // 進捗の分母に入らない（recordOne が警告する事故と同じ）。担当替えが要る
+    if (!PERSONA_DIFFICULTY[r.persona].includes(diffOf.get(r.id))) {
+      orphaned.push({ id: r.id, persona: r.persona, nowDifficulty: diffOf.get(r.id) })
+      continue
+    }
+    if (!byPersona[r.persona]) byPersona[r.persona] = []
+    byPersona[r.persona].push(r.id)
+  }
+  if (Object.keys(byPersona).length === 0) {
+    console.log(JSON.stringify({ persona: null, count: 0, ids: [], deepLinks: [], orphaned }, null, 2))
+    return
+  }
+  const p = persona ?? Object.entries(byPersona).sort((a, b) => b[1].length - a[1].length)[0][0]
+  const ids = [...new Set(byPersona[p] ?? [])].sort().slice(0, n)
+  console.log(
+    JSON.stringify(
+      {
+        persona: p,
+        count: ids.length,
+        ids,
+        deepLinks: ids.map((id) => `${BASE_URL}?q=${id}`),
+        remainingForPersona: (byPersona[p] ?? []).length,
+        // difficulty が変わってそのペルソナでは進捗に入らないもの
+        orphaned,
+        // 再テストなので、記録は上書きになる（mark-batch が同じ persona の行を差し替える）
+        mode: 'retest',
+      },
+      null,
+      2
+    )
+  )
+}
+
 function cmdNext(quizzes, store, n, persona) {
   const p = persona && PERSONAS.includes(persona) ? persona : pickPersona(quizzes, store)
   const ids = uncoveredFor(quizzes, store, p)
@@ -220,6 +279,9 @@ function main() {
     case 'next':
       cmdNext(quizzes, store, Number(a) || 5, b)
       break
+    case 'retest':
+      cmdRetest(quizzes, store, Number(process.argv[3]) || 5, process.argv[4])
+      break
     case 'stale':
       cmdStale(quizzes, store, a)
       break
@@ -260,7 +322,7 @@ function main() {
     }
     default:
       console.log(
-        'Usage: playtest-coverage.mjs <status|next [N] [persona]|stale [persona]|mark <id> <persona> <clean|friction>|mark-batch <file>>'
+        'Usage: playtest-coverage.mjs <status|next [N] [persona]|retest [N] [persona]|stale [persona]|mark <id> <persona> <clean|friction>|mark-batch <file>>'
       )
       process.exit(1)
   }
