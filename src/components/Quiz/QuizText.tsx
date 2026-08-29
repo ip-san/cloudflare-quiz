@@ -13,10 +13,21 @@ interface QuizTextProps {
  * Renders quiz text with:
  * - \n → line breaks
  * - `code` → <code> inline code elements (optionally animated)
+ * - a line starting with 「※」 → rendered as a muted, smaller note
+ *
+ * The note styling exists because glosses were being skimmed past. On
+ * 2026-08-29 a beginner playtester reported that the term glosses appended to
+ * ac-008's question "look exactly like the question text, so I braced myself
+ * thinking they were more conditions I had to remember". The gloss had in fact
+ * been added *because* an earlier tester missed the term — so the content fix
+ * was being defeated by the rendering. A note has to look like a note.
  */
 export function QuizText({ text, className, animated, animationDelay = 0 }: QuizTextProps) {
   return <span className={className}>{parseQuizText(text, animated, animationDelay)}</span>
 }
+
+/** 行頭の「※」は注記の合図 */
+const NOTE_LINE = /^\s*※/
 
 function parseQuizText(text: string, animated?: boolean, baseDelay?: number): ReactNode[] {
   const lines = text.split('\n')
@@ -28,7 +39,16 @@ function parseQuizText(text: string, animated?: boolean, baseDelay?: number): Re
       result.push(<br key={`br-${i}`} />)
     }
     const { nodes, codeCount } = parseInlineCode(lines[i], animated, baseDelay, codeIndex)
-    result.push(<Fragment key={`line-${i}`}>{nodes}</Fragment>)
+    // 「※」で始まる行は注記。本文と同じ見た目だと注記だと分からず読み飛ばされる
+    if (NOTE_LINE.test(lines[i])) {
+      result.push(
+        <span key={`line-${i}`} className="text-[0.9em] text-stone-500 dark:text-stone-400">
+          {nodes}
+        </span>
+      )
+    } else {
+      result.push(<Fragment key={`line-${i}`}>{nodes}</Fragment>)
+    }
     codeIndex += codeCount
   }
 

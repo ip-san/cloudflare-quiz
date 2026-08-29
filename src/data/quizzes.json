@@ -21594,7 +21594,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Accessのポリシーは、何が起きるかを決めるAction(Allow・Block・Bypass・Service Auth)、条件の組み合わせ方を決めるRule type(Include・Require・Exclude)、判定に使う属性であるSelector(メールアドレス・国・デバイス状態など)、そしてその具体的な値であるValuesという4つの要素で構成されます。\n{{diagram:0}}",
+      "explanation": "Cloudflare Accessのポリシーは、何が起きるかを決めるAction、条件の組み合わせ方を決めるRule type(Include・Require・Exclude)、判定に使う属性であるSelector(メールアドレス・国・デバイス状態など)、そしてその具体的な値であるValuesという4つの要素で構成されます。\nActionには4種類あります。Allowは条件を満たしたら通し、Blockは拒否します。BypassはAccessの制御そのものを外すもので、ログも残りません。Service Authは、IdPへのログインを求めない代わりにサービストークンや相互TLSで認証させるもので、Bypassと違って制御とログを維持できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
       "hint": "「何をするか」「どう組み合わせるか」「何を見るか」「どんな値か」という4つの問いに答える形を考えましょう。",
       "tags": [
@@ -21886,7 +21886,7 @@
       "id": "ac-008",
       "category": "zero-trust-access",
       "difficulty": "beginner",
-      "question": "Cloudflare AccessのRule group(ルールグループ)に関する正しい説明はどれですか？(IdP=Google WorkspaceやOktaなどの認証サービス、サービストークン=CI/CDなど人が操作しないシステムに配る認証情報)",
+      "question": "Cloudflare AccessのRule group(ルールグループ)に関する正しい説明はどれですか？\n※ IdP＝Google WorkspaceやOktaなどの認証サービス。サービストークン＝CI/CDなど人が操作しないシステムに配る認証情報。",
       "options": [
         {
           "text": "IPアドレスや個々のユーザー、IdPグループ、サービストークンなどの組み合わせを1か所にまとめ、複数のポリシーで再利用できるようにしたものであり、IdP側のグループ(Oktaグループなど)とは別物である"
