@@ -67,7 +67,12 @@ for (const quiz of quizzes) {
     // sp-002 の FID、pg-007 の OpenNext はどちらも図に残った古い記述で、
     // どちらも別件の作業中に偶然見つかった。図は画面に出るので実害が大きい。
     if (!quiz.diagrams?.length) continue
-    limbTotal += quiz.diagrams.length
+    // --only で「まだ監査していない図」だけに絞れる（誤答層と同じキー形式 id:N）
+    const picked = quiz.diagrams
+      .map((d, i) => ({ optionIndex: i, diagram: d }))
+      .filter((t) => !onlySet || onlySet.has(`${quiz.id}:${t.optionIndex}`))
+    if (picked.length === 0) continue
+    limbTotal += picked.length
     items.push({
       id: quiz.id,
       category: quiz.category,
@@ -76,7 +81,7 @@ for (const quiz of quizzes) {
       question: quiz.question,
       correctText: quiz.options[quiz.correctIndex].text,
       explanation: quiz.explanation ?? null,
-      targets: quiz.diagrams.map((d, i) => ({ optionIndex: i, diagram: d })),
+      targets: picked,
     })
     continue
   }
