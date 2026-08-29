@@ -1398,11 +1398,15 @@
             },
             {
               "type": "response",
-              "text": "⎔ Starting remote server on Cloudflare's network..."
+              "text": "⎔ Starting remote preview..."
             },
             {
               "type": "response",
-              "text": "Ready on http://localhost:8787 (proxied to Cloudflare)"
+              "text": "Total Upload: 24.96 KiB / gzip: 6.17 KiB"
+            },
+            {
+              "type": "response",
+              "text": "[wrangler:info] Ready on http://localhost:8787"
             }
           ]
         }
@@ -2779,12 +2783,12 @@
               "sub": "→ 常にキャッシュされない"
             },
             {
-              "text": "Cache-Controlがno-store/private/no-cache/max-age=0",
+              "text": "Cache-Controlがキャッシュを禁じている/レスポンスが大きすぎる",
               "sub": "→ put()が413エラーを返す"
             },
             {
               "text": "GET以外のメソッドや206 Partial Content等",
-              "sub": "→ キャッシュ対象外"
+              "sub": "→ put()がエラーをthrowする"
             },
             {
               "text": "上記に該当しなければ正常にキャッシュされる"
@@ -9854,11 +9858,11 @@
               "text": "get(key, options)を呼び出す"
             },
             {
-              "text": "options.onlyIf: { etag } でETagを指定",
+              "text": "options.onlyIf: { etagMatches } でETagを指定",
               "sub": "条件付きリクエスト"
             },
             {
-              "text": "ETag一致 → オブジェクトを返す / 不一致 → null"
+              "text": "条件成立→本文を返す / 不成立→本文なし(body未定義)"
             }
           ]
         },
@@ -15319,14 +15323,15 @@
               "text": "Workerコードは即座に更新"
             },
             {
-              "text": "1段階目: 10%のインスタンスを更新"
+              "text": "1段階目: 10%のインスタンスを置き換え",
+              "sub": "対象ごとにSIGTERM→15分後にSIGKILL"
             },
             {
-              "text": "SIGTERM送信",
-              "sub": "15分の猶予"
+              "text": "2段階目: 100%まで置き換え",
+              "sub": "各インスタンスで同じ停止手順"
             },
             {
-              "text": "2段階目: 残り90%を更新"
+              "text": "max_instancesが2未満なら単発の100%"
             }
           ]
         }
@@ -22069,7 +22074,7 @@
       "diagrams": [
         {
           "type": "sequence",
-          "label": "サービストークンでの初回認証",
+          "label": "サービストークンでの認証",
           "actors": [
             "自動化システム",
             "Cloudflare Access"
@@ -22078,12 +22083,12 @@
             {
               "from": 0,
               "to": 1,
-              "text": "CF-Access-Client-Id/Secretヘッダー"
+              "text": "毎リクエストにCF-Access-Client-Id/Secretヘッダー"
             },
             {
               "from": 1,
               "to": 0,
-              "text": "CF_Authorizationクッキー(JWT＝JSON Web Token)を発行"
+              "text": "Service Authポリシーに一致→IdPログインなしで通過"
             }
           ]
         }
@@ -25215,6 +25220,13 @@
               ]
             },
             {
+              "heading": "Enterprise(API Shieldなし)",
+              "items": [
+                "Log/Block選択可",
+                "3,000エンドポイント"
+              ]
+            },
+            {
               "heading": "Enterprise(API Shieldあり)",
               "items": [
                 "Log/Block選択可",
@@ -26659,6 +26671,9 @@
               "text": "Originヘッダー"
             },
             {
+              "text": "メソッドオーバーライド関連ヘッダー"
+            },
+            {
               "text": "一部のルーティング関連ヘッダー"
             }
           ]
@@ -26701,16 +26716,20 @@
           "label": "クエリ文字列の設定選択肢",
           "items": [
             {
-              "text": "すべて含める"
+              "text": "すべて含める",
+              "sub": "Enterprise限定"
             },
             {
-              "text": "特定を除いてすべて含める(Enterprise)"
+              "text": "特定を除いてすべて含める",
+              "sub": "Enterprise限定"
             },
             {
-              "text": "特定のみ含める(Enterprise)"
+              "text": "特定のみ含める",
+              "sub": "Enterprise限定"
             },
             {
-              "text": "クエリ文字列を無視する"
+              "text": "クエリ文字列を無視する",
+              "sub": "Enterpriseに加え従量課金プランでも可"
             }
           ]
         }
@@ -29972,7 +29991,7 @@
               "text": "RUMが自動的に有効化"
             },
             {
-              "text": "EUトラフィックはデフォルトで除外"
+              "text": "EEA/UK/スイスのトラフィックはデフォルトで除外"
             },
             {
               "text": "必要に応じてオフへ切り替え可能"
@@ -32228,14 +32247,15 @@
               "heading": "Free/Pro",
               "items": [
                 "スクリプトモニタリングのみ",
+                "接続モニタリングはBusiness以上",
                 "ドメインベース脅威インテリジェンス(全顧客共通)"
               ]
             },
             {
               "heading": "Client-Side Security Advanced",
               "items": [
-                "接続モニタリング",
-                "悪性スクリプト検知・URLベース脅威インテリジェンス",
+                "悪性スクリプト検知・悪性接続検知",
+                "URLベース脅威インテリジェンス",
                 "コンテンツセキュリティルール"
               ]
             }
@@ -32834,7 +32854,8 @@
           "rows": [
             "Cloudflare One Client(WARP)",
             "DNSリゾルバ設定",
-            "PACファイル(プロキシ)"
+            "PACファイル(プロキシ)",
+            "ネットワークトンネル(IPsec/GRE)"
           ],
           "cols": [
             "DNS",
@@ -32856,6 +32877,11 @@
               "No",
               "No",
               "Yes(ブラウザのみ)"
+            ],
+            [
+              "Yes",
+              "Yes",
+              "Yes"
             ]
           ]
         }
@@ -33111,6 +33137,7 @@
               "heading": "TLS復号と非互換",
               "items": [
                 "証明書ピニング",
+                "自己署名証明書",
                 "mTLS(相互TLS認証)",
                 "ESNI/ECH"
               ]
@@ -36581,7 +36608,8 @@
           "label": "誤検知への対応フロー",
           "steps": [
             {
-              "text": "SaaSプラットフォーム側の実際の状態を確認"
+              "text": "findingの証拠(evidence)を精査",
+              "sub": "SaaS側の表示は正確とは限らない"
             },
             {
               "text": "finding IDを添えてサポートへ報告"
@@ -37910,6 +37938,9 @@
               "text": "Bulk(グレイメール)"
             },
             {
+              "text": "Suspicious(フィッシングの疑いで分析中)"
+            },
+            {
               "text": "Clean(フィッシング関連なし)"
             }
           ]
@@ -38204,13 +38235,14 @@
               "heading": "安定",
               "items": [
                 "Outlook Webアプリ",
-                "新しいOutlookデスクトップ"
+                "新しいOutlookデスクトップ(Windows)"
               ]
             },
             {
               "heading": "不安定・非対応",
               "items": [
                 "旧Outlookデスクトップ(非対応)",
+                "macOSデスクトップ(スキャンが遅延)",
                 "iOS/Androidモバイル(不安定)"
               ]
             }
@@ -41805,14 +41837,14 @@
           "filepath": "consent-cookie (JSON)",
           "lines": [
             {
-              "text": "{ \"analytics\": true,",
+              "text": "{ \"<purpose-id-1>\": true,",
               "highlight": true
             },
             {
-              "text": "  \"advertising\": false,"
+              "text": "  \"<purpose-id-2>\": false }"
             },
             {
-              "text": "  \"marketing\": undefined }"
+              "text": "未選択のPurposeはキー自体が現れない"
             }
           ]
         }
