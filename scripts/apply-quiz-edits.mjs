@@ -14,7 +14,7 @@
  *      "edits": [{ "field": "option.3", "value": "新しい本文" }],
  *      "skipped": false }]
  *
- * field: option.N | wrongFeedback.N | explanation | question | hint | referenceUrl
+ * field: option.N | wrongFeedback.N | explanation | question | hint | diagram.N | referenceUrl
  */
 
 import { readFileSync, writeFileSync } from 'fs'
@@ -80,7 +80,9 @@ for (const p of proposals) {
 
   for (const edit of p.edits) {
     const { field, value } = edit
-    if (typeof value !== 'string' || value.length === 0) {
+    // 図だけは構造体を受け取る。他の層は文字列
+    const isDiagram = /^diagram\.\d+$/.test(field)
+    if (!isDiagram && (typeof value !== 'string' || value.length === 0)) {
       errors.push(`${p.id}: ${field} の value が空`)
       continue
     }
@@ -102,6 +104,29 @@ for (const p of proposals) {
         continue
       }
       quiz.referenceUrl = value
+    } else if (/^diagram\.\d+$/.test(field)) {
+      // 図も監査の対象層になった（2026-08-29、876枚が未監査だった）。
+      // hint と同じで、経路が無いと修正案を作っても適用できない。
+      const di = Number(field.split('.')[1])
+      const diagrams = quiz.diagrams ?? []
+      if (!diagrams[di]) {
+        errors.push(`${p.id}: diagram.${di} が存在しない（図は${diagrams.length}枚）`)
+        continue
+      }
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        errors.push(`${p.id}: diagram.${di} の value は図の構造体まるごとで渡すこと`)
+        continue
+      }
+      // 型を変えると描画コンポーネントごと変わる。文言の差し替えに限る
+      if (value.type !== diagrams[di].type) {
+        errors.push(
+          `${p.id}: diagram.${di} の type を "${diagrams[di].type}" から "${value.type}" へ変えようとしている。` +
+            `図の型を変えると描画が別物になるので、文言の差し替えに留めること`
+        )
+        continue
+      }
+      diagrams[di] = value
+      quiz.diagrams = diagrams
     } else if (field === 'hint') {
       // ヒントも監査の対象層になった（2026-08-29、ヒントが答えを述べている
       // at-006 / at-007 を機械で検出したのがきっかけ）。それまで apply が
