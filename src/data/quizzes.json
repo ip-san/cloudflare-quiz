@@ -561,7 +561,7 @@
             },
             {
               "text": "アイソレートA",
-              "sub": "リクエストごとに軽量に生成"
+              "sub": "起動済み環境の中に軽量に生成される"
             },
             {
               "text": "アイソレートB",
@@ -1036,7 +1036,7 @@
             },
             {
               "type": "response",
-              "text": "✔ wrangler.toml を作成しました"
+              "text": "✔ wrangler.jsonc を作成しました"
             },
             {
               "type": "response",
@@ -11317,20 +11317,20 @@
         },
         {
           "type": "comparison",
-          "label": "アクセス制御とレート制限の違い",
+          "label": "Bypass と Service Auth",
           "columns": [
             {
-              "heading": "Cloudflare Access(Zero Trust)",
+              "heading": "Bypassアクション",
               "items": [
-                "「誰が」アクセスできるかを判定",
-                "IdP認証・メールドメイン等の条件"
+                "Accessの制御を無効化しログも残らない",
+                "デバイスポスチャ条件はZaraz有効時やWorker介在時に機能しない"
               ]
             },
             {
-              "heading": "WAF Rate Limiting Rules",
+              "heading": "Service Authアクション",
               "items": [
-                "「どのくらいの頻度で」を制限",
-                "誰かの判定は行わない"
+                "IdPログインなしで認証を行いログも残る",
+                "上記の制約の回避策としてCloudflareが推奨"
               ]
             }
           ]
@@ -17668,7 +17668,7 @@
           "label": "AI Gatewayの主な制限値",
           "columns": [
             {
-              "heading": "リクエストサイズ",
+              "heading": "キャッシュ可能なリクエストサイズ",
               "items": [
                 "25MBまで"
               ]
