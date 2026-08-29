@@ -67,13 +67,27 @@ function fingerprint(quiz) {
   return crypto.createHash('sha1').update(JSON.stringify(payload)).digest('hex').slice(0, 12)
 }
 
-/** テスト後に中身が変わった (id, persona) を挙げる。fp 未記録のものは判定不能として除く */
+/**
+ * 再テストが要る (id, persona) を挙げる。
+ *
+ * 2種類ある:
+ *   changed  — テスト後に中身が変わった（指紋が現在と違う）
+ *   no-fp    — 指紋が無く、**現行内容でテストされたか確かめようがない**
+ *
+ * 2026-08-29 まで no-fp は「判定不能」として**除いて**いた。
+ * だがそれは「検証できない記録を信用する」ことと同じで、
+ * 台帳に静かな盲点を残す。検証できないなら再テストが要る、として扱う。
+ * （実際 ac-001 / ac-002 の2件は、playtest 機能を別リポジトリから移植した
+ *   コミットで持ち込まれた記録で、この リポジトリの履歴にプレイ時点の内容が
+ *   存在しない。指紋を後から作れば嘘になる。）
+ */
 function staleEntries(quizzes, store) {
   const out = []
   for (const q of quizzes) {
     const fp = fingerprint(q)
     for (const c of store.covered[q.id] ?? []) {
-      if (c.fp && c.fp !== fp) out.push({ id: q.id, persona: c.persona, outcome: c.outcome, at: c.at })
+      if (!c.fp) out.push({ id: q.id, persona: c.persona, outcome: c.outcome, at: c.at, reason: 'no-fp' })
+      else if (c.fp !== fp) out.push({ id: q.id, persona: c.persona, outcome: c.outcome, at: c.at, reason: 'changed' })
     }
   }
   return out
@@ -275,6 +289,38 @@ function recordOne(store, id, persona, outcome, quizzes) {
   })
 }
 
+/**
+ * 指紋の無い古い記録に、**プレイ時点のコミットの内容**から指紋を埋める。
+ *
+ * 手で計算し直すと区切り文字ひとつでツールと違う値になる（2026-08-29 に実際にやった）。
+ * 同じ fingerprint 関数に別の入力を渡すだけにする。
+ *
+ * プレイ時点は「その記録が入ったコミットの**親**」が正しい。
+ * プレイテストのコミットには、そのプレイから出た改善が同梱されているため。
+ */
+function cmdBackfillFp(store, ref, ids) {
+  const played = JSON.parse(
+    execFileSync('git', ['show', `${ref}:src/data/quizzes.json`], { maxBuffer: 64 * 1024 * 1024 }).toString()
+  ).quizzes
+  let n = 0
+  for (const id of ids) {
+    const quiz = played.find((q) => q.id === id)
+    if (!quiz) {
+      console.log(`  ! ${id}: ${ref} 時点に存在しない`)
+      continue
+    }
+    for (const c of store.covered[id] ?? []) {
+      if (c.fp) continue
+      c.fp = fingerprint(quiz)
+      c.fpFrom = ref
+      n++
+      console.log(`  ${id} [${c.persona}] ← ${ref}`)
+    }
+  }
+  saveStore(store)
+  console.log(`${n}件に指紋を埋めた`)
+}
+
 function main() {
   const [cmd, a, b, c] = process.argv.slice(2)
   const quizzes = loadQuizzes()
@@ -286,6 +332,9 @@ function main() {
       break
     case 'next':
       cmdNext(quizzes, store, Number(a) || 5, b)
+      break
+    case 'backfill-fp':
+      cmdBackfillFp(store, process.argv[3], process.argv.slice(4))
       break
     case 'retest':
       cmdRetest(quizzes, store, Number(process.argv[3]) || 5, process.argv[4])
