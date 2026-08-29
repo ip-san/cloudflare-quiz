@@ -76,8 +76,8 @@
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-15",
-        "fp": "4799a6369f89"
+        "at": "2026-08-29",
+        "fp": "df1c9278cc2b"
       }
     ],
     "ag-009": [
@@ -100,32 +100,32 @@
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-15",
-        "fp": "f65462df6c0c"
+        "at": "2026-08-29",
+        "fp": "d8e1c6b4094d"
       }
     ],
     "ag-012": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
-        "at": "2026-08-15",
-        "fp": "01e82aa4d264"
+        "outcome": "clean",
+        "at": "2026-08-29",
+        "fp": "8f378c9fc9f9"
       }
     ],
     "ag-013": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-15",
-        "fp": "5d596be6d4c5"
+        "outcome": "friction",
+        "at": "2026-08-29",
+        "fp": "0bac3be1ff7e"
       }
     ],
     "ag-014": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
-        "at": "2026-08-15",
-        "fp": "1704a9f3b46e"
+        "outcome": "clean",
+        "at": "2026-08-29",
+        "fp": "521d63faa772"
       }
     ],
     "ag-015": [
@@ -140,16 +140,16 @@
       {
         "persona": "busy-intermediate",
         "outcome": "friction",
-        "at": "2026-08-16",
-        "fp": "1f0647336847"
+        "at": "2026-08-29",
+        "fp": "a0b8a09dd59a"
       }
     ],
     "ai-006": [
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-27",
-        "fp": "d6de9e77344b"
+        "at": "2026-08-29",
+        "fp": "6d9cf87c62ce"
       }
     ],
     "ai-007": [
@@ -172,16 +172,16 @@
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-28",
-        "fp": "79e4e370f491"
+        "at": "2026-08-29",
+        "fp": "7b36dfa02b84"
       }
     ],
     "ai-010": [
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-16",
-        "fp": "90d3eae48fb1"
+        "at": "2026-08-29",
+        "fp": "7c8db62d41a7"
       }
     ],
     "ai-013": [
@@ -344,14 +344,6 @@
         "fp": "81a7c3d120d7"
       }
     ],
-    "ac-008": [
-      {
-        "persona": "beginner",
-        "outcome": "friction",
-        "at": "2026-08-28",
-        "fp": "9dcedff8f941"
-      }
-    ],
     "ac-009": [
       {
         "persona": "beginner",
@@ -377,9 +369,9 @@
       },
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
-        "at": "2026-08-26",
-        "fp": "c580a0cc81e2"
+        "outcome": "clean",
+        "at": "2026-08-29",
+        "fp": "fd5b7ff32d2b"
       }
     ],
     "ar-010": [
@@ -402,32 +394,24 @@
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-26",
-        "fp": "6b1cc400ba33"
+        "at": "2026-08-29",
+        "fp": "dbdf090eeb80"
       }
     ],
     "ar-016": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
-        "at": "2026-08-27",
-        "fp": "fc411169abe4"
+        "outcome": "clean",
+        "at": "2026-08-29",
+        "fp": "41438a9d417a"
       }
     ],
     "as-003": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
-        "at": "2026-08-26",
-        "fp": "0b7ab8d2e67d"
-      }
-    ],
-    "ag-002": [
-      {
-        "persona": "beginner",
-        "outcome": "friction",
-        "at": "2026-08-28",
-        "fp": "cd422a131051"
+        "outcome": "clean",
+        "at": "2026-08-29",
+        "fp": "6847a8a6079a"
       }
     ],
     "ag-003": [
@@ -466,8 +450,8 @@
       {
         "persona": "busy-intermediate",
         "outcome": "friction",
-        "at": "2026-08-26",
-        "fp": "a8021e23d0ef"
+        "at": "2026-08-29",
+        "fp": "d33c0b168409"
       }
     ],
     "as-010": [
@@ -482,8 +466,8 @@
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-27",
-        "fp": "fd9e5c22fcd2"
+        "at": "2026-08-29",
+        "fp": "87aaaa4d53cc"
       }
     ],
     "ai-017": [
@@ -524,6 +508,22 @@
         "outcome": "clean",
         "at": "2026-08-28",
         "fp": "7043fefeebd7"
+      }
+    ],
+    "ac-008": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-29",
+        "fp": "a5d70284fa04"
+      }
+    ],
+    "ag-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-29",
+        "fp": "a7bd8e1a3f33"
       }
     ]
   }

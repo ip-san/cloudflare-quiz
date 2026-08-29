@@ -17369,7 +17369,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "AI Gatewayでは、リクエストタイムアウトを`cf-aig-request-timeout`ヘッダー(ミリ秒)で指定します。リトライは`cf-aig-max-attempts`(最大5回)、`cf-aig-retry-delay`(ミリ秒、最大5秒)、`cf-aig-backoff`(`constant`/`linear`/`exponential`)という3つのヘッダーの組み合わせで制御します。最後のリトライ試行では、完了するまで待機します。\n{{diagram:0}}",
+      "explanation": "AI Gatewayでは、リクエストタイムアウトを`cf-aig-request-timeout`ヘッダー(ミリ秒)で指定します。リトライは`cf-aig-max-attempts`(最大5回)、`cf-aig-retry-delay`(ミリ秒、最大5秒)、`cf-aig-backoff`(`constant`/`linear`/`exponential`)という3つのヘッダーの組み合わせで制御します。\n{{diagram:0}}\nなお最後のリトライ試行だけは例外で、ゲートウェイは所要時間にかかわらずリクエストの完了まで待機します。つまりこの試行にはタイムアウトによる打ち切りが効きません。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/request-handling/",
       "hint": "「どれだけ待つか」と「何回・どのくらいの間隔で再試行するか」は、別々の設定項目に分かれていることを意識しましょう。",
       "tags": [
@@ -17635,7 +17635,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "AI Gatewayのログ保存件数は、有料プランでは1ゲートウェイあたり1000万件までという「ゲートウェイごと」の上限が適用されるのに対し、無料プランでは「アカウント全体」で10万件までという上限が適用される点が異なります。\n{{diagram:0}}\n同様に、ゲートウェイ数の上限も無料プランは1アカウントあたり10個、有料プランは20個までと異なります。また、キャッシュ可能なリクエストサイズは1リクエストあたり25MBまで、キャッシュTTLは最大1か月まで、カスタムメタデータは1リクエストあたり最大5エントリまでという制限もあります。\n{{diagram:1}}",
+      "explanation": "AI Gatewayのログ保存件数は、有料プランでは1ゲートウェイあたり1000万件までという「ゲートウェイごと」の上限が適用されるのに対し、無料プランでは「アカウント全体」で10万件までという上限が適用される点が異なります。ゲートウェイ数の上限も無料プランは1アカウントあたり10個、有料プランは20個までと、同じく「プランで適用範囲が変わる」形です。\n{{diagram:0}}\n(参考)これとは別に、プランによらず一律の上限もあります。キャッシュ可能なリクエストサイズは1リクエストあたり25MBまで、キャッシュTTLは最大1か月まで、カスタムメタデータは1リクエストあたり最大5エントリまでです。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/reference/limits/",
       "hint": "上限の中には、数値そのものよりも「どの範囲で数えるか」(アカウント単位でまとめてか、個々のゲートウェイ単位か)によって扱いが変わるものがあります。どの項目がそれに当たるか考えてみましょう。",
       "tags": [
@@ -24625,7 +24625,7 @@
       "id": "as-007",
       "category": "api-shield",
       "difficulty": "intermediate",
-      "question": "有効化されたスキーマに含まれる操作(operation)の総数の上限に関する正しい説明はどれですか？",
+      "question": "API Shieldを契約しているEnterprise顧客において、有効化されたスキーマに含まれる操作(operation)の総数の上限に関する正しい説明はどれですか？",
       "options": [
         {
           "text": "API Shieldを契約しているEnterprise顧客には、有効化されたスキーマ全体で10,000操作という上限があり、引き上げには account team への相談が必要である"

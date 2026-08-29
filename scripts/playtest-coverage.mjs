@@ -22,6 +22,7 @@
  *   node scripts/playtest-coverage.mjs stale [persona]
  *     → テスト後に中身が変わった問題を ?q= ディープリンク付きで出力（再テスト対象）
  */
+import { execFileSync } from 'node:child_process'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 
@@ -244,6 +245,9 @@ function cmdNext(quizzes, store, n, persona) {
   console.log(JSON.stringify(out, null, 2))
 }
 
+/** 指紋の計算元。既定は現在の内容。--played-at で差し替わる */
+let fpSource = null
+
 function recordOne(store, id, persona, outcome, quizzes) {
   if (!PERSONAS.includes(persona)) throw new Error(`unknown persona: ${persona}`)
   if (!['clean', 'friction'].includes(outcome)) throw new Error(`outcome must be clean|friction`)
@@ -263,7 +267,11 @@ function recordOne(store, id, persona, outcome, quizzes) {
     persona,
     outcome,
     at: process.env.PLAYTEST_STAMP || 'unstamped',
-    fp: quiz ? fingerprint(quiz) : null,
+    // --played-at が指定されていれば、そのコミット時点の内容で指紋を取る
+    fp: (() => {
+      const src = fpSource ? fpSource.find((q) => q.id === id) : quiz
+      return src ? fingerprint(src) : null
+    })(),
   })
 }
 
@@ -291,6 +299,22 @@ function main() {
       console.log(`marked ${a} [${b}] ${c}`)
       break
     case 'mark-batch': {
+      // --played-at <ref> があれば、指紋はそのコミットの内容から取る。
+      //
+      // プレイ後に内容を直してから記録すると、指紋が**直したあと**の値になり
+      // 「現行内容でテスト済み」という嘘の記録が残る。2026-08-29 までに2回踏んだ。
+      // 手で計算し直して埋めようとしたが、区切り文字を \u0000 ではなく空白にして
+      // **ツールと違う指紋を書き込んでいた**（3回目の事故）。
+      // 手計算をやめ、同じ関数に別の入力を渡す形にする。
+      const atIdx = process.argv.indexOf('--played-at')
+      if (atIdx !== -1) {
+        const ref = process.argv[atIdx + 1]
+        if (!ref) throw new Error('--played-at にコミット ref が要る')
+        fpSource = JSON.parse(
+          execFileSync('git', ['show', `${ref}:src/data/quizzes.json`], { maxBuffer: 64 * 1024 * 1024 }).toString()
+        ).quizzes
+        console.log(`指紋は ${ref} 時点の内容から取ります`)
+      }
       const raw = JSON.parse(fs.readFileSync(a, 'utf8'))
       // Accepts either a plain [{id, persona, outcome}] array, or a
       // requests-<persona>.json file with a top-level `persona` and a
