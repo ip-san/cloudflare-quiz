@@ -1779,7 +1779,7 @@
           "wrongFeedback": "動作はしますが、Gitの巻き戻し作業やビルドの時間がかかり、即座の切り戻しには向きません。Wranglerには専用のロールバック機能があります。"
         },
         {
-          "text": "`wrangler rollback` を使って、直前の（または指定した）デプロイメントへ即座に切り戻す"
+          "text": "`wrangler rollback` を使って、直前の（または指定した）バージョンへ即座に切り戻す"
         },
         {
           "text": "Cloudflareサポートに連絡し、手動でのロールバック作業を依頼する。デプロイの巻き戻しはサポート側が履歴を書き換える対応であり、契約者側からは行えない",
@@ -1791,7 +1791,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Wranglerはデプロイ履歴を管理しており、`wrangler deployments list` で過去のデプロイ一覧を確認し、`wrangler rollback [デプロイID]` で即座に指定した（省略時は直前の）デプロイへ切り戻せます。\n{{diagram:0}}\nまた、より段階的なリリース管理をしたい場合は「バージョンとデプロイ」の仕組み（`wrangler versions upload` で新バージョンを作成し、トラフィックを徐々に振り分ける `wrangler versions deploy`）を使うことで、問題が起きた際の影響範囲を最小化することもできます。\n{{diagram:1}}",
+      "explanation": "Wranglerはバージョンとデプロイの履歴を管理しており、`wrangler versions list` で過去のバージョン一覧を確認し、`wrangler rollback [バージョンID]` で即座に切り戻せます(省略時は最新の1つ前のバージョン)。ロールバックは指定したバージョンで新しいデプロイを作る形で反映されます。\n{{diagram:0}}\nまた、より段階的なリリース管理をしたい場合は「バージョンとデプロイ」の仕組み（`wrangler versions upload` で新バージョンを作成し、トラフィックを徐々に振り分ける `wrangler versions deploy`）を使うことで、問題が起きた際の影響範囲を最小化することもできます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/",
       "hint": "コードを書き直すのではなく、Wranglerが管理しているデプロイ履歴を使う方法を考えましょう。",
       "tags": [
@@ -1807,15 +1807,15 @@
           "lines": [
             {
               "type": "command",
-              "text": "wrangler deployments list"
+              "text": "wrangler versions list"
             },
             {
               "type": "response",
-              "text": "Deployment ID: abc123 (最新・不具合あり)"
+              "text": "Version ID: abc123 (最新・不具合あり)"
             },
             {
               "type": "response",
-              "text": "Deployment ID: xyz789 (直前・正常)"
+              "text": "Version ID: xyz789 (直前・正常)"
             },
             {
               "type": "command",
@@ -23795,6 +23795,12 @@
               "items": [
                 "Likely human"
               ]
+            },
+            {
+              "heading": "スコアとは別枠",
+              "items": [
+                "Verified bot"
+              ]
             }
           ]
         }
@@ -31520,7 +31526,7 @@
               "items": [
                 "同一トンネルを共有",
                 "トラフィックステアリングなし",
-                "ホスト名ルートと互換"
+                "プライベートホスト名ルートでも使える"
               ]
             },
             {
@@ -31528,7 +31534,7 @@
               "items": [
                 "データセンターごとに別トンネル",
                 "ステアリングアルゴリズムを選択可能",
-                "ホスト名ルートとは非互換"
+                "プライベートホスト名ルートとは非互換"
               ]
             }
           ]
@@ -39849,6 +39855,10 @@
             {
               "text": "メール・ファイル転送",
               "sub": "SMTP・FTP"
+            },
+            {
+              "text": "バージョン管理",
+              "sub": "TCPベースのGit等"
             }
           ]
         }
@@ -40522,7 +40532,7 @@
               "highlight": true
             },
             {
-              "text": "new_users_per_minute: 200",
+              "text": "new_users_per_minute: 250",
               "highlight": true
             },
             {
