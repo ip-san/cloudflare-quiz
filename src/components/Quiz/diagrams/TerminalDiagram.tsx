@@ -7,7 +7,7 @@ import { BaseDiagram } from './BaseDiagram'
 import { useTerminalAnimation } from './useTerminalAnimation'
 
 interface TerminalLine {
-  type: 'command' | 'prompt' | 'response' | 'info'
+  type: 'command' | 'prompt' | 'response' | 'info' | 'code'
   text: string
 }
 
@@ -108,6 +108,15 @@ function TerminalBody({ lines, isVisible }: { lines: TerminalLine[]; isVisible: 
                   )}
                 </p>
               )}
+              {/* code: シェルコマンドではないコード片。$ を付けない */}
+              {line.type === 'code' && (
+                <p className="text-stone-300">
+                  <span>{state.typingChars !== null ? line.text.slice(0, state.typingChars) : line.text}</span>
+                  {state.typingChars !== null && (
+                    <span className="ml-px animate-terminal-cursor text-stone-400">▋</span>
+                  )}
+                </p>
+              )}
               {line.type === 'prompt' && (
                 <div className="-mx-3 border-y border-cf-accent/40 bg-cf-accent/5 px-3 py-1">
                   <p>
@@ -142,6 +151,7 @@ function TerminalBody({ lines, isVisible }: { lines: TerminalLine[]; isVisible: 
  *
  * line types:
  * - command: シェルコマンド（$ prefix）— タイプライター効果
+ * - code: シェルコマンドではないコード片（$ なし）— タイプライター効果
  * - prompt: ユーザー入力（> prefix）— タイプライター効果
  * - response: Claude の応答（✦ prefix）— フェードイン
  * - info: 補足テキスト（dim）— フェードイン
@@ -158,6 +168,7 @@ export function TerminalDiagram({ label, lines }: TerminalDiagramProps) {
                 {line.type === 'command' && `$ ${line.text}`}
                 {line.type === 'prompt' && `> ${line.text}`}
                 {line.type === 'response' && `✦ ${line.text}`}
+                {line.type === 'code' && line.text}
                 {line.type === 'info' && line.text}
               </p>
             ))}

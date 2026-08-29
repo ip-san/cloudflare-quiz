@@ -117,7 +117,11 @@ const ComparisonDiagramSchema = z.object({
 })
 
 const TerminalLineSchema = z.object({
-  type: z.enum(['command', 'prompt', 'response', 'info']),
+  // 'code' は「端末に貼るシェルコマンドではないコード片」。$ を付けずに描く。
+  // 2026-08-29 の図の全数監査で、JavaScript や SQL が command 行に置かれて
+  // `$ const flags = await env.MY_KV.get(...)` と表示されているのが22行見つかった。
+  // そのまま端末へ貼れば必ずエラーになる。
+  type: z.enum(['command', 'prompt', 'response', 'info', 'code']),
   text: z.string().min(1),
 })
 

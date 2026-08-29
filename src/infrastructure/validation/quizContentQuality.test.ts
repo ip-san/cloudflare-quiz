@@ -1114,7 +1114,7 @@ describe('Quiz Content Quality', () => {
     // 空白行として描画される。常に `{type: command|prompt|response|info, text}` を要求する。
     // 注: config.lines[].text === "" は ConfigDiagram で視覚的なブランク行として正常に描画される。
     it('terminal/config の各 line が新スキーマに従っていること（terminal は type と非空 text、config は text フィールド）', () => {
-      const validTerminalTypes = new Set(['command', 'prompt', 'response', 'info'])
+      const validTerminalTypes = new Set(['command', 'prompt', 'response', 'info', 'code'])
       const violations: { id: string; path: string; reason: string }[] = []
       diagramEntries.forEach((e) => {
         const d = e.diagram as Record<string, unknown>

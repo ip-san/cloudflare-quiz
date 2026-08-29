@@ -19,7 +19,8 @@ export interface ComparisonColumn {
 }
 
 export interface TerminalLine {
-  type: 'command' | 'prompt' | 'response' | 'info'
+  /** code = シェルコマンドではないコード片。$ を付けずに描く */
+  type: 'command' | 'prompt' | 'response' | 'info' | 'code'
   text: string
 }
 

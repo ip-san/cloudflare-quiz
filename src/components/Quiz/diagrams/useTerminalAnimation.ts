@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 interface TerminalLine {
-  type: 'command' | 'prompt' | 'response' | 'info'
+  type: 'command' | 'prompt' | 'response' | 'info' | 'code'
   text: string
 }
 
@@ -23,7 +23,7 @@ const TIMING = {
 } as const
 
 function isTypingLine(type: TerminalLine['type']): boolean {
-  return type === 'command' || type === 'prompt'
+  return type === 'command' || type === 'prompt' || type === 'code'
 }
 
 type Phase = 'idle' | 'initial-delay' | 'typing' | 'pause' | 'revealing' | 'done'

@@ -1994,7 +1994,7 @@
               "text": "// wrangler.toml で kv_namespaces 設定済み"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "const flags = await env.MY_KV.get(\"config:feature-flags\")"
             },
             {
@@ -2002,7 +2002,7 @@
               "text": "→ 文字列(またはnull)が返る"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "const json = await env.MY_KV.get(\"config:feature-flags\", \"json\")"
             },
             {
@@ -2094,7 +2094,7 @@
           "label": "正しい指定例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "await env.MY_KV.put(\"session:abc\", value, { expirationTtl: 60 })"
             },
             {
@@ -2164,11 +2164,11 @@
           "label": "Cache APIのコード例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "const cache = caches.default"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "let response = await cache.match(request)"
             },
             {
@@ -2395,7 +2395,7 @@
           "label": "cf.cacheTtlの使用例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "const res = await fetch(url, { cf: { cacheTtl: 3600 } })"
             },
             {
@@ -2403,7 +2403,7 @@
               "text": "→ オリジンのCache-Controlに関わらず3600秒エッジで保持"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "const res2 = await fetch(url, { cf: { cacheEverything: true } })"
             },
             {
@@ -2557,11 +2557,11 @@
           "label": "metadataの使用例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "await env.MY_KV.put(key, value, { metadata: { contentType: \"image/png\", version: 3 } })"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "const { value, metadata } = await env.MY_KV.getWithMetadata(key)"
             },
             {
@@ -2646,7 +2646,7 @@
           "label": "list()呼び出し例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "const result = await env.MY_KV.list({ prefix: \"config:\", cursor })"
             },
             {
@@ -4331,7 +4331,7 @@
           "label": "list()の利用イメージ",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "const listed = await env.MY_BUCKET.list({ prefix: 'images/' })"
             },
             {
@@ -6375,7 +6375,7 @@
               "text": "// Worker内のコード例"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "const res = await env.AI.run("
             },
             {
@@ -8915,11 +8915,11 @@
               "text": "interface Env { USERS_NOTIFICATION_CONFIG: KVNamespace }"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "await env.USERS_NOTIFICATION_CONFIG.put(\"user_2\", \"disabled\")"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "const value = await env.USERS_NOTIFICATION_CONFIG.get(\"user_2\")"
             }
           ]
@@ -9033,11 +9033,11 @@
           "label": "ignoreMethodの使用例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "const cache = caches.default"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "const response = await cache.match(request, { ignoreMethod: true })"
             },
             {
@@ -9119,7 +9119,7 @@
           "label": "cf.cacheKeyの指定例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "await fetch(url, { cf: { cacheKey: \"product-list-v2\" } })"
             },
             {
@@ -9573,7 +9573,7 @@
           "label": "EXPLAIN QUERY PLAN の実行例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "EXPLAIN QUERY PLAN SELECT * FROM orders WHERE user_id = 42;"
             },
             {
@@ -9581,11 +9581,11 @@
               "text": "SCAN orders"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "CREATE INDEX idx_orders_user_id ON orders(user_id);"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "EXPLAIN QUERY PLAN SELECT * FROM orders WHERE user_id = 42;"
             },
             {
@@ -10983,11 +10983,11 @@
           "label": "ストリーミング実装例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "const stream = await env.AI.run(model, { prompt, stream: true })"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "return new Response(stream, {"
             },
             {
@@ -42900,7 +42900,7 @@
           "label": "`this.sql`の呼び出し例",
           "lines": [
             {
-              "type": "command",
+              "type": "code",
               "text": "this.sql`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name TEXT)`"
             },
             {
@@ -42908,7 +42908,7 @@
               "text": "Agentインスタンス専用のSQLiteにテーブルを作成"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "this.sql`SELECT * FROM users WHERE id = ${id}`"
             },
             {

@@ -69,3 +69,43 @@ describe('図の配置', () => {
     )
   })
 })
+
+describe('terminal 図の行の種別', () => {
+  const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes
+
+  /**
+   * `command` 行は `$ ` を付けて描かれる。シェルで実行しないコード片を
+   * ここに置くと、学習者は端末に貼れると誤解する。
+   *
+   * 2026-08-29 の図の全数監査で24行見つかった。
+   * 例: `$ const flags = await env.MY_KV.get("config:feature-flags")`
+   * そのまま端末へ貼れば必ずエラーになる。`code` 種別を新設して分けた。
+   */
+  const NOT_SHELL =
+    /^(const |let |var |await |return |export |import |this\.|env\.|caches\.|\}|\{)|=>|^(CREATE|SELECT|INSERT|UPDATE|DELETE|ALTER|DROP|PRAGMA|EXPLAIN)\s/
+
+  it('シェルで実行しないコード片が command 行に置かれていない', () => {
+    const misplaced = []
+    for (const quiz of quizzes) {
+      for (const [di, diagram] of (quiz.diagrams ?? []).entries()) {
+        if (diagram.type !== 'terminal') continue
+        for (const line of diagram.lines ?? []) {
+          if (line.type !== 'command') continue
+          if (NOT_SHELL.test(line.text)) {
+            misplaced.push(`${quiz.id} diagram[${di}]: ${line.text.slice(0, 50)}`)
+          }
+        }
+      }
+    }
+
+    expect(
+      misplaced,
+      [
+        'シェルコマンドでない行が command 種別になっています:',
+        ...misplaced.map((m) => `  - ${m}`),
+        '',
+        'command 行は `$ ` 付きで描かれます。コード片は `code` 種別を使ってください。',
+      ].join('\n')
+    ).toEqual([])
+  })
+})
