@@ -9842,7 +9842,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "R2 Workers バインディングのget()やput()メソッドは onlyIf オプションで条件付きリクエストをサポートしています。ETag（httpEtag）を指定してオブジェクトが指定した値と一致する場合のみ処理を行う、といった制御が可能で、これはS3のIf-Match/If-None-Matchヘッダーに相当する機能です。変更がない場合は処理をスキップでき、不要な転送や上書きを防げます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "R2 Workers バインディングのget()やput()メソッドは onlyIf オプションで条件付きリクエストをサポートしています。前回取得時のETag(httpEtag)を `etagDoesNotMatch` に渡すと、オブジェクトが変わっていないときは条件が成立せず本文が転送されません。S3の If-None-Match に相当します。逆に `etagMatches` は「変わっていないときだけ処理する」向き(If-Match)で、上書き競合の防止に使います。なお条件が成立しなかった get() は null ではなく、body が undefined の R2Object を返します(null が返るのはキーが存在しない場合と、put() の条件が成立しなかった場合です)。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
       "hint": "前回取得時の目印と比較して、変わっていなければ処理をスキップする仕組みを考えましょう。",
       "tags": [
@@ -9858,11 +9858,16 @@
               "text": "get(key, options)を呼び出す"
             },
             {
-              "text": "options.onlyIf: { etagMatches } でETagを指定",
-              "sub": "条件付きリクエスト"
+              "text": "onlyIf に etagDoesNotMatch を渡す",
+              "sub": "前回取得時のETagを指定"
             },
             {
-              "text": "条件成立→本文を返す / 不成立→本文なし(body未定義)"
+              "text": "変更あり→本文を返す",
+              "sub": "条件が成立した場合"
+            },
+            {
+              "text": "変更なし→本文は返らない",
+              "sub": "body が undefined のR2Object"
             }
           ]
         },
@@ -9880,8 +9885,8 @@
             {
               "heading": "onlyIfを使ったget()",
               "items": [
-                "ETag等の条件を指定",
-                "条件一致時のみ処理"
+                "前回のETagを etagDoesNotMatch に渡す",
+                "変更が無ければ本文を転送しない"
               ]
             }
           ]
@@ -36961,7 +36966,7 @@
           "wrongFeedback": "Last seen ISPには、ISPを管理するASO・ASNの情報が含まれます。ホップごとの応答時間・パケットロスとは別の項目です。"
         },
         {
-          "text": "Last seen ISPはmacOSとWindowsでのみ利用可能な項目で、DEXがデバイスのIPアドレスをジオロケーションデータベースで検索してASO・ASNを返す"
+          "text": "Last seen ISPはmacOSとWindowsでのみ利用可能な項目で、DEXがISPのIPアドレスをジオロケーションデータベースで検索してASO・ASNを返す"
         },
         {
           "text": "Last seen ISPはすべてのOS(Windows・macOS・Linux・iOS・Android・ChromeOS)で利用でき、OSによって取得できる情報の内容や精度に差が出ることもない",
@@ -36969,7 +36974,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Last seen ISPはmacOSとWindowsでのみ利用可能な項目です。DEXはそのデバイスのIPアドレスをジオロケーションデータベースで検索し、ASO(自律システム組織)とASN(自律システム番号)を返します。該当する情報が見つからない場合はUnknownと表示されます。\n{{diagram:0}}",
+      "explanation": "Last seen ISPはmacOSとWindowsでのみ利用可能な項目です。DEXは、デバイスからCloudflareまでの接続を担っているISPのIPアドレスをジオロケーションデータベースで検索し、ASO(自律システム組織)とASN(自律システム番号)を返します。該当する情報が見つからない場合はUnknownと表示されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/tests/traceroute/#test-results",
       "hint": "この項目が「対応OSが限定されている」という特徴を持つことに注目しましょう。",
       "tags": [
