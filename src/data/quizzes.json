@@ -1974,7 +1974,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Workers KVの読み取りは`get(key, options?)`で行います。第2引数に\"json\"などのtypeやcacheTtlを指定できます。\n{{diagram:0}}\n基本操作はput/get/list/deleteの4つです。\n{{diagram:1}}",
+      "explanation": "`env.MY_KV`は、wranglerの設定ファイルでKV namespaceをWorkerに結び付けた名前（バインディング）で、コードからはこの名前を通してKVを操作します。読み取りは`get(key, options?)`で行い、キーは`\"config:feature-flags\"`のように全体を1つの文字列として渡します。\n{{diagram:0}}\n基本操作はput/get/list/deleteの4つです。\n{{diagram:1}}\n※ 第2引数のオプションでは、値をJSONとして受け取る`type`(`\"json\"`など)や、エッジでのキャッシュ時間`cacheTtl`を指定できます。",
       "referenceUrl": "https://developers.cloudflare.com/kv/api/read-key-value-pairs/",
       "hint": "KVの読み取りメソッド名はシンプルな英単語1つです。",
       "tags": [
@@ -3838,9 +3838,9 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`wrangler.toml` に [[`r2_buckets`]] を定義してバインディングすると、Workers コード内で env.MY_BUCKET のようにアクセスでき、get/put/list/head/delete などのメソッドが利用できます。\n{{diagram:0}}\nバインディング経由のアクセスは外部へのHTTPリクエストが不要で高速です。\n{{diagram:1}}",
+      "explanation": "バインディングとは、WorkerがR2バケットなどの外部リソースを使えるように、設定ファイルで「コード内で使う名前」と「実際のリソース」を結びつけておく仕組みです。`wrangler.toml`(または`wrangler.jsonc`)に [[`r2_buckets`]] を定義してバインディングすると、Workers コード内で env.MY_BUCKET のようにアクセスでき、get/put/list/head/delete などのメソッドが利用できます。\n{{diagram:0}}\nバインディング経由のアクセスは外部へのHTTPリクエストが不要で高速です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
-      "hint": "wrangler.toml の設定項目を思い出してみましょう。",
+      "hint": "Workerから外部のリソースを使うとき、コードに接続情報を直接書く代わりに、設定ファイルで名前を紐づけておく仕組みを考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4631,7 +4631,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Durable Objects は「compute とストレージを組み合わせた特別な種類の Worker」です。各インスタンスはグローバルに一意な名前（ID）を持ち、single-threaded かつ cooperatively multi-tasked に動作するため、同じ ID へのリクエストは常に同じインスタンスに順序立てて届き、レースコンディションを避けられます。\n{{diagram:0}}\nストレージはオブジェクトと同じ場所に配置され、トランザクショナルかつ強整合です。これは結果整合性を前提とする Workers KV とは対照的な設計です。\n{{diagram:1}}",
+      "explanation": "Durable Objects は「計算(compute)とストレージを組み合わせた特別な種類の Worker」です。各インスタンスはグローバルに一意な名前（ID）を持ち、1つのインスタンスは一度に1つの処理しか進めない(single-threaded)ため、同じ ID へのリクエストは常に同じインスタンスへ順序立てて届きます。これにより、複数の処理が同じデータを同時に書き換えて壊してしまう事故（レースコンディション）を避けられます。\n{{diagram:0}}\nストレージはオブジェクトと同じ場所に配置され、トランザクショナル（一連の操作が中途半端な状態で終わらない）かつ強整合（書き込んだ直後の読み取りでも必ず最新が返る）です。これは、書き込みが行き渡るまで少し古い値が返りうる結果整合性を前提とする Workers KV とは対照的な設計です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/",
       "hint": "「1つの名前につき1つのインスタンス」という特徴を思い出しましょう。",
       "tags": [
@@ -4788,7 +4788,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "idFromName(name) は指定した文字列から決定論的に ID を生成するメソッドで、同じ名前を渡せば常に同じ ID が得られます。生成した ID に対して namespace.get(id) を呼び出すことで、その DO へのスタブを取得しリクエストを送れます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "idFromName(name) は指定した文字列から決定論的に ID を生成するメソッドで、同じ名前を渡せば常に同じ ID が得られます。生成した ID を namespace.get(id) に渡すと、その Durable Object を操作するためのスタブ(手元から呼び出せる参照用のオブジェクト)が得られ、リクエストを送れます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/namespace/",
       "hint": "同じ文字列を渡すたびに、必ず同じインスタンスに辿り着かせたい場合を考えましょう。",
       "tags": [
@@ -4960,7 +4960,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "waitUntil() はレスポンスを返した後も同じ Worker 実行の中で処理を継続する仕組みで、途中で失敗しても自動的な永続化やリトライは行われません。一方 Queues はメッセージを永続的なキューに書き込み、Consumer 側で失敗時のリトライ（デフォルト最大3回）や Dead Letter Queue への退避を行えるため、確実性が求められるバックグラウンド処理を分離するのに適しています。\n{{diagram:0}}",
+      "explanation": "waitUntil() はレスポンスを返した後も同じ Worker 実行の中で処理を継続する仕組みで、途中で失敗しても自動的な永続化やリトライは行われません。一方 Queues は処理内容をメッセージとして永続的なキューに書き込み、それを取り出して処理する側の Worker(Consumer)で失敗時のリトライ（デフォルト最大3回）を行えます。それでも処理できなかったメッセージは Dead Letter Queue(DLQ＝処理しきれなかったメッセージの退避先として指定する別のキュー)へ送れるため、確実性が求められるバックグラウンド処理を分離するのに適しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/reference/how-queues-works/",
       "hint": "後処理が失敗したとき、誰にも気づかれず消えてしまってよいかどうか考えましょう。",
       "tags": [
@@ -6335,9 +6335,9 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Workers AIはサーバーレスのGPU推論プラットフォームで、`env.AI.run(modelName, inputs)` の形式でモデルを呼び出す。\n{{diagram:0}}\nグローバルネットワーク上で推論を実行でき、独自のGPUインフラを構築・管理する必要がない。対応タスクはテキスト生成、embedding生成、画像分類、音声認識など多岐にわたる。\n{{diagram:1}}",
+      "explanation": "Workers AIはサーバーレスのGPU推論プラットフォームで、Workerのコードから `env.AI.run(modelName, inputs)` の形式でモデルを呼び出す。この `env.AI` は、WorkerからWorkers AIを使うために用意された接続口(バインディング)で、`AI` がその名前にあたる。\n{{diagram:0}}\nグローバルネットワーク上で推論を実行でき、独自のGPUインフラを構築・管理する必要がない。対応タスクはテキスト生成、embedding生成、画像分類、音声認識など多岐にわたる。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-ai/",
-      "hint": "モデルを呼び出すためのバインディング名は何と設定されているか考えましょう。",
+      "hint": "Workerのコードで、AIモデルを実行するために用意されている呼び出し口の名前を、選択肢の中から探してみましょう。",
       "tags": [
         "ai-vectorize",
         "practical",
@@ -6484,7 +6484,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Workers AIは様々なタスクカテゴリの事前学習済みモデルを提供する。代表的なものにテキスト生成（LLM）、テキスト埋め込み（embedding生成）、画像分類・物体検出、音声認識（Speech-to-Text）、翻訳、要約などがある。\n{{diagram:0}}\nVectorizeはWorkers AIなどが生成したembeddingベクトルを保存・検索するための別サービスであり、役割が異なる点に注意。",
+      "explanation": "Workers AIは様々なタスクカテゴリの事前学習済みモデルを提供する。代表的なものにテキスト生成（LLM）、テキスト埋め込み（embedding＝文章や画像を、意味の近さを比べられる数値の並びに変換したもの）、画像分類・物体検出、音声認識（Speech-to-Text）、翻訳、要約などがある。\n{{diagram:0}}\n※ Vectorizeは、Workers AIなどが生成したこのembeddingを保存し、近いものを検索するための別サービスであり、役割が異なる点に注意。",
       "referenceUrl": "https://developers.cloudflare.com/workers-ai/models/",
       "hint": "Workers AIは『モデル推論』全般を扱うサービスです。データベースやキャッシュとは役割が異なります。",
       "tags": [
@@ -6597,7 +6597,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Vectorizeは、Workers AIなどで生成したembeddingベクトルを大量に保存し、クエリベクトルに対して意味的に近いベクトルを高速に検索できるベクトルデータベース。semantic search、レコメンデーション、RAG（検索拡張生成）などの用途に使われる。\n{{diagram:0}}",
+      "explanation": "Vectorizeは、embeddingベクトルを大量に保存し、検索したいベクトルに意味の近いものを高速に探し出せるデータベースです。embedding(埋め込み)ベクトルとは、文章や画像などの内容を数値の並びとして表したもので、内容が近いものほどベクトル同士も近い位置になります。そのためVectorizeでは、キーワードの一致ではなく「意味が近いかどうか」でデータを探せます。\n{{diagram:0}}\n※ 保存するベクトルはWorkers AIなどのモデルで生成します。意味で探す検索(semantic search)、レコメンデーション、RAG(検索した情報を生成AIに渡して答えさせる手法)などが代表的な用途です。",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/",
       "hint": "『ベクトル』という名前がヒントです。何のデータを保存・検索するデータベースでしょうか。",
       "tags": [
@@ -7195,7 +7195,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Workersの課金軸は「リクエスト数」と「CPU時間」の2つです。Paid(Standard)プランでは月1000万リクエストまで無料で、超過分は100万リクエストあたり$0.30。CPU時間は月3000万ミリ秒まで無料で、超過分は100万ミリ秒あたり$0.02です。重要なのは、外部APIやDBへの応答待ちのような「壁時計時間」には課金や制限が発生しない点です。\n{{diagram:0}}\nこの設計により、I/O待ちが多い処理でも料金が膨らみにくくなっています。\n{{diagram:1}}",
+      "explanation": "Workersの課金軸は「リクエスト数」と「実際にCPUを使った時間(CPU時間)」の2つです。外部APIやDBの応答を待っている間は、時計の上で時間が過ぎていてもCPUは使っていないため、この待ち時間(壁時計時間)には課金も制限も発生しません。\n{{diagram:0}}\nこの設計により、I/O待ちが多い処理でも料金が膨らみにくくなっています。\n{{diagram:1}}\n※ Paid(Standard)プランの内訳は、月1000万リクエストまで無料・超過分は100万リクエストあたり$0.30、CPU時間は月3000万ミリ秒まで無料・超過分は100万ミリ秒あたり$0.02です。",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/pricing/",
       "hint": "「実行時間が長い＝待ち時間が長い」処理と「CPUを使い切っている」処理、どちらが課金対象になるか考えてみましょう。",
       "tags": [
@@ -7462,7 +7462,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Workersは数百のロケーションに分散した数千台のマシン上で動作し、開発者がリージョンを選ばなくても自動的にユーザーに近い場所で実行される「リージョンレス」モデルを採用しています。実行単位にはV8 isolateという軽量なコンテキストを使い、仮想マシンモデルより約100倍高速に起動できます。\n{{diagram:0}}\n一方で「2つのリクエストが同じisolateにルーティングされる保証はない」ため、グローバルな状態変更を前提にした設計は避ける必要があります。\n{{diagram:1}}",
+      "explanation": "Cloudflare Workersは数百のロケーションに分散した数千台のマシン上で動作し、開発者がリージョンを選ばなくても自動的にユーザーに近い場所で実行される「リージョンレス」モデルを採用しています。実行単位にはV8 isolateという軽量なコンテキストを使い、仮想マシンモデルより約100倍高速に起動できます。\n{{diagram:0}}\n※ なお、2つのリクエストが同じisolateで処理される保証はありません。前のリクエストで書き換えた変数の値が次のリクエストにも残っている前提でコードを書かないようにしてください。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/how-workers-works/",
       "hint": "「デプロイ先リージョンを選ぶ必要があるか」という観点で従来型FaaSとの違いを考えてみましょう。",
       "tags": [
@@ -10127,7 +10127,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cloudflare Queues の Pull-based Consumer は、クライアントが Queues の REST API に HTTP POST リクエストを送信してメッセージのバッチを取得し、処理後に lease_id を使って確認応答（ack/retry）する方式です。Cloudflare Workers 以外の任意のインフラや言語からも利用できるため、GPU処理など長時間実行タスクや、上流システムの処理速度に制限がある場合に適しています。batch_size はデフォルト5件（最大100件）、visibility_timeout はデフォルト30秒（最大12時間）です。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "Cloudflare Queues の Pull-based Consumer は、消費する側から Queues の REST API に HTTP POST リクエストを送ってメッセージのバッチを取得し、処理が終わったら受信時に発行された `lease_id` を使って確認応答（ack＝処理済み / retry＝もう一度配信して欲しい）を返す方式です。Cloudflare Workers 以外の任意のインフラや言語からも利用できるため、GPU処理のような長時間実行タスクや、上流システムの処理速度に制限がある場合に適しています。\n{{diagram:0}}\n{{diagram:1}}\n※ 1回に取得できる件数(batch_size)や、応答がないと再配信されるまでの時間(visibility_timeout)の既定値は、上の図のとおりです。",
       "referenceUrl": "https://developers.cloudflare.com/queues/configuration/pull-consumers/",
       "hint": "「Worker の queue ハンドラが自動で呼ばれる」のとは逆に、こちらは誰が能動的に取りに行くか考えましょう。",
       "tags": [
@@ -11302,7 +11302,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "社内メンバーだけに絞りたいときは、アプリケーションの手前にCloudflare Access(Zero Trustの一機能)を挟みます。Accessは「どんな条件を満たした人を通すか」をポリシーとして書き、リクエストごとに認証・認可を行います。条件には、会社のメールドメイン、IdP(Google WorkspaceやOktaなど社員のログインを預かる認証サービス)での認証、デバイスの状態などを使えます。\n{{diagram:0}}\n※ ポリシーはもう少し細かく、通す/拒否するといったアクション、条件の組み合わせ方(Include/Require/Exclude)、判定に使う属性(セレクタ)の3つで構成されます。なかでもAccessの制御そのものを外すBypassアクションは、デバイスの状態を条件に含めると、WorkerがリクエストをインターセプトするケースやZarazが有効な場合には正しく機能しません。その場合は、IdPへのログインを求めない代わりにサービストークンなどで認証するService Authアクションが推奨されています。\n{{diagram:1}}",
+      "explanation": "社内メンバーだけに絞りたいときは、アプリケーションの手前にCloudflare Access(Zero Trustの一機能)を挟みます。Accessは「どんな条件を満たした人を通すか」をポリシーとして書き、リクエストごとに認証・認可を行います。条件には、会社のメールドメイン、IdP(Google WorkspaceやOktaなど社員のログインを預かる認証サービス)での認証、デバイスの状態などを使えます。\n{{diagram:0}}\n※ ポリシーはもう少し細かく、通す/拒否するといったアクション、条件の組み合わせ方(Include/Require/Exclude)、判定に使う属性(セレクタ)の3つで構成されます。\n※ アクションの1つであるBypassはAccessの制御そのものを外すもので、デバイスの状態を条件に含めた場合、WorkerがリクエストをインターセプトするケースやZarazが有効な場合には正しく機能しません。その場合は、IdPへのログインを求めない代わりにサービストークン(人ではなくスクリプトなどが使う認証情報)で認証するService Authアクションが推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
       "hint": "「誰がアクセスできるか」を判定する仕組みと、「アクセス頻度」を制限する仕組みは別物です。",
       "tags": [
@@ -11840,7 +11840,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Hyperdriveは既存のコードとツールをそのまま活かせる設計です。`pg` などのドライバやORMのインスタンス生成時に、接続文字列としてバインディングの `env.HYPERDRIVE.connectionString` を渡すだけで、以降のクエリはHyperdrive経由になります。\n{{diagram:0}}\nリクエストごとに新しいクライアントを作っても、実際のデータベース接続プールはHyperdrive側が維持しているため、クライアント生成は高速です。",
+      "explanation": "Hyperdriveは、Workerと既存のデータベースの間に入り、データベースへの接続をCloudflare側でまとめて維持しておく仕組みです。既存のコードとツールをそのまま活かせる設計で、`pg` などのドライバやORM(コードからデータベースを扱うためのライブラリ)のインスタンス生成時に、接続文字列としてバインディングの `env.HYPERDRIVE.connectionString` を渡すだけで、以降のクエリはHyperdrive経由になります。\n{{diagram:0}}\n※ リクエストごとに新しいクライアントを作っても、実際のデータベース接続(接続プール)はHyperdrive側が維持しているため、クライアント生成は高速です。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/get-started/",
       "hint": "既存のドライバやORMをそのまま使えるのがHyperdriveの利点です。では、コードのどこを変えることになるでしょうか？",
       "tags": [
@@ -12360,9 +12360,9 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Workflowの本体は `WorkflowEntrypoint` を継承したクラスです。`run(event, step)` メソッドが実行の入口で、`event` には起動時のパラメータ(payload)が、`step` にはステップを定義するAPIが渡されます。有効なWorkflowと見なされるには、最低1つのstep呼び出しが必要です。\n{{diagram:0}}\nrunの中ではif文・ループ・try/catchなど通常のJavaScript制御構文をそのまま使ってステップを組み立てられます。",
+      "explanation": "Workflow(処理を複数のステップに分けて順に実行する仕組み)の本体は、`WorkflowEntrypoint` を継承したクラスとして書きます。`run(event, step)` メソッドが実行の入口で、`event` には起動時に渡したパラメータ(payload)が、`step` にはステップを定義するAPIが入っています。有効なWorkflowと見なされるには、`run` の中で最低1つの `step` 呼び出しが必要です。\n{{diagram:0}}\n※ `run` の中では if 文・ループ・try/catch など通常のJavaScriptの制御構文をそのまま使ってステップを組み立てられます。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/workers-api/",
-      "hint": "YAMLやGUIのような宣言的定義ではなく、通常のコードとして書きます。Durable Objects の定義方法を思い出しましょう。",
+      "hint": "YAMLやGUIのような宣言的な定義ではなく、通常のコードとして書きます。実行の入口となる `run(event, step)` をどんな形で置くか考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -13626,7 +13626,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Browser Run(旧 Browser Rendering)は、Cloudflareのグローバルネットワーク上でヘッドレスの Chrome を動かし、プログラムからブラウザを制御できるサービスです。\n{{diagram:0}}\nスクリーンショットの取得、ページのPDF化、Webスクレイピング、E2Eテスト、コンテンツ生成などに使えます。",
+      "explanation": "Browser Run(旧 Browser Rendering)は、Cloudflareのグローバルネットワーク上でヘッドレス(画面を表示せず、プログラムから操作する形)の Chrome を動かし、手元にブラウザを用意しなくてもブラウザ操作を自動化できるサービスです。\n{{diagram:0}}\nスクリーンショットの取得、ページのPDF化、Webスクレイピング、E2Eテスト、コンテンツ生成などに使えます。",
       "referenceUrl": "https://developers.cloudflare.com/browser-run/",
       "hint": "「ヘッドレスブラウザ」を誰が・どこで動かすのかを考えましょう。利用者側か、Cloudflare側か。",
       "tags": [
@@ -13833,7 +13833,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Workers Logsは、wrangler設定ファイルの`observability`フィールドに`enabled: true`を指定し、再デプロイすることで有効になります。新規作成したWorkerにはこの設定がデフォルトで有効です。\n{{diagram:0}}\n`head_sampling_rate`を併せて指定すると、記録する割合も調整できます。",
+      "explanation": "Workers Logsは、wrangler設定ファイルの`observability`フィールドに`enabled: true`を指定し、再デプロイすることで有効になります。コードを書き換える必要はなく、設定ファイルへの追記とデプロイだけで有効化できます。\n{{diagram:0}}\n※ 新規作成したWorkerにはこの設定が最初から入っているため、そのままで有効です。この設定が入っていないWorkerでは、上記のとおり自分で追記してデプロイしてください。\n※ `head_sampling_rate`を併せて指定すると、記録する割合も調整できます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs",
       "hint": "コードを書き換えるのではなく、いつもの「設定ファイル」側で何を切り替えればよいか考えましょう。",
       "tags": [
@@ -14809,9 +14809,9 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "WorkerからContainerを使うには、wrangler設定ファイルに`containers`配列(`image`と`class_name`を含む)を定義し、対応する`durable_objects`バインディングを設定し、`migrations`で`new_sqlite_classes`にそのクラス名を指定する必要があります。`class_name`はDurable Objectのクラス名と一致させます。\n{{diagram:0}}\n`new_classes`ではなく`new_sqlite_classes`を使う点に注意が必要です。",
+      "explanation": "Containerは単体では動かず、Durable Object(同じ名前なら常に同じ1つが選ばれ、ルーティングと永続的な状態を受け持つオブジェクト)とセットで動きます。そのため設定も3点セットになります。(1)wrangler設定ファイルの`containers`配列に使うイメージ(`image`)とクラス名(`class_name`)を書き、(2)対応する`durable_objects`バインディングを設定し、(3)`migrations`で`new_sqlite_classes`にそのクラス名を指定します。`class_name`はDurable Objectのクラス名と一致させます。\n{{diagram:0}}\n※ `migrations`はDurable Objectのクラスを登録する欄です。ここでは`new_classes`ではなく`new_sqlite_classes`を使う点に注意が必要です。",
       "referenceUrl": "https://developers.cloudflare.com/containers/get-started/",
-      "hint": "Containerが誰と1対1で結びついて状態やルーティングを管理しているかを思い出しましょう。",
+      "hint": "Containerは、ルーティングと状態を受け持つ別の仕組みとセットで動きます。設定にも、その相棒の宣言と登録が要ります。",
       "tags": [
         "containers",
         "practical"
@@ -14878,7 +14878,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "`Container`クラスは`DurableObject`を継承しています。Durable Objectがルーティング・永続的な状態・ライフサイクルを管理し、コンテナプロセス自体はLinux VM内でイメージを実行します。そのため`this.ctx.storage`や`this.ctx.id`などDurable Object APIがそのまま使えます。\n{{diagram:0}}\nコンテナのディスクはデフォルトで一時的なので、再起動をまたいで残したいデータはDurable Objectのストレージに保存します。",
+      "explanation": "`Container`クラスは`DurableObject`(状態を保持し続けられる特別なWorker)を継承しています。Durable Object側がルーティング・永続的な状態・ライフサイクルを管理し、コンテナプロセス自体はLinux VM内でコンテナイメージを実行します。役割は分かれていても同じクラスなので、`this.ctx.storage`(永続ストレージ)や`this.ctx.id`などDurable Object APIがそのまま使えます。\n{{diagram:0}}\n※ コンテナのディスクはデフォルトで一時的なので、再起動をまたいで残したいデータはDurable Objectのストレージに保存します。",
       "referenceUrl": "https://developers.cloudflare.com/containers/container-class/",
       "hint": "「誰が状態を覚えていて、誰が実際のプロセスを動かしているか」という役割分担を考えましょう。",
       "tags": [
@@ -15903,7 +15903,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "user Workerは、顧客が書いたコードをプラットフォームがAPI経由でdispatch namespaceにデプロイしたものです。dynamic dispatch Workerから呼び出され、KV・D1・R2などのバインディングを個別に付与することで、顧客ごとに異なるリソースへのアクセスを設定できます。\n{{diagram:0}}",
+      "explanation": "user Workerは、顧客が書いたコードを、プラットフォーム側がAPI経由でdispatch namespace（顧客のWorkerをまとめて格納する入れ物）へデプロイしたものです。リクエストが来ると、どのuser Workerに渡すかを振り分けるdynamic dispatch Workerから呼び出されます。\nKV・D1・R2などのバインディング（Workerのコードからそれらのリソースを呼び出せるようにする結び付け）はuser Workerごとに個別に付与できるため、顧客ごとに異なるリソースへのアクセスを設定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/#user-workers",
       "hint": "誰が書いたコードを、誰が代わりにデプロイしているのか、という役割分担を考えましょう。",
       "tags": [
@@ -16004,7 +16004,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Outbound Workerは、user Workerが行う外向きの`fetch()`リクエストを横取りする仕組みです。どの外部ホストにアクセスしているかのログ記録、許可リスト・ブロックリストによる制御、認証ヘッダーの自動付与などに使えます。Outbound Workerが有効な場合、user Workerは`connect()`によるTCPソケットの直接作成ができなくなります。\n{{diagram:0}}",
+      "explanation": "Workers for Platformsでは、プラットフォームの利用者がデプロイしたWorker(user Worker)が動きます。Outbound Workerは、そのuser Workerが外部へ送る`fetch()`リクエストを間で横取りする仕組みです。どの外部ホストにアクセスしているかのログ記録、許可リスト・ブロックリストによる制御、認証ヘッダーの自動付与などに使えます。\n{{diagram:0}}\n※ Outbound Workerが有効な場合、user Workerは`connect()`によるTCPソケットの直接作成ができなくなります。外向きの通信をすべてOutbound Workerで受けられるようにするためです。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/",
       "hint": "user Workerが「外の世界へ話しかける」通信を、誰かが間に立ってチェックする仕組みを考えましょう。",
       "tags": [
@@ -17726,7 +17726,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cloudflare Realtime SFUは、特定のリージョンやスケーリングを意識することなく、WebRTCによるリアルタイムの音声・映像・データ通信を実現できるインフラです。SDKを提供せず、生のWebRTC APIへのアクセスを前提とした、意図的にシンプルなAPI設計になっています。\n{{diagram:0}}",
+      "explanation": "SFU(Selective Forwarding Unit)は、各参加者が送った音声・映像などのトラックを受け取り、それを必要な相手へ転送する中継役です。Cloudflare Realtime SFUは、これを特定のリージョンやスケーリングを意識することなく使えるようにしたインフラで、WebRTCによるリアルタイムの音声・映像・データ通信を実現できます。\n{{diagram:0}}\n※ 専用のSDKは提供されず、生のWebRTC APIへ直接アクセスする前提の、意図的にシンプルなAPI設計になっています。",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/introduction/",
       "hint": "「どこに、どれだけのユーザーがいても」通信できるようにするには何が必要か考えましょう。",
       "tags": [
@@ -17777,7 +17777,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Realtimeは「room」という概念を持たず、SessionとTrackというより粒度の細かい概念だけを扱います。各参加者がどのTrackを公開・購読しているかを管理し、room相当の仕組みを実装するのはアプリケーション側の責任です。\n{{diagram:0}}",
+      "explanation": "Cloudflare Realtimeは「room」という概念を持たず、Session(参加者ごとの接続)とTrack(その接続で送受信する音声・映像などの流れ)という、より粒度の細かい概念だけを扱います。Realtimeが管理するのは各SessionがどのTrackを公開・購読しているかまでで、「今この部屋に誰がいるか」を覚えておくroom相当の仕組みを実装するのはアプリケーション側の責任です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/introduction/",
       "hint": "「誰が今この会話に参加しているか」を覚えておくのは、サービス側なのかアプリ側なのか考えましょう。",
       "tags": [
@@ -17829,7 +17829,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "SessionはWebRTCのPeerConnectionに1対1で対応し、クライアントとCloudflareのAnycastルーティングによって決まる最寄りのデータセンターとの間の通信チャネルを表します。通常、1つのクライアントは1つのSessionを維持し、そのSession内で複数のTrackを扱います。\n{{diagram:0}}",
+      "explanation": "SessionはWebRTCのPeerConnection(クライアントとサーバーの間に張る接続そのもの)に1対1で対応し、クライアントと最寄りのCloudflareデータセンターとの間の通信チャネルを表します。通常、1つのクライアントは自分用のSessionを1つ維持し、その中で音声・映像・データといった個々のメディアをTrackという単位で扱います。\n{{diagram:0}}\n※ どのデータセンターにつながるかは、CloudflareのAnycastルーティングによって自動的に決まります。",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/sessions-tracks/",
       "hint": "WebRTCの接続そのものと、その中でやり取りされる個々のメディアの違いを意識しましょう。",
       "tags": [
@@ -17876,7 +17876,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "TrackはWebRTCのMediaStreamTrackに対応する概念です。あるSessionからCloudflareにTrackをpush(公開)すると、グローバルに一意なIDが割り当てられ、そのIDを使って別のSession(別の場所にいる別のクライアント)からでもそのTrackをpull(購読)できます。\n{{diagram:0}}",
+      "explanation": "Trackは、音声や映像1本ぶんの流れを表す単位で、ブラウザのWebRTCが扱うMediaStreamTrackに対応する概念です。あるSession(クライアントとCloudflareの間に張られた1本の接続)からCloudflareへTrackをpush(公開)すると、そのTrackにグローバルに一意なIDが割り当てられます。別の場所にいる別のクライアントは、そのIDを指定するだけで同じTrackをpull(購読)できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/sessions-tracks/",
       "hint": "1つの「放送」を、世界中のどこからでも受信できるようにするには何が必要か考えましょう。",
       "tags": [
@@ -17924,7 +17924,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "TURN(Traversal Using Relays around NAT)は、NATやファイアウォールを越えてピア間のリアルタイム通信を可能にするために、通信を中継(リレー)するプロトコルです。STUNプロトコルの拡張として、RFC 8656で定義されています。\n{{diagram:0}}",
+      "explanation": "TURN(Traversal Using Relays around NAT)は、NAT(ルーターが内側のプライベートIPと外側のグローバルIPを変換する仕組み)やファイアウォールに阻まれて相手と直接つながれないときに、間に立つサーバーが通信を中継(リレー)することでピア間のリアルタイム通信を成立させるプロトコルです。\n{{diagram:0}}\n※ STUNというプロトコルの拡張として、RFC 8656で定義されています。",
       "referenceUrl": "https://developers.cloudflare.com/realtime/turn/what-is-turn/",
       "hint": "直接つながれない2者の間に立って、荷物を運んでくれる「仲介役」を考えましょう。",
       "tags": [
@@ -17988,7 +17988,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "VPNはデバイスの全インターネット通信を暗号化し、VPNサーバー経由にルーティングする汎用的なツールで、ネットワーク層で動作し全体の通信速度にも影響します。一方TURNは、それを使うよう設定された特定のアプリケーション(WebRTCを使うリアルタイム通信アプリなど)の通信にのみ影響する、アプリケーション層の専用の仕組みです。\n{{diagram:0}}",
+      "explanation": "TURNは、NAT（家庭や社内のルーターが行うアドレス変換）やファイアウォールに阻まれて端末同士が直接つながれないときに、中継サーバーを経由させて通信を成立させる仕組みです。\nこれに対しVPNは、デバイスの全インターネット通信を暗号化してVPNサーバー経由にルーティングする汎用的なツールで、ネットワーク層で動作するため全体の通信速度にも影響します。一方TURNは、それを使うよう設定された特定のアプリケーション(WebRTCを使うリアルタイム通信アプリなど)の通信にのみ影響する、アプリケーション層の専用の仕組みです。どちらも「サーバーを経由させる」点は似ていますが、影響が及ぶ範囲が違います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/turn/what-is-turn/#turn-vs-vpn",
       "hint": "「すべての通信に影響するか」「特定のアプリの通信にだけ影響するか」という範囲の違いを考えましょう。",
       "tags": [
@@ -18759,7 +18759,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "VPC Servicesは、特定のホストとポートの組み合わせを対象にした個別のバインディングを事前に登録して使います。一方VPC Networksは、Cloudflare Tunnel全体やCloudflare Meshといったネットワーク全体にバインドし、実行時に`fetch()`や`connect()`へ渡すURL・アドレスによって接続先が決まります。\n{{diagram:0}}",
+      "explanation": "バインディングとは、Workerからどこへ接続してよいかを設定であらかじめ宣言しておく仕組みです。VPC Servicesでは、特定のホストとポートの組み合わせごとにこのバインディングを1つずつ事前登録するため、接続先は登録したものに限られます。一方VPC Networksは、Cloudflare Tunnel全体やCloudflare Meshといったネットワーク単位でバインドし、実行時に`fetch()`や`connect()`へ渡すURL・アドレスによって接続先が決まります。\n{{diagram:0}}\n※ Cloudflare TunnelとCloudflare Meshは、いずれも自社のプライベートネットワークをCloudflareにつなぐための仕組みです。",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-networks/#vpc-networks-vs-vpc-services",
       "hint": "「あらかじめ決まった行き先だけに絞る」のか「行き先を実行時に自由に選べるようにする」のか、という違いを考えましょう。",
       "tags": [
@@ -18871,7 +18871,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "TCPのVPC Serviceは、プライベートネットワーク内のPostgreSQLやMySQLなどのデータベースへの経路を用意します。`app_protocol`にpostgresqlやmysqlを指定しておくと、Hyperdriveがそのワイヤープロトコルを認識できるようになり、Hyperdriveと組み合わせることで接続プーリングやクエリキャッシュ付きでWorkerからプライベートデータベースに接続できます。\n{{diagram:0}}",
+      "explanation": "TCPのVPC Serviceは、インターネットに公開していないプライベートネットワーク内のPostgreSQLやMySQLなどのデータベースへ、Workerから届くための経路を用意する仕組みです。その経路にHyperdrive(データベースへの接続を使い回し、クエリ結果をキャッシュして接続を効率化するサービス)を組み合わせます。VPC Serviceの`app_protocol`にpostgresqlやmysqlを指定しておくと、Hyperdriveがそのデータベースとの通信形式(ワイヤープロトコル)を認識できるようになり、接続プーリングやクエリキャッシュ付きでWorkerからプライベートデータベースに接続できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#tcp-services",
       "hint": "「プライベート網への経路」を用意する仕組みと、「接続を効率化する」仕組みは別の役割分担だと考えましょう。",
       "tags": [
@@ -18971,7 +18971,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Workers VPCは現在ベータ段階にあり、機能やAPIは正式リリースまでに変更される可能性があります。ベータ期間中は、すべてのWorkersプランで無料に利用でき、通常のWorkersの料金(コンピュート時間・リクエスト数)のみが適用されます。\n{{diagram:0}}",
+      "explanation": "Workers VPCは、Workersからプライベートネットワーク(VPC)の中にあるリソースへ接続するための機能です。現在はベータ段階にあり、機能やAPIは正式リリースまでに変更される可能性があります。ベータ期間中はすべてのWorkersプランで無料に利用でき、かかるのは通常のWorkersの料金(コンピュート時間・リクエスト数)だけです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/reference/pricing/",
       "hint": "「まだ正式版ではない」段階の機能によくある料金の扱いを考えましょう。",
       "tags": [
@@ -19808,7 +19808,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "ホスト名の所有権検証と証明書の検証は、異なるトークンとAPIフィールドを使います。所有権検証には`ownership_verification`や`ownership_verification_http`が使われ、カスタムホスト名の`status`に影響します。証明書検証には`ssl.validation_records`が使われ、`ssl.status`に影響します。\n{{diagram:0}}",
+      "explanation": "カスタムホスト名では、性質の異なる2つの確認が別々に行われます。1つは「このドメインは本当にあなたのものか」を確かめる所有権検証、もう1つは「そのドメイン向けに証明書を発行してよいか」を確かめる証明書検証です。この2つは使うトークンもAPIフィールドも別で、所有権検証には`ownership_verification`や`ownership_verification_http`が使われてカスタムホスト名の`status`に影響し、証明書検証には`ssl.validation_records`が使われて証明書側の`ssl.status`に影響します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/",
       "hint": "「このドメインは本当にあなたのものか」の確認と、「証明書を発行していいか」の確認は、別々の手続きだと考えましょう。",
       "tags": [
@@ -19861,7 +19861,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "リアルタイム検証は、顧客がDNSルーティングレコードを追加した時点でCloudflareが自動的に検証するため、顧客に追加の作業を求めません。ただしCloudflareがDNSレコードを確認するまでに数秒かかり、検証バックオフスケジュールにより遅延が増えることもあるため、その間ダウンタイムが生じる可能性があります。ダウンタイムを完全に避けたい場合は、事前検証(pre-validation)を使います。\n{{diagram:0}}",
+      "explanation": "リアルタイム検証は、顧客がDNSルーティングレコードを追加した時点でCloudflareが自動的に検証するため、顧客に追加の作業を求めません。ただしCloudflareがDNSレコードを確認するまでに数秒かかり、その間ダウンタイムが生じる可能性があります。\n一方の事前検証(pre-validation)は、トラフィックを切り替える前にホスト名の所有権確認を先に済ませておく方式です。顧客に一手間をかけてもらう代わりに、ダウンタイムを完全に避けられます。\n{{diagram:0}}\n※ リアルタイム検証では、検証バックオフスケジュール(Cloudflareが確認を再試行する間隔の決まり)により、待ち時間がさらに増えることもあります。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/",
       "hint": "「顧客の手間を減らす」ことと「ダウンタイムをゼロにする」ことは、必ずしも両立しないという点を考えましょう。",
       "tags": [
@@ -20814,7 +20814,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Pipelinesは現在オープンベータ段階にあり、Workers Paidプランの開発者であれば、営業への個別申し込みなしに誰でも利用を開始できます。Freeプランでは利用できません。\n{{diagram:0}}",
+      "explanation": "Cloudflare Pipelinesは、Workersなどから送られてくるイベントデータを受け取り、まとめてR2などのストレージへ書き出すデータ取り込みの仕組みです。現在はオープンベータ段階にあり、Workers Paidプランの開発者であれば、営業への個別申し込みなしに誰でも利用を開始できます。Freeプランでは利用できません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/",
       "hint": "「まだ正式版ではない」段階の機能に、どのプランの開発者がアクセスできるか考えましょう。",
       "tags": [
@@ -20871,7 +20871,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "構造化されたStreamは、定義されたスキーマのフィールドと型に従ってイベントを検証します。非構造化のStreamは任意の有効なJSON構造を受け入れ、単一の`value`カラムにデータを格納します。構造化されたStreamでスキーマに違反するイベントは、エラーとして送信元に返されるのではなく、黙って破棄(ドロップ)されます。\n{{diagram:0}}",
+      "explanation": "Streamは、送信元から届いたイベントを受け取る入り口です。これには2つのモードがあります。構造化されたStreamは、あらかじめ定義したスキーマ(どのフィールドがどの型で入るかの取り決め)に従ってイベントを検証します。非構造化のStreamは検証を行わず、任意の有効なJSON構造をそのまま受け入れて、単一の`value`カラムにデータを格納します。\n{{diagram:0}}\n※ 構造化されたStreamでスキーマに違反したイベントは、エラーとして送信元に返されるのではなく、黙って破棄(ドロップ)されます。",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#schema-validation",
       "hint": "「決まった形にきっちり合わせる」のか「とにかく何でも受け入れる」のか、というStreamの2つのモードを考えましょう。",
       "tags": [
@@ -21608,7 +21608,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Accessのポリシーは、何が起きるかを決めるAction、条件の組み合わせ方を決めるRule type(Include・Require・Exclude)、判定に使う属性であるSelector(メールアドレス・国・デバイス状態など)、そしてその具体的な値であるValuesという4つの要素で構成されます。\nActionには4種類あります。Allowは条件を満たしたら通し、Blockは拒否します。BypassはAccessの制御そのものを外すもので、ログも残りません。Service Authは、IdPへのログインを求めない代わりにサービストークンや相互TLSで認証させるもので、Bypassと違って制御とログを維持できます。\n{{diagram:0}}",
+      "explanation": "Cloudflare Accessのポリシーは、何が起きるかを決めるAction、条件の組み合わせ方を決めるRule type(Include・Require・Exclude)、判定に使う属性であるSelector(メールアドレス・国・デバイス状態など)、そしてその具体的な値であるValuesという4つの要素で構成されます。\n{{diagram:0}}\n※ 4要素のうちActionには4種類あります。Allowは条件を満たしたら通し、Blockは拒否します。BypassはAccessの制御そのものを外すもので、ログも残りません。Service Authは、IdP(ユーザー認証を担うサービス)への人のログインを求めない代わりに、サービストークンや相互TLSといった機械向けの認証情報で確認する方式で、Bypassと違って制御とログを維持できます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
       "hint": "「何をするか」「どう組み合わせるか」「何を見るか」「どんな値か」という4つの問いに答える形を考えましょう。",
       "tags": [
@@ -22687,7 +22687,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "複数のゾーンに適用できるルールセットを定義する「カスタムルールセット」は、ゾーンレベルであればすべての顧客が作成・デプロイできます。一方、アカウントレベルのカスタムルールセットはEnterpriseプランが必要です。現時点ではダッシュボードがゾーンレベルのカスタムルールセットの設定をサポートしていないため、APIを使って設定・デプロイする必要があります。\n{{diagram:0}}",
+      "explanation": "Cloudflareでは、登録した1つのドメインを「ゾーン」と呼びます。複数のゾーンにまとめて適用できるルールの束が「カスタムルールセット」で、ゾーンレベルのものであればすべての顧客が作成・デプロイできます。一方、アカウントレベルのカスタムルールセットにはEnterpriseプランが必要です。\n{{diagram:0}}\n※ 現時点ではダッシュボードがゾーンレベルのカスタムルールセットの設定に対応していないため、この設定はAPIから行う必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/waf/custom-rules/",
       "hint": "「1つのゾーンだけの話」ではなく「複数ゾーンにまたがるルールの束」を、誰が使えるか考えましょう。",
       "tags": [
@@ -22893,7 +22893,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflareは、Cloudflareのセキュリティチームが作成したCloudflare Managed Ruleset、OWASPのModSecurity Core Rule Setを実装したOWASP Core Ruleset、全プランで利用できるFree Managed Rulesetなどのリクエストフェーズ向けマネージドルールセットに加え、レスポンスフェーズで動作するSensitive Data Detection(機密データのダウンロードを監視)を提供しています。なお、旧来のExposed Credentials Checkは非推奨で、現在はLeaked credentials detectionの利用が推奨されています。\n{{diagram:0}}",
+      "explanation": "マネージドルールセットは、Cloudflareがあらかじめ用意して更新し続けるルールの集まりです。リクエストを検査するものとして、Cloudflareのセキュリティチームが作成したCloudflare Managed Ruleset、OWASPのModSecurity Core Rule Setを実装したOWASP Core Ruleset、全プランで利用できるFree Managed Rulesetがあります。これに加えて、レスポンス(オリジンから返る中身)のフェーズで動作するSensitive Data Detectionがあり、機密データのダウンロードを監視します。\n{{diagram:0}}\n※ 旧来のExposed Credentials Check(漏洩した認証情報のチェック)は非推奨で、現在はLeaked credentials detectionの利用が推奨されています。",
       "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/",
       "hint": "「リクエストを検査するもの」と「レスポンスの中身を監視するもの」の両方があることを考えましょう。",
       "tags": [
@@ -23476,7 +23476,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Bot Fight ModeはRuleset Engineを使わない別の評価パイプラインで動作しているため、WAFカスタムルールのSkip・Bypass・Allowといったアクションはこの機能に対して効果を持ちません。特定のトラフィックだけ例外にしたい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用する必要があります。なお、IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。\n{{diagram:0}}",
+      "explanation": "WAFカスタムルールのSkip・Bypass・Allowは、Ruleset Engine(WAFカスタムルールなどのルールを評価する共通の基盤)の上で動く機能に対してだけ効きます。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらのアクションで例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/bot-fight-mode/#limitations",
       "hint": "Bot Fight Modeが「WAFと同じ仕組みの上で動いているかどうか」を考えましょう。",
       "tags": [
@@ -23529,7 +23529,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Super Bot Fight Modeは、Bot Fight Modeと比較して、カテゴリ(Definitely automated・Likely automated・Verified botsなど)ごとに個別のアクションを設定できる機能、Bot Analytics、WAFカスタムルールのSkipアクションを使った例外設定を追加します。ただし、リクエスト単位のボットスコアを使った細かい制御は提供されず、それはBot Managementの領域です。\n{{diagram:0}}",
+      "explanation": "Bot Fight ModeもSuper Bot Fight Mode(SBFM)も、サイトに来る自動化されたアクセス(ボット)を検出して対処する機能です。Bot Fight Modeが一律のオン/オフしか持たないのに対し、SBFMはカテゴリ(Definitely automated＝ほぼ確実に自動化・Likely automated＝自動化の可能性が高い・Verified bots＝身元が確認されたボット)ごとに個別のアクションを設定でき、加えてBot Analytics(ボット判定の状況を確認する分析画面)と、WAFカスタムルールのSkipアクションによる例外設定(特定の条件に当てはまるリクエストだけボット対策の対象から外す指定)を追加します。\n{{diagram:0}}\n※ リクエスト単位のボットスコアを使った細かい制御はSBFMには含まれません。それはBot Managementという別製品の領域です。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/",
       "hint": "「一律オン/オフ」から「カテゴリ別に選べる」ようになった点と、例外を作れるようになった点を考えましょう。",
       "tags": [
@@ -23627,7 +23627,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Super Bot Fight Modeでは、Definitely automated traffic(明らかに自動化されたトラフィック)・Likely automated traffic(自動化されている可能性が高いトラフィック)・Verified bots(検証済みボット)という3つのカテゴリごとに個別のアクションを設定できます。これらに加え、Static resource protection・JavaScript detections・Optimize for WordPressといった追加設定もあります。\n{{diagram:0}}",
+      "explanation": "Super Bot Fight Modeは、届いたトラフィックがどれくらい自動化されたものかでカテゴリ分けし、カテゴリごとに個別のアクションを設定できる機能です。カテゴリはDefinitely automated traffic(明らかに自動化されたトラフィック)・Likely automated traffic(自動化されている可能性が高いトラフィック)・Verified bots(Cloudflareが身元を確認したボット)の3つです。\n{{diagram:0}}\n※ カテゴリ以外にも、Static resource protection・JavaScript detections・Optimize for WordPressといった追加設定があります。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/",
       "hint": "「確実に自動」「おそらく自動」「Cloudflareが身元を保証した自動」という3段階の確信度を考えましょう。",
       "tags": [
@@ -24398,7 +24398,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "API Shieldのドキュメントは、多くの企業が自社でも把握していないエンドポイント(ゾンビエンドポイント)を含む大量のAPIを抱えていること、多くのAPIがユーザー基盤を支えるために負のセキュリティモデルで保護されておりクレデンシャルスタッフィング攻撃や自動スキャンに弱いこと、エンドポイントやユーザーが多いためブルートフォース攻撃に気づきにくいこと、開発チーム自身も一般的でない使用パターンを把握していないため高度な攻撃はさらに気づきにくいことを課題として挙げています。\n{{diagram:0}}",
+      "explanation": "API Shieldのドキュメントは、APIならではの課題を4つ挙げています。(1)多くの企業が、自社でも把握していないエンドポイント(通称ゾンビエンドポイント)を含む大量のAPIを抱えている。(2)多くのAPIが「負のセキュリティモデル」(既知の攻撃だけをブロックし、それ以外は通す方式)で守られているため、クレデンシャルスタッフィング攻撃(どこかで漏れたIDとパスワードを大量に試す攻撃)や自動スキャンに弱い。(3)エンドポイントもユーザーも数が多いため、ブルートフォース攻撃が紛れて気づきにくい。(4)開発チーム自身が一般的でない使われ方を把握しきれていないため、高度な多段階攻撃はさらに気づきにくい。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/",
       "hint": "「自分たちでも全容を把握しきれていない」規模のAPI群が抱える、発見しづらい種類のリスクを考えましょう。",
       "tags": [
@@ -24500,7 +24500,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Schema Validation 2.0では、アップロードしたスキーマがSchema Profileの入力となり、プロファイルが利用可能になるとCloudflareが「常時オン(always-on)」の検出を生成します。ただしこの検出はそれ自体ではトラフィックを緩和しません。まずProfile Analysisで検出結果を確認し、`cf.schema_validation.uploaded.violated`フィールドを条件に使ったWAFカスタムルールでプロファイルを強制することで、初めてブロック等の緩和が適用されます。\n{{diagram:0}}\n以前の「グローバルなデフォルトアクション(`Log`/`Block`/`None`)を設定する」方式はClassic Schema Validationのモデルであり、現行版では検出と緩和が分離されています。",
+      "explanation": "Schema Validationは、APIが受け取るリクエストが、あらかじめ定義した仕様(スキーマ)どおりの形かを検査する機能です。ここで大事なのは、違反を「見つけること(検出)」と「止めること(緩和)」が別の段階だという点です。スキーマをアップロードすると常時オン(always-on)の検出がCloudflare側で自動的に作られますが、この検出だけではトラフィックは止まりません。実際にブロックするには、違反したかどうかを表す`cf.schema_validation.uploaded.violated`フィールドを条件にしたWAFカスタムルールを、自分で作る必要があります。\n{{diagram:0}}\n※ アップロードしたスキーマはSchema Profileの入力となり、検出された違反はProfile Analysisで確認できます。\n※ 以前のClassic Schema Validationは、グローバルなデフォルトアクション(`Log`/`Block`/`None`)を設定する方式でした。現行の2.0では検出と緩和が分離されています。",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/",
       "hint": "「違反を見つけること」と「違反を止めること」が同じ操作なのか、別々の段階なのかを考えましょう。",
       "tags": [
@@ -24760,7 +24760,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "mTLSは、モバイルアプリ・IoTデバイス・サービス間通信といったAPIクライアントの身元を検証するために使われます。gRPCベースのAPIにも対応しています。全プランでCloudflare管理のCA(認証局)を使ったmTLSを設定でき、Enterpriseプランではさらに最大5つの独自(非Cloudflare)CAをアップロードできます。上限を引き上げたい場合はaccount teamに問い合わせます。\n{{diagram:0}}",
+      "explanation": "mTLS(相互TLS)は、サーバー側だけでなくクライアント側も証明書を提示して互いに身元を確認する方式です。これにより、モバイルアプリ・IoTデバイス・サービス間通信といったAPIクライアントが正規のものかどうかを検証できます。証明書を発行するCA(認証局)は、全プランでCloudflare管理のCAを使えます。Enterpriseプランではさらに、自分で用意した独自(非Cloudflare)CAを最大5つアップロードできます。\n{{diagram:0}}\n※ gRPCベースのAPIにも対応しています。独自CAの上限を引き上げたい場合はaccount teamに問い合わせます。",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/mtls/",
       "hint": "「証明書の発行元」を、Cloudflareに任せるか自前で用意するかという2つの選択肢を考えましょう。",
       "tags": [
@@ -25265,7 +25265,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Load Balancingは、ホスト名に紐づくLoad Balancerを最上位とし、その配下にエンドポイントの集まりであるPoolを、さらにPoolの配下に実際のオリジンを表すEndpointを持つという階層構造になっています。公開Load Balancerを設定すると、Cloudflareは指定したホスト名に対してLB DNSレコードを自動的に作成します。\n{{diagram:0}}",
+      "explanation": "Cloudflare Load Balancingは、ホスト名に紐づくLoad Balancerを最上位とし、その配下にエンドポイントの集まりであるPoolを、さらにPoolの配下に実際のオリジンサーバーを表すEndpointを持つ、3段の入れ子構造になっています。\n{{diagram:0}}\n※ インターネットに公開するLoad Balancerを作成すると、指定したホスト名に対応するDNSレコードはCloudflareが自動的に作成します。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/load-balancing-components/",
       "hint": "「ホスト名」「オリジンのグループ」「個々のオリジン」という3段階の入れ子構造を考えましょう。",
       "tags": [
@@ -25416,7 +25416,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Off - Failoverステアリングは、Pool順序をフェイルオーバーの優先順位として使います。Pool 1(プライマリ)が健全な間は常にPool 1へトラフィックが送られ、Pool 1が不健全になるとPool 2(スタンバイ)へ切り替わります。その後Pool 1が健全な状態に復帰すると、セッションアフィニティなど他の設定が個別のリクエストを引き続きPool 2に留める必要がない限り、トラフィックは自動的にPool 1へ戻ります。この挙動をフェイルバックと呼びます。\n{{diagram:0}}",
+      "explanation": "Off - Failoverステアリングは、Pool順序をフェイルオーバーの優先順位として使います。Pool 1(プライマリ)が健全な間は常にPool 1へトラフィックが送られ、Pool 1が不健全になるとPool 2(スタンバイ)へ切り替わります。その後Pool 1が健全な状態に復帰すると、トラフィックは自動的にPool 1へ戻ります。この「元へ戻る」挙動をフェイルバックと呼びます。\n{{diagram:0}}\n※ ただし、セッションアフィニティ(同じ利用者を同じPoolに固定し続ける設定)など他の設定が個別のリクエストをPool 2に留める場合、そのリクエストはPool 1へ戻りません。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/#failback-behavior",
       "hint": "「壊れたら避難する」だけでなく、「直ったら元に戻る」という双方向の挙動を考えましょう。",
       "tags": [
@@ -25611,7 +25611,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "カスタムLoad Balancingルールは、Geo Steeringと互換性がありません。そのため、Geo Steeringが設定されたLoad Balancerに適用したカスタムルールは期待通りに機能しません。また、あるリージョンに追加したPoolは、Geo Steering設定から明示的に削除するまで削除できず、この設定はTraffic Steering方式を変更しても自動的には削除されません。\n{{diagram:0}}",
+      "explanation": "Geo Steeringは、訪問者がいるリージョンごとに、どのPool（オリジンをまとめたグループ）へ振り分けるかを指定する方式です。このGeo Steeringと、任意の条件を書けるカスタムLoad Balancingルールは互換性がなく、Geo Steeringが設定されたLoad Balancerにカスタムルールを適用しても期待通りには機能しません。\n{{diagram:0}}\n※ あるリージョンに追加したPoolは、Geo Steeringの設定から明示的に外すまで削除できません。この設定はTraffic Steeringの方式を別のものに変えても自動的には消えないため、手動で外す必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/geo-steering/",
       "hint": "地理的な振り分けロジックと、任意の条件を書けるカスタムルールが、うまく共存できるかどうかを考えましょう。",
       "tags": [
@@ -25715,7 +25715,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflare Load Balancingは、HTTP/HTTPS・TCP・ICMP Ping・UDP-ICMP・SMTPという5種類のプロトコルに対応するモニターをサポートしています。それぞれ成功基準や健全性の判定方法が異なり、例えばTCPはSYN/ACKの受信、SMTPはHELO・QUITコマンドへの正しい応答コードの受信を基準とします。\n{{diagram:0}}",
+      "explanation": "モニターは、振り分け先のオリジンへ定期的にリクエストを送り、正常に応答するかを確かめる死活監視の仕組みです。Cloudflare Load Balancingは、HTTP/HTTPS・TCP・ICMP Ping・UDP-ICMP・SMTPという5種類のプロトコルのモニターに対応しているため、HTTP以外で待ち受けるオリジンも監視できます。\n{{diagram:0}}\n※ 成功と判定する基準はプロトコルごとに異なります。例えばTCPはSYN/ACKの受信、SMTPはHELO・QUITコマンドへの正しい応答コードの受信を基準とします。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/#supported-protocols",
       "hint": "「アプリケーション層のプロトコルから、ネットワーク層の疎通確認まで」複数の種類があると考えましょう。",
       "tags": [
@@ -26815,7 +26815,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Tiered Cache Topologyには、Cloudflareが最適な上位層を自動選択するSmart Tiered Cache、全世界のCloudflareデータセンターを上位層として使えるGeneric Global Tiered Cache、上位層が1〜2リージョンに集中している場合に有効なRegional Tiered Cache、Enterprise顧客がaccount teamと連携して独自のトポロジーを組めるCustom Tiered Cacheという種類があります。\n{{diagram:0}}",
+      "explanation": "Tiered Cacheは、ユーザーに最も近い下位層のデータセンターがキャッシュを持っていないとき、すぐオリジンに問い合わせず「上位層」のデータセンターに聞きに行く仕組みです。Tiered Cache Topologyは、その上位層をどう決めるかの設定で、Cloudflareが最適な上位層を自動選択するSmart Tiered Cache、全世界のCloudflareデータセンターを上位層として使えるGeneric Global Tiered Cache、上位層が1〜2リージョンに集中している場合に有効なRegional Tiered Cache、独自のトポロジーを組めるCustom Tiered Cacheの4種類があります。\n{{diagram:0}}\n※ Custom Tiered Cacheは、Enterprise顧客がaccount team(担当のCloudflare側チーム)と連携して構成します。",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/",
       "hint": "「自動で最適化」「世界中すべて」「一部リージョンに絞る」「完全にオーダーメイド」という4つの異なるアプローチを考えましょう。",
       "tags": [
@@ -28050,7 +28050,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare DNSは、Anycastネットワークを活用した高速で堅牢な権威DNSサービスであり、DDoS攻撃やBGP経路のハイジャック・リーク(誤った経路情報の広告)からドメインを保護します。すべてのCloudflareプランで利用できます。\n{{diagram:0}}",
+      "explanation": "Cloudflare DNSは、そのドメインのDNSレコードについて正式な回答を返す側、つまり権威DNSとして動くサービスです。問い合わせを他所へ取り次ぐキャッシュDNS(フルリゾルバ)とは役割が違います。世界中の拠点が同じIPアドレスで応答するAnycastネットワークの上で動くため、DDoS攻撃やBGP経路のハイジャック・リーク(誤った経路情報の広告)からドメインを保護できます。すべてのCloudflareプランで利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/",
       "hint": "「世界中に分散した拠点から同じIPアドレスで応答する」仕組みがもたらす耐障害性を考えましょう。",
       "tags": [
@@ -28101,7 +28101,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflareでプロキシ(オレンジクラウド)にできるのは、IPアドレス解決に使われるA・AAAA・CNAMEレコードのみです。MXやTXTなど、それ以外の種類のレコードは常にDNS-only(グレークラウド)として扱われます。\n{{diagram:0}}",
+      "explanation": "プロキシ(オレンジクラウド)は、そのレコードが指す宛先へのHTTP/HTTPSトラフィックをCloudflare経由で処理する設定です。そのため対象になるのは、通信の宛先となるIPアドレスの解決に使われるA・AAAA・CNAMEレコードのみで、MXやTXTなどそれ以外の種類のレコードは常にDNS-only(グレークラウド)として扱われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/",
       "hint": "「実際にHTTP/HTTPSトラフィックの宛先を指すレコード」だけがプロキシの対象になると考えましょう。",
       "tags": [
@@ -28709,7 +28709,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "CloudflareでDNSSECを有効化すると、Cloudflareがゾーンに署名し、公開署名鍵を公開したうえでDS(Delegation Signer)レコードを生成します。利用者はこのDSレコードをレジストラ(ドメイン登録事業者)側に追加する必要があります(Cloudflare Registrarを使っている場合は自動的に処理されます)。\n{{diagram:0}}",
+      "explanation": "DNSSECは、DNSの応答に電子署名を付けて、途中で改ざんされていないことを受け手が検証できるようにする仕組みです。CloudflareでDNSSECを有効化すると、Cloudflareがそのゾーン(そのドメインのDNSレコード一式)に署名し、公開署名鍵を公開したうえでDS(Delegation Signer)レコードを生成します。利用者はこのDSレコードを、ドメインを登録したレジストラ(ドメイン登録事業者)側に追加します。上位のレジストラ側にDSレコードが載って初めて、Cloudflareの署名が正しいものだと辿れるようになります。\n{{diagram:0}}\n※ Cloudflare Registrarでドメインを管理している場合、このDSレコードの登録は自動的に処理されます。",
       "referenceUrl": "https://developers.cloudflare.com/dns/dnssec/",
       "hint": "「Cloudflare側でまず何が生成されるか」「それをどこに登録するか」という順序を考えましょう。",
       "tags": [
@@ -30536,7 +30536,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "HTTP/2はすべてのプランでデフォルトで有効になっています。利用にはCloudflareエッジでのSSL証明書が必要です。Freeプランでは、この設定を無効化することはできません。\n{{diagram:0}}",
+      "explanation": "HTTP/2はHTTP/1.1の後継となる通信プロトコルで、1本の接続で複数のリクエストをまとめてやり取りできるため、ページの読み込みが速くなります。CloudflareではすべてのプランでHTTP/2がデフォルトで有効になっており、Freeプランではこの設定を無効化することはできません。利用にはCloudflareエッジでのSSL証明書が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/protocol/http2/",
       "hint": "「デフォルトで有効」という点と「Freeプランではオフにできない」という点は、別々の事実として押さえましょう。",
       "tags": [
@@ -32401,7 +32401,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "新しいコンテンツセキュリティルールを導入する際は、まずLogアクションでルールを作成し、一定期間の違反(rule violations)を確認して意図しないリソースがブロックされないことを検証します。検証が済んだら、アクションをAllowへ切り替えて実際のブロックを有効化するという段階的な導入が推奨されています。\n{{diagram:0}}",
+      "explanation": "新しいコンテンツセキュリティルールを導入する際は、まずLogアクションでルールを作成します。Logは違反(rule violations)を記録するだけでブロックはしないアクションなので、一定期間ようすを見て、意図しないリソースが引っかかっていないかを確認できます。検証が済んだらAllowアクションへ切り替えます。Allowはルールで許可したリソースだけを通し、それ以外をブロックするアクションで、ここで初めて実際のブロックが有効になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/#rule-actions",
       "hint": "いきなり本番でブロックを始めるのではなく、まず「様子見」の段階を挟むことを考えましょう。",
       "tags": [
@@ -32783,7 +32783,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "DNSポリシーはドメインへの接続確立前にブロックするDNSレイヤーのフィルタリング、NetworkポリシーはIPアドレス・ポート・プロトコルで制御するLayer 4のステートフルファイアウォール(FWaaS)、HTTPポリシーはTLS復号とディープパケットインスペクションを行うLayer 7のアプリケーションファイアウォールにそれぞれ相当します。\n{{diagram:0}}",
+      "explanation": "DNSポリシーはドメインへの接続確立前にブロックするDNSレイヤーのフィルタリング、NetworkポリシーはIPアドレス・ポート・プロトコルで制御するLayer 4のステートフルファイアウォール(FWaaS)、HTTPポリシーはTLS復号とディープパケットインスペクションを行うLayer 7のアプリケーションファイアウォールにそれぞれ相当します。\n言い換えると、DNSポリシーは「その名前のサイトに接続する前に止める」、Networkポリシーは「どのIP・ポートと通信してよいかで止める」、HTTPポリシーは「暗号を解いて通信の中身まで見て止める」という違いです。\n{{diagram:0}}\n※ Layer 4はIPアドレスとポートを扱う層、Layer 7はHTTPなどアプリケーションを扱う層を指します。ステートフルは、パケットを1つずつ単独で見るのではなく通信のつながりを覚えたうえで判定する方式、FWaaSはFirewall as a Serviceの略でクラウド側で提供されるファイアウォールのことです。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/#how-gateway-relates-to-traditional-firewalls",
       "hint": "「接続前にブロック」「パケット単位で制御」「アプリケーションの中身を検査」という粒度の違いを考えましょう。",
       "tags": [
@@ -35444,7 +35444,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "デフォルトではIsolateポリシーを追加するまで一切のトラフィックが分離されません。接続方式には、通常のURLでブラウジングするインライン方式(Cloudflare One Clientなど)と、Cloudflareがホストするプレフィックス付きURLを経由するクライアントレス方式(Clientless Web Isolation)の2種類があります。\n{{diagram:0}}",
+      "explanation": "Browser Isolationは、Webページを利用者の端末のブラウザで直接開くのではなく、Cloudflare側のブラウザで開かせる(＝分離する)仕組みです。ただしデフォルトでは何も分離されず、Isolateポリシーを追加して初めて対象のトラフィックが分離されます。\n接続方式は2種類あります。普段どおりのURLでブラウジングするインライン方式(Cloudflare One Clientなどを使う)と、Cloudflareがホストするプレフィックス付きURLを経由することで専用クライアントを入れずに使えるクライアントレス方式(Clientless Web Isolation)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/setup/#1-connect-devices-to-cloudflare",
       "hint": "「何もしなければ分離されない」という初期状態と、2つの接続方式を考えましょう。",
       "tags": [
@@ -36287,7 +36287,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "CASB WebhooksはPosture findingsのインスタンスのみを送信対象としており、Content findingsを送信することはできません。\n{{diagram:0}}",
+      "explanation": "CASBは、連携したSaaSアプリを継続的に調べ、見つけたセキュリティ上の問題を「finding(検出結果)」として報告する機能です。findingにはPosture findingsとContent findingsの2種類がありますが、Webhook(問題を検出したときに外部システムのURLへ自動でHTTP通知を送る仕組み)で送信できるのはPosture findingsのインスタンスだけで、Content findingsを送信することはできません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/integrations/cloud-and-saas/webhooks/#limitations",
       "hint": "2種類あるfindingのうち、外部システムへ送信できるのは片方だけだと考えましょう。",
       "tags": [
@@ -38541,7 +38541,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflare WAN(旧Magic WAN)は、MPLS回線やハブアンドスポーク型ルーティングを置き換え、拠点・オフィス・クラウドリソースをCloudflareのグローバルネットワーク経由で接続するサイト間接続サービスです。トラフィックは中央データセンターを経由せず、最寄りのCloudflareデータセンターでセキュリティポリシーが適用されます。Cloudflare WANはIPsec/GREトンネル、Cloudflare Network Interconnect(CNI)、Cloudflare One Applianceで拠点を接続する独立したWAN-as-a-Service製品であり、Cloudflare Oneはこれをアイデンティティ認識の機能で拡張したSASEプラットフォームです。\n{{diagram:0}}",
+      "explanation": "Cloudflare WAN(旧Magic WAN)は、拠点・オフィス・クラウドリソースをつなぐ社内ネットワークの回線を、Cloudflareのグローバルネットワークで置き換えるサイト間接続サービス(WAN-as-a-Service)です。従来はMPLSのような専用回線を引き、通信をいったん中央の拠点に集める(ハブアンドスポーク型)構成が一般的でしたが、Cloudflare WANでは中央データセンターを経由せず、最寄りのCloudflareデータセンターでセキュリティポリシーが適用されます。\n{{diagram:0}}\n※ 拠点の接続にはIPsec/GREトンネル、Cloudflare Network Interconnect(CNI)、Cloudflare One Applianceを使えます。Cloudflare WANはこれ単体で提供される独立した製品で、Cloudflare Oneは「誰がアクセスしているか」を条件に加えられるようCloudflare WANを拡張したプラットフォーム(SASEと呼ばれる分類の製品)です。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/",
       "hint": "MPLSのような専用回線・中央集約型の経路を、何に置き換えると説明されているかを考えましょう。",
       "tags": [
@@ -38967,7 +38967,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "トンネルヘルスチェックは、Cloudflareからあなたのネットワークへトラフィックをルーティングするトンネルそのものの状態を監視し、トラフィックステアリングに使われます。一方エンドポイントヘルスチェックは、Cloudflareの分散データセンターからあなたのオリジンネットワークまでの疎通性を評価するもので、トンネル上を流れますがトンネル選択やステアリングロジックには関与しません。エンドポイントヘルスチェックは顧客ネットワーク名前空間の外側からCloudflareグローバルネットワークサーバーによって発行されます。\n{{diagram:0}}",
+      "explanation": "トンネルヘルスチェックは、Cloudflareからあなたのネットワークへトラフィックをルーティングするトンネルそのものの状態を監視し、トラフィックステアリング(どのトンネルにトラフィックを流すかの選択)に使われます。一方エンドポイントヘルスチェックは、Cloudflareの分散データセンターからあなたのオリジンネットワークまでの疎通性を評価するもので、トンネル上を流れますがトンネル選択やステアリングロジックには関与しません。経路を選ぶために見るのが前者、疎通の全体像を知るために見るのが後者です。\n{{diagram:0}}\n※ エンドポイントヘルスチェックは、顧客ネットワーク名前空間の外側からCloudflareグローバルネットワークサーバーによって発行されます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/tunnel-health-checks/#types-of-health-checks",
       "hint": "「経路選択に直接関わるチェック」と「疎通性の全体像を把握するためのチェック」という役割の違いを考えましょう。",
       "tags": [
@@ -39146,7 +39146,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare WANは拠点・オフィス・クラウドリソースをCloudflareのグローバルネットワーク経由で接続するサイト間接続サービス(WAN-as-a-Service)です。一方Magic Transitは、BGPでアドバタイズした顧客のIPプレフィックス(BYOIP)をCloudflareのグローバルネットワークでDDoS攻撃から保護し、トラフィックアクセラレーションも提供するサービスです。/24のプレフィックス要件を満たさない場合は、Cloudflare所有のIPアドレスを使う選択肢もあります。両者は関連製品としてCloudflare Network FirewallやCNIを共有します。\n{{diagram:0}}",
+      "explanation": "Cloudflare WANは、拠点・オフィス・クラウドリソースをCloudflareのグローバルネットワーク経由でつなぐサイト間接続サービス(WAN-as-a-Service)です。「離れた場所どうしをつなぐ」のが目的です。一方Magic Transitは、顧客が自分で持つIPアドレスの範囲(IPプレフィックス)をCloudflare経由で受け取るようインターネットへ広告(BGPでアドバタイズ)し、そこ宛てのトラフィックをDDoS攻撃から保護するサービスです。「自分のIPアドレス帯を守る」のが目的です。\n{{diagram:0}}\n※ 自社保有のIPアドレスを持ち込む形をBYOIPと呼び、/24のプレフィックス要件を満たさない場合はCloudflare所有のIPアドレスを使う選択肢もあります。Magic Transitはトラフィックアクセラレーションも提供し、両者はCloudflare Network FirewallやCNI(Cloudflare Network Interconnect)を関連製品として共有します。",
       "referenceUrl": "https://developers.cloudflare.com/magic-transit/",
       "hint": "「拠点をつなぐこと」と「攻撃から守ること」という、それぞれが主眼を置く目的の違いを考えましょう。",
       "tags": [
@@ -39407,7 +39407,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Network Firewall(旧Magic Firewall)は、プロトコルやパケット長といったレイヤー3/4のパケットレベルの属性でトラフィックをフィルタリングするファイアウォールです。一方WAFはHTTPリクエストの内容を検査するレイヤー7のファイアウォールで、検査するレイヤーが異なります。Cloudflare Network Firewallは、Wireshark構文に着想を得たCloudflare Rules languageでルールを記述し、Magic TransitまたはCloudflare WANの購入に付随して提供されます。\n{{diagram:0}}",
+      "explanation": "Cloudflare Network Firewall(旧Magic Firewall)は、プロトコルの種類やパケット長といったパケットそのものの属性(レイヤー3/4)を見て、通すか落とすかを判断するファイアウォールです。一方WAFは、URLパスやクエリ文字列などHTTPリクエストの中身(レイヤー7)を検査するファイアウォールです。同じ「ファイアウォール」でも、見ている層が違います。\n{{diagram:0}}\n※ Cloudflare Network Firewallのルールは、パケット解析ツールWiresharkの記法に着想を得たCloudflare Rules languageで書きます。単体では購入できず、Magic TransitまたはCloudflare WANに付随して提供されます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-network-firewall/",
       "hint": "「HTTPリクエストの中身を見る層」と「パケットの属性だけを見る層」という、どのレイヤーで判断するかの違いを考えましょう。",
       "tags": [
@@ -39874,7 +39874,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Spectrumは、MQTT・メール・ファイル転送・バージョン管理システム・ゲームなど、TCPまたはUDPを使う任意のアプリケーションをCloudflare経由でルーティングし、オリジンを隠蔽してDDoS攻撃から保護するために使われます。\n{{diagram:0}}\nCDNの静的アセット配信高速化やCASBのSaaSスキャン、GatewayのDNS/Network/HTTP検査とは異なるレイヤーの課題を解決します。",
+      "explanation": "Spectrumは、SSH・MQTT・メール・ファイル転送・バージョン管理システム・ゲームなど、TCPまたはUDPを使う任意のアプリケーションをCloudflare経由でルーティングし、オリジンを隠蔽してDDoS攻撃から保護するために使われます。HTTP以外のプロトコルのアプリケーションでもCloudflareのネットワークを通せる点が特徴です。\n{{diagram:0}}\n※ 誤答肢に出てくる他機能とは目的が異なります。CDNは静的アセットの配信高速化、CASBはSaaSの設定不備をAPI経由で点検する機能、Gatewayは従業員端末からのDNS/Network/HTTPトラフィックを検査する機能です。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/",
       "hint": "「HTTP以外のプロトコルを使うアプリケーション」という共通点を持つ選択肢を探しましょう。",
       "tags": [
@@ -40089,7 +40089,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Spectrumアプリケーションを作成すると、ユニークなIPv4/IPv6アドレスが割り当てられます(IPv6のみで運用するよう構成することも可能です)。これらのアドレスは固定ではなく変化する可能性があるため、現在のアドレスを確認する最良の方法はSpectrumアプリケーションのDNS名を参照することです。\n{{diagram:0}}\nアドレスは中国のデータセンターを除くCloudflareの全データセンターからエニーキャストされます。",
+      "explanation": "Spectrumアプリケーションを作成すると、ユニークなIPv4/IPv6アドレスが割り当てられます(IPv6のみで運用するよう構成することも可能です)。これらのアドレスは固定ではなく変化する可能性があるため、IPアドレスを直接書き込むのではなく、Spectrumアプリケーションに割り当てられたDNS名を参照して現在のアドレスを確認するのが最良の方法です。\n{{diagram:0}}\n※ このアドレスは、中国のデータセンターを除くCloudflareの各データセンターから同一のアドレスとして広報されます(エニーキャスト)。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
       "hint": "「アドレスが固定かどうか」と「どうやって現在のアドレスを調べるべきか」を考えましょう。",
       "tags": [
@@ -40313,7 +40313,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Spectrumはすべてのコネクションについて、イベント数(count)・送信バイト数(bytesIngress)・受信バイト数(bytesEgress)・コネクション継続時間の平均/中央値/90パーセンタイル/99パーセンタイルといったメトリクスを計測します。これらはイベント種別(connect・progress・disconnectなど)・アプリケーションID・Colo名・IPバージョンといったディメンションで絞り込むことができ、ダッシュボードに加えてAPIからも取得できます。\n{{diagram:0}}",
+      "explanation": "SpectrumはL4(TCP/UDP)のプロキシなので、アナリティクスもHTTPリクエスト単位ではなくコネクション単位で集計されます。測る量(メトリクス)はコネクションのイベント数・送受信バイト数・コネクション継続時間で、それを切り分ける軸(ディメンション)がイベント種別・アプリケーションID・Colo名(処理したCloudflareデータセンターの名前)・IPバージョンです。ダッシュボードに加えてAPIからも取得できます。\n{{diagram:0}}\n※ 各項目の名前は、イベント数がcount、送信バイト数がbytesIngress、受信バイト数がbytesEgressで、継続時間は平均/中央値/90パーセンタイル/99パーセンタイルが取れます。イベント種別にはconnect・progress・disconnectなどがあります。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/analytics/",
       "hint": "SpectrumがL4(TCP/UDP)のプロキシであることを踏まえて、どんな指標が中心になるかを考えましょう。",
       "tags": [
@@ -40614,7 +40614,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`session duration`は1分から30分の範囲(デフォルト5分)で設定する値で、訪問者が対象の`host/path`にアクセスしてから、その時間内であれば再び待機室を経由せずに直接戻ってこられることを保証します。\n{{diagram:0}}\nこれにより同一トランザクション中に何度も待機室を通される体験を防ぐと同時に、セッションクッキーが失効すると新たな空きとしてカウントされるため、動的なアウトフローも実現します。",
+      "explanation": "`session duration`は1分から30分の範囲(デフォルト5分)で設定する値で、訪問者が対象の`host/path`にアクセスしてから、その時間内であれば再び待機室を経由せずに直接戻ってこられることを保証します。これにより、一連の操作の途中で何度も待機室に並び直させられることを防げます。\n{{diagram:0}}\n※ 逆に、この時間が過ぎてセッションのクッキーが失効すると、その分が空き枠として戻り、待機中の次の訪問者を通す余地が生まれます。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
       "hint": "「待機室を出た後」に関する設定である点に注目しましょう。",
       "tags": [
@@ -41111,7 +41111,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "基本的な待機室は1つまで、BusinessおよびEnterpriseプランに含まれています。1ゾーンにつき利用できるWaiting Roomのプランは1つのみです。カスタム待機室ページ、JSON応答、Eventsなどの追加機能を利用するには、Enterpriseプランの顧客がAdvanced Waiting Roomを追加アドオンとして購入する必要があります。\n{{diagram:0}}\nなお、Project Fair Shotの対象顧客も利用資格を得られます。",
+      "explanation": "基本的な待機室は1つまで、BusinessおよびEnterpriseプランに含まれています。1ゾーン(Cloudflareに追加した1つのサイト)につき利用できるWaiting Roomのプランは1つのみです。カスタム待機室ページ、JSON応答、Eventsなどの追加機能を利用するには、Enterpriseプランの顧客がAdvanced Waiting Roomを追加アドオンとして購入する必要があります。\n{{diagram:0}}\n※ 例外として、Project Fair Shot(Cloudflareの特別プログラム)の対象となった顧客も利用資格を得られます。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/plans/",
       "hint": "「基本の待機室」と「Advanced Waiting Room」がそれぞれどのプランで使えるかを整理しましょう。",
       "tags": [
@@ -42172,7 +42172,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Zarazは全てのCloudflareプランで利用可能で、アカウントごとに毎月100万件のZaraz Eventsが無料枠として提供されます。追加分は100万イベントごとに月額5ドルのZaraz Paidプランで利用できます。\n{{diagram:0}}\nPaidプランを有効化せずに無料枠を超えた場合は、次の請求サイクルまでZarazが無効化されます(ウェブサイト自体へのアクセスが遮断されるわけではありません)。無料枠の50%・80%・90%に達した際には通知メールが送信されます。",
+      "explanation": "Zarazは、アナリティクスや広告タグといったサードパーティのスクリプトを、訪問者のブラウザではなくCloudflareのエッジ側で実行する仕組みです。全てのCloudflareプランで利用でき、アカウントごとに毎月100万件のZaraz Events(ページビューなど、Zarazが処理する1件ごとのイベント)が無料枠として提供されます。追加分は、100万イベントごとに月額5ドルのZaraz Paidプランで利用できます。\n{{diagram:0}}\n※ Paidプランを有効化せずに無料枠を超えた場合は、次の請求サイクルまでZarazが無効化されます(ウェブサイト自体へのアクセスが遮断されるわけではありません)。無料枠の50%・80%・90%に達した際には通知メールが送信されます。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/pricing-info/",
       "hint": "Zarazがどのプラン層で利用でき、使用量の確認や通知がどのように行われる設計かを整理しましょう。",
       "tags": [
@@ -42389,9 +42389,9 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Zarazを使い始める前には、基本的にはウェブサイトをCloudflare経由でプロキシしておくことが推奨されますが、プロキシしないドメインでZarazを利用する方法も別途用意されています。ツールを追加する際、Automatic Actionsに対応するツールであればPageviews・Events・E-commerceのいずれかを選択でき、対応していないツールの場合はCustom Actionsで個別に設定します。\n{{diagram:0}}",
+      "explanation": "Zarazは、アクセス解析や広告などのサードパーティ製ツールのタグを、訪問者のブラウザではなくCloudflare側で読み込ませて管理する機能です。使い始める前提として、基本的にはウェブサイトをCloudflare経由でプロキシしておくことが推奨されますが、プロキシしないドメインでZarazを利用する方法も別途用意されています。\n{{diagram:0}}\n※ ツールを追加する際、Automatic Actionsに対応するツールであればPageviews・Events・E-commerceのいずれかを選択でき、対応していないツールの場合はCustom Actionsで個別に設定します。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/get-started/",
-      "hint": "「プロキシが必須かどうか」と「Actionsの選択肢」の2点を、ドキュメントの記述に沿って確認しましょう。",
+      "hint": "プロキシが「必須」なのか「推奨」なのか、言い切っている選択肢に注意しながら比べてみましょう。",
       "tags": [
         "zaraz",
         "practical"
@@ -42554,9 +42554,9 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflare Agentsは、耐久性のある識別子・エージェントごとに組み込まれたSQLストレージ・リアルタイム接続・スケジュール実行・(中断されても)復旧可能な実行を備えた、状態を持つAIエージェントをホストするためのランタイムです。\n{{diagram:0}}\nCloudflareのネットワーク上で数千万インスタンス規模までスケールするよう設計されています。",
+      "explanation": "Cloudflare Agentsは、状態を持つAIエージェントをホストするためのランタイム(実行基盤)です。ここでの「状態を持つ」とは、1回のリクエストが終わっても、それまでのやり取りや予約した予定を保ったまま次のリクエストを迎えられる、ということです。\nそれを支えるために、耐久性のある識別子(エージェント1体ごとに固定される名前)・エージェントごとに組み込まれたSQLストレージ・リアルタイム接続・スケジュール実行・(中断されても)復旧可能な実行が備わっています。\n{{diagram:0}}\n※ Cloudflareのネットワーク上で数千万インスタンス規模までスケールするよう設計されています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/",
-      "hint": "「状態を持つ(stateful)」という言葉がヒントです。",
+      "hint": "1回の応答で終わりではなく、前回までのやり取りを覚えたまま動き続ける仕組みはどれか考えましょう。",
       "tags": [
         "agents",
         "topic-overview"
@@ -42613,7 +42613,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Agentは`Agent<Env, State>`を継承したクラスとして定義します。Worker側の`fetch`ハンドラでは`await routeAgentRequest(request, env)`を呼び出し、戻り値がなければ404を返すのが基本パターンです。`routeAgentRequest()`がリクエストURLを解析し、対応するAgentインスタンスへ自動的にルーティングします。\n{{diagram:0}}",
+      "explanation": "Agentは、基底クラス`Agent<Env, State>`を継承したクラスとして定義します。Worker側の`fetch`ハンドラでは`await routeAgentRequest(request, env)`を呼び出し、戻り値がなければ404を返すのが基本パターンです。\n{{diagram:0}}\n※ `routeAgentRequest()`はリクエストURLからAgent名とインスタンス名を読み取り、対応するAgentインスタンスへ転送します。Agentは1つのインスタンスが自分の状態(型引数の`State`)を持ち続ける単位なので、どのインスタンス宛のリクエストかをURLで決めるこの仕組みが必要になります。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/agents-api/",
       "hint": "Agent専用の基底クラスと、ルーティング用の関数が用意されています。",
       "tags": [
@@ -42942,7 +42942,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "AgentのWebSocket処理は、接続確立時に呼ばれる`onConnect(connection, ctx)`、メッセージ受信時に呼ばれる`onMessage(connection, message)`、切断時に呼ばれる`onClose(connection, code, reason, wasClean)`という3つの主要なライフサイクルフックで構成されます。\n{{diagram:0}}\nctxには認証などに使える元のリクエスト情報も含まれます。",
+      "explanation": "Agent(Agents SDKで`Agent`クラスを継承して定義する、Cloudflare上で動くプログラム)は、WebSocket接続の節目ごとに決まった名前のメソッドを呼び出します。これがライフサイクルフックです。主要なフックは、接続確立時に呼ばれる`onConnect(connection, ctx)`、メッセージ受信時に呼ばれる`onMessage(connection, message)`、切断時に呼ばれる`onClose(connection, code, reason, wasClean)`の3つです。\n{{diagram:0}}\n※ `onConnect`の第2引数`ctx`には元のリクエスト情報も含まれ、認証などに使えます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
       "hint": "接続・メッセージ受信・切断のそれぞれに対応するフックがあります。",
       "tags": [
@@ -43225,7 +43225,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Agentのインスタンス名の付け方によって、ユーザーごとに専用の状態を持たせる(例: `user-abc123`)、複数ユーザーで状態を共有する「部屋」的な使い方をする(例: `general`というチャットルーム)、アプリ全体で1つだけのシングルトンとして扱う(例: `default`)など、様々な設計パターンを実現できます。セッションIDやドキュメントIDなど、実行時のコンテキストから動的にインスタンス名を決めることも可能です。\n{{diagram:0}}",
+      "explanation": "Agentはインスタンス名を指定して呼び出します。同じ名前を指定すれば既存のインスタンス(と、そこに保存された状態)にそのままつながり、違う名前を指定すれば別の状態を持つ別インスタンスになります。つまり「名前をどう決めるか」が、そのまま「状態を誰と共有するか」の設計になります。ユーザーIDを名前にすればユーザー専用のAgentになり、全員が同じ名前を使えばチャットルームのような共有Agentになります。\n{{diagram:0}}\n※ 名前は、セッションIDやドキュメントIDなど実行時のコンテキストから動的に決めることもできます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
       "hint": "インスタンス名の付け方そのものが設計パターンになります。",
       "tags": [
