@@ -1103,6 +1103,294 @@
         "at": "2026-08-30",
         "fp": "b5dc0c0cdc41"
       }
+    ],
+    "bt-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "18663410b55e"
+      }
+    ],
+    "bt-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "4f18dec10398"
+      }
+    ],
+    "bt-005": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "3b193d587d82"
+      }
+    ],
+    "bt-007": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "f7fa73a5da9f"
+      }
+    ],
+    "cb-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "9b6e915a2c2d"
+      }
+    ],
+    "cb-012": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "24a1cdd6e9ab"
+      }
+    ],
+    "ch-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "0836c05139ee"
+      }
+    ],
+    "ch-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "273425f4ea62"
+      }
+    ],
+    "ch-004": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "31805d72de43"
+      }
+    ],
+    "ch-006": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "04318690a6a2"
+      }
+    ],
+    "ch-013": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "770f4fe1a4f5"
+      }
+    ],
+    "cs-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "9c236b1c4d4e"
+      }
+    ],
+    "cs-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "bab71979fe9d"
+      }
+    ],
+    "cs-003": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "60b2b66cf404"
+      }
+    ],
+    "cs-004": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "47b91da74047"
+      }
+    ],
+    "cs-005": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "f16e328c16d0"
+      }
+    ],
+    "cs-006": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "45a16084c8f7"
+      }
+    ],
+    "ct-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "9a3651cbb6ee"
+      }
+    ],
+    "ct-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "715a63362707"
+      }
+    ],
+    "ct-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "509541792861"
+      }
+    ],
+    "ct-004": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "270f6ad61a0f"
+      }
+    ],
+    "ct-005": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "e77553aeacdf"
+      }
+    ],
+    "ct-006": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "72f0ff9a0e87"
+      }
+    ],
+    "cx-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "10486a7895fc"
+      }
+    ],
+    "cx-012": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "ca58f5128d0c"
+      }
+    ],
+    "d1-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "784fcd9b1810"
+      }
+    ],
+    "d1-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "223e7a7a4f8c"
+      }
+    ],
+    "d1-003": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "316e2bbf8c98"
+      }
+    ],
+    "d1-004": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "dab91e6e67a5"
+      }
+    ],
+    "d1-005": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "1687679200e9"
+      }
+    ],
+    "d1-013": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "79802f8a3ec4"
+      }
+    ],
+    "dl-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "bf1a4fd0790b"
+      }
+    ],
+    "dn-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "b7fd03442dc1"
+      }
+    ],
+    "dn-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "36b2ef0835ab"
+      }
+    ],
+    "dn-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "3b3cd23aa7be"
+      }
+    ],
+    "dn-007": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "70bdd31bee22"
+      }
     ]
   }
 }

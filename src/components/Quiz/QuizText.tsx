@@ -1,4 +1,6 @@
 import { Fragment, type ReactNode } from 'react'
+import { GLOSSARY } from '../../domain/valueObjects/Glossary'
+import { GlossaryTerm } from './GlossaryTerm'
 
 interface QuizTextProps {
   text: string
@@ -14,6 +16,7 @@ interface QuizTextProps {
  * - \n → line breaks
  * - `code` → <code> inline code elements (optionally animated)
  * - a line starting with 「※」 → rendered as a muted, smaller note
+ * - a glossary term → tappable, shows a short description in place
  *
  * The note styling exists because glosses were being skimmed past. On
  * 2026-08-29 a beginner playtester reported that the term glosses appended to
@@ -53,6 +56,35 @@ function parseQuizText(text: string, animated?: boolean, baseDelay?: number): Re
   }
 
   return result
+}
+
+/**
+ * 地の文から用語を見つけて、説明を開ける形にする。
+ *
+ * **同じ語は1つの本文につき最初の1回だけ**マークする。
+ * 全部の出現に下線が付くと、本文が下線だらけで読みにくくなる。
+ */
+function markGlossaryTerms(text: string, used: Set<string>, keyBase: number): ReactNode[] {
+  const out: ReactNode[] = []
+  let rest = text
+  let guard = 0
+  while (rest.length > 0 && guard++ < 100) {
+    // 長い語から順に見て、いちばん手前に現れるものを採る
+    let best: { index: number; entry: (typeof GLOSSARY)[number] } | null = null
+    for (const entry of GLOSSARY) {
+      if (used.has(entry.term)) continue
+      const i = rest.indexOf(entry.term)
+      if (i === -1) continue
+      if (!best || i < best.index) best = { index: i, entry }
+    }
+    if (!best) break
+    if (best.index > 0) out.push(rest.slice(0, best.index))
+    out.push(<GlossaryTerm key={`gt-${keyBase}-${guard}`} entry={best.entry} />)
+    used.add(best.entry.term)
+    rest = rest.slice(best.index + best.entry.term.length)
+  }
+  if (rest.length > 0) out.push(rest)
+  return out
 }
 
 function parseInlineCode(
@@ -99,5 +131,17 @@ function parseInlineCode(
     parts.push(text.slice(lastIndex))
   }
 
-  return { nodes: parts, codeCount }
+  // 用語のマークアップは**コード片を除いた地の文にだけ**当てる。
+  // parts のうち文字列のものが地の文で、`code` は既に ReactNode になっている
+  const marked: ReactNode[] = []
+  const usedInThisText = new Set<string>()
+  for (const part of parts) {
+    if (typeof part !== 'string') {
+      marked.push(part)
+      continue
+    }
+    marked.push(...markGlossaryTerms(part, usedInThisText, marked.length))
+  }
+
+  return { nodes: marked, codeCount }
 }

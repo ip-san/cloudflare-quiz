@@ -1,0 +1,67 @@
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { QuizText } from './QuizText'
+
+/**
+ * 用語集の表示。
+ *
+ * 本文を書き換えずに語の説明を届けるための仕組みなので、
+ * 「本文が変わらないこと」と「コード片には手を出さないこと」が要件になる。
+ * 詳しい経緯は src/domain/valueObjects/Glossary.ts を参照。
+ */
+describe('用語集', () => {
+  it('本文中の用語がタップで説明を開ける', () => {
+    render(<QuizText text="最寄りのエッジでキャッシュします" />)
+    const term = screen.getByRole('button', { name: 'エッジ' })
+    expect(screen.queryByRole('note')).toBeNull()
+    fireEvent.click(term)
+    expect(screen.getByRole('note').textContent).toMatch(/Cloudflareのデータセンター/)
+  })
+
+  it('同じ語は1つの本文につき最初の1回だけマークする（下線だらけにしない）', () => {
+    render(<QuizText text="オリジンへ問い合わせ、オリジンから返る" />)
+    expect(screen.getAllByRole('button', { name: 'オリジン' })).toHaveLength(1)
+  })
+
+  it('コード片の中の語はマークしない', () => {
+    const { container } = render(<QuizText text="`TTL` の設定" />)
+    expect(container.querySelector('code')?.textContent).toBe('TTL')
+    expect(screen.queryByRole('button', { name: 'TTL' })).toBeNull()
+  })
+
+  it('長い語を優先する（WAFカスタムルールがWAFに割られない）', () => {
+    render(<QuizText text="WAFカスタムルールで止めます" />)
+    expect(screen.getByRole('button', { name: 'WAFカスタムルール' })).toBeTruthy()
+  })
+
+  it('用語が無い本文はそのまま描画される', () => {
+    render(<QuizText text="ここには用語がありません" />)
+    expect(screen.queryByRole('button')).toBeNull()
+    expect(screen.getByText('ここには用語がありません')).toBeTruthy()
+  })
+
+  // 実ブラウザではタップ時に mousedown が click より先に起きる。
+  // 外側のタップで閉じる仕組みはそれを見ているので、テストでも同じ順で発火させる。
+  // click だけを送ると、実際には起きない「2つ開いたまま」の状態を検証してしまう。
+  function tap(el: HTMLElement) {
+    fireEvent.mouseDown(el)
+    fireEvent.click(el)
+  }
+
+  it('別の語を開くと前の説明は閉じる（画面が説明で埋まらない）', () => {
+    render(<QuizText text="エッジとオリジン" />)
+    tap(screen.getByRole('button', { name: 'エッジ' }))
+    expect(screen.getAllByRole('note')).toHaveLength(1)
+    tap(screen.getByRole('button', { name: 'オリジン' }))
+    expect(screen.getAllByRole('note')).toHaveLength(1)
+    expect(screen.getByRole('note').textContent).toMatch(/元のサーバー/)
+  })
+
+  it('Escape で閉じる', () => {
+    render(<QuizText text="エッジでキャッシュ" />)
+    fireEvent.click(screen.getByRole('button', { name: 'エッジ' }))
+    expect(screen.getByRole('note')).toBeTruthy()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('note')).toBeNull()
+  })
+})

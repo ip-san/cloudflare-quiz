@@ -14809,7 +14809,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Containerは単体では動かず、Durable Object(同じ名前なら常に同じ1つが選ばれ、ルーティングと永続的な状態を受け持つオブジェクト)とセットで動きます。そのため設定も3点セットになります。(1)wrangler設定ファイルの`containers`配列に使うイメージ(`image`)とクラス名(`class_name`)を書き、(2)対応する`durable_objects`バインディングを設定し、(3)`migrations`で`new_sqlite_classes`にそのクラス名を指定します。`class_name`はDurable Objectのクラス名と一致させます。\n{{diagram:0}}\n※ `migrations`はDurable Objectのクラスを登録する欄です。ここでは`new_classes`ではなく`new_sqlite_classes`を使う点に注意が必要です。",
+      "explanation": "Containerは単体では動かず、Durable Object(同じ名前なら常に同じ1つが選ばれ、ルーティングと永続的な状態を受け持つオブジェクト)とセットで動きます。そのため設定も3点セットになります。(1)wrangler設定ファイル(Workersのデプロイ設定を書くファイル)の`containers`配列に、使うイメージ(`image`)とクラス名(`class_name`)を書き、(2)対応する`durable_objects`バインディング(Workerからそのリソースを使えるようにする宣言)を設定し、(3)`migrations`で`new_sqlite_classes`にそのクラス名を指定します。`class_name`はDurable Objectのクラス名と一致させます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/containers/get-started/",
       "hint": "Containerは、ルーティングと状態を受け持つ別の仕組みとセットで動きます。設定にも、その相棒の宣言と登録が要ります。",
       "tags": [
@@ -19757,7 +19757,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "カスタムホスト名は、ホスト名のアクティベーション(`result.status`)と証明書の発行(`result.ssl.status`)という2つの独立した検証フローを持ちます。本番トラフィックを受け付ける準備ができたと判断するには、両方のフィールドが`active`であり、かつ顧客のDNSレコードがSaaS事業者のターゲットを指していることを確認する必要があります。\n{{diagram:0}}",
+      "explanation": "カスタムホスト名の状態は、API(プログラムから設定や状態を読み書きするための窓口)のレスポンスで確認します。そこには、ホスト名のアクティベーション(`result.status`)と証明書の発行(`result.ssl.status`)という2つの独立した検証フローの状態が入っています。本番トラフィックを受け付ける準備ができたと判断するには、両方のフィールドが`active`であり、かつ顧客のDNSレコードがSaaS事業者のターゲットを指していることを確認する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/#check-when-a-custom-hostname-is-ready",
       "hint": "「ホスト名として認識されたか」と「証明書が発行されたか」は、別々に進む2つの手続きだと考えましょう。",
       "tags": [
@@ -19810,7 +19810,7 @@
       "correctIndex": 2,
       "explanation": "カスタムホスト名では、性質の異なる2つの確認が別々に行われます。1つは「このドメインは本当にあなたのものか」を確かめる所有権検証、もう1つは「そのドメイン向けに証明書を発行してよいか」を確かめる証明書検証です。この2つは使うトークンもAPIフィールドも別で、所有権検証には`ownership_verification`や`ownership_verification_http`が使われてカスタムホスト名の`status`に影響し、証明書検証には`ssl.validation_records`が使われて証明書側の`ssl.status`に影響します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/",
-      "hint": "「このドメインは本当にあなたのものか」の確認と、「証明書を発行していいか」の確認は、別々の手続きだと考えましょう。",
+      "hint": "「このドメインは本当にあなたのものか」の確認と、「証明書を発行していいか」の確認は、別々の手続きです。フィールド名そのものが、どちらの手続きのものかを表しています。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -19914,9 +19914,9 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "顧客がすでにCloudflareを使っているドメインをカスタムホスト名としてSaaS事業者のCloudflare for SaaS設定に追加すると、Argo・Early Hints・Client-side security(旧Page Shield)・Spectrum・ワイルドカードDNSといった一部の機能について、顧客は自分のダッシュボードから制御できなくなります。\n{{diagram:0}}",
+      "explanation": "顧客がすでにCloudflareを使っているドメインをカスタムホスト名としてSaaS事業者側に追加すると、そのホスト名は2か所のCloudflare設定(ゾーン)にまたがって管理されることになり、SaaS事業者側が主導権を持ちます。その結果、Argo(経路の最適化)・Early Hints(先読みヒントの送出)・Client-side security(旧Page Shield。ページ内の外部スクリプトの監視)・Spectrum(HTTP以外のプロトコルの中継)・ワイルドカードDNSといった一部の機能について、顧客は自分のダッシュボードから制御できなくなります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/",
-      "hint": "「2つのCloudflareゾーンにまたがって管理される」ホスト名では、どちらが最終的な設定の主導権を持つか考えましょう。",
+      "hint": "そのホスト名は、顧客のCloudflareの設定と、SaaS事業者のCloudflareの設定という2か所で管理されることになります。どちらが最終的な主導権を持つか考えましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
