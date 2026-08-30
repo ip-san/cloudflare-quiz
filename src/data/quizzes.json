@@ -23476,7 +23476,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "WAFカスタムルールのSkip・Bypass・Allowは、Ruleset Engine(WAFカスタムルールなどのルールを評価する共通の基盤)の上で動く機能に対してだけ効きます。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらのアクションで例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
+      "explanation": "WAFカスタムルールのSkip・Bypass・Allowは、Ruleset Engineの上で動く機能に対してだけ効きます。Skipは「このリクエストには以降の検査を行わない」、Bypassは「指定した機能の適用を外す」、Allowは「そのまま通す」という指定です。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらの指定では例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/bot-fight-mode/#limitations",
       "hint": "Bot Fight Modeが「WAFと同じ仕組みの上で動いているかどうか」を考えましょう。",
       "tags": [

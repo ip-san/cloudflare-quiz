@@ -414,6 +414,12 @@
         "outcome": "clean",
         "at": "2026-08-29",
         "fp": "6847a8a6079a"
+      },
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "6847a8a6079a"
       }
     ],
     "ag-003": [
@@ -445,6 +451,12 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "2026-08-27",
+        "fp": "d20675332102"
+      },
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
         "fp": "d20675332102"
       }
     ],
@@ -1011,7 +1023,7 @@
     "as-002": [
       {
         "persona": "beginner",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "2026-08-30",
         "fp": "748552ba49e1"
       }
@@ -1307,9 +1319,9 @@
     "d1-001": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "2026-08-30",
-        "fp": "784fcd9b1810"
+        "fp": "2dcfc278b93b"
       }
     ],
     "d1-002": [
@@ -1355,7 +1367,7 @@
     "dl-002": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "2026-08-30",
         "fp": "bf1a4fd0790b"
       }

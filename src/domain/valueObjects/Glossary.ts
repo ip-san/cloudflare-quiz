@@ -95,6 +95,22 @@ const ENTRIES: GlossaryEntry[] = [
     description: '表と表の関係でデータを持ち、SQLという言語で問い合わせるデータベース。',
   },
   { term: 'S3互換', description: 'Amazon S3 と同じAPIの作法で読み書きできること。S3向けのツールをそのまま使える。' },
+  {
+    term: 'クレデンシャルスタッフィング',
+    description: '他所から漏れたIDとパスワードの組を大量に試し、使い回している利用者のアカウントへ侵入する攻撃。',
+  },
+  {
+    term: '負のセキュリティモデル',
+    description: '「危ないものを見つけて止める」考え方。裏返しの正のセキュリティモデルは「許したものだけ通す」。',
+  },
+  {
+    term: 'OpenAPI',
+    description: 'APIがどんなリクエストを受け付けるかを機械が読める形で書き表す、業界標準の記述形式。',
+  },
+  {
+    term: 'Terraform',
+    description: 'インフラの構成をコードで宣言して適用する、Cloudflare以外でも広く使われるツール。',
+  },
   { term: 'DLP', description: 'Data Loss Prevention。機密情報が外部へ出ていくのを検知・防止する仕組み。' },
   {
     term: 'mTLS',
