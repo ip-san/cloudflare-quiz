@@ -28,7 +28,24 @@ import fs from 'node:fs'
 
 const QUIZ = 'src/data/quizzes.json'
 const STORE = '.claude/playtest-coverage.json'
-const BASE_URL = 'http://localhost:4173/cloudflare-quiz/'
+/**
+ * deep link の基点。**検証のたびにポートを変えること。**
+ *
+ * このアプリは PWA で、`dist/sw.js` が quiz データのバンドルを
+ * プリキャッシュする（`registerType: 'autoUpdate'`）。
+ * 同じオリジン（= 同じポート）で再テストすると、
+ * **Service Worker が修正前の内容を配り続ける。**
+ *
+ * 2026-08-30 に実際に起きた。ac-002 だけが前回の版のまま表示され、
+ * 同一セッション内で「通常リロード→旧内容 / ハードリロード→新内容」が再現した。
+ * 前回のプレイでキャッシュ済みだった問題だけが古く、
+ * 未キャッシュだった5問は新しい内容が出ていた。**まだら状に古くなる。**
+ *
+ * Service Worker のスコープはオリジン単位なので、ポートを変えれば持ち越さない。
+ *   bun run preview --port 4181
+ *   PLAYTEST_BASE_URL=http://localhost:4181/cloudflare-quiz/ node scripts/playtest-coverage.mjs next 12
+ */
+const BASE_URL = process.env.PLAYTEST_BASE_URL ?? 'http://localhost:4173/cloudflare-quiz/'
 const PERSONAS = ['beginner', 'busy-intermediate', 'reviewer']
 
 // ペルソナ → 担当する難易度（personas.md のセッション方針に対応）。
