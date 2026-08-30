@@ -90,6 +90,10 @@ const ENTRIES: GlossaryEntry[] = [
     term: 'IP Access Rules',
     description: 'IPアドレス・IPブロック・国・ASNを指定して、まとめて許可・ブロック・チャレンジする仕組み。',
   },
+  {
+    term: 'リレーショナルデータベース',
+    description: '表と表の関係でデータを持ち、SQLという言語で問い合わせるデータベース。',
+  },
   { term: 'S3互換', description: 'Amazon S3 と同じAPIの作法で読み書きできること。S3向けのツールをそのまま使える。' },
   { term: 'DLP', description: 'Data Loss Prevention。機密情報が外部へ出ていくのを検知・防止する仕組み。' },
   {
