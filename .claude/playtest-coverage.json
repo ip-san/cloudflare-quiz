@@ -1007,6 +1007,102 @@
         "at": "2026-08-30",
         "fp": "a30d4cea18de"
       }
+    ],
+    "as-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "748552ba49e1"
+      }
+    ],
+    "as-004": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "59fdd2c55d27"
+      }
+    ],
+    "as-009": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "7b086ea827f3"
+      }
+    ],
+    "at-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "9c1c1aaa45f6"
+      }
+    ],
+    "at-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "2a723010476f"
+      }
+    ],
+    "at-003": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "02fc1a84b08e"
+      }
+    ],
+    "at-008": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "ca365c517e86"
+      }
+    ],
+    "at-011": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "b0af4ffae215"
+      }
+    ],
+    "at-013": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "0b089fa7a113"
+      }
+    ],
+    "bi-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "5896048c12f6"
+      }
+    ],
+    "bi-014": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "aae73512b281"
+      }
+    ],
+    "bt-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "b5dc0c0cdc41"
+      }
     ]
   }
 }

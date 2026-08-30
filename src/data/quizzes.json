@@ -24500,7 +24500,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Schema Validationは、APIが受け取るリクエストが、あらかじめ定義した仕様(スキーマ)どおりの形かを検査する機能です。ここで大事なのは、違反を「見つけること(検出)」と「止めること(緩和)」が別の段階だという点です。スキーマをアップロードすると常時オン(always-on)の検出がCloudflare側で自動的に作られますが、この検出だけではトラフィックは止まりません。実際にブロックするには、違反したかどうかを表す`cf.schema_validation.uploaded.violated`フィールドを条件にしたWAFカスタムルールを、自分で作る必要があります。\n{{diagram:0}}\n※ アップロードしたスキーマはSchema Profileの入力となり、検出された違反はProfile Analysisで確認できます。\n※ 以前のClassic Schema Validationは、グローバルなデフォルトアクション(`Log`/`Block`/`None`)を設定する方式でした。現行の2.0では検出と緩和が分離されています。",
+      "explanation": "Schema Validationは、APIが受け取るリクエストが、あらかじめ定義した仕様(スキーマ)どおりの形かを検査する機能です。ここで大事なのは、違反を「見つけること(検出)」と「止めること(緩和)」が別の段階だという点です。スキーマをアップロードすると常時オン(always-on)の検出がCloudflare側で自動的に作られますが、この検出だけではトラフィックは止まりません。実際にブロックするには、違反したかどうかを表す`cf.schema_validation.uploaded.violated`フィールドを条件に使って、WAFカスタムルール(「この条件に当てはまったらブロックする」といった処理を自分で書くルール)を作る必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/",
       "hint": "「違反を見つけること」と「違反を止めること」が同じ操作なのか、別々の段階なのかを考えましょう。",
       "tags": [
@@ -24779,7 +24779,7 @@
               ]
             },
             {
-              "heading": "独自CA(BYO)",
+              "heading": "独自CA(自分で用意)",
               "items": [
                 "Enterprise限定・最大5つ"
               ]
@@ -42615,7 +42615,7 @@
       "correctIndex": 0,
       "explanation": "Agentは、基底クラス`Agent<Env, State>`を継承したクラスとして定義します。Worker側の`fetch`ハンドラでは`await routeAgentRequest(request, env)`を呼び出し、戻り値がなければ404を返すのが基本パターンです。\n{{diagram:0}}\n※ `routeAgentRequest()`はリクエストURLからAgent名とインスタンス名を読み取り、対応するAgentインスタンスへ転送します。Agentは1つのインスタンスが自分の状態(型引数の`State`)を持ち続ける単位なので、どのインスタンス宛のリクエストかをURLで決めるこの仕組みが必要になります。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/agents-api/",
-      "hint": "Agent専用の基底クラスと、ルーティング用の関数が用意されています。",
+      "hint": "Agentには専用の親クラスがあり、それを継承して作ります。リクエストの振り分けにも専用の関数が1つ用意されていて、Worker側はそれを呼ぶだけです。この2つがそろっている選択肢を探しましょう。",
       "tags": [
         "agents",
         "topic-agent-class"
@@ -42665,7 +42665,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "initialStateは新規に作成されたAgentインスタンスが最初に使う既定の状態を定義します。適用は遅延的に行われ、新規インスタンスはinitialStateを使い、既に永続化された状態を持つ既存インスタンスはSQLiteに保存された状態を読み込みます。\n{{diagram:0}}\ninitialStateを定義しない場合、`this.state`は`undefined`を返します。",
+      "explanation": "initialStateは、Agentクラスに書いておく設定値(プロパティ)で、新しく作られたAgentインスタンス(Agent1個分の実体)が最初に使う既定の状態を定義します。適用は遅延的に行われ、新規インスタンスはinitialStateを使い、すでに状態が保存されている既存インスタンスはSQLiteに保存された状態を読み込みます。\n{{diagram:0}}\n※ initialStateを定義しない場合、`this.state`は`undefined`を返します。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
       "hint": "「新規インスタンス」と「既存インスタンス」で挙動が異なる点がポイントです。",
       "tags": [
@@ -43124,9 +43124,9 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`routeAgentRequest()`のデフォルトのルーティング規約は`/agents/{agent名}/{インスタンス名}`です。\n{{diagram:0}}\n例えば`ChatRoom`というAgentクラスは`/agents/chat-room/...`にマッピングされます。ルーターは元のクラス名とkebab-case変換後の両方にマッチするようになっています。",
+      "explanation": "`routeAgentRequest()`のデフォルトのルーティング規約は`/agents/{agent名}/{インスタンス名}`です。\n{{diagram:0}}\n例えば`ChatRoom`というAgentクラスは`/agents/chat-room/...`にマッピングされます。この`chat-room`のように、大文字の区切りをハイフンに置き換えた書き方をkebab-case(ケバブケース)と呼びます。ルーターは元のクラス名とkebab-case変換後の両方にマッチするようになっています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
-      "hint": "PascalCaseのクラス名はURL上ではどう表記されるかを考えましょう。",
+      "hint": "`ChatRoom`のようにクラス名は大文字区切りで書きますが、URLではその形がそのまま使われるとは限りません。どう表記されるかを考えましょう。",
       "tags": [
         "agents",
         "topic-routing"
