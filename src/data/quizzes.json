@@ -6422,7 +6422,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "バインディングとは、WorkerからKVやR2、Workers AIといったCloudflareのリソースを使えるようにする宣言です。設定ファイルに書くと、Workerのコードから `env.<名前>` で触れるようになります。Workers AIの場合、`wrangler.jsonc` では `\"ai\": { \"binding\": \"AI\" }`、`wrangler.toml` では `[ai]` に `binding = \"AI\"` と書きます。これで `env.AI` からWorkers AIにアクセスできます。\n{{diagram:0}}",
+      "explanation": "バインディングとは、Workerから外部のリソース(データの保存領域やAIモデルなど)を使えるようにする宣言です。設定ファイルに「この名前で使う」と書いておくと、Workerのコードから `env.<名前>` でそのリソースに触れるようになります。Workers AIの場合、`wrangler.jsonc` では `\"ai\": { \"binding\": \"AI\" }`、`wrangler.toml` では `[ai]` に `binding = \"AI\"` と書きます。これで `env.AI` からWorkers AIにアクセスできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-ai/configuration/bindings/",
       "hint": "設定ファイルに書いた名前が、コードから `env.○○` で参照するときの名前になります。トップレベルのキーに何を使うか考えましょう。",
       "tags": [
@@ -7385,7 +7385,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`nodejs_compat` フラグは、Workersのランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをそのまま使えるようにし、未対応のAPIについてはWranglerがポリフィル(代替実装)を自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\n※ いま新しくプロジェクトを作る場合は書く必要がありません。`compatibility_date` が `2026-08-04` 以降なら既定で有効になるためです。それより前の日付を指定するプロジェクトでは明示が必要で、フラグを使うには日付が `2024-09-23` 以降である必要があります。\n{{diagram:1}}",
+      "explanation": "`nodejs_compat` フラグは、Workersのランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをそのまま使えるようにし、未対応のAPIについてはWranglerがポリフィル(代替実装)を自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\n※ 設定ファイルには `compatibility_date` という項目があり、「いつ時点のランタイムの挙動に合わせるか」を日付で指定します。いま新しくプロジェクトを作るなら、この日付が新しいので`nodejs_compat`を書く必要はありません(2026-08-04以降は既定で有効)。古い日付を指定しているプロジェクトでだけ明示が必要です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/nodejs/",
       "hint": "ランタイムそのものを丸ごと変えるのか、一部の機能だけ後から追加するのか考えましょう。",
       "tags": [
@@ -7443,7 +7443,7 @@
       "id": "ar-005",
       "category": "architecture",
       "difficulty": "beginner",
-      "question": "AWS Lambdaのような従来のリージョンベースのクラウドFaaSと比較した際の、Cloudflare Workersのアーキテクチャ上の大きな特徴はどれですか？",
+      "question": "AWS Lambdaのような従来のリージョンベースのクラウドFaaSと比較した際の、Cloudflare Workersのアーキテクチャ上の大きな特徴はどれですか？\n※ FaaS＝関数単位でコードを実行するクラウドサービス。AWS Lambdaが代表例です。",
       "options": [
         {
           "text": "デプロイ先リージョンを開発者が選択し、リージョン間のレイテンシを手動で最適化する必要があり、リージョンごとに同じWorkerを個別にデプロイする設計が求められる",
@@ -7462,7 +7462,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Workersは数百のロケーションに分散した数千台のマシン上で動作し、開発者がリージョンを選ばなくても自動的にユーザーに近い場所で実行される「リージョンレス」モデルを採用しています。実行単位にはV8 isolateという軽量なコンテキストを使い、仮想マシンモデルより約100倍高速に起動できます。\n{{diagram:0}}\n※ なお、2つのリクエストが同じisolateで処理される保証はありません。前のリクエストで書き換えた変数の値が次のリクエストにも残っている前提でコードを書かないようにしてください。\n{{diagram:1}}",
+      "explanation": "Cloudflare Workersは数百のロケーションに分散した数千台のマシン上で動作し、開発者がリージョンを選ばなくても自動的にユーザーに近い場所で実行される「リージョンレス」モデルを採用しています。実行単位にはV8 isolateという軽量なコンテキストを使い、仮想マシンモデルより約100倍高速に起動できます。この起動の速さが効くのは、しばらく呼ばれていない関数を動かすときに待たされる「コールドスタート」を小さくできるためです。\n{{diagram:0}}\n※ なお、2つのリクエストが同じisolateで処理される保証はありません。前のリクエストで書き換えた変数の値が次のリクエストにも残っている前提でコードを書かないようにしてください。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/how-workers-works/",
       "hint": "「デプロイ先リージョンを選ぶ必要があるか」という観点で従来型FaaSとの違いを考えてみましょう。",
       "tags": [
@@ -11302,7 +11302,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "社内メンバーだけに絞りたいときは、アプリケーションの手前にCloudflare Access(Zero Trustの一機能)を挟みます。Accessは「どんな条件を満たした人を通すか」をポリシーとして書き、リクエストごとに認証・認可を行います。条件には、会社のメールドメイン、IdP(Google WorkspaceやOktaなど社員のログインを預かる認証サービス)での認証、デバイスの状態などを使えます。\n{{diagram:0}}\n※ ポリシーはもう少し細かく、通す/拒否するといったアクション、条件の組み合わせ方(Include/Require/Exclude)、判定に使う属性(セレクタ)の3つで構成されます。\n※ アクションの1つであるBypassはAccessの制御そのものを外すもので、デバイスの状態を条件に含めた場合、WorkerがリクエストをインターセプトするケースやZarazが有効な場合には正しく機能しません。その場合は、IdPへのログインを求めない代わりにサービストークン(人ではなくスクリプトなどが使う認証情報)で認証するService Authアクションが推奨されています。\n{{diagram:1}}",
+      "explanation": "社内メンバーだけに絞りたいときは、アプリケーションの手前にCloudflare Access(Zero Trustの一機能)を挟みます。Accessは「どんな条件を満たした人を通すか」をポリシーとして書き、リクエストごとに認証・認可を行います。条件には、会社のメールドメイン、IdP(Google WorkspaceやOktaなど社員のログインを預かる認証サービス)での認証、端末の状態などを使えます。\n{{diagram:0}}\n※ ここから先は慣れてきたときに効いてくる話です。Accessの制御そのものを外すBypassというアクションは、「会社が管理している端末か」という条件(デバイスポスチャ)と組み合わせたときだけ、うまく働かない場合があります。ページにZaraz(アクセス解析などのタグをCloudflare側で動かす機能)を有効にしているときと、手前にWorkerを挟んでいるときです。その場合は、人のログインを求めない代わりに合言葉で確認するService Authというアクションを使います。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
       "hint": "「誰がアクセスできるか」を判定する仕組みと、「アクセス頻度」を制限する仕組みは別物です。",
       "tags": [
@@ -21608,7 +21608,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Accessのポリシーは、何が起きるかを決めるAction、条件の組み合わせ方を決めるRule type(Include・Require・Exclude)、判定に使う属性であるSelector(メールアドレス・国・デバイス状態など)、そしてその具体的な値であるValuesという4つの要素で構成されます。\n{{diagram:0}}\n※ 4要素のうちActionには4種類あります。Allowは条件を満たしたら通し、Blockは拒否します。BypassはAccessの制御そのものを外すもので、ログも残りません。Service Authは、IdP(ユーザー認証を担うサービス)への人のログインを求めない代わりに、サービストークンや相互TLSといった機械向けの認証情報で確認する方式で、Bypassと違って制御とログを維持できます。",
+      "explanation": "Cloudflare Accessのポリシーは4つの要素で構成されます。何が起きるかを決めるAction、判定に使う属性であるSelector(メールアドレス、アクセス元の国、端末の状態など)、その具体的な値であるValues、そして条件をどう組み合わせるかを決めるRule typeです。Rule typeは、Includeが「どれか1つでも当てはまれば通す」、Requireが「必ず満たしていなければ通さない」、Excludeが「当てはまったら通さない」を表します。\n{{diagram:0}}\n※ Actionには4種類あります。Allowは条件を満たしたら通し、Blockは拒否します。BypassはAccessの制御そのものを外すもので、ログも残りません。Service Authは人がログイン画面で認証する代わりに、プログラムが持つ合言葉や証明書で確認する方式で、Bypassと違って制御とログを維持できます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
       "hint": "「何をするか」「どう組み合わせるか」「何を見るか」「どんな値か」という4つの問いに答える形を考えましょう。",
       "tags": [

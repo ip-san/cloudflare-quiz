@@ -12,8 +12,8 @@
       {
         "persona": "beginner",
         "outcome": "friction",
-        "at": "2026-08-29",
-        "fp": "b4c703336a4a"
+        "at": "2026-08-30",
+        "fp": "63619c26fa32"
       }
     ],
     "ac-003": [
@@ -358,8 +358,8 @@
       {
         "persona": "beginner",
         "outcome": "clean",
-        "at": "2026-08-27",
-        "fp": "a6d973970048"
+        "at": "2026-08-30",
+        "fp": "4ee051a6804c"
       }
     ],
     "ag-001": [
@@ -515,9 +515,9 @@
     "ac-008": [
       {
         "persona": "beginner",
-        "outcome": "friction",
-        "at": "2026-08-29",
-        "fp": "e26c1ee3a996"
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "1d52eb291c26"
       }
     ],
     "ag-002": [
@@ -531,9 +531,9 @@
     "ag-006": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "2026-08-30",
-        "fp": "cbe7531cec21"
+        "fp": "1c9bf5d6a450"
       }
     ],
     "ai-001": [
@@ -541,7 +541,7 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "2026-08-30",
-        "fp": "9541a8fb997d"
+        "fp": "1c2ad947a14e"
       }
     ],
     "ai-002": [
@@ -549,7 +549,7 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "2026-08-30",
-        "fp": "be997e1c292a"
+        "fp": "3ca08f2de112"
       }
     ],
     "ai-003": [
@@ -557,7 +557,7 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "2026-08-30",
-        "fp": "61a21929e5e4"
+        "fp": "798d6497d73d"
       }
     ],
     "ai-004": [
@@ -573,7 +573,7 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "2026-08-30",
-        "fp": "e8138f2428c9"
+        "fp": "f488dfe50cc7"
       }
     ],
     "ar-002": [
@@ -581,7 +581,7 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "2026-08-30",
-        "fp": "e2c395b45aeb"
+        "fp": "cad2dbb0b16c"
       }
     ],
     "ar-003": [
@@ -597,15 +597,15 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "2026-08-30",
-        "fp": "1d4f06ce3886"
+        "fp": "1a4cc0cd6d93"
       }
     ],
     "ar-005": [
       {
         "persona": "beginner",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "2026-08-30",
-        "fp": "c3ceb79c2ef8"
+        "fp": "ada2f6947f57"
       }
     ],
     "ar-013": [
@@ -613,7 +613,7 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "2026-08-30",
-        "fp": "c341660e73b2"
+        "fp": "04cbe9127662"
       }
     ],
     "as-001": [
