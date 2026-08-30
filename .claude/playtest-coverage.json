@@ -815,6 +815,198 @@
         "at": "2026-08-30",
         "fp": "ec3c7f1e8656"
       }
+    ],
+    "bi-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "290862e675b9"
+      }
+    ],
+    "bi-011": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "7194c5f17cb5"
+      }
+    ],
+    "bi-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "ad74624eda42"
+      }
+    ],
+    "bi-018": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "61a95e8827ea"
+      }
+    ],
+    "bt-004": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "dae2cce755b0"
+      }
+    ],
+    "bt-008": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "d2ba0b8cba65"
+      }
+    ],
+    "bt-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "ece891ffadd6"
+      }
+    ],
+    "bt-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "cde0f1e8ee90"
+      }
+    ],
+    "bt-011": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "df2384eb869c"
+      }
+    ],
+    "bt-016": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "84e0ddb4a9ce"
+      }
+    ],
+    "cb-002": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "63f81469ef28"
+      }
+    ],
+    "cb-005": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "4755ece302b1"
+      }
+    ],
+    "bi-003": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "cc980c7b15a3"
+      }
+    ],
+    "bi-004": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "820f30153f2f"
+      }
+    ],
+    "bi-005": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "9b692a370e4d"
+      }
+    ],
+    "bi-006": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "73a9b859bb6b"
+      }
+    ],
+    "bi-007": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "8e575be07387"
+      }
+    ],
+    "bi-010": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "2445c806557a"
+      }
+    ],
+    "bi-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "eae143e6a64c"
+      }
+    ],
+    "bi-013": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "4bcdaf3a1144"
+      }
+    ],
+    "bi-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "d22fd68420cf"
+      }
+    ],
+    "bi-017": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "5fbc0483ab6f"
+      }
+    ],
+    "bt-006": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "f68090cc1d08"
+      }
+    ],
+    "bt-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "a30d4cea18de"
+      }
     ]
   }
 }
