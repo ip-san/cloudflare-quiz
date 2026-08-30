@@ -43,7 +43,11 @@ const onlySet = onlyPath
     )
   : null
 
-const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes
+// 難易度で絞れる。初級の解説だけを見る掃引に使う（2026-08-30）
+const difficulty = args.includes('--difficulty') ? args[args.indexOf('--difficulty') + 1] : null
+const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes.filter(
+  (q) => !difficulty || q.difficulty === difficulty
+)
 
 let changedSince = null
 if (excludeRef) {
