@@ -43,7 +43,8 @@
     "playtest:apply": "node scripts/playtest-apply.mjs",
     "playtest:coverage": "node scripts/playtest-coverage.mjs",
     "generate-icons": "node scripts/generate-icons.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "quiz:status": "node scripts/quiz-status.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,mjs}": "biome check --write --no-errors-on-unmatched"
