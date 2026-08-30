@@ -44,7 +44,8 @@
     "playtest:coverage": "node scripts/playtest-coverage.mjs",
     "generate-icons": "node scripts/generate-icons.mjs",
     "prepare": "husky",
-    "quiz:status": "node scripts/quiz-status.mjs"
+    "quiz:status": "node scripts/quiz-status.mjs",
+    "quiz:acronyms": "node scripts/find-unresolved-acronyms.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,mjs}": "biome check --write --no-errors-on-unmatched"

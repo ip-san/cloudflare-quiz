@@ -170,6 +170,22 @@ const ENTRIES: GlossaryEntry[] = [
     description: 'ロードバランサーとは別に単体で使える、オリジンの死活監視の製品。',
   },
   { term: 'ORM', description: 'データベースの行をプログラムのオブジェクトとして扱えるようにする補助ライブラリ。' },
+
+  // ── `bun run quiz:acronyms` が挙げた、コーパス自身が別の設問で展開している略語 ──
+  // 出た設問では展開されていないので、そこだけを読む学習者には解決の手立てが無い。
+  // 何が難しいかを推測して選んだのではなく、**コーパスが既に約束している展開**を配っている。
+  {
+    term: 'SFU',
+    description: 'Selective Forwarding Unit。ビデオ通話で、各参加者へ映像を選んで中継する中継役。',
+  },
+  {
+    term: 'TURN',
+    description: 'Traversal Using Relays around NAT。直接つながれない相手同士の通信を中継する仕組み。',
+  },
+  {
+    term: 'CASB',
+    description: 'Cloud Access Security Broker。SaaSやクラウド環境をAPIで走査し、設定の問題を見つける仕組み。',
+  },
 ]
 
 /** 長い語を先に照合するため、文字数の降順で持つ */
