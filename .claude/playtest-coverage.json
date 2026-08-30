@@ -1409,7 +1409,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "08360c9130bc"
+        "fp": "08360c9130bc",
+        "gt": "d5e3c8de"
       }
     ],
     "dn-014": [
@@ -1417,7 +1418,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "9ef8c2e5eec5"
+        "fp": "9ef8c2e5eec5",
+        "gt": "d5e3c8de"
       }
     ],
     "dn-017": [
@@ -1425,7 +1427,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "49fadadf1e23"
+        "fp": "49fadadf1e23",
+        "gt": "64d27243"
       }
     ],
     "dq-001": [
@@ -1433,7 +1436,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "5bc3266a3c37"
+        "fp": "5bc3266a3c37",
+        "gt": "da39a3ee"
       }
     ],
     "dq-002": [
@@ -1441,7 +1445,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "5692de529ffa"
+        "fp": "5692de529ffa",
+        "gt": "d50ac005"
       }
     ],
     "dq-003": [
@@ -1449,7 +1454,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "7a340ae8f46a"
+        "fp": "7a340ae8f46a",
+        "gt": "da39a3ee"
       }
     ],
     "dq-004": [
@@ -1457,7 +1463,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "2725393637ad"
+        "fp": "2725393637ad",
+        "gt": "173145c1"
       }
     ],
     "dq-005": [
@@ -1465,7 +1472,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "7f38e6cf67db"
+        "fp": "7f38e6cf67db",
+        "gt": "da39a3ee"
       }
     ],
     "dq-013": [
@@ -1473,7 +1481,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "a67000fb57c2"
+        "fp": "a67000fb57c2",
+        "gt": "c48ff8be"
       }
     ],
     "dx-001": [
@@ -1481,7 +1490,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "b57f842067f5"
+        "fp": "b57f842067f5",
+        "gt": "5a0e1818"
       }
     ],
     "em-001": [
@@ -1489,7 +1499,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "856289fe2a10"
+        "fp": "856289fe2a10",
+        "gt": "da39a3ee"
       }
     ],
     "gw-001": [
@@ -1497,7 +1508,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "4dc55dd04a6b"
+        "fp": "4dc55dd04a6b",
+        "gt": "5a0e1818"
       }
     ],
     "hw-001": [
@@ -1505,7 +1517,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "d831c055c460"
+        "fp": "d831c055c460",
+        "gt": "3b85186c"
       }
     ],
     "hw-002": [
@@ -1513,7 +1526,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "91f253d57528"
+        "fp": "91f253d57528",
+        "gt": "f0ae533f"
       }
     ],
     "hw-009": [
@@ -1521,7 +1535,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "7027d8c1f960"
+        "fp": "7027d8c1f960",
+        "gt": "0b2ebdb3"
       }
     ],
     "hw-010": [
@@ -1529,7 +1544,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "ae3d36cd72af"
+        "fp": "ae3d36cd72af",
+        "gt": "da39a3ee"
       }
     ],
     "hw-011": [
@@ -1537,7 +1553,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "ac818cec0246"
+        "fp": "ac818cec0246",
+        "gt": "da39a3ee"
       }
     ],
     "hw-012": [
@@ -1545,7 +1562,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "ccd2b11a0ad1"
+        "fp": "ccd2b11a0ad1",
+        "gt": "da39a3ee"
       }
     ],
     "kv-001": [
@@ -1553,7 +1571,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "825d6d5b37d5"
+        "fp": "825d6d5b37d5",
+        "gt": "d50ac005"
       }
     ],
     "kv-002": [
@@ -1561,7 +1580,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "e9c945fe48e9"
+        "fp": "e9c945fe48e9",
+        "gt": "0983b4a8"
       }
     ],
     "kv-003": [
@@ -1569,7 +1589,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "4a2f59a3cc9b"
+        "fp": "4a2f59a3cc9b",
+        "gt": "da39a3ee"
       }
     ],
     "kv-004": [
@@ -1577,7 +1598,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "a98592506b69"
+        "fp": "a98592506b69",
+        "gt": "08be6a1d"
       }
     ],
     "kv-005": [
@@ -1585,7 +1607,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "a8e7b9135d5d"
+        "fp": "a8e7b9135d5d",
+        "gt": "d50ac005"
       }
     ],
     "kv-013": [
@@ -1593,7 +1616,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "20915b6939e4"
+        "fp": "20915b6939e4",
+        "gt": "5f37a7dc"
       }
     ],
     "lb-001": [
@@ -1601,7 +1625,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "2a5a4406811c"
+        "fp": "2a5a4406811c",
+        "gt": "2da0632a"
       }
     ],
     "lb-002": [
@@ -1609,7 +1634,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "f402eb3dce31"
+        "fp": "f402eb3dce31",
+        "gt": "08be6a1d"
       }
     ],
     "lb-004": [
@@ -1617,7 +1643,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "ac5533dca7a7"
+        "fp": "ac5533dca7a7",
+        "gt": "da39a3ee"
       }
     ],
     "lb-008": [
@@ -1625,7 +1652,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "786c4d2063cd"
+        "fp": "786c4d2063cd",
+        "gt": "2da0632a"
       }
     ],
     "lb-010": [
@@ -1633,7 +1661,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "28f6b314c1f2"
+        "fp": "28f6b314c1f2",
+        "gt": "2da0632a"
       }
     ],
     "mw-001": [
@@ -1641,7 +1670,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "8d3de8b96140"
+        "fp": "8d3de8b96140",
+        "gt": "2da0632a"
       }
     ],
     "mw-009": [
@@ -1649,7 +1679,8 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "d544d5ce3acf"
+        "fp": "d544d5ce3acf",
+        "gt": "2da0632a"
       }
     ],
     "mw-012": [
@@ -1657,7 +1688,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "7f406f92fe14"
+        "fp": "7f406f92fe14",
+        "gt": "2da0632a"
       }
     ],
     "mw-017": [
@@ -1665,7 +1697,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "1063074fcd08"
+        "fp": "1063074fcd08",
+        "gt": "da39a3ee"
       }
     ],
     "ob-001": [
@@ -1673,7 +1706,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "b865b7bd65f9"
+        "fp": "b865b7bd65f9",
+        "gt": "c48ff8be"
       }
     ],
     "ob-002": [
@@ -1681,7 +1715,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "ab8524d60f89"
+        "fp": "ab8524d60f89",
+        "gt": "c48ff8be"
       }
     ],
     "ob-003": [
@@ -1689,7 +1724,8 @@
         "persona": "beginner",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "e3f05b00c134"
+        "fp": "e3f05b00c134",
+        "gt": "f0ae533f"
       }
     ]
   }

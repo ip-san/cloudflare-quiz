@@ -25,6 +25,7 @@
 import { execFileSync } from 'node:child_process'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
+import { pathToFileURL } from 'node:url'
 
 const QUIZ = 'src/data/quizzes.json'
 const STORE = '.claude/playtest-coverage.json'
@@ -85,6 +86,64 @@ function fingerprint(quiz) {
 }
 
 /**
+ * その設問に**実際に表示される用語バッジ**の指紋。
+ *
+ * ### なぜ本文の指紋だけでは足りないか
+ *
+ * 用語集に語を足すと、設問を1文字も変えていないのに**画面に出るものが変わる**。
+ * 本文の指紋は動かないので、カバレッジは「現行内容でテスト済み」と言い続ける。
+ * 2026-08-30 に22語を足したとき、テスターが「語が分からない」と詰まった11問が
+ * **再テスト対象に一つも挙がらなかった**ことで気づいた。
+ * これは指紋を手計算して嘘の記録を書いたのと同じ種類の嘘で、
+ * しかも自動なので誰も気づけない。
+ *
+ * 語の照合規則は `src/domain/valueObjects/Glossary.ts` の `hasTerm` と同じ
+ * （英数字の語境界を見る）。TS↔mjs の境界で複製しているので、
+ * `scripts/__tests__/glossary-fingerprint.test.mjs` が両者の一致を見張っている。
+ */
+const WORDISH = /[A-Za-z0-9_]/
+
+function hasTermMjs(text, term) {
+  let from = 0
+  while (from <= text.length) {
+    const i = text.indexOf(term, from)
+    if (i === -1) return false
+    const okL = !(WORDISH.test(term[0]) && i > 0 && WORDISH.test(text[i - 1]))
+    const end = i + term.length
+    const okR = !(WORDISH.test(term[term.length - 1]) && end < text.length && WORDISH.test(text[end]))
+    if (okL && okR) return true
+    from = i + 1
+  }
+  return false
+}
+
+/** Glossary.ts から用語の一覧を読む。ref を渡すとそのコミット時点のものを読む */
+export function glossaryTermsAt(ref) {
+  const path = 'src/domain/valueObjects/Glossary.ts'
+  let src
+  try {
+    src = ref
+      ? execFileSync('git', ['show', `${ref}:${path}`], { maxBuffer: 16 * 1024 * 1024 }).toString()
+      : fs.readFileSync(path, 'utf8')
+  } catch {
+    return null // 用語集が存在しない時点のコミット
+  }
+  const block = src.match(/const ENTRIES: GlossaryEntry\[\] = \[([\s\S]*?)\n\]/)
+  if (!block) return null
+  return [...block[1].matchAll(/term: '([^']+)'/g)].map((m) => m[1])
+}
+
+/** その設問に出る用語の指紋。用語集が無い時点なら null */
+function glossaryFp(quiz, terms) {
+  if (!terms) return null
+  const text = [quiz.question, quiz.hint, quiz.explanation, ...quiz.options.flatMap((o) => [o.text, o.wrongFeedback])]
+    .filter((t) => typeof t === 'string')
+    .join(' ')
+  const shown = terms.filter((t) => hasTermMjs(text, t)).sort()
+  return crypto.createHash('sha1').update(shown.join('\u0000')).digest('hex').slice(0, 8)
+}
+
+/**
  * 再テストが要る (id, persona) を挙げる。
  *
  * 2種類ある:
@@ -105,6 +164,10 @@ function staleEntries(quizzes, store) {
     for (const c of store.covered[q.id] ?? []) {
       if (!c.fp) out.push({ id: q.id, persona: c.persona, outcome: c.outcome, at: c.at, reason: 'no-fp' })
       else if (c.fp !== fp) out.push({ id: q.id, persona: c.persona, outcome: c.outcome, at: c.at, reason: 'changed' })
+      // 本文は同じでも、出る用語バッジが変わっていれば読む体験は変わっている。
+      // gt を持たない古い記録は判定しようがないので黙って通す（嘘はつかないが、確認済みとも言わない）
+      else if (c.gt && c.gt !== glossaryFp(q, gtSource))
+        out.push({ id: q.id, persona: c.persona, outcome: c.outcome, at: c.at, reason: 'glossary' })
     }
   }
   return out
@@ -278,6 +341,8 @@ function cmdNext(quizzes, store, n, persona) {
 
 /** 指紋の計算元。既定は現在の内容。--played-at で差し替わる */
 let fpSource = null
+/** 用語一覧の取得元。既定は現在の Glossary.ts。--played-at で差し替わる */
+let gtSource = glossaryTermsAt(null)
 
 function recordOne(store, id, persona, outcome, quizzes) {
   if (!PERSONAS.includes(persona)) throw new Error(`unknown persona: ${persona}`)
@@ -302,6 +367,11 @@ function recordOne(store, id, persona, outcome, quizzes) {
     fp: (() => {
       const src = fpSource ? fpSource.find((q) => q.id === id) : quiz
       return src ? fingerprint(src) : null
+    })(),
+    // 用語バッジの指紋。用語集に語を足すと、設問を変えなくても画面に出るものが変わる
+    gt: (() => {
+      const src = fpSource ? fpSource.find((q) => q.id === id) : quiz
+      return src ? glossaryFp(src, gtSource) : null
     })(),
   })
 }
@@ -377,6 +447,33 @@ function main() {
       saveStore(store)
       console.log(`marked ${a} [${b}] ${c}`)
       break
+    case 'backfill-gt': {
+      // 用語バッジの指紋を、**そのバッチをプレイした時点の Glossary.ts** から埋める。
+      // 全記録に一律で埋めるのは嘘になる（記録ごとにプレイ時点の用語集が違うため）ので、
+      // mark-batch と同じバッチファイルを渡して、そこに載っている記録だけを対象にする。
+      const ref = a
+      const batch = b
+      if (!ref || !batch) throw new Error('Usage: backfill-gt <ref> <batchfile>')
+      const atQuizzes = JSON.parse(
+        execFileSync('git', ['show', `${ref}:${QUIZ}`], { maxBuffer: 64 * 1024 * 1024 }).toString()
+      ).quizzes
+      const atTerms = glossaryTermsAt(ref)
+      const raw = JSON.parse(fs.readFileSync(batch, 'utf8'))
+      const items = Array.isArray(raw) ? raw : (raw.played || []).map((x) => ({ id: x.id, persona: raw.persona }))
+      let n = 0
+      for (const it of items) {
+        const quiz = atQuizzes.find((q) => q.id === it.id)
+        if (!quiz) continue
+        for (const c of store.covered[it.id] ?? []) {
+          if (c.persona !== it.persona || c.gt) continue
+          c.gt = glossaryFp(quiz, atTerms)
+          n++
+        }
+      }
+      saveStore(store)
+      console.log(`${n}件に用語指紋を埋めた（${ref} 時点 / ${atTerms ? `${atTerms.length}語` : '用語集なし'}）`)
+      break
+    }
     case 'mark-batch': {
       // --played-at <ref> があれば、指紋はそのコミットの内容から取る。
       //
@@ -392,7 +489,8 @@ function main() {
         fpSource = JSON.parse(
           execFileSync('git', ['show', `${ref}:src/data/quizzes.json`], { maxBuffer: 64 * 1024 * 1024 }).toString()
         ).quizzes
-        console.log(`指紋は ${ref} 時点の内容から取ります`)
+        gtSource = glossaryTermsAt(ref)
+        console.log(`指紋は ${ref} 時点の内容から取ります（用語集 ${gtSource ? `${gtSource.length}語` : '無し'}）`)
       }
       const raw = JSON.parse(fs.readFileSync(a, 'utf8'))
       // Accepts either a plain [{id, persona, outcome}] array, or a
@@ -425,16 +523,21 @@ function main() {
     }
     default:
       console.log(
-        'Usage: playtest-coverage.mjs <status|next [N] [persona]|retest [N] [persona]|stale [persona]|mark <id> <persona> <clean|friction>|mark-batch <file>>'
+        'Usage: playtest-coverage.mjs <status|next [N] [persona]|retest [N] [persona]|stale [persona]|mark <id> <persona> <clean|friction>|mark-batch <file>|backfill-gt <ref> <batchfile>>'
       )
       process.exit(1)
   }
 }
 
-try {
-  main()
-} catch (err) {
-  // スタックトレースより、何が壊れているかを先に読ませる
-  console.error(`\n✗ ${err.message}\n`)
-  process.exit(1)
-}
+// テストから関数だけを import できるよう、直接実行のときだけ走らせる。
+// これが無いと import しただけで usage を出して process.exit(1) する。
+const invokedDirectly = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url
+
+if (invokedDirectly)
+  try {
+    main()
+  } catch (err) {
+    // スタックトレースより、何が壊れているかを先に読ませる
+    console.error(`\n✗ ${err.message}\n`)
+    process.exit(1)
+  }
