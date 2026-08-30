@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from 'react'
-import { GLOSSARY } from '../../domain/valueObjects/Glossary'
+import { GLOSSARY, indexOfTerm } from '../../domain/valueObjects/Glossary'
 import { GlossaryTerm } from './GlossaryTerm'
 
 interface QuizTextProps {
@@ -82,7 +82,7 @@ function markGlossaryTerms(text: string, used: Set<string>, keyBase: number): Re
     let best: { index: number; entry: (typeof GLOSSARY)[number] } | null = null
     for (const entry of GLOSSARY) {
       if (used.has(entry.term)) continue
-      const i = rest.indexOf(entry.term)
+      const i = indexOfTerm(rest, entry.term)
       if (i === -1) continue
       if (!best || i < best.index) best = { index: i, entry }
     }

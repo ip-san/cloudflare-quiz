@@ -1403,6 +1403,294 @@
         "at": "2026-08-30",
         "fp": "70bdd31bee22"
       }
+    ],
+    "dn-012": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "08360c9130bc"
+      }
+    ],
+    "dn-014": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "9ef8c2e5eec5"
+      }
+    ],
+    "dn-017": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "49fadadf1e23"
+      }
+    ],
+    "dq-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "5bc3266a3c37"
+      }
+    ],
+    "dq-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "5692de529ffa"
+      }
+    ],
+    "dq-003": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "7a340ae8f46a"
+      }
+    ],
+    "dq-004": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "2725393637ad"
+      }
+    ],
+    "dq-005": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "7f38e6cf67db"
+      }
+    ],
+    "dq-013": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "a67000fb57c2"
+      }
+    ],
+    "dx-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "b57f842067f5"
+      }
+    ],
+    "em-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "856289fe2a10"
+      }
+    ],
+    "gw-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "4dc55dd04a6b"
+      }
+    ],
+    "hw-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "d831c055c460"
+      }
+    ],
+    "hw-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "91f253d57528"
+      }
+    ],
+    "hw-009": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "7027d8c1f960"
+      }
+    ],
+    "hw-010": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "ae3d36cd72af"
+      }
+    ],
+    "hw-011": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "ac818cec0246"
+      }
+    ],
+    "hw-012": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "ccd2b11a0ad1"
+      }
+    ],
+    "kv-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "825d6d5b37d5"
+      }
+    ],
+    "kv-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "e9c945fe48e9"
+      }
+    ],
+    "kv-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "4a2f59a3cc9b"
+      }
+    ],
+    "kv-004": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "a98592506b69"
+      }
+    ],
+    "kv-005": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "a8e7b9135d5d"
+      }
+    ],
+    "kv-013": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "20915b6939e4"
+      }
+    ],
+    "lb-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "2a5a4406811c"
+      }
+    ],
+    "lb-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "f402eb3dce31"
+      }
+    ],
+    "lb-004": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "ac5533dca7a7"
+      }
+    ],
+    "lb-008": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "786c4d2063cd"
+      }
+    ],
+    "lb-010": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "28f6b314c1f2"
+      }
+    ],
+    "mw-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "8d3de8b96140"
+      }
+    ],
+    "mw-009": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "d544d5ce3acf"
+      }
+    ],
+    "mw-012": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "7f406f92fe14"
+      }
+    ],
+    "mw-017": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "1063074fcd08"
+      }
+    ],
+    "ob-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "b865b7bd65f9"
+      }
+    ],
+    "ob-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "ab8524d60f89"
+      }
+    ],
+    "ob-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "e3f05b00c134"
+      }
     ]
   }
 }

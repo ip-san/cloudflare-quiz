@@ -1,4 +1,4 @@
-import { GLOSSARY, type GlossaryEntry } from '../../domain/valueObjects/Glossary'
+import { GLOSSARY, type GlossaryEntry, hasTerm } from '../../domain/valueObjects/Glossary'
 import { GlossaryTerm } from './GlossaryTerm'
 
 interface GlossaryChipsProps {
@@ -31,7 +31,8 @@ interface GlossaryChipsProps {
  */
 export function GlossaryChips({ texts, label }: GlossaryChipsProps) {
   const joined = texts.filter((t): t is string => typeof t === 'string').join(' ')
-  const found: GlossaryEntry[] = GLOSSARY.filter((e) => joined.includes(e.term))
+  // includes ではなく hasTerm。`CREATE INDEX` の IN`DEX` のような埋没を弾く
+  const found: GlossaryEntry[] = GLOSSARY.filter((e) => hasTerm(joined, e.term))
   if (found.length === 0) return null
 
   return (

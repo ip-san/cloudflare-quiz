@@ -339,7 +339,20 @@ function cmdBackfillFp(store, ref, ids) {
 }
 
 function main() {
-  const [cmd, a, b, c] = process.argv.slice(2)
+  // `--played-at <ref>` のようなフラグを位置引数から外す。
+  // 外し忘れると `a` がフラグ名になり、それをファイル名として開こうとして
+  // `ENOENT: ... open '--played-at'` で落ちる（2026-08-30 に踏んだ）。
+  const argv = process.argv.slice(2)
+  const positional = []
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--played-at') {
+      i++ // 値も飛ばす
+      continue
+    }
+    if (argv[i].startsWith('--')) continue
+    positional.push(argv[i])
+  }
+  const [cmd, a, b, c] = positional
   const quizzes = loadQuizzes()
   const store = loadStore()
 

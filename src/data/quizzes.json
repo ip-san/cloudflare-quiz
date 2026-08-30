@@ -1883,7 +1883,7 @@
       "correctIndex": 3,
       "explanation": "Workers KVは「high-read, low-latency workloads」に最適化された、結果整合性を持つグローバルなキーバリューストアです。機能フラグやAPIキーのマッピングのような、低頻度で更新され高頻度で読まれるデータの配布に向いています。\n{{diagram:0}}\n読み取りはエッジでキャッシュされるため非常に高速です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/concepts/how-kv-works/",
-      "hint": "「低頻度更新・高頻度読み取り」というワークロードの特性から考えてみましょう。",
+      "hint": "4つのうち、データを中央に置き、読み取りを世界中でキャッシュして配ることを前提に設計されているのはどれでしょう。残りは、1か所での調整・データセンター単位のキャッシュ・表と行を扱う用途に向いています。",
       "tags": [
         "kv-cache",
         "practical",
@@ -12308,7 +12308,7 @@
       "correctIndex": 1,
       "explanation": "Workflowsは、注文処理やデータパイプラインのような「複数のステップから成る処理」を、途中で失敗やインフラの再起動があっても最後まで確実に実行するための仕組みです。各ステップの結果は永続化されるため、失敗したステップだけをリトライして続きから再開できます。\n{{diagram:0}}\n数分から数日にわたる長時間の処理でも、状態を失わずに進行できるのが特長です。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/",
-      "hint": "「途中で失敗しても最初からやり直しにならない」処理の仕組み、と考えてみましょう。",
+      "hint": "CI/CDのようなビルド作業ではなく、Workers上で動く「アプリケーションの処理そのもの」を、途中で失敗しても続きから進める仕組みです。どちらの説明が対象を正しく捉えているでしょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -25611,9 +25611,9 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Geo Steeringは、訪問者がいるリージョンごとに、どのPool（オリジンをまとめたグループ）へ振り分けるかを指定する方式です。このGeo Steeringと、任意の条件を書けるカスタムLoad Balancingルールは互換性がなく、Geo Steeringが設定されたLoad Balancerにカスタムルールを適用しても期待通りには機能しません。\n{{diagram:0}}\n※ あるリージョンに追加したPoolは、Geo Steeringの設定から明示的に外すまで削除できません。この設定はTraffic Steeringの方式を別のものに変えても自動的には消えないため、手動で外す必要があります。",
+      "explanation": "Geo Steeringは、訪問者がいるリージョンごとに、どのPool（オリジンをまとめたグループ）へ振り分けるかを指定する方式です。このGeo Steeringと、任意の条件を書けるカスタムLoad Balancingルールは互換性がなく、Geo Steeringが設定されたLoad Balancerにカスタムルールを適用しても期待通りには機能しません。\n{{diagram:0}}\n※ ドキュメントはこれを「互換性がない」という制約として示すのみで、内部で何が競合するのかという理由は説明していません。仕組みから導ける話ではなく、覚えておく制約です。\n※ あるリージョンに追加したPoolは、Geo Steeringの設定から明示的に外すまで削除できません。この設定はTraffic Steeringの方式を別のものに変えても自動的には消えないため、手動で外す必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/geo-steering/",
-      "hint": "地理的な振り分けロジックと、任意の条件を書けるカスタムルールが、うまく共存できるかどうかを考えましょう。",
+      "hint": "Geo Steeringは「このリージョンからの訪問者はこのPoolへ」とリージョンごとに振り分け先を決める方式です。任意の条件で振り分け先を決めるカスタムルールを同じLoad Balancerに足したとき、ドキュメントがどう言っているかを思い出してみましょう。",
       "tags": [
         "load-balancing",
         "practical"
@@ -25717,7 +25717,7 @@
       "correctIndex": 0,
       "explanation": "モニターは、振り分け先のオリジンへ定期的にリクエストを送り、正常に応答するかを確かめる死活監視の仕組みです。Cloudflare Load Balancingは、HTTP/HTTPS・TCP・ICMP Ping・UDP-ICMP・SMTPという5種類のプロトコルのモニターに対応しているため、HTTP以外で待ち受けるオリジンも監視できます。\n{{diagram:0}}\n※ 成功と判定する基準はプロトコルごとに異なります。例えばTCPはSYN/ACKの受信、SMTPはHELO・QUITコマンドへの正しい応答コードの受信を基準とします。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/#supported-protocols",
-      "hint": "「アプリケーション層のプロトコルから、ネットワーク層の疎通確認まで」複数の種類があると考えましょう。",
+      "hint": "HTTPで待ち受けないオリジンも監視できるよう、アプリケーション層からネットワーク層の疎通確認まで全部で5種類が用意されています。種類が足りない選択肢を外していきましょう。",
       "tags": [
         "load-balancing",
         "practical"
@@ -38967,7 +38967,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "トンネルヘルスチェックは、Cloudflareからあなたのネットワークへトラフィックをルーティングするトンネルそのものの状態を監視し、トラフィックステアリング(どのトンネルにトラフィックを流すかの選択)に使われます。一方エンドポイントヘルスチェックは、Cloudflareの分散データセンターからあなたのオリジンネットワークまでの疎通性を評価するもので、トンネル上を流れますがトンネル選択やステアリングロジックには関与しません。経路を選ぶために見るのが前者、疎通の全体像を知るために見るのが後者です。\n{{diagram:0}}\n※ エンドポイントヘルスチェックは、顧客ネットワーク名前空間の外側からCloudflareグローバルネットワークサーバーによって発行されます。",
+      "explanation": "トンネルヘルスチェックは、Cloudflareからあなたのネットワークへトラフィックをルーティングするトンネルそのものの状態を監視し、トラフィックステアリング(どのトンネルにトラフィックを流すかの選択)に使われます。一方エンドポイントヘルスチェックは、Cloudflareの分散データセンターからあなたのオリジンネットワークまでの疎通性を評価するもので、トンネル上を流れますがトンネル選択やステアリングロジックには関与しません。経路を選ぶために見るのが前者、疎通の全体像を知るために見るのが後者です。\n{{diagram:0}}\n※ エンドポイントヘルスチェックは、その顧客専用に区切られたネットワーク空間の外側から、Cloudflareグローバルネットワークのサーバーによって発行されます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/tunnel-health-checks/#types-of-health-checks",
       "hint": "「経路選択に直接関わるチェック」と「疎通性の全体像を把握するためのチェック」という役割の違いを考えましょう。",
       "tags": [
