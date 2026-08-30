@@ -139,8 +139,8 @@ const ENTRIES: GlossaryEntry[] = [
     term: 'DLQ',
     description: 'Dead Letter Queue。再試行の上限まで失敗したメッセージが送られる、取りこぼし用のキュー。',
   },
-  { term: 'Layer 4', description: 'ネットワーク層。IPアドレス・ポート・プロトコルで通信を見る段階。' },
-  { term: 'レイヤー4', description: 'ネットワーク層。IPアドレス・ポート・プロトコルで通信を見る段階。' },
+  { term: 'Layer 4', description: 'IPアドレス・ポート・プロトコルで通信を見る段階。中身までは開かない。' },
+  { term: 'レイヤー4', description: 'IPアドレス・ポート・プロトコルで通信を見る段階。中身までは開かない。' },
   { term: 'Layer 7', description: 'アプリケーション層。HTTPの中身まで見て判断できる段階。' },
   {
     term: 'FWaaS',

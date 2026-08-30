@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { clampShift } from './GlossaryTerm'
 import { QuizText } from './QuizText'
 
 /**
@@ -82,5 +83,24 @@ describe('用語集を出さない場所', () => {
   it('glossary={false} でもインラインコードは描画される', () => {
     const { container } = render(<QuizText text="`env.DB` を使う" glossary={false} />)
     expect(container.querySelector('code')?.textContent).toBe('env.DB')
+  })
+})
+
+describe('ポップオーバーの横位置', () => {
+  // 幅390pxの端末。チップの行が折り返して右端まで並ぶので、右寄りの語で実際に起きる
+  const MOBILE = 390
+
+  it('右へはみ出すぶんだけ左へ寄せる', () => {
+    // 左端300px・幅256px → 右端556px。画面は390px
+    expect(clampShift(300, 556, MOBILE)).toBe(390 - 8 - 556)
+  })
+
+  it('収まっているときは動かさない', () => {
+    expect(clampShift(20, 276, MOBILE)).toBe(0)
+  })
+
+  it('寄せた結果それでも左が切れるなら、左端に合わせる', () => {
+    // 画面より説明のほうが広い場合。右を優先して左が負にならないようにする
+    expect(clampShift(100, 500, 320)).toBe(8 - 100)
   })
 })

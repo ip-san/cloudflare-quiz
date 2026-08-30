@@ -1,5 +1,22 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import type { GlossaryEntry } from '../../domain/valueObjects/Glossary'
+
+/**
+ * ポップオーバーを横方向にどれだけ寄せれば画面内に収まるか。
+ *
+ * 説明は語の左端に合わせて開く（`left-0`）。横幅は 16rem あるので、
+ * **画面の右寄りにある語を開くと右へはみ出す。** 幅 390px の端末では
+ * チップの行が折り返して右端まで並ぶため、実際に起きる。
+ *
+ * 2026-08-30 に直したのは縦方向（`bottom-full` → `top-full`）だけで、
+ * 横方向は見ていなかった。同じ形の見落としを2度している。
+ */
+export function clampShift(left: number, right: number, viewportWidth: number, margin = 8): number {
+  let dx = 0
+  if (right > viewportWidth - margin) dx = viewportWidth - margin - right
+  if (left + dx < margin) dx = margin - left
+  return dx
+}
 
 interface GlossaryTermProps {
   entry: GlossaryEntry
@@ -31,6 +48,8 @@ export function GlossaryTerm({ entry }: GlossaryTermProps) {
   const [open, setOpen] = useState(false)
   const id = useId()
   const ref = useRef<HTMLSpanElement>(null)
+  const popRef = useRef<HTMLSpanElement>(null)
+  const [shift, setShift] = useState(0)
 
   useEffect(() => {
     if (!open) return
@@ -50,6 +69,17 @@ export function GlossaryTerm({ entry }: GlossaryTermProps) {
     }
   }, [open])
 
+  useLayoutEffect(() => {
+    if (!open) {
+      setShift(0)
+      return
+    }
+    const el = popRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    setShift(clampShift(r.left, r.right, window.innerWidth))
+  }, [open])
+
   return (
     <span ref={ref} className="relative inline-block">
       <button
@@ -64,7 +94,9 @@ export function GlossaryTerm({ entry }: GlossaryTermProps) {
       {open && (
         <span
           id={id}
+          ref={popRef}
           role="note"
+          style={{ transform: `translateX(${shift}px)` }}
           className="absolute top-full left-0 z-20 mt-1 block w-64 max-w-[80vw] rounded-lg border border-stone-200 bg-white p-2.5 text-left text-stone-700 text-xs leading-relaxed shadow-lg dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200"
         >
           <span className="mb-0.5 block font-medium text-stone-900 dark:text-stone-100">{entry.term}</span>
