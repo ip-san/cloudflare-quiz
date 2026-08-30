@@ -57,6 +57,7 @@ const VALID = new Set([
   'B3',
   'B4',
   'B5',
+  'gloss',
   'ok',
   'unclear',
 ])

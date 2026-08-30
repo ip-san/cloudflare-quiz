@@ -4709,7 +4709,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Durable Objects は単一インスタンスで強整合な状態管理ができるため、複数クライアントが同時に同じ状態を読み書きするリアルタイム協調（チャットルーム、マルチプレイヤーゲーム、カウンタ、排他制御など）に向いています。一方 Workers KV は結果整合性を前提とした分散ストアで、読み取りが多く書き込みが少ないデータの配信に最適化されています。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "Durable Objects は単一インスタンス(1個分の実体)で強整合な状態管理ができるため、複数クライアントが同時に同じ状態を読み書きするリアルタイム協調(チャットルーム、マルチプレイヤーゲーム、カウンタ、排他制御など)に向いています。一方 Workers KV は結果整合性を前提とした分散ストアで、読み取りが多く書き込みが少ないデータの配信に最適化されています。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/",
       "hint": "大勢が同時に同じ盤面を見ながら書き込むゲームのような場面を考えましょう。",
       "tags": [
@@ -4769,7 +4769,7 @@
       "category": "do-queues",
       "difficulty": "beginner",
       "type": "single",
-      "question": "特定の文字列（例: ユーザーIDやルーム名）に対して、常に同じ Durable Object インスタンスを取得したい場合、Namespace のどのメソッドを使いますか？",
+      "question": "特定の文字列(例: ユーザーIDやルーム名)に対して、常に同じ Durable Object インスタンス(1個分の実体)を取得したい場合、Namespace のどのメソッドを使いますか？",
       "options": [
         {
           "text": "namespace.newUniqueId()",
@@ -14963,7 +14963,7 @@
       "id": "ct-005",
       "category": "containers",
       "difficulty": "beginner",
-      "question": "`Container`クラスの`defaultPort`と`sleepAfter`プロパティの役割として正しいものはどれですか？",
+      "question": "`Container`クラスの`defaultPort`と`sleepAfter`プロパティ(クラスに書いておく設定値)の役割として正しいものはどれですか？",
       "options": [
         {
           "text": "`defaultPort`はコンテナと通信するポート番号、`sleepAfter`はアクティビティがない状態が続いた場合にコンテナを停止するまでの時間"
@@ -15029,7 +15029,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`wrangler deploy`を実行すると、まず新しいWorkerバージョンがアップロードされて有効化され、続いてDockerでコンテナイメージがビルドされてCloudflareのコンテナイメージレジストリへプッシュされ、最後にコンテナインスタンスへのロールアウトが始まります。Worker本体はイメージとロールアウトの手順が始まる前に有効になっているため、ロールアウトが終わるまでは新しいWorkerコードが旧イメージのインスタンスへ届く時間帯が生じます。初回デプロイ後は準備が完了するまで数分かかり、その間コンテナへの呼び出しはエラーになります。\n{{diagram:0}}\n2回目以降のデプロイはDockerのキャッシュ済みレイヤーを再利用するため高速です。",
+      "explanation": "`wrangler deploy`を実行すると、まず新しいWorkerバージョンがアップロードされて有効化され、続いてDockerでコンテナイメージがビルドされてCloudflareのコンテナイメージレジストリへプッシュされ、最後にコンテナインスタンス(コンテナ1個分の実体)へのロールアウトが始まります。Worker本体はイメージとロールアウトの手順が始まる前に有効になっているため、ロールアウトが終わるまでは新しいWorkerコードが旧イメージのインスタンスへ届く時間帯が生じます。初回デプロイ後は準備が完了するまで数分かかり、その間コンテナへの呼び出しはエラーになります。\n{{diagram:0}}\n2回目以降のデプロイはDockerのキャッシュ済みレイヤーを再利用するため高速です。",
       "referenceUrl": "https://developers.cloudflare.com/containers/get-started/",
       "hint": "普段のWorkerデプロイと違い、イメージという「もう1つの成果物」をどこかに送る手順が挟まることを考えましょう。",
       "tags": [
@@ -43206,7 +43206,7 @@
       "id": "at-013",
       "category": "agents",
       "difficulty": "beginner",
-      "question": "Agentインスタンスの命名パターンに関する説明として正しいものはどれですか?",
+      "question": "Agentインスタンス(Agent1個分の実体)の命名パターンに関する説明として正しいものはどれですか?",
       "options": [
         {
           "text": "ユーザーごとに一意のインスタンス名を使えばユーザー専用の状態を持つAgentになり、同じインスタンス名を共有すればチャットルームのような共有状態のAgentになる"
