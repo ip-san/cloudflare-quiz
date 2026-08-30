@@ -23774,7 +23774,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Proプラン以上の顧客であれば、ダッシュボードの`Security`>`Bots`からボットグルーピングを自動的に確認できます。区分は「Not computed」(スコア0)・「Automated」(スコア1)・「Likely automated」(スコア2〜29)・「Likely human」(スコア30〜99)・「Verified bot」(検証済みボットの別区分)の5つです。粒度の細かい生のボットスコアそのものは、Enterprise Bot Managementの顧客のみが利用できます。\n{{diagram:0}}",
+      "explanation": "Proプラン以上の顧客であれば、ダッシュボードの`Security`>`Bots`からボットグルーピングを自動的に確認できます。区分は5つで、うち4つはボットスコアの範囲で分かれ、残る「Verified bot」はスコアとは別枠の区分です(検証済みの正当なボットを指します)。各区分のスコア範囲は下表のとおりです。\n{{diagram:0}}\n※ 粒度の細かい生のボットスコアそのものは、Enterprise Bot Managementの顧客のみが利用できます。",
       "referenceUrl": "https://developers.cloudflare.com/bots/concepts/bot-score/#bot-groupings",
       "hint": "「誰でも見られる区分けされたグループ」と「Enterprise限定の生のスコア」の違いを考えましょう。",
       "tags": [
