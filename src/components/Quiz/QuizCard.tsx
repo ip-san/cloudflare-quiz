@@ -10,6 +10,7 @@ import { ChapterComplete } from './chapter/ChapterComplete'
 import { ChapterIndicator } from './chapter/ChapterIndicator'
 import { ChapterIntro } from './chapter/ChapterIntro'
 import { Feedback } from './Feedback'
+import { GlossaryChips } from './GlossaryChips'
 import { useQuizKeyboard } from './hooks/useQuizKeyboard'
 import { OptionButton } from './OptionButton'
 import { CorrectOverlay } from './overlays/CorrectOverlay'
@@ -227,6 +228,14 @@ export function QuizCard({
         <h2 className="mb-3 max-w-prose text-lg font-semibold leading-snug text-cf-ink sm:mb-6 sm:text-xl sm:leading-relaxed">
           <QuizText text={quiz.question} />
         </h2>
+
+        {/* 用語（選択肢の中の語も確認できるように、選択肢の外へ出す） */}
+        {!isAnswered && (
+          <GlossaryChips
+            texts={[quiz.question, quiz.hint, ...quiz.options.map((o) => o.text)]}
+            label={locale.quizCard.glossaryChips}
+          />
+        )}
 
         {/* Hint (hidden in 実力テスト defer mode) */}
         {!isAnswered && !deferFeedback && (

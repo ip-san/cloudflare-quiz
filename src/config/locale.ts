@@ -97,6 +97,8 @@ export interface LocaleConfig {
     readonly unbookmark: string
     readonly hint: string
     readonly usedHint: string
+    /** 設問に出てくる用語を並べる行の見出し */
+    readonly glossaryChips: string
     readonly showHint: string
     readonly multiSelectGroup: string
     readonly singleSelectGroup: string

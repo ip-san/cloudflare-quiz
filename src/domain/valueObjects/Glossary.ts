@@ -60,6 +60,10 @@ const ENTRIES: GlossaryEntry[] = [
     description: 'しばらく呼ばれていない処理を動かすときに、起動を待たされる時間。',
   },
   { term: 'FaaS', description: 'Function as a Service。関数単位でコードを実行するクラウドサービス。' },
+  {
+    term: 'シャドーIT',
+    description: '会社が把握していないまま、従業員が業務に使っているサービスや端末。',
+  },
   { term: 'DLP', description: 'Data Loss Prevention。機密情報が外部へ出ていくのを検知・防止する仕組み。' },
   {
     term: 'mTLS',

@@ -14,6 +14,13 @@ interface GlossaryTermProps {
  * 設計の決めごと:
  * - **タップで開く。** PWAでスマートフォンから使われるので hover は当てにしない
  * - 開いている説明は1つだけ。別の語を開くと前のは閉じる（画面が説明で埋まらない）
+ * - **下線は `border-b` ではなく `text-decoration` で引く。**
+ *   `border-b` はボタンの箱の底に線を描くので、行の高さぶん文字から離れて見え、
+ *   学習者が「下線」を狙ってタップすると外れる。実機テストで
+ *   「何回か外れて反応しなかった。これ本当に押せるやつ?」という声が出た。
+ *   `underline` なら線が文字に沿うので、見た目と当たり判定が一致する
+ * - **色を付けて太くする。** 実機テストで「点線が薄くて気づかなかった。
+ *   目を凝らしてやっと分かった」という声が出た。地の文と同じ濃さでは見つからない
  * - **説明は下に出す。** 上に出すと、設問見出しのように画面上端に近い語で
  *   説明が画面外へ押し出される（2026-08-30 に実機で確認した）
  * - `Escape` と外側のタップで閉じる
@@ -50,7 +57,7 @@ export function GlossaryTerm({ entry }: GlossaryTermProps) {
         aria-expanded={open}
         aria-controls={open ? id : undefined}
         onClick={() => setOpen((v) => !v)}
-        className="cursor-help border-stone-400 border-b border-dotted text-inherit dark:border-stone-500"
+        className="cursor-help text-inherit underline decoration-cf-accent/70 decoration-dotted decoration-2 underline-offset-4"
       >
         {entry.term}
       </button>

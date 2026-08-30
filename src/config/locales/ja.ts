@@ -75,6 +75,8 @@ export const ja: LocaleConfig = {
   },
 
   quizCard: {
+    /** 設問に出てくる用語を並べる行の見出し */
+    glossaryChips: '用語:',
     noQuestions: '該当する問題がありません',
     noQuestionsHint: '別のカテゴリや難易度を試してみてください',
     backToMenu: 'メニューに戻る',
