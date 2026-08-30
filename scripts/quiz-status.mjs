@@ -118,6 +118,25 @@ const correct = collect(correctSources)
 console.log('\n【正解・解説・設問文】')
 line('判定済み', correct.size, quizzes.filter((q) => q.type !== 'multi').length)
 
+// --- 用語集 ---
+console.log('\n【用語集】')
+try {
+  const src = readFileSync(resolve(ROOT, 'src/domain/valueObjects/Glossary.ts'), 'utf8')
+  const block = src.match(/const ENTRIES: GlossaryEntry\[\] = \[([\s\S]*?)\n\]/)
+  const terms = block ? [...block[1].matchAll(/term: '([^']+)'/g)].map((m) => m[1]) : []
+  const beginners = quizzes.filter((q) => q.difficulty === 'beginner')
+  const covered = beginners.filter((q) => {
+    const t = [q.question, q.hint, ...q.options.map((o) => o.text)].filter((x) => typeof x === 'string').join(' ')
+    return terms.some((term) => t.includes(term))
+  }).length
+  console.log(`  登録語数 ${terms.length}`)
+  line('初級問題での出現', covered, beginners.length, '（1語以上を含む問題）')
+  console.log('  ※ 収録はプレイテストで実際に詰まった語からしか増やせない')
+  console.log('     （頻度で機械抽出すると Cloudflare / リクエスト / ファイルばかりが挙がる）')
+} catch {
+  console.log('  (Glossary.ts が読めない)')
+}
+
 // --- プレイテスト ---
 console.log('\n【プレイテスト】')
 try {
