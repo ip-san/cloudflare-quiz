@@ -23,6 +23,24 @@
  *
  * **推測で書かないこと。** 各定義は docs か一般的な用語法で裏を取ってある。
  * 裏の取れない語はここに入れない（`em-009` 型の事実注入になる）。
+ *
+ * ### 文脈で意味が変わる語を入れてはいけない
+ *
+ * ここは**設問をまたいで同じ説明を出す**仕組みなので、
+ * 文脈で意味が変わる語を入れると、必ずどこかで誤った説明になる。
+ * 2度確認している:
+ *
+ * ```
+ * プロパティ  ru-004 では「リクエストのプロパティに基づく数式」＝リクエストの属性。
+ *             at-003 では「クラスに書いておく設定値」。担当レビュアーが
+ *             「当てはめると誤った説明を挿入することになる」と指摘した
+ * Allow      11カテゴリに出る。Access では「条件を満たしたら通す」だが、
+ *             Client-side security では「許可したもの**以外をブロック**する」で
+ *             ほぼ逆の意味になる（docs: `Allow rules block any resource not
+ *             explicitly listed`）
+ * ```
+ *
+ * こうした語は**その設問の中で説明する**しかない。用語集には入れない。
  */
 export interface GlossaryEntry {
   /** 本文中に現れる表記 */
@@ -64,6 +82,15 @@ const ENTRIES: GlossaryEntry[] = [
     term: 'シャドーIT',
     description: '会社が把握していないまま、従業員が業務に使っているサービスや端末。',
   },
+  {
+    term: 'Gateway',
+    description: '社内から外へ出る通信をDNS・ネットワーク・HTTPの各層で検査し、ポリシーで制御するCloudflareの機能。',
+  },
+  {
+    term: 'IP Access Rules',
+    description: 'IPアドレス・IPブロック・国・ASNを指定して、まとめて許可・ブロック・チャレンジする仕組み。',
+  },
+  { term: 'S3互換', description: 'Amazon S3 と同じAPIの作法で読み書きできること。S3向けのツールをそのまま使える。' },
   { term: 'DLP', description: 'Data Loss Prevention。機密情報が外部へ出ていくのを検知・防止する仕組み。' },
   {
     term: 'mTLS',

@@ -1139,7 +1139,7 @@
     "cb-001": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "2026-08-30",
         "fp": "9b6e915a2c2d"
       }
@@ -1179,7 +1179,7 @@
     "ch-006": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "2026-08-30",
         "fp": "04318690a6a2"
       }
@@ -1323,7 +1323,7 @@
     "d1-003": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "2026-08-30",
         "fp": "316e2bbf8c98"
       }

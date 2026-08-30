@@ -2826,7 +2826,7 @@
       "question": "Cloudflare D1 の説明として最も適切なものはどれですか？",
       "options": [
         {
-          "text": "強い整合性を持つ状態とWebSocket接続を、単一インスタンス上で扱うコンピューティングプリミティブ",
+          "text": "強い整合性を持つ状態とWebSocket接続を、単一インスタンス上で扱うための実行基盤",
           "wrongFeedback": "これはDurable Objectsの説明です。D1はSQLiteエンジンによるリレーショナルDBです。"
         },
         {
