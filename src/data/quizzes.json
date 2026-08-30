@@ -21622,11 +21622,11 @@
           "items": [
             {
               "text": "Action",
-              "sub": "Allow/Block/Bypass/Svc Auth"
+              "sub": "通す/拒否/制御を外す/機械向け認証"
             },
             {
               "text": "Rule type",
-              "sub": "Include/Require/Exclude"
+              "sub": "Include=どれか1つ / Require=必須 / Exclude=除外"
             },
             {
               "text": "Selector",
