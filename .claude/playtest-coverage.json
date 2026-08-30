@@ -527,6 +527,294 @@
         "at": "2026-08-29",
         "fp": "a7bd8e1a3f33"
       }
+    ],
+    "ag-006": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "cbe7531cec21"
+      }
+    ],
+    "ai-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "9541a8fb997d"
+      }
+    ],
+    "ai-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "be997e1c292a"
+      }
+    ],
+    "ai-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "61a21929e5e4"
+      }
+    ],
+    "ai-004": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "20ca49d49ad8"
+      }
+    ],
+    "ai-005": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "e8138f2428c9"
+      }
+    ],
+    "ar-002": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "e2c395b45aeb"
+      }
+    ],
+    "ar-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "fdc9cd662f26"
+      }
+    ],
+    "ar-004": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "1d4f06ce3886"
+      }
+    ],
+    "ar-005": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "c3ceb79c2ef8"
+      }
+    ],
+    "ar-013": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "c341660e73b2"
+      }
+    ],
+    "as-001": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "6e8d25a20aba"
+      }
+    ],
+    "as-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "fd4a83b4b3e9"
+      }
+    ],
+    "as-018": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "2026-08-30",
+        "fp": "1abb2d2903fa"
+      }
+    ],
+    "at-004": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "585ad12d909f"
+      }
+    ],
+    "at-005": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "e8ccee06249f"
+      }
+    ],
+    "at-007": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "7d299badd73f"
+      }
+    ],
+    "at-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "fdcf0ec4d2da"
+      }
+    ],
+    "at-012": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "5457ef1c9d75"
+      }
+    ],
+    "at-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "7837f33caa69"
+      }
+    ],
+    "at-017": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "9f2e07233edd"
+      }
+    ],
+    "at-018": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "f5b43f1d8513"
+      }
+    ],
+    "bi-002": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "72b833086fa0"
+      }
+    ],
+    "bi-008": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "416d5cef3b75"
+      }
+    ],
+    "ar-018": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "214e58337eac"
+      }
+    ],
+    "as-006": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "6faad76299e8"
+      }
+    ],
+    "as-008": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "6f98567ae8f2"
+      }
+    ],
+    "as-011": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "f81eba814e25"
+      }
+    ],
+    "as-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "7c72a4954f47"
+      }
+    ],
+    "as-014": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "6e977f6c6987"
+      }
+    ],
+    "as-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "82a648d10982"
+      }
+    ],
+    "as-017": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "b56383c87530"
+      }
+    ],
+    "at-006": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "a3a1bd122389"
+      }
+    ],
+    "at-010": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "711f0ad05a03"
+      }
+    ],
+    "at-015": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "c4807dcdf493"
+      }
+    ],
+    "at-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "2026-08-30",
+        "fp": "ec3c7f1e8656"
+      }
     ]
   }
 }

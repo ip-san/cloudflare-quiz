@@ -6422,9 +6422,9 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`wrangler.jsonc` では `\"ai\": { \"binding\": \"AI\" }`、`wrangler.toml` では `[ai]\\nbinding = \"AI\"` と記述する。設定後、Worker内で `env.AI` としてWorkers AIにアクセスできるようになる。\n{{diagram:0}}",
+      "explanation": "バインディングとは、WorkerからKVやR2、Workers AIといったCloudflareのリソースを使えるようにする宣言です。設定ファイルに書くと、Workerのコードから `env.<名前>` で触れるようになります。Workers AIの場合、`wrangler.jsonc` では `\"ai\": { \"binding\": \"AI\" }`、`wrangler.toml` では `[ai]` に `binding = \"AI\"` と書きます。これで `env.AI` からWorkers AIにアクセスできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-ai/configuration/bindings/",
-      "hint": "他のバインディング宣言と同じ構造かどうか、そしてトップレベルのキー名に何を使うか考えましょう。",
+      "hint": "設定ファイルに書いた名前が、コードから `env.○○` で参照するときの名前になります。トップレベルのキーに何を使うか考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -7369,7 +7369,7 @@
       "question": "`wrangler.jsonc`に`\"compatibility_flags\": [\"nodejs_compat\"]`を設定する目的として正しいものはどれですか？",
       "options": [
         {
-          "text": "Buffer・Crypto・Streamなど30以上のNode.js組み込みAPIをworkerd上で使えるようにする"
+          "text": "Buffer・Crypto・Streamなど30以上のNode.js組み込みAPIを、Workersのランタイム上で使えるようにする"
         },
         {
           "text": "npmパッケージのインストール先をCloudflareのレジストリに変更する設定であり、`npm install`時の参照先が自動的に切り替わる",
@@ -7385,7 +7385,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "nodejs_compatフラグは、workerdランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをネイティブに使えるようにし、未対応のAPIについてはWranglerがポリフィルを自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\nなお `compatibility_date` が `2026-08-04` 以降のプロジェクトでは、このフラグはデフォルトで有効になっているため明示的な指定は不要です。それより前の日付では明示が必要で、フラグを使うには日付が2024-09-23以降である必要があります。\n{{diagram:1}}",
+      "explanation": "`nodejs_compat` フラグは、Workersのランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをそのまま使えるようにし、未対応のAPIについてはWranglerがポリフィル(代替実装)を自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\n※ いま新しくプロジェクトを作る場合は書く必要がありません。`compatibility_date` が `2026-08-04` 以降なら既定で有効になるためです。それより前の日付を指定するプロジェクトでは明示が必要で、フラグを使うには日付が `2024-09-23` 以降である必要があります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/nodejs/",
       "hint": "ランタイムそのものを丸ごと変えるのか、一部の機能だけ後から追加するのか考えましょう。",
       "tags": [
@@ -11302,7 +11302,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflare Access(Zero Trustの一機能)は、アクション(Allow/Block/Bypass/Service Auth)・ルール型(Include/Require/Exclude)・セレクタ(メールドメイン、IdP(アイデンティティプロバイダ)認証、デバイス状態など)を組み合わせたポリシーで、リクエストごとに認証・認可を行います。管理画面のようなアプリケーションの手前にAccessを挟むことで、社内メンバーだけがアクセスできる状態を作れます。\n{{diagram:0}}\nなお、デバイス状態(デバイスポスチャ)の条件を含むBypassポリシーは、WorkerがリクエストをインターセプトするケースやZarazが有効な場合には正しく機能しないため、その場合はService Authアクションの利用が推奨されています。\n{{diagram:1}}",
+      "explanation": "社内メンバーだけに絞りたいときは、アプリケーションの手前にCloudflare Access(Zero Trustの一機能)を挟みます。Accessは「どんな条件を満たした人を通すか」をポリシーとして書き、リクエストごとに認証・認可を行います。条件には、会社のメールドメイン、IdP(Google WorkspaceやOktaなど社員のログインを預かる認証サービス)での認証、デバイスの状態などを使えます。\n{{diagram:0}}\n※ ポリシーはもう少し細かく、通す/拒否するといったアクション、条件の組み合わせ方(Include/Require/Exclude)、判定に使う属性(セレクタ)の3つで構成されます。なかでもAccessの制御そのものを外すBypassアクションは、デバイスの状態を条件に含めると、WorkerがリクエストをインターセプトするケースやZarazが有効な場合には正しく機能しません。その場合は、IdPへのログインを求めない代わりにサービストークンなどで認証するService Authアクションが推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
       "hint": "「誰がアクセスできるか」を判定する仕組みと、「アクセス頻度」を制限する仕組みは別物です。",
       "tags": [
@@ -17014,7 +17014,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Universal Endpointは非推奨(Deprecated)となっています。新規の統合ではOpenAI互換のエンドポイントと、フォールバック・リトライ・条件分岐ルーティングを担うDynamic Routingの利用が推奨されています。既存の統合では引き続き動作します。\n{{diagram:0}}",
+      "explanation": "Universal Endpointは、どのAIプロバイダー宛のリクエストも1つのAI Gatewayのエンドポイントにまとめて送れる仕組みで、フォールバックやリトライにも対応していました。これが現在は非推奨(Deprecated)です。新規の統合では、OpenAI互換のエンドポイントと、フォールバック・リトライ・条件分岐ルーティングを担うDynamic Routingの利用が推奨されています。既存の統合は引き続き動作するので、すぐに壊れるわけではありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/usage/universal/",
       "hint": "「新しく作るなら別の方法」だが「今動いているものは壊れない」、という移行期特有の状態を考えましょう。",
       "tags": [
@@ -24344,7 +24344,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "API Shieldのフルセキュリティスイート(API Discovery・JWT検証・Sequence Analytics・Sequence Mitigation・Volumetric Abuse Detectionなど)は、Enterpriseプラン向けの有料アドオンです。一方、Endpoint ManagementとSchema validation、Cloudflare管理CAによるmTLSは全プランの顧客が利用できます。なお、API ShieldはJDCloudの顧客には現在対応していません。\n{{diagram:0}}",
+      "explanation": "API Shieldのフルセキュリティスイート(APIの自動検出や不正利用の検知といった高度な機能群)は、Enterpriseプラン向けの有料アドオンです。一方、エンドポイントを一覧管理するEndpoint Managementと、リクエストが決められた形式に沿っているかを検査するSchema validation、そしてCloudflareが管理するCA証明書を使ったmTLS(クライアント側も証明書で身元を示す通信)は、全プランの顧客が利用できます。\n{{diagram:0}}\n※ 有料スイートに含まれるのはAPI Discovery・JWT検証・Sequence Analytics・Sequence Mitigation・Volumetric Abuse Detectionなどです。またAPI ShieldはJDCloudの顧客には現在対応していません。",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/",
       "hint": "「全プランに開放されている入口部分の機能」と「Enterprise限定の高度な機能群」の2段階があると考えましょう。",
       "tags": [
@@ -25205,7 +25205,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Free・Pro・Businessプランのルールアクションは`Block`のみに限られますが、API Shieldを契約していないEnterpriseプランでは`Log`または`Block`を選択できます。保存済みエンドポイント数は、Free 100・Pro 250・Business 500・API Shieldなしのenterprise 3,000ですが、API Shieldを契約したEnterpriseプランでは10,000まで拡大されます。\n{{diagram:0}}",
+      "explanation": "プランが上がると変わるのは2点です。まずルールアクションで、Free・Pro・Businessは`Block`のみ、Enterpriseになると`Log`と`Block`を選べます。次に保存済みエンドポイント数の上限で、こちらは上位プランほど増えます。API Shieldの契約はEnterpriseのなかでさらにこの上限を引き上げるもので、アクションの選択肢は契約の有無で変わりません。個々の数値は下表のとおりです(実務ではプラン比較表で都度確認する類のものです)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/plans/",
       "hint": "「アクションの選択肢の広さ」と「保存できるエンドポイント数」の両方が、プランに応じて段階的に広がっていくことを考えましょう。",
       "tags": [
