@@ -14,6 +14,8 @@ interface GlossaryTermProps {
  * 設計の決めごと:
  * - **タップで開く。** PWAでスマートフォンから使われるので hover は当てにしない
  * - 開いている説明は1つだけ。別の語を開くと前のは閉じる（画面が説明で埋まらない）
+ * - **説明は下に出す。** 上に出すと、設問見出しのように画面上端に近い語で
+ *   説明が画面外へ押し出される（2026-08-30 に実機で確認した）
  * - `Escape` と外側のタップで閉じる
  * - 読み上げには `aria-describedby` ではなく `aria-expanded` + 実体の表示で伝える。
  *   説明が閉じているときは DOM に無いほうが、読み上げの流れが素直になる
@@ -56,7 +58,7 @@ export function GlossaryTerm({ entry }: GlossaryTermProps) {
         <span
           id={id}
           role="note"
-          className="absolute bottom-full left-0 z-20 mb-1 block w-64 max-w-[80vw] rounded-lg border border-stone-200 bg-white p-2.5 text-left text-stone-700 text-xs leading-relaxed shadow-lg dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200"
+          className="absolute top-full left-0 z-20 mt-1 block w-64 max-w-[80vw] rounded-lg border border-stone-200 bg-white p-2.5 text-left text-stone-700 text-xs leading-relaxed shadow-lg dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200"
         >
           <span className="mb-0.5 block font-medium text-stone-900 dark:text-stone-100">{entry.term}</span>
           {entry.description}

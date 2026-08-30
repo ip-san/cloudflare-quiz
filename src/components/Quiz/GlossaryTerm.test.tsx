@@ -65,3 +65,22 @@ describe('用語集', () => {
     expect(screen.queryByRole('note')).toBeNull()
   })
 })
+
+describe('用語集を出さない場所', () => {
+  /**
+   * 選択肢は `<button>` なので、その中に用語のボタンを置くと
+   * 用語をタップした時点でその選択肢が選ばれてしまう。
+   * 2026-08-30 に実機で確認して分かった。入れ子の対話要素は
+   * アクセシビリティ上も不正。
+   */
+  it('glossary={false} のとき用語をマークしない', () => {
+    render(<QuizText text="最寄りのエッジでキャッシュします" glossary={false} />)
+    expect(screen.queryByRole('button', { name: 'エッジ' })).toBeNull()
+    expect(screen.getByText(/最寄りのエッジでキャッシュします/)).toBeTruthy()
+  })
+
+  it('glossary={false} でもインラインコードは描画される', () => {
+    const { container } = render(<QuizText text="`env.DB` を使う" glossary={false} />)
+    expect(container.querySelector('code')?.textContent).toBe('env.DB')
+  })
+})

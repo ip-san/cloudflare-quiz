@@ -9,6 +9,15 @@ interface QuizTextProps {
   animated?: boolean | undefined
   /** Base delay in ms for code highlight stagger */
   animationDelay?: number | undefined
+  /**
+   * 用語集のマークアップを付けるか。既定は付ける。
+   *
+   * **選択肢の中では必ず false にすること。** 選択肢自体が `<button>` なので、
+   * その中に用語のボタンを置くと、用語をタップした時点でその選択肢が
+   * 選ばれてしまう（2026-08-30 に実機で確認した）。
+   * 入れ子の対話要素はアクセシビリティ上も不正。
+   */
+  glossary?: boolean | undefined
 }
 
 /**
@@ -25,14 +34,14 @@ interface QuizTextProps {
  * been added *because* an earlier tester missed the term — so the content fix
  * was being defeated by the rendering. A note has to look like a note.
  */
-export function QuizText({ text, className, animated, animationDelay = 0 }: QuizTextProps) {
-  return <span className={className}>{parseQuizText(text, animated, animationDelay)}</span>
+export function QuizText({ text, className, animated, animationDelay = 0, glossary = true }: QuizTextProps) {
+  return <span className={className}>{parseQuizText(text, animated, animationDelay, glossary)}</span>
 }
 
 /** 行頭の「※」は注記の合図 */
 const NOTE_LINE = /^\s*※/
 
-function parseQuizText(text: string, animated?: boolean, baseDelay?: number): ReactNode[] {
+function parseQuizText(text: string, animated?: boolean, baseDelay?: number, glossary = true): ReactNode[] {
   const lines = text.split('\n')
   const result: ReactNode[] = []
   let codeIndex = 0
@@ -41,7 +50,7 @@ function parseQuizText(text: string, animated?: boolean, baseDelay?: number): Re
     if (i > 0) {
       result.push(<br key={`br-${i}`} />)
     }
-    const { nodes, codeCount } = parseInlineCode(lines[i], animated, baseDelay, codeIndex)
+    const { nodes, codeCount } = parseInlineCode(lines[i], animated, baseDelay, codeIndex, glossary)
     // 「※」で始まる行は注記。本文と同じ見た目だと注記だと分からず読み飛ばされる
     if (NOTE_LINE.test(lines[i])) {
       result.push(
@@ -91,7 +100,8 @@ function parseInlineCode(
   text: string,
   animated?: boolean,
   baseDelay?: number,
-  startCodeIndex?: number
+  startCodeIndex?: number,
+  glossary = true
 ): { nodes: ReactNode[]; codeCount: number } {
   const parts: ReactNode[] = []
   const regex = /`([^`]+)`/g
@@ -133,6 +143,8 @@ function parseInlineCode(
 
   // 用語のマークアップは**コード片を除いた地の文にだけ**当てる。
   // parts のうち文字列のものが地の文で、`code` は既に ReactNode になっている
+  if (!glossary) return { nodes: parts, codeCount }
+
   const marked: ReactNode[] = []
   const usedInThisText = new Set<string>()
   for (const part of parts) {

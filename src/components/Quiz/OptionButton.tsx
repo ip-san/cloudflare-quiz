@@ -149,7 +149,8 @@ export function OptionButton({
       <div className="flex items-start gap-3">
         {renderBadge()}
         <span className="flex-1 text-sm leading-snug text-cf-ink sm:text-base sm:leading-relaxed">
-          <QuizText text={text} />
+          {/* 選択肢は button なので、用語のボタンを入れ子にすると選択が発火する */}
+          <QuizText text={text} glossary={false} />
         </span>
         {getIcon()}
       </div>
