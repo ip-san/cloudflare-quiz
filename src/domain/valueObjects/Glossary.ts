@@ -186,6 +186,17 @@ const ENTRIES: GlossaryEntry[] = [
     term: 'CASB',
     description: 'Cloud Access Security Broker。SaaSやクラウド環境をAPIで走査し、設定の問題を見つける仕組み。',
   },
+
+  // ── docs 自身が展開している略語のうち、初級で複数問に出て未展開のもの ──
+  // 判断の根拠は「難しそうだから」ではなく「**Cloudflare の docs が
+  // 技術者向けの文章でわざわざ展開している**」こと。読み手はそれより初学者なので、
+  // docs が展開する語はこちらでも要る（a fortiori）。
+  { term: 'CLI', description: 'command-line interface。画面ではなく、コマンドを打って操作する方式。' },
+  {
+    term: 'BGP',
+    description: 'Border Gateway Protocol。経路を自動で広告・撤回する仕組み。静的な経路の手動管理に代わるもの。',
+  },
+  { term: 'AWS', description: 'Amazon Web Services。Amazonのクラウドサービス。' },
 ]
 
 /** 長い語を先に照合するため、文字数の降順で持つ */

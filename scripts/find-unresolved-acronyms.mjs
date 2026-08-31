@@ -33,7 +33,7 @@
  * **コーパスが別の設問で既に展開を約束している**ので判断が要らない。
  */
 
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -41,6 +41,11 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
 const difficulty = args.includes('--difficulty') ? args[args.indexOf('--difficulty') + 1] : 'beginner'
 const onlyCorpusExpanded = args.includes('--corpus-expanded')
+// docs 自身が展開している略語だけに絞る。
+// 判断の根拠が「難しそうだから」ではなく「**Cloudflare の docs が技術者向けの文章で
+// わざわざ展開している**」になる。読み手はそれより初学者なので、
+// docs が展開する語はこちらでも要る（a fortiori）。
+const onlyDocsExpanded = args.includes('--docs-expanded')
 
 const ACR = /\b[A-Z]{3,6}\b/g
 
@@ -81,6 +86,37 @@ const SKIP = new Set([
   'EARLY',
 ])
 
+/**
+ * docs の中で「展開 (略語)」の形が出ている行を、**行ごと**返す。
+ *
+ * 展開文字列だけを返してはいけない。2026-08-30 に正規表現の捕獲をそのまま使いかけて、
+ * 2件を取り違えた:
+ *
+ *   SSL  「TLS (SSL)」 …… SSL は **TLS の別名**として出ているだけで、展開ではない
+ *   SSH  「Infrastructure (SSH)」 …… 製品の見出し語。展開ではない
+ *
+ * どちらもそのまま用語集に書けば事実の捏造になっていた（em-009 と同じ型）。
+ * **必ず行を読ませる**ことで、捕獲を信じる余地を無くす。
+ */
+function docsExpansionLines(acr) {
+  const dir = resolve(ROOT, '.claude/tmp/docs')
+  let files
+  try {
+    files = readdirSync(dir).filter((f) => f.endsWith('.md'))
+  } catch {
+    return []
+  }
+  const re = new RegExp(`[A-Za-z][A-Za-z /-]{4,60}\\(${acr}s?\\)`)
+  const out = []
+  for (const f of files) {
+    for (const line of readFileSync(resolve(dir, f), 'utf8').split('\n')) {
+      if (re.test(line)) out.push(`${f}: ${line.trim().slice(0, 160)}`)
+      if (out.length >= 3) return out
+    }
+  }
+  return out
+}
+
 const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes
 const glossary = readFileSync(resolve(ROOT, 'src/domain/valueObjects/Glossary.ts'), 'utf8')
 const terms = [...glossary.matchAll(/term: '([^']+)'/g)].map((m) => m[1])
@@ -116,6 +152,7 @@ for (const q of quizzes.filter((x) => x.difficulty === difficulty)) {
   for (const acr of new Set(front.match(ACR) || [])) {
     if (SKIP.has(acr) || inGlossary(acr) || expanded.has(acr)) continue
     if (onlyCorpusExpanded && !corpusExpanded.has(acr)) continue
+    if (onlyDocsExpanded && docsExpansionLines(acr).length === 0) continue
     if (!found.has(acr)) found.set(acr, [])
     found.get(acr).push(q.id)
   }
@@ -136,6 +173,8 @@ if (rows.length === 0) {
       `  ${acr.padEnd(8)} ${String(ids.length).padStart(2)}問  ${ids.slice(0, 6).join(' ')}` +
         (known ? `\n           └ コーパス内の展開: ${known.full}（${known.at}）` : '')
     )
+    // docs の行は**要約せずそのまま**出す。捕獲した展開文字列を信じると取り違える
+    if (onlyDocsExpanded) for (const line of docsExpansionLines(acr)) console.log(`           │ ${line}`)
   }
   console.log('')
   console.log(`  ${total}件 / ${rows.length}語`)
@@ -144,3 +183,9 @@ console.log('')
 console.log('※ 挙がった語を機械的に用語集へ入れないこと。')
 console.log('   「知らない読み手には解けない」は言えるが「実際に詰まる」は言えない。')
 console.log('   収録の可否はプレイテストで確かめる（--corpus-expanded の分だけは判断が要らない）。')
+if (onlyDocsExpanded) {
+  console.log('')
+  console.log('※ 上の docs の行を**必ず自分で読むこと**。')
+  console.log('   「TLS (SSL)」は SSL が TLS の別名として出ているだけで展開ではない。')
+  console.log('   「Infrastructure (SSH)」は製品の見出し語。どちらも展開として扱えば事実の捏造になる。')
+}
