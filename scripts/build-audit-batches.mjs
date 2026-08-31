@@ -20,6 +20,8 @@
  *     → f7bb370 から変わった肢（監査済み）を除き、残りだけを配る
  *   node scripts/build-audit-batches.mjs --parts 12 --out <dir> --layer correct
  *     → 正解・解説・設問文を配る（ファイル名は correct-partN.json）
+ *   node scripts/build-audit-batches.mjs --parts 8 --out <dir> --layer hint
+ *     → ヒントを配る（ファイル名は hint-partN.json）。全選択肢を正解の位置つきで添える
  */
 
 import { execFileSync } from 'node:child_process'
@@ -90,6 +92,32 @@ for (const quiz of quizzes) {
     continue
   }
 
+  if (layer === 'hint') {
+    // ヒントは756個。**層として一度も掃引していない**（2026-08-30 時点）。
+    // 同日の初級36問では、設問レベルの欠陥5件のうち3件がヒントの欠陥だった。
+    // 機械での選別は失敗している（良いヒントほど、狙って潰す誤答と語彙が重なるため）。
+    // 詳しくは quiz-audit/SKILL.md「ヒントは欠陥が濃い層」。
+    if (!quiz.hint) continue
+    limbTotal += 1
+    items.push({
+      id: quiz.id,
+      category: quiz.category,
+      difficulty: quiz.difficulty,
+      referenceUrl: quiz.referenceUrl ?? null,
+      targets: [
+        {
+          optionIndex: quiz.correctIndex,
+          hint: quiz.hint,
+          question: quiz.question,
+          // 「絞り込みに使えるか」を見るので、**全選択肢**を正解の位置つきで渡す
+          options: quiz.options.map((o, i) => ({ index: i, text: o.text, correct: i === quiz.correctIndex })),
+          explanation: quiz.explanation ?? null,
+        },
+      ],
+    })
+    continue
+  }
+
   if (layer === 'correct') {
     // 正解・解説・設問文。1問=1単位として数える（誤答のように肢に割れない）
     limbTotal += 1
@@ -150,11 +178,20 @@ for (const it of items) {
 }
 
 mkdirSync(resolve(ROOT, outDir), { recursive: true })
-const unit = layer === 'correct' ? '問' : layer === 'diagram' ? '枚' : '肢'
+const unit = layer === 'correct' || layer === 'hint' ? '問' : layer === 'diagram' ? '枚' : '肢'
 const prefix =
-  layer === 'correct' ? 'correct-part' : layer === 'diagram' ? 'diagram-part' : onlySet ? 'recheck-part' : 'sweep-part'
+  layer === 'correct'
+    ? 'correct-part'
+    : layer === 'hint'
+      ? 'hint-part'
+      : layer === 'diagram'
+        ? 'diagram-part'
+        : onlySet
+          ? 'recheck-part'
+          : 'sweep-part'
 console.log('=== 監査バッチ ===')
-console.log(`層: ${layer === 'correct' ? '正解・解説・設問文' : layer === 'diagram' ? '図' : '誤答'}`)
+const LAYER_NAME = { correct: '正解・解説・設問文', hint: 'ヒント', diagram: '図', distractor: '誤答' }
+console.log(`層: ${LAYER_NAME[layer] ?? layer}`)
 if (excludeRef) console.log(`除外: ${excludeRef} から変わった肢（監査済み）`)
 console.log(`対象: ${limbTotal}${unit} / ${items.length}問 → ${parts}分割`)
 console.log('')
