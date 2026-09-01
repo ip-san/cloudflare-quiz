@@ -14879,7 +14879,7 @@
       ],
       "correctIndex": 3,
       "explanation": "`Container`クラスは`DurableObject`(状態を保持し続けられる特別なWorker)を継承しています。Durable Object側がルーティング・永続的な状態・ライフサイクルを管理し、コンテナプロセス自体はLinux VM内でコンテナイメージを実行します。役割は分かれていても同じクラスなので、`this.ctx.storage`(永続ストレージ)や`this.ctx.id`などDurable Object APIがそのまま使えます。\n{{diagram:0}}\n※ コンテナのディスクはデフォルトで一時的なので、再起動をまたいで残したいデータはDurable Objectのストレージに保存します。",
-      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/",
+      "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/",
       "hint": "「誰が状態を覚えていて、誰が実際のプロセスを動かしているか」という役割分担を考えましょう。",
       "tags": [
         "containers",
@@ -14930,7 +14930,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`getContainer(binding, name)`は指定した名前に対応する1つのコンテナインスタンスのスタブを返し、同じ名前を指定すれば常に同じインスタンスにルーティングされます。ユーザーセッションやドキュメント単位の処理に向いています。一方`getRandom(binding, instances)`は指定した台数の中からランダムに1つを選ぶため、どのインスタンスが処理しても構わないステートレスな負荷分散に向いています。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#getcontainer",
+      "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#getcontainer",
       "hint": "「特定の相手と話し続けたい」のか「誰でもいいから空いている相手と話したい」のか、という違いを考えましょう。",
       "tags": [
         "containers",
@@ -14983,7 +14983,7 @@
       ],
       "correctIndex": 0,
       "explanation": "`defaultPort`は、`fetch()`や`containerFetch()`がコンテナプロセスと通信する際に使うポート番号です。コンテナがこのポートで待ち受けを始めるまでリクエストはブロックされます。`sleepAfter`は、アクティビティがない状態が一定時間続いた場合にコンテナを停止するまでの時間(デフォルト`\"10m\"`)です。\n{{diagram:0}}\nリクエストのたびにこのタイマーはリセットされます。",
-      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#properties",
+      "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#properties",
       "hint": "「どのポートで会話するか」と「どれくらい放置したら休ませるか」という2つの設定だと考えましょう。",
       "tags": [
         "containers",
@@ -15082,7 +15082,7 @@
       ],
       "correctIndex": 2,
       "explanation": "`fetch()`をオーバーライドすることで、認証やパスによるルーティングなどのミドルウェア処理を追加できます。コンテナへ処理を委譲する箇所では、無限再帰を避けるために`this.fetch()`ではなく`this.containerFetch()`を呼び出します。WebSocketのプロキシをサポートするのは`fetch()`のみです。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#fetch",
+      "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#fetch",
       "hint": "同じ名前のメソッドを自分自身から呼び出すと何が起きるか、それを避けるための「内部委譲用」の別メソッドを考えましょう。",
       "tags": [
         "containers",
@@ -15141,7 +15141,7 @@
       ],
       "correctIndex": 2,
       "explanation": "カスタムインスタンスタイプでは、vCPUは1〜4、メモリは最大12GiB、ディスクは最大20GBという上限に加えて、メモリはvCPU1つあたり最低3GiB、ディスクはメモリ1GiBあたり最大2GBという比率の制約もあります。1vCPU未満の小さなワークロードには`lite`や`basic`などの定義済みインスタンスタイプを使います。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/limits/#custom-instance-types",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform/limits/#custom-instance-types",
       "hint": "「何個まで」という上限だけでなく、「比率としての下限・上限」もセットで存在することを意識しましょう。",
       "tags": [
         "containers",
@@ -15200,7 +15200,7 @@
       ],
       "correctIndex": 0,
       "explanation": "Containerは実際に稼働している10ms単位で課金されます。リクエストが送られるか手動で起動したときに課金が始まり、コンテナがスリープ(停止)すると課金も止まるため、使った分だけの支払いで済みます。メモリ・ディスクはプロビジョニングされた容量ベース、CPUは実際のアクティブ使用量ベースで課金される点も特徴です。\n{{diagram:0}}\nこれによりバーストするトラフィックでもゼロスケールと高い利用効率を両立できます。",
-      "referenceUrl": "https://developers.cloudflare.com/containers/pricing/",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform/pricing/",
       "hint": "「契約した瞬間から」ではなく「実際に動いている時間」に紐づく課金の仕組みを考えましょう。",
       "tags": [
         "containers",
@@ -15250,7 +15250,7 @@
       ],
       "correctIndex": 3,
       "explanation": "Containerには、1アカウントあたりの同時メモリ(6TiB)・同時vCPU(1,500)・同時ディスク(30TB)といった上限に加え、コンテナイメージの総ストレージ容量にも50GBという上限があります。イメージストレージが上限に近づいた場合は`wrangler containers images delete`で不要なイメージを削除できます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/limits/#account-limits",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform/limits/#account-limits",
       "hint": "個々のWorkerの設定とは別に、アカウント全体としての「総量」の上限があることを意識しましょう。",
       "tags": [
         "containers",
@@ -15313,7 +15313,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`wrangler deploy`を実行すると、Worker本体のコードは即座に更新されますが、コンテナインスタンスは段階的にロールアウトされます。既定のステップは`max_instances`に依存し、2以上なら2段階(最初のステップで10%、次のステップで100%)、省略または2未満なら単発の100%です。更新対象になったインスタンスにはまず`SIGTERM`が送られ、15分間の猶予の後もまだ停止していなければ`SIGKILL`で強制停止されます。\n{{diagram:0}}\n`rollout_step_percentage`でこの段階配分をカスタマイズできます。",
-      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/rollouts/",
+      "referenceUrl": "https://developers.cloudflare.com/containers/configuration/rollouts/",
       "hint": "Worker本体とコンテナ、2つの更新スピードが同じとは限らないことを考えましょう。",
       "tags": [
         "containers",
@@ -15366,7 +15366,7 @@
       ],
       "correctIndex": 2,
       "explanation": "ローカル開発ではDocker互換のCLIツールとエンジンが必要です。`image`にローカルパスが指定されていればDockerfileからビルドされ、イメージ参照が指定されていればレジストリから取得されます。Workerのコードは保存のたびに自動リロードされますが、コンテナ内のコードは自動リビルドされないため、`[r]`キーで手動リビルドをトリガーします。また`max_instances`はローカル開発には適用されません。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/local-dev/",
+      "referenceUrl": "https://developers.cloudflare.com/containers/guides/local-dev/",
       "hint": "Workerのコードとコンテナのコードとで、保存時の挙動が同じかどうかを考えてみましょう。",
       "tags": [
         "containers",
@@ -15418,7 +15418,7 @@
       ],
       "correctIndex": 0,
       "explanation": "`onActivityExpired()`は`sleepAfter`で設定したアイドルタイムアウトが経過したときに呼ばれるフックで、デフォルト実装は`stop()`を呼び出します。このフックをオーバーライドする場合、自分で`await this.stop()`または`await this.destroy()`を呼ばないと、コンテナが停止しないままタイマーが延長されてしまい、フックが繰り返し呼ばれ続けます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#onactivityexpired",
+      "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#onactivityexpired",
       "hint": "デフォルトの挙動を上書きしたとき、「もともと自動でやってくれていたこと」を自分で呼び直す必要がないか考えましょう。",
       "tags": [
         "containers",
@@ -15467,7 +15467,7 @@
       ],
       "correctIndex": 2,
       "explanation": "`Container`クラスは内部で`alarm()`ハンドラをコンテナのライフサイクル管理に使っているため、`alarm()`を直接オーバーライドしてはいけません。代わりに`this.schedule(when, callbackName, payload)`を使うことで、絶対時刻(`Date`)または相対的な遅延秒数を指定して、クラス内のメソッドを後から呼び出せます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#schedule",
+      "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#schedule",
       "hint": "コンテナ自身のライフサイクル管理にすでに使われている仕組みと、あなたが使いたい仕組みが衝突しないか考えましょう。",
       "tags": [
         "containers",
@@ -15520,7 +15520,7 @@
       ],
       "correctIndex": 3,
       "explanation": "Containerのネットワークegressは地域別に料金が異なります。北米・欧州は1GBあたり$0.025(月1TBまで無料)、オセアニア/韓国/台湾は$0.05(月500GBまで無料)、それ以外の地域は$0.04(月500GBまで無料)です。\n{{diagram:0}}\nリージョンをまたぐトラフィックが多い構成では、この地域差を踏まえたコスト試算が必要です。",
-      "referenceUrl": "https://developers.cloudflare.com/containers/pricing/#network-egress",
+      "referenceUrl": "https://developers.cloudflare.com/containers/platform/pricing/#network-egress",
       "hint": "世界中の通信インフラのコストが本当にどこでも同じかどうか、地理的な観点で考えてみましょう。",
       "tags": [
         "containers",
@@ -15580,7 +15580,7 @@
       ],
       "correctIndex": 0,
       "explanation": "`Container`サブクラスに`static outbound`(全リクエスト共通)や`static outboundByHost`(ホスト名ごと)を定義すると、コンテナが行う外向きのHTTPリクエストをWorker側のコードでインターセプト・モック・ブロックできます。AI生成コードの実行サンドボックスや、外部通信のテスト・プロキシに応用できます。`enableInternet`が`false`の場合はそもそも外向き通信自体がブロックされます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/container-class/#outbound-interception",
+      "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#outbound-interception",
       "hint": "コンテナが外の世界へ話しかけようとする通信を、間に立って制御する仕組みを想像してみましょう。",
       "tags": [
         "containers",
@@ -15696,7 +15696,7 @@
       ],
       "correctIndex": 1,
       "explanation": "`wrangler deploy --containers-rollout=immediate`を使うと、通常は複数ステップに分かれるコンテナインスタンスの更新を1ステップで100%まとめて行います。ただし`rollout_active_grace_period`が設定されている場合、そのグレースピリオド(既存インスタンスへの`SIGTERM`送信から強制停止までの猶予)は引き続き適用されます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/containers/platform-details/rollouts/#immediate-rollouts",
+      "referenceUrl": "https://developers.cloudflare.com/containers/configuration/rollouts/#immediate-rollouts",
       "hint": "「ステップを一気に減らす」ことと「安全装置(猶予期間)をなくす」ことは同じではない、という点を考えましょう。",
       "tags": [
         "containers",
@@ -24795,7 +24795,7 @@
       "question": "API ShieldのJWT検証設定を構成する2つの要素に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "JWT発行者の公開鍵セット(JWKS)を含む「トークン検証設定」と、どのホスト名・エンドポイントを検証するかを指定する「JWT検証ルール」という2つの要素で構成される"
+          "text": "JWT発行者の検証鍵セット(JWKS)を含む「トークン検証設定」と、どのホスト名・エンドポイントを検証するかを指定する「JWT検証ルール」という2つの要素で構成される"
         },
         {
           "text": "JWTの署名アルゴリズムを指定する設定と、JWTの有効期限の秒数を指定する設定の2つのみで構成される",
@@ -24811,7 +24811,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "API ShieldのJWT検証は、JWT発行者の公開鍵セット(JWKS)とJWTの所在場所(ヘッダーまたはCookieとその名前)を含む「トークン検証設定」と、どのホスト名・エンドポイントにルールを適用するか、どのトークン検証設定を使うか、トークン不在時の扱い(Ignore・Mark as non-compliant)、非準拠リクエストへのアクションを指定する「JWT検証ルール」という2つの要素で構成されます。\n{{diagram:0}}",
+      "explanation": "API ShieldのJWT検証は、JWT発行者の検証鍵セット(JWKS。非対称アルゴリズムの公開鍵、またはHMACアルゴリズム用の共通鍵)とJWTの所在場所(ヘッダーまたはCookieとその名前)を含む「トークン検証設定」と、どのホスト名・エンドポイントにルールを適用するか、どのトークン検証設定を使うか、トークン不在時の扱い(Ignore・Mark as non-compliant)、非準拠リクエストへのアクションを指定する「JWT検証ルール」という2つの要素で構成されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/#process",
       "hint": "「鍵をどこから持ってくるか」を決める設定と、「どこに適用するか」を決める設定の2つに分かれていると考えましょう。",
       "tags": [
@@ -36217,28 +36217,28 @@
       "id": "cb-011",
       "category": "casb",
       "difficulty": "advanced",
-      "question": "CASBのfindingからGatewayのHTTPポリシーを作成する機能に関する正しい説明はどれですか?",
+      "question": "CASBのRemediation Policies(修復ポリシー)を作成して有効化した場合の、適用範囲と修復アクションの制約に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "この機能はGoogle Workspaceの「公開アクセス可能／社外共有」×「編集権限／閲覧権限」の4種類のPosture findingsに限定されており、利用にはGatewayのHTTPフィルタリングを事前に有効化しておく必要がある"
+          "text": "ポリシーは作成後に新たに検知されたfindingインスタンスにのみ適用されて既存のインスタンスには遡及せず、「Run Remediation」アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られ、インテグレーションにRead-Write権限が必要である"
         },
         {
-          "text": "この機能を利用するにあたって、あらかじめGatewayのトラフィックフィルタリング機能(HTTPインスペクション)を有効化しておくような前提条件は、ドキュメント上どこにも定められていないため、Gatewayの設定状態に関係なく直接ポリシーを作成して即座に有効化できる",
-          "wrongFeedback": "この機能を利用するには、事前にGatewayのHTTPフィルタリングを有効化しておく必要があります。"
+          "text": "ポリシーを有効化した時点で、それ以前にCASBが検知済みだった既存のfindingインスタンスにも遡って自動的に適用され、過去のスキャン結果に含まれる該当findingがまとめて修復またはWebhook送信の対象になるため、有効化前の棚卸しは不要である",
+          "wrongFeedback": "ポリシーは作成後に新たに検知されたfindingインスタンスにのみ適用されます。新規・更新したポリシーは既存のfindingインスタンスには遡及しません。"
         },
         {
-          "text": "この機能はインテグレーションの種類やアプリケーション、findingタイプの組み合わせに関わらず、CASBが検知したあらゆる種類のfindingに対して同様に利用でき、どのSaaSインテグレーションでも同じ手順で使える汎用的な機能として設計されている",
-          "wrongFeedback": "この機能はGoogle Workspaceの特定の4種類のPosture findingsに限定されています。すべてのfindingで使えるわけではありません。"
+          "text": "「Run Remediation」アクションはベンダーやfindingタイプを問わずCASBが検知するあらゆるfindingで有効化でき、インテグレーションがRead権限のみで接続されていても、修復時にCloudflareが必要な権限を一時的に取得して修復を完了できる",
+          "wrongFeedback": "修復アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られます。対応しないfindingタイプでは「No automated remediation available for this finding type」と表示され有効化できません。修復にはインテグレーションのRead-Write権限が必要で、Read権限のみの場合はポリシーが修復できるようになる前にインテグレーションをアップグレードする必要があります。"
         },
         {
-          "text": "この機能のサポート対象外となっているfindingであっても、アプリケーションのダッシュボードを一切経由することなく、何らかの形で必ずGatewayポリシー経由だけで解決できる代替手段が用意されており、findingの種類を問わず同じGateway設定画面から一元的に対処を完了できる",
-          "wrongFeedback": "サポート対象外のfindingは、アプリケーションのダッシュボードやドメインプロバイダーを通じてのみ解決できます。Gateway経由の代替手段は用意されていません。"
+          "text": "ポリシーのアクションはfindingに対応するGatewayのHTTPポリシーを自動生成して通信を遮断することであり、無料のCASBインテグレーションでも利用できるため、有料プランへの切り替えなしに検知から遮断までを自動化できる",
+          "wrongFeedback": "ポリシーのアクションは「Run Remediation」(インテグレーションのAPIに対する修復)と「Send webhooks」の2種類です。Remediation Policiesには有料のCASBプランが必要で、無料のCASBインテグレーションでは利用できません。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "この機能はGoogle Workspaceの4種類のPosture findings(「編集権限付きで公開アクセス可能なファイル」「閲覧権限付きで公開アクセス可能なファイル」「編集権限付きで社外共有されているファイル」「閲覧権限付きで社外共有されているファイル」)に限定されています。利用にはGatewayのHTTPフィルタリングを事前に有効化しておく必要があります。サポート対象外のfindingは、アプリケーションのダッシュボードやドメインプロバイダーを通じてのみ解決できます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#resolve-finding-with-a-gateway-policy",
-      "hint": "この機能が「すべてのfindingに使える汎用機能」ではなく、特定の組み合わせに限定されていることを考えましょう。",
+      "explanation": "Remediation Policiesは、ベンダー・インテグレーション・findingタイプの組み合わせをトリガーに、「Run Remediation」(インテグレーションのAPIに対する修復)と「Send webhooks」のいずれかまたは両方を自動実行する仕組みで、有料のCASBプランが必要です。ポリシーは作成後に新たに検知されたfindingインスタンスにのみ適用され、既存のインスタンスには遡及しません。修復アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られ、インテグレーションにRead-Write権限が必要です。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/policies/#limitations",
+      "hint": "「ポリシーを作る前から存在していたfindingはどうなるか」と「修復アクションを使えるベンダー・findingタイプは限られているか」の2点で切り分けましょう。",
       "tags": [
         "casb",
         "practical"
@@ -36246,19 +36246,19 @@
       "diagrams": [
         {
           "type": "hierarchy",
-          "label": "Gatewayポリシー化に対応するfinding(Google Workspace限定)",
+          "label": "Remediation Policyの構成と適用範囲",
           "items": [
             {
-              "text": "編集権限付きで公開アクセス可能"
+              "text": "トリガー",
+              "sub": "ベンダー・インテグレーション・findingタイプ"
             },
             {
-              "text": "閲覧権限付きで公開アクセス可能"
+              "text": "アクション",
+              "sub": "Run Remediation / Send webhooks(両方も可)"
             },
             {
-              "text": "編集権限付きで社外共有"
-            },
-            {
-              "text": "閲覧権限付きで社外共有"
+              "text": "適用範囲",
+              "sub": "作成後に新規検知されたインスタンスのみ"
             }
           ]
         }

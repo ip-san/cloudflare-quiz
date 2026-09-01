@@ -152,8 +152,12 @@ async function fetchAll(filterNames) {
       console.log(`  [OK]   ${page.name}`)
       ok++
     } else {
-      console.log(`  [FAIL] ${page.name}`)
-      failed.push(page.name)
+      // 取得に失敗しても古いキャッシュは消さない。ただし黙って残すと、
+      // docs から消えた記述を fact-check が「ある」と言い続ける
+      // （2026-09-02 に CASB の Gateway ポリシー節がこれで残った）。名指しで警告する。
+      const staleCopy = existsSync(resolve(DOCS_DIR, docPageToFilename(page.name)))
+      console.log(`  [FAIL] ${page.name}${staleCopy ? '  (古いキャッシュが残っています)' : ''}`)
+      failed.push(staleCopy ? `${page.name} [stale copy kept]` : page.name)
       fail++
     }
   }
@@ -161,6 +165,9 @@ async function fetchAll(filterNames) {
   console.log(`\n${ok} fetched, ${fail} failed (of ${targets.length})`)
   if (failed.length > 0) {
     console.log(`Failed pages (check the path in topic-config.mjs DOC_PAGES): ${failed.join(', ')}`)
+    if (failed.some((f) => f.endsWith('[stale copy kept]'))) {
+      console.log('  ⚠️  [stale copy kept] のページは、ライブの docs で移動先か削除かを確かめて DOC_PAGES を直すこと。')
+    }
   }
 }
 

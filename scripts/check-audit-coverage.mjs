@@ -81,7 +81,10 @@ function checkOne(inputPath, verdictPath) {
   }
   const input = JSON.parse(readFileSync(inputPath, 'utf8'))
   const expected = new Set()
-  for (const item of input) for (const t of item.targets) expected.add(`${item.id}:${t.optionIndex}`)
+  // build-audit-batches.mjs は `targets`、quiz-audit.mjs --json は `changed` で肢を並べる。
+  // 2026-09-02 に後者を渡して TypeError で落ちた。どちらも受ける。
+  for (const item of input)
+    for (const t of item.targets ?? item.changed ?? []) expected.add(`${item.id}:${t.optionIndex}`)
 
   let verdicts
   try {

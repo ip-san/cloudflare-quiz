@@ -246,6 +246,53 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
 
+## 2026-09-02 docsキャッシュ5日ぶり更新 — CASBの機能削除で cb-011 の前提が消えた、Containers は6ページ移動
+
+**きっかけ**: ブラウザ拡張が未接続でプレイテストを回せなかったので、docs の再取得に切り替えた。
+538ページ中13ページに差分。`bun run check` は更新前に全項目通過していたので、以下は**すべて docs 側の変化**。
+
+**critical: cb-011(CASB → Gateway HTTPポリシー作成)— 機能の記述が docs から削除**
+- docs コミット `5cb0a6ec`(2026-08-28)「POSTURE-4549: remove references to http gateway policies for CASB」で
+  `manage-findings` の「Resolve finding with a Gateway policy」節(34行)と
+  `integrations/cloud-and-saas/findings` ページ(210行)が削除された
+- 発見経路は `quiz:lint:url` の invalid-anchor。**fact-check は気づけなかった**。理由は下の「stale copy」
+- 対処は as-004 の前例(前提ごと廃止→現行モデルへ全面書き換え)に倣い、2026-08-21 新設の
+  `cloud-and-saas-findings/policies`(Remediation Policies)へ書き換え。根拠は同ページのみ:
+  「Requires a paid Cloudflare CASB plan」「not applied retroactively to existing finding instances」
+  「Remediation actions ... only available for Microsoft 365 and Google Workspace file and folder finding types」
+  「If the integration only has Read permissions, upgrade the integration」
+- docs は「Gateway ポリシーの代替が Remediation Policies」とは書いていないので、そうは書いていない
+- 誤答3肢は書いた本人ではないレビュアーが監査: 3/3 ok、裏取り docs=3 / internal=0
+- 機械検査の候補3件はいずれも正常: option.2 の「Run Remediation」は正解と同じ機能を論じる語(M1の正常例)、
+  option.3 に残る「Gateway / HTTP」は旧機能を主張する誤答で意図どおり(反駁は docs のアクション2種で裏取り済み)
+
+**minor: as-010(JWT検証の2要素)— 鍵の種類が広がった**
+- `api-shield/security/jwt-validation` L: 「public key(s) (JWKS)」→「verification keys (JWKS). You can provide
+  asymmetric public keys or symmetric keys used with HMAC algorithms」
+- 正解文の「公開鍵セット(JWKS)」を「検証鍵セット(JWKS)」に、解説に鍵の2種類を追記。図の `JWKS` 表記は据え置き
+
+**URLのみ: Containers の6ページが移動(14問の referenceUrl)**
+- `container-class`→`reference/`、`pricing`・`platform-details/limits`→`platform/`、`local-dev`→`guides/`、
+  `platform-details/{rollouts,scaling-and-routing}`→`configuration/`。ライブは全て 301。
+  旧アンカー(`#getcontainer` `#custom-instance-types` `#network-egress` `#immediate-rollouts` 等)は新ページに全て存在
+- `topic-config.mjs` / `quizContentQuality.test.ts` の一覧も更新。削除された `integrations/cloud-and-saas/findings` は外し、
+  `cloud-and-saas-findings/policies` を追加
+
+**stale copy — fetch-docs は 404 でも古いキャッシュを黙って残す**
+- 7ページの取得失敗後もキャッシュに旧ファイルが残り、削除済みの Gateway ポリシー節を fact-check が「ある」と判定し続けた。
+  **取得失敗 = 内容が古いまま、ではなく、内容が消えた可能性**。`fetch-docs.mjs` が `[stale copy kept]` と名指しで警告するようにした
+- `check-audit-coverage.mjs` は `quiz-audit.mjs --json` の出力(`changed`)を受けられず TypeError で落ちた。両方の形を受けるようにした
+
+**差分があったが設問に影響しなかった4件(確認済み)**
+- Stream: 再エンコードの上限 70 FPS → 90 FPS(`stream/uploading-videos`)。FPS を扱う設問なし
+- SSL Flexible: オリジンが HTTPS を強制するとリダイレクトループになる caution 追加。Flexible を扱う設問なし
+- Cache keys: 制限付きヘッダーの値は大文字小文字を区別する部分一致、という caution 追加。ch-012 の主張(値を1〜3個指定)と矛盾なし
+- Tunnel: ingress の path はサービスへ転送時に除去されない、という note 追加。tn-007/008 は評価順序と service 種別のみで矛盾なし
+
+**fact-check「キャッシュに無い語」19件の内訳(確定)**
+- 19件すべてが**誤答の中**にあり、正解・解説・ヒントには1件も無い(`wrangler pages init` `wrangler vars set` `--replication=strong` 等)。
+  架空コマンドを誤答に置く設計が働いているだけで欠陥ではない。更新前後で fact-check の出力は1文字も変わらなかった
+
 ## 2026-08-27 playtest カバレッジの「テスト済み」が中身の変更を追えていなかった
 
 `.claude/playtest-coverage.json` は問題 ID だけを積んでいたため、**テストした後に
