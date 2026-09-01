@@ -36220,7 +36220,7 @@
       "question": "CASBのRemediation Policies(修復ポリシー)を作成して有効化した場合の、適用範囲と修復アクションの制約に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "ポリシーは作成後に新たに検知されたfindingインスタンスにのみ適用されて既存のインスタンスには遡及せず、「Run Remediation」アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られ、インテグレーションにRead-Write権限が必要である"
+          "text": "ポリシーは作成後に新たに検知されたfindingインスタンスにのみ適用されて既存のインスタンスには遡及せず、「Run Remediation」アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られる"
         },
         {
           "text": "ポリシーを有効化した時点で、それ以前にCASBが検知済みだった既存のfindingインスタンスにも遡って自動的に適用され、過去のスキャン結果に含まれる該当findingがまとめて修復またはWebhook送信の対象になるため、有効化前の棚卸しは不要である",
