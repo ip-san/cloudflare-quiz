@@ -213,6 +213,7 @@ const VALID_DOC_PAGES = [
   'waf/feature-interoperability/',
   'waf/custom-rules/',
   'ruleset-engine/rules-language/actions/',
+  'firewall/cf-firewall-rules/actions/',
   'ruleset-engine/rules-language/expressions/',
   'ruleset-engine/about/phases/',
   'ruleset-engine/reference/phases-list/',

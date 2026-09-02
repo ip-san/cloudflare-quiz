@@ -2176,11 +2176,11 @@
               "text": "if (!response) {"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "  response = await fetch(request)"
             },
             {
-              "type": "command",
+              "type": "code",
               "text": "  ctx.waitUntil(cache.put(request, response.clone()))"
             },
             {
@@ -12362,7 +12362,7 @@
       "correctIndex": 2,
       "explanation": "Workflow(処理を複数のステップに分けて順に実行する仕組み)の本体は、`WorkflowEntrypoint` を継承したクラスとして書きます。`run(event, step)` メソッドが実行の入口で、`event` には起動時に渡したパラメータ(payload)が、`step` にはステップを定義するAPIが入っています。有効なWorkflowと見なされるには、`run` の中で最低1つの `step` 呼び出しが必要です。\n{{diagram:0}}\n※ `run` の中では if 文・ループ・try/catch など通常のJavaScriptの制御構文をそのまま使ってステップを組み立てられます。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/workers-api/",
-      "hint": "YAMLやGUIのような宣言的な定義ではなく、通常のコードとして書きます。実行の入口となる `run(event, step)` をどんな形で置くか考えましょう。",
+      "hint": "YAMLやGUIのような宣言的な定義ではなく、通常のコードとして書きます。実行の入口となるメソッドが、どんな名前でどんな引数を受け取る形になっているか、選択肢を見比べて考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -23476,7 +23476,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "WAFカスタムルールのSkip・Bypass・Allowは、Ruleset Engineの上で動く機能に対してだけ効きます。Skipは「このリクエストには以降の検査を行わない」、Bypassは「指定した機能の適用を外す」、Allowは「そのまま通す」という指定です。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらの指定では例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
+      "explanation": "WAFカスタムルールのSkip・Bypass・Allowは、Ruleset Engineの上で動く機能に対してだけ効きます。Skipは「このリクエストには以降の検査を行わない」、Bypassは「指定したセキュリティ機能の適用を外す」、Allowは「他のファイアウォールルールによるブロックやチャレンジの対象から外す」という指定です。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらの指定では例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/bot-fight-mode/#limitations",
       "hint": "Bot Fight Modeが「WAFと同じ仕組みの上で動いているかどうか」を考えましょう。",
       "tags": [

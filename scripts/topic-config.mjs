@@ -209,6 +209,9 @@ export const DOC_PAGES = [
   { name: 'waf/feature-interoperability' },
   { name: 'waf/custom-rules' },
   { name: 'ruleset-engine/rules-language/actions' },
+  // 廃止済みの Firewall Rules。bt-002 の解説が Allow / Bypass を定義しており、
+  // ruleset-engine の actions ページはこの2つを「別体系」としてここへ委ねている（2026-09-02）
+  { name: 'firewall/cf-firewall-rules/actions' },
   { name: 'ruleset-engine/rules-language/expressions' },
   { name: 'ruleset-engine/about/phases' },
   { name: 'ruleset-engine/reference/phases-list' },

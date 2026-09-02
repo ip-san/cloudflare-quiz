@@ -246,6 +246,51 @@ px-*で発見した K 項目を、以下2グループで遡及チェックした
 ——「新規追加分は毎回チェックしているから大丈夫」という思い込みは、チェック項目自体が後から増える限り
 安全ではない。checklist.mdの項目を増やした際は、その場で全コーパスへの遡及適用を検討すること
 
+## 2026-09-02 台帳確定後に変わった109問を docs で再照合 — minor 3 / unclear 1、正解の誤りは 0
+
+**なぜやったか**: 3つの層の台帳（誤答 3c271dc・正解 7dbe5c2・図 e9016a8、いずれも 08-28/29 確定）は
+**設問 ID で数えている**。今日 cb-011 を全面書き換えた直後も `quiz:status` は 756/756 判定済みと言った。
+「判定済み 100%」は現在の内容についての保証ではない。台帳確定後に内容が変わった設問を
+自分で数えるしかない（08-21 の `git log <last-refine>..HEAD` と同じ形）。
+
+**対象の出し方**: 本文（question / hint / explanation / options / wrongFeedback）は 3c271dc、図は e9016a8 を
+基準に、**選択肢の順序に依存しない比較**で差分を取った（`quiz:randomize` が入ると素朴な比較は 752 問が動く）。
+111問 → 当日 docs で裏取り済みの cb-011・as-010 を除いて **109問**。内訳: explanation 90 / hint 19 / diagrams 19 /
+options 7 / question 7。大半は 08-30 の初級解説の掃引（70件）で、あれは「事実の注入が無いこと」を機械で
+確かめただけで、足した文を個別に docs で見てはいなかった。
+
+**やり方**: バッチに `before` / `after` を添えて、8体の独立レビュアー（書いた本人ではない）に
+「after にあって before に無い文が docs で裏付けられるか」を主眼に A-1 / D / K / I を当てさせた。
+初級の平易化は欠陥ではないと明記した（G を当てると「仕組みが足りない」が 70 件出て、掃引で消した文を
+戻す提案になる）。結果: **ok 105 / minor 3 / unclear 1**、裏取り docs=94 / internal=14 / standard=1。
+109/109 に verdict が付いた。
+
+**minor 3 / unclear 1 の裁定**
+- kv-004（図）: terminal 図の JS 6 行のうち 2 行だけ `type: command` のまま残り、その行だけ `$ ` が付く。
+  08-29 の command→code 修正（ededa4c）の取りこぼし。**適用**（2 行を `code` に）
+- hw-011（ヒント・K）: 書き直したヒントが正解肢だけに出る `run(event, step)` をそのまま引用していた。
+  誤答肢は `workflow(event, step)` なので文字列照合だけで解ける。**適用**（メソッドの名前と引数の形を
+  見比べる、という軸だけに）。08-30 の初級掃引で新しく生まれた giveaway
+- lb-010（ヒント・K）: 「全部で5種類」と個数を言うので、列挙数を数えるだけで解ける、という指摘。
+  事実は docs（monitors L129-133）と一致。**据え置き**。この個数は 08-30 のプレイテストで
+  「暗記型なので docs の数を出して『〜のみ』の肢を正当に外せるようにする」と決めて入れたもの
+  （playtest SKILL.md に記録）。指摘は正しいが、初学者が解けることを優先した判断を覆す材料ではない
+- bt-002（解説・unclear）: 足した Bypass / Allow の定義が、廃止済み Firewall Rules の体系で、
+  その定義ページがキャッシュに無かった。ライブの `firewall/cf-firewall-rules/actions` で確認:
+  Bypass「dynamically disable Cloudflare security features for a request」→「指定したセキュリティ機能の適用を外す」で一致。
+  Allow「Matching requests are exempt from Bypass, Block, and challenge actions triggered by other firewall rules」
+  → 元の「そのまま通す」は粗すぎるので「他のファイアウォールルールによるブロックやチャレンジの対象から外す」に**修正**。
+  ページを DOC_PAGES に足した（廃止済みだが、ruleset-engine の actions ページ自身がここへ委ねている）
+
+**レビュアーが「改善だった」と確認した変更（回帰ではないことの記録）**
+- wr-012: 「デプロイID / wrangler deployments list」→「バージョンID / wrangler versions list」（rollbacks.md と一致）
+- ct-006: デプロイの順序（Worker が先に有効化 → イメージのビルド/プッシュ → ロールアウト）が rollouts.md L19-27 と一致
+- dx-007: 「デバイスの IP」→「ISP の IP」（traceroute.md「DEX looks up the IP address of the ISP」）
+- 層またぎ候補 34 件（4/5 検査）はすべて「語が残っているだけで意味は通る」と判定。dq-013 は解説が図を明示的に参照する形
+
+**一般化**: 台帳は ID ではなく内容の指紋で持つべき（playtest-coverage.json は既にそうしている）。
+今回は手で対象を計算したが、`quiz:status` が「台帳確定後に変わった設問 N 件」を出せれば、この作業は自動で挙がる。
+
 ## 2026-09-02 docsキャッシュ5日ぶり更新 — CASBの機能削除で cb-011 の前提が消えた、Containers は6ページ移動
 
 **きっかけ**: ブラウザ拡張が未接続でプレイテストを回せなかったので、docs の再取得に切り替えた。
