@@ -36,6 +36,7 @@
  *   node scripts/quiz-audit-ledger.mjs status
  *   node scripts/quiz-audit-ledger.mjs changed [layer]                  # JSON。次の検証バッチの入力
  *   node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> [--note "..."] [id...]
+ *   node scripts/quiz-audit-ledger.mjs prune                            # 設問が消えた記録を落とす
  */
 
 import { execFileSync } from 'node:child_process'
@@ -178,11 +179,20 @@ function cmdMark(ledger, argv) {
   const want = ids.length ? new Set(ids) : null
   const at = new Date().toISOString().slice(0, 10)
   let n = 0
+  let kept = 0
   for (const layer of layers) {
     for (const q of quizzes) {
       if (!inLayer(q, layer)) continue
       if (want && !want.has(q.id)) continue
-      const entry = { fp: fingerprint(q, layer), at, ref: sha }
+      const fp = fingerprint(q, layer)
+      // ID を指定しない一括 mark では、内容が変わっていない記録の由来（いつ・どの ref で・何の検証か）を
+      // 上書きしない。上書きすると「今日の再照合」が触っていない 600 問にも今日の注記が付く。
+      // それは台帳の嘘で、しかも毎回 2,268 行の差分になる
+      if (!want && ledger.layers[layer][q.id]?.fp === fp) {
+        kept++
+        continue
+      }
+      const entry = { fp, at, ref: sha }
       if (note) entry.note = note
       ledger.layers[layer][q.id] = entry
       n++
@@ -194,7 +204,25 @@ function cmdMark(ledger, argv) {
     if (missing.length) throw new Error(`${ref} に無い ID: ${missing.join(', ')}`)
   }
   saveLedger(ledger)
-  console.log(`記録した: ${n} 件（層: ${layers.join(', ')} / ref: ${sha}${note ? ` / ${note}` : ''}）`)
+  console.log(
+    `記録した: ${n} 件（層: ${layers.join(', ')} / ref: ${sha}${note ? ` / ${note}` : ''}）` +
+      (kept ? ` / 内容が同じで据え置き: ${kept} 件` : '')
+  )
+}
+
+/** 設問が消えた記録を落とす。mark は足すだけなので、これが無いと死んだ記録が溜まる */
+function cmdPrune(quizzes, ledger) {
+  const d = diffLedger(quizzes, ledger)
+  let n = 0
+  for (const layer of LAYERS) {
+    for (const id of d[layer].dead) {
+      delete ledger.layers[layer][id]
+      console.log(`  ${layer}: ${id} を削除（quizzes.json に無い）`)
+      n++
+    }
+  }
+  if (n) saveLedger(ledger)
+  console.log(n ? `削除した: ${n} 件` : '設問が消えた記録はありません')
 }
 
 function main() {
@@ -210,9 +238,12 @@ function main() {
     case 'mark':
       cmdMark(ledger, argv)
       break
+    case 'prune':
+      cmdPrune(loadQuizzes(), ledger)
+      break
     default:
       console.log(
-        'Usage: quiz-audit-ledger.mjs <status|changed [layer]|mark <layer|all> --at <ref> [--note "..."] [id...]>'
+        'Usage: quiz-audit-ledger.mjs <status|changed [layer]|mark <layer|all> --at <ref> [--note "..."] [id...]|prune>'
       )
       process.exit(1)
   }

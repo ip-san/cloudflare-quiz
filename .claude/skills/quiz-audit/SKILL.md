@@ -246,12 +246,14 @@ vp-006  Workers VPC＝Workersからプライベートネットワーク内のリ
 bun run quiz:ledger                                  # 層ごとに「台帳確定後に変わった N 問 / 記録なし M 問」
 node scripts/quiz-audit-ledger.mjs changed [layer]   # 一覧（JSON）。次の検証バッチの入力にする
 node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> [--note "..."] [id...]
+node scripts/quiz-audit-ledger.mjs prune                            # 設問を消したら。死んだ記録を落とす
 ```
 
 - 層の定義: `distractors` = 正解以外の肢の text と wrongFeedback / `correct` = 設問文・正解の text・解説 /
   `diagrams` = 図。選択肢の順序と correctIndex には依存しない（`quiz:randomize` で動かない）
 - referenceUrl は入れない（`quiz:lint:url` の担当）。hint も入れない（ヒント層はプレイテストで覆う。
   playtest-coverage の指紋が持っている）
+- ID を指定しない `mark` は、内容が変わっていない記録の由来（いつ・どの ref・何の検証か）を上書きしない
 - **`mark` は `--at <ref>` が必須。** 検証した状態は常にコミットなので、その ref から指紋を取る。
   作業ツリーから取ると「直したあとの値」を「検証した値」として記録する（playtest-coverage で 08-29 に起きた形）
 - `quiz:status` にも同じ数字が出る。`bun run check` は止めない（毎回の編集で止まるのは正しくない）。

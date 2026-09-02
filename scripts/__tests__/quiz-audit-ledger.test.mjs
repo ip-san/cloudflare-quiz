@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { diffLedger, fingerprint, inLayer, LAYERS, loadLedger } from '../quiz-audit-ledger.mjs'
+import { diffLedger, fingerprint, LAYERS, loadLedger } from '../quiz-audit-ledger.mjs'
 
 /**
  * 監査台帳の指紋が守るべき性質。
@@ -100,17 +100,11 @@ describe('追跡されている台帳ファイル', () => {
     const ledger = loadLedger(path)
     const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes
     const d = diffLedger(quizzes, ledger)
-    for (const l of LAYERS) expect(d[l].dead, `${l} に消えた設問の記録がある`).toEqual([])
-  })
-
-  it('層の対象になる設問には記録がある（記録なしは「検証していない」ではなく「数えていない」）', () => {
-    const ledger = loadLedger(path)
-    const quizzes = JSON.parse(readFileSync(resolve(ROOT, 'src/data/quizzes.json'), 'utf8')).quizzes
-    const d = diffLedger(quizzes, ledger)
     for (const l of LAYERS) {
-      const total = quizzes.filter((q) => inLayer(q, l)).length
-      expect(d[l].unrecorded, `${l} に記録の無い設問がある`).toEqual([])
-      expect(d[l].recorded).toBe(total)
+      expect(d[l].dead, `${l} に消えた設問の記録がある。node scripts/quiz-audit-ledger.mjs prune で落とす`).toEqual([])
     }
   })
+
+  // 「記録なし」は落とさない。足したばかりの設問は検証されるまで記録が無いのが正しく、
+  // ここで落とすと mark で緑にする圧力になる（mark は「検証した」の宣言）。quiz:status が報告する
 })
