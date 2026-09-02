@@ -286,7 +286,15 @@ options 7 / question 7。大半は 08-30 の初級解説の掃引（70件）で�
 - wr-012: 「デプロイID / wrangler deployments list」→「バージョンID / wrangler versions list」（rollbacks.md と一致）
 - ct-006: デプロイの順序（Worker が先に有効化 → イメージのビルド/プッシュ → ロールアウト）が rollouts.md L19-27 と一致
 - dx-007: 「デバイスの IP」→「ISP の IP」（traceroute.md「DEX looks up the IP address of the ISP」）
-- 層またぎ候補 34 件（4/5 検査）はすべて「語が残っているだけで意味は通る」と判定。dq-013 は解説が図を明示的に参照する形
+- 層またぎ候補 34 件（4/5 検査）のうち 33 件はレビュアーが「語が残っているだけで意味は通る」と判定。dq-013 は解説が図を明示的に参照する形。
+  残る kv-012 は図の変更が e9016a8 より前で対象から漏れていたので自分で読んだ: 図（Set-Cookie は常に非キャッシュ / 413 の条件）と
+  解説（`private=Set-Cookie` の回避策）は矛盾しない
+- bt-002 の冒頭文「WAFカスタムルールの Skip・Bypass・Allow」は、Bypass / Allow を WAF カスタムルールの
+  アクションとしていた。`waf/custom-rules` が挙げるのは Block / Managed Challenge / Skip だけで、Bypass / Allow は
+  旧 Firewall Rules の体系（ruleset-engine actions L337）。「WAFカスタムルールの Skip と、旧 Firewall Rules の
+  Bypass・Allow は、それぞれのルール評価の中でだけ効く指定」に**修正**（Allow の scope は firewall rules に限る、
+  Bypass では Bot Fight Mode を bypass できない、と旧ページ自身が書いている）。レビュアーは unclear 止まりだったが、
+  裏を取りに行った副産物で見つかった
 
 **一般化**: 台帳は ID ではなく内容の指紋で持つべき（playtest-coverage.json は既にそうしている）。
 今回は手で対象を計算したが、`quiz:status` が「台帳確定後に変わった設問 N 件」を出せれば、この作業は自動で挙がる。
