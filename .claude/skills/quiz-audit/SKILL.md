@@ -229,6 +229,34 @@ vp-006  Workers VPC＝Workersからプライベートネットワーク内のリ
 
 ---
 
+## 台帳は ID ではなく内容の指紋で持つ（2026-09-02）
+
+下の3つの台帳（誤答・正解・図）は判定ファイルを設問 ID と肢番号で数えている。
+**書き換えた直後でも「判定済み」と言う。** 2026-09-02 に cb-011 を全面書き換えた直後も
+`quiz:status` は正解 756/756 と出た。「判定済み 100%」は現在の内容についての保証ではない。
+
+台帳確定後に変わった設問を手で数え直したのは 08-21 と 09-02 の2回。2回目は 109 問だったが、
+本文の基準（3c271dc）と正解層の基準（7dbe5c2）を取り違えて as-003 / wp-017 を落としていた。
+手で数えると基準を間違える。
+
+→ `.claude/quiz-audit-ledger.json`（git 追跡）に、層ごとに**検証した時点の内容の指紋**を持つ。
+  playtest-coverage.json と同じ形。
+
+```bash
+bun run quiz:ledger                                  # 層ごとに「台帳確定後に変わった N 問 / 記録なし M 問」
+node scripts/quiz-audit-ledger.mjs changed [layer]   # 一覧（JSON）。次の検証バッチの入力にする
+node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> [--note "..."] [id...]
+```
+
+- 層の定義: `distractors` = 正解以外の肢の text と wrongFeedback / `correct` = 設問文・正解の text・解説 /
+  `diagrams` = 図。選択肢の順序と correctIndex には依存しない（`quiz:randomize` で動かない）
+- referenceUrl は入れない（`quiz:lint:url` の担当）。hint も入れない（ヒント層はプレイテストで覆う。
+  playtest-coverage の指紋が持っている）
+- **`mark` は `--at <ref>` が必須。** 検証した状態は常にコミットなので、その ref から指紋を取る。
+  作業ツリーから取ると「直したあとの値」を「検証した値」として記録する（playtest-coverage で 08-29 に起きた形）
+- `quiz:status` にも同じ数字が出る。`bun run check` は止めない（毎回の編集で止まるのは正しくない）。
+  **次の検証は `changed` の一覧から始めること。** git log から数え直さない
+
 ## 誤答の全数裏取り台帳（2026-08-28 に確定）
 
 **誤答 2,268肢すべてに verdict が付き、うち 2,261肢(99.7%) を docs で裏取りした。**

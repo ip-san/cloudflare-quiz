@@ -45,6 +45,7 @@
     "generate-icons": "node scripts/generate-icons.mjs",
     "prepare": "husky",
     "quiz:status": "node scripts/quiz-status.mjs",
+    "quiz:ledger": "node scripts/quiz-audit-ledger.mjs status",
     "quiz:acronyms": "node scripts/find-unresolved-acronyms.mjs"
   },
   "lint-staged": {

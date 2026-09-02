@@ -18,6 +18,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { diffLedger, LAYERS, loadLedger } from './quiz-audit-ledger.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIT = resolve(ROOT, '.claude/tmp/quiz-audit')
@@ -117,6 +118,26 @@ if (existsSync(AUDIT)) {
 const correct = collect(correctSources)
 console.log('\n【正解・解説・設問文】')
 line('判定済み', correct.size, quizzes.filter((q) => q.type !== 'multi').length)
+
+// --- 台帳確定後に変わった設問（内容の指紋） ---
+// 上の3層は設問 ID で数えているので、書き換えた直後でも「判定済み」と言う。
+// 「判定済み 100%」を現在の内容の保証にしないため、指紋の台帳との差を並べて出す。
+console.log('\n【台帳確定後に内容が変わった設問】')
+try {
+  const ledgerDiff = diffLedger(quizzes, loadLedger())
+  for (const layer of LAYERS) {
+    const r = ledgerDiff[layer]
+    const flag = r.changed.length || r.unrecorded.length ? '⚠️ ' : '✓ '
+    console.log(
+      `  ${flag}${layer.padEnd(12)} 変わった ${String(r.changed.length).padStart(3)} 問 / 記録なし ${String(r.unrecorded.length).padStart(3)} 問`
+    )
+  }
+  console.log(
+    '  ※ 一覧: `node scripts/quiz-audit-ledger.mjs changed`。docs で再照合したら `mark <layer|all> --at <ref>`'
+  )
+} catch (err) {
+  console.log(`  (台帳が読めない: ${err.message})`)
+}
 
 // --- 用語集 ---
 console.log('\n【用語集】')

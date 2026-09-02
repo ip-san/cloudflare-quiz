@@ -297,7 +297,11 @@ options 7 / question 7。大半は 08-30 の初級解説の掃引（70件）で�
   裏を取りに行った副産物で見つかった
 
 **一般化**: 台帳は ID ではなく内容の指紋で持つべき（playtest-coverage.json は既にそうしている）。
-今回は手で対象を計算したが、`quiz:status` が「台帳確定後に変わった設問 N 件」を出せれば、この作業は自動で挙がる。
+同日中に `.claude/quiz-audit-ledger.json` と `scripts/quiz-audit-ledger.mjs` を作った。3層を各台帳の確定コミットで
+seed して `changed` を出すと、手で数えた 109 問に **as-003 と wp-017 が足りなかった**ことが分かった
+（本文の基準を 3c271dc にしたが、正解層の台帳は 7dbe5c2 で、その間の 08-28 に変わっていた）。2問とも docs で確認:
+as-003 は「Web Assets > Operations」（schema-validation L34）、wp-017 は `connect()` の制約（outbound-workers L25-26）。
+手で数えると基準を取り違える。次からは `quiz-audit-ledger.mjs changed` の一覧から始める。
 
 ## 2026-09-02 docsキャッシュ5日ぶり更新 — CASBの機能削除で cb-011 の前提が消えた、Containers は6ページ移動
 
