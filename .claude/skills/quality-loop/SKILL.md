@@ -80,7 +80,7 @@ node scripts/quiz-fact-check.mjs
 
 ## Step 2: クイズ検証
 
-**スキップ条件:** `--skip-refine` フラグ、または `src/data/quizzes.json` に変更がなく Step 0 の出力にも flagged 項目がない場合
+**スキップ条件:** `--skip-refine` フラグ、または `src/data/quizzes.json` に変更がなく、Step 0 の出力にも flagged 項目がなく、`bun run quiz:ledger` の「台帳確定後に変わった」が全層 0 の場合
 
 `/quiz-refine` スキルを実行する。引数は `$ARGUMENTS` から以下をそのまま引き継ぐ:
 
