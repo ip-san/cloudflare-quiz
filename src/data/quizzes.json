@@ -23476,7 +23476,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "WAFカスタムルールのSkipと、旧Firewall RulesのBypass・Allowは、それぞれのルール評価の中でだけ効く指定です。Skipは「このリクエストには以降の検査を行わない」、Bypassは「指定したセキュリティ機能の適用を外す」、Allowは「他のファイアウォールルールによるブロックやチャレンジの対象から外す」という指定です。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらの指定では例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
+      "explanation": "WAFカスタムルールのSkipと、旧Firewall RulesのBypass・Allowは、それぞれ次のような指定です。Skipは「指定したセキュリティ機能や製品、残りのルールの評価を飛ばす」、Bypassは「指定したセキュリティ機能の適用を外す」、Allowは「他のファイアウォールルールによるBypass・ブロック・チャレンジの対象から外す」です。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらの指定では例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/bot-fight-mode/#limitations",
       "hint": "Bot Fight Modeが「WAFと同じ仕組みの上で動いているかどうか」を考えましょう。",
       "tags": [
@@ -36217,7 +36217,7 @@
       "id": "cb-011",
       "category": "casb",
       "difficulty": "advanced",
-      "question": "CASBのRemediation Policies(修復ポリシー)を作成して有効化した場合の、適用範囲と修復アクションの制約に関する正しい説明はどれですか?",
+      "question": "CASBのRemediation Policies(修復ポリシー。findingの検知をトリガーに、修復やWebhook送信を自動で実行する仕組み)を作成して有効化した場合の、適用範囲と修復アクションの制約に関する正しい説明はどれですか?",
       "options": [
         {
           "text": "ポリシーは作成後に新たに検知されたfindingインスタンスにのみ適用されて既存のインスタンスには遡及せず、「Run Remediation」アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られる"
@@ -36231,8 +36231,8 @@
           "wrongFeedback": "修復アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られます。対応しないfindingタイプでは「No automated remediation available for this finding type」と表示され有効化できません。修復にはインテグレーションのRead-Write権限が必要で、Read権限のみの場合はポリシーが修復できるようになる前にインテグレーションをアップグレードする必要があります。"
         },
         {
-          "text": "ポリシーのアクションはfindingに対応するGatewayのHTTPポリシーを自動生成して通信を遮断することであり、無料のCASBインテグレーションでも利用できるため、有料プランへの切り替えなしに検知から遮断までを自動化できる",
-          "wrongFeedback": "ポリシーのアクションは「Run Remediation」(インテグレーションのAPIに対する修復)と「Send webhooks」の2種類です。Remediation Policiesには有料のCASBプランが必要で、無料のCASBインテグレーションでは利用できません。"
+          "text": "ポリシーのアクションは「Send webhooks」に限られ、修復はfindingインスタンスごとに手動で「Remediate」を選ぶ必要がある。また1つのポリシーは1つのインテグレーションにしか適用できず、ベンダー配下の複数インテグレーションにまとめて適用することはできない",
+          "wrongFeedback": "ポリシーのアクションは「Run Remediation」と「Send webhooks」の2種類で、両方を同時に設定することもできます。Run Remediationはポリシーに一致したfindingインスタンスに対して自動的に実行され、インスタンスごとに手動で「Remediate」を選ぶ必要はありません。インテグレーションは複数選択でき、「Apply to all integrations」でベンダー配下の全インテグレーションに適用することもできます。"
         }
       ],
       "correctIndex": 0,
