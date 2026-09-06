@@ -23476,7 +23476,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "WAFカスタムルールのSkipと、旧Firewall RulesのBypass・Allowは、それぞれ次のような指定です。Skipは「指定したセキュリティ機能や製品、残りのルールの評価を飛ばす」、Bypassは「指定したセキュリティ機能の適用を外す」、Allowは「他のファイアウォールルールによるBypass・ブロック・チャレンジの対象から外す」です。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらの指定では例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
+      "explanation": "WAFカスタムルールはRuleset Engine(Cloudflareの様々な製品で共通のルールを作って評価する仕組み)の上で動いており、そのSkipと、旧Firewall RulesのBypass・Allowは、それぞれ次のような指定です。Skipは「指定したセキュリティ機能や製品、残りのルールの評価を飛ばす」、Bypassは「指定したセキュリティ機能の適用を外す」、Allowは「他のファイアウォールルールによるBypass・ブロック・チャレンジの対象から外す」です。Bot Fight ModeはそのRuleset Engineを使わない別の評価パイプラインで動作しているため、これらの指定では例外にできません。特定のトラフィックだけ除外したい場合は、Ruleset Engine上で動作しSkipルールに対応するSuper Bot Fight Modeを利用します。\n{{diagram:0}}\n※ IP Access Rulesが先に一致した場合は、Bot Fight Modeは発動しません。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/bot-fight-mode/#limitations",
       "hint": "Bot Fight Modeが「WAFと同じ仕組みの上で動いているかどうか」を考えましょう。",
       "tags": [
@@ -36231,8 +36231,8 @@
           "wrongFeedback": "修復アクションはMicrosoft 365とGoogle Workspaceのファイル・フォルダ系findingタイプに限られます。対応しないfindingタイプでは「No automated remediation available for this finding type」と表示され有効化できません。修復にはインテグレーションのRead-Write権限が必要で、Read権限のみの場合はポリシーが修復できるようになる前にインテグレーションをアップグレードする必要があります。"
         },
         {
-          "text": "ポリシーのアクションは「Send webhooks」に限られ、修復はfindingインスタンスごとに手動で「Remediate」を選ぶ必要がある。また1つのポリシーは1つのインテグレーションにしか適用できず、ベンダー配下の複数インテグレーションにまとめて適用することはできない",
-          "wrongFeedback": "ポリシーのアクションは「Run Remediation」と「Send webhooks」の2種類で、両方を同時に設定することもできます。Run Remediationはポリシーに一致したfindingインスタンスに対して自動的に実行され、インスタンスごとに手動で「Remediate」を選ぶ必要はありません。インテグレーションは複数選択でき、「Apply to all integrations」でベンダー配下の全インテグレーションに適用することもできます。"
+          "text": "「Run Remediation」と「Send webhooks」は1つのポリシーで同時には設定できずどちらか一方だけを選ぶ必要があり、また1つのポリシーは1つのインテグレーションにしか適用できず、ベンダー配下の複数インテグレーションにまとめて適用することはできない",
+          "wrongFeedback": "ポリシーのアクションは「Run Remediation」と「Send webhooks」の2種類で、両方を同時に設定することもできます。インテグレーションは複数選択でき、「Apply to all integrations」でベンダー配下の全インテグレーションに適用することもできます。"
         }
       ],
       "correctIndex": 0,
