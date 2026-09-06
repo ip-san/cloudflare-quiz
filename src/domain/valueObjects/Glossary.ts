@@ -102,6 +102,20 @@ const ENTRIES: GlossaryEntry[] = [
     description: 'IPアドレス・IPブロック・国・ASNを指定して、まとめて許可・ブロック・チャレンジする仕組み。',
   },
   // docs もコーパスも小文字の rules が多数派（docs 8:1、コーパス 9:4）。照合は大文字小文字を区別するので両方置く
+  // 2026-09-07 プレイテスト（mw-009）で初学者が詰まった 3 語。
+  // ステアリングは負荷分散（Failover / Random / PoP …ステアリング）と Magic WAN で同じ意味
+  // （docs traffic-steering: "Traffic steering controls how Cloudflare makes these routing decisions"）
+  {
+    term: 'ステアリング',
+    description: '通信をどの宛先(PoolやトンネルなどCloudflareが選べる複数の送り先)に振り分けるかを決める仕組み。',
+  },
+  // docs tunnel-health-checks: "target endpoints beyond the tunnel-terminating border router"
+  {
+    term: '境界ルーター',
+    description: 'Cloudflareとのトンネルが終端する、お客様ネットワーク側の境界に位置するルーター。',
+  },
+  // docs は "customer network namespaces" を展開していない。namespace の一般的な意味（分離された空間）の範囲で書く
+  { term: '顧客ネットワーク名前空間', description: 'お客様ごとに分離された、その顧客専用のネットワーク空間。' },
   {
     term: 'IP Access rules',
     description: 'IPアドレス・IPブロック・国・ASNを指定して、まとめて許可・ブロック・チャレンジする仕組み。',

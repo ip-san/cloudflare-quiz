@@ -12362,7 +12362,7 @@
       "correctIndex": 2,
       "explanation": "Workflow(処理を複数のステップに分けて順に実行する仕組み)の本体は、`WorkflowEntrypoint` を継承したクラスとして書きます。`run(event, step)` メソッドが実行の入口で、`event` には起動時に渡したパラメータ(payload)が、`step` にはステップを定義するAPIが入っています。有効なWorkflowと見なされるには、`run` の中で最低1つの `step` 呼び出しが必要です。\n{{diagram:0}}\n※ `run` の中では if 文・ループ・try/catch など通常のJavaScriptの制御構文をそのまま使ってステップを組み立てられます。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/workers-api/",
-      "hint": "YAMLやGUIのような宣言的な定義ではなく、通常のコードとして書きます。実行の入口となるメソッドが、どんな名前でどんな引数を受け取る形になっているか、選択肢を見比べて考えましょう。",
+      "hint": "YAMLやGUIのような宣言的な定義ではなく、通常のコードとして書きます。選択肢のコードの形を見ると、専用の親クラスを継承するクラスとして書く形と、`fetch`ハンドラと同じようにオブジェクトをexportする形の2通りがあります。Workflowはどちらの形で定義する仕組みだったか思い出しましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -25207,7 +25207,7 @@
       "correctIndex": 0,
       "explanation": "プランが上がると変わるのは2点です。まずルールアクションで、Free・Pro・Businessは`Block`のみ、Enterpriseになると`Log`と`Block`を選べます。次に保存済みエンドポイント数の上限で、こちらは上位プランほど増えます。API Shieldの契約はEnterpriseのなかでさらにこの上限を引き上げるもので、アクションの選択肢は契約の有無で変わりません。個々の数値は下表のとおりです(実務ではプラン比較表で都度確認する類のものです)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/plans/",
-      "hint": "「アクションの選択肢の広さ」と「保存できるエンドポイント数」の両方が、プランに応じて段階的に広がっていくことを考えましょう。",
+      "hint": "「アクションの選択肢の広さ」と「保存できるエンドポイント数」は、どちらもプランや契約が上位になるほど段階的に広がっていき、下位のプランより狭くなることはありません。この原則から外れている選択肢を探しましょう。",
       "tags": [
         "api-shield",
         "practical"
@@ -42600,7 +42600,7 @@
           "text": "`class MyAgent extends Agent<Env, State> {...}` でAgentクラスを定義し、`fetch`ハンドラ内で`routeAgentRequest(request, env)`を呼び出してリクエストを適切なAgentインスタンスへルーティングする"
         },
         {
-          "text": "`class MyAgent extends DurableObject` でAgentを定義し、`wrangler.jsonc`の`routes`フィールドにAgentのURLパターンを直接列挙する",
+          "text": "`class MyAgent extends DurableObject` (Durable Objectsの基底クラス)でAgentを定義し、`wrangler.jsonc`の`routes`フィールドにAgentのURLパターンを直接列挙する",
           "wrongFeedback": "Agentsは専用の`Agent`基底クラスを提供しており、`routeAgentRequest()`が自動的にURLからインスタンスを解決するため、`routes`への手動列挙は不要です。"
         },
         {
@@ -43227,7 +43227,7 @@
       "correctIndex": 0,
       "explanation": "Agentはインスタンス名を指定して呼び出します。同じ名前を指定すれば既存のインスタンス(と、そこに保存された状態)にそのままつながり、違う名前を指定すれば別の状態を持つ別インスタンスになります。つまり「名前をどう決めるか」が、そのまま「状態を誰と共有するか」の設計になります。ユーザーIDを名前にすればユーザー専用のAgentになり、全員が同じ名前を使えばチャットルームのような共有Agentになります。\n{{diagram:0}}\n※ 名前は、セッションIDやドキュメントIDなど実行時のコンテキストから動的に決めることもできます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
-      "hint": "インスタンス名の付け方そのものが設計パターンになります。",
+      "hint": "同じインスタンス名でアクセスしても毎回新しい状態が作られるわけではなく、名前を変えることで複数のインスタンスを使い分けられます。名前の決め方が「誰と状態を共有するか」にどうつながるか考えましょう。",
       "tags": [
         "agents",
         "topic-routing"
