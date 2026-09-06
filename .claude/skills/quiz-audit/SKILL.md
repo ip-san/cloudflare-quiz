@@ -255,7 +255,7 @@ bun run quiz:ledger prune                            # 設問を消した / 図�
 - `distractors` = 正解以外の肢の text と wrongFeedback / `correct` = 設問文・正解の text・解説 /
   `diagrams` = 図 / `hint` = ヒント。選択肢の順序と correctIndex には依存しない（`quiz:randomize` で動かない）
 - referenceUrl は入れない（`quiz:lint:url` の担当。URL の付け替えが偽陽性になる）
-- **hint の記録の大半は「基準点」であって「検証済み」ではない。** ヒント層の全数掃引は 09-01 に
+- **hint の記録には「基準点」（検証済みではない）のものがある。今は 756 問中 737 問。** ヒント層の全数掃引は 09-01 に
   0/28 で割に合わないと判断してやっていない。だが差分駆動の再照合（09-02）では 19 問中 2 問で
   指摘が出て、4層の中で最も濃かった。「変わった分だけ見る」には層として持つ必要がある。
   基準点の記録は `baseline: true` を持ち、status の行に「（基準点 N / 検証 M）」と出る。

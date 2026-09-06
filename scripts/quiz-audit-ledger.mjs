@@ -271,28 +271,20 @@ function quizFileIsDirty() {
   return execFileSync('git', ['status', '--porcelain', '--', QUIZ_REL], { cwd: ROOT }).toString().trim() !== ''
 }
 
-function cmdMark(ledger, argv) {
-  const { layers, ref, note, baseline, ids } = parseMarkArgs(argv)
-  if (quizFileIsDirty()) {
-    throw new Error(
-      `${QUIZ_REL} に未コミットの変更がある。このまま mark すると HEAD（修正前）の内容を「検証した」と記録してしまう。先にコミットすること`
-    )
-  }
-  const sha = execFileSync('git', ['rev-parse', '--short', ref], { cwd: ROOT }).toString().trim()
-  const head = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT }).toString().trim()
-  if (sha !== head) {
-    console.error(
-      `⚠️  HEAD (${head}) 以外の ref (${sha}) を記録している。検証した内容がその ref に入っているか確かめること`
-    )
-  }
-  const quizzes = loadQuizzesAt(ref)
+/**
+ * 台帳に記録を書く本体。git に触らない純粋関数なので、テストから直接叩ける
+ * （5 周目のレビューで「昇格の判定を 3 周目の形に戻してもテストが緑のまま」と指摘された）。
+ *
+ * quizzes は ref 時点の設問。note は null（指定なし）/ ''（明示的に空）/ 文字列。
+ * 戻り値: { n, kept, carried, ignored }。ledger は書き換えられる（保存は呼び手）。
+ */
+export function applyMark(ledger, quizzes, { layers, sha, note, baseline, ids, at }) {
   const want = ids.length ? new Set(ids) : null
   if (want) {
     const known = new Set(quizzes.map((q) => q.id))
     const missing = [...want].filter((id) => !known.has(id))
-    if (missing.length) throw new Error(`${ref} に無い ID: ${missing.join(', ')}`)
+    if (missing.length) throw new Error(`${sha} に無い ID: ${missing.join(', ')}`)
   }
-  const at = new Date().toISOString().slice(0, 10)
   let n = 0
   let kept = 0
   const carried = []
@@ -332,6 +324,25 @@ function cmdMark(ledger, argv) {
       n++
     }
   }
+  return { n, kept, carried, ignored }
+}
+
+function cmdMark(ledger, argv) {
+  const { layers, ref, note, baseline, ids } = parseMarkArgs(argv)
+  if (quizFileIsDirty()) {
+    throw new Error(
+      `${QUIZ_REL} に未コミットの変更がある。このまま mark すると HEAD（修正前）の内容を「検証した」と記録してしまう。先にコミットすること`
+    )
+  }
+  const sha = execFileSync('git', ['rev-parse', '--short', ref], { cwd: ROOT }).toString().trim()
+  const head = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT }).toString().trim()
+  if (sha !== head) {
+    console.error(
+      `⚠️  HEAD (${head}) 以外の ref (${sha}) を記録している。検証した内容がその ref に入っているか確かめること`
+    )
+  }
+  const at = new Date().toISOString().slice(0, 10)
+  const { n, kept, carried, ignored } = applyMark(ledger, loadQuizzesAt(ref), { layers, sha, note, baseline, ids, at })
   saveLedger(ledger)
   console.log(
     `記録した: ${n} 件（層: ${layers.join(', ')} / ref: ${sha}${note ? ` / ${note}` : ''}${baseline ? ' / 基準点' : ''}）` +

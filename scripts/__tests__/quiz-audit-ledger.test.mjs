@@ -3,7 +3,15 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { diffLedger, fingerprint, inLayer, LAYERS, loadLedger, parseMarkArgs } from '../quiz-audit-ledger.mjs'
+import {
+  applyMark,
+  diffLedger,
+  fingerprint,
+  inLayer,
+  LAYERS,
+  loadLedger,
+  parseMarkArgs,
+} from '../quiz-audit-ledger.mjs'
 
 /**
  * 監査台帳の指紋が守るべき性質。
@@ -149,6 +157,91 @@ describe('mark の引数', () => {
     expect(r.layers).toEqual(LAYERS)
     expect(r.ids).toEqual(['wk-001', 'wk-002'])
     expect(r.note).toBe('n')
+  })
+})
+
+describe('applyMark（記録を書く本体）', () => {
+  const opts = (o) => ({
+    layers: ['hint'],
+    sha: 'abc1234',
+    note: null,
+    baseline: false,
+    ids: [],
+    at: '2026-09-06',
+    ...o,
+  })
+  const fresh = () => ({ layers: Object.fromEntries(LAYERS.map((l) => [l, {}])) })
+
+  it('note の無い基準点の記録は、--note なしの ID 明示 mark で昇格できない', () => {
+    const q = sample()
+    const ledger = fresh()
+    ledger.layers.hint[q.id] = { fp: fingerprint(q, 'hint'), at: '2026-09-01', ref: 'old0000', baseline: true }
+    expect(() => applyMark(ledger, [q], opts({ ids: [q.id] }))).toThrow(/基準点の記録/)
+    expect(ledger.layers.hint[q.id].baseline).toBe(true)
+  })
+
+  it('--note 付きなら基準点が落ちて検証済みになり、基準点の note は引き継がれない', () => {
+    const q = sample()
+    const ledger = fresh()
+    ledger.layers.hint[q.id] = {
+      fp: 'stale0000000',
+      at: '2026-09-01',
+      ref: 'old0000',
+      note: '基準点。未検証',
+      baseline: true,
+    }
+    const r = applyMark(ledger, [q], opts({ ids: [q.id], note: '検証した' }))
+    expect(r.n).toBe(1)
+    expect(ledger.layers.hint[q.id]).toEqual({
+      fp: fingerprint(q, 'hint'),
+      at: '2026-09-06',
+      ref: 'abc1234',
+      note: '検証した',
+    })
+  })
+
+  it('検証済みの記録に --note なしなら前の note を引き継ぎ、--note "" なら note を消す', () => {
+    const q = sample()
+    const ledger = fresh()
+    ledger.layers.hint[q.id] = { fp: 'stale0000000', at: '2026-09-01', ref: 'old0000', note: '前の検証' }
+    const r1 = applyMark(ledger, [q], opts({ ids: [q.id] }))
+    expect(r1.carried).toEqual([`hint:${q.id}`])
+    expect(ledger.layers.hint[q.id].note).toBe('前の検証')
+    ledger.layers.hint[q.id].fp = 'stale0000000'
+    applyMark(ledger, [q], opts({ ids: [q.id], note: '' }))
+    expect(ledger.layers.hint[q.id].note).toBeUndefined()
+  })
+
+  it('一括 mark は指紋の同じ記録を据え置き、変わった記録だけ書く。基準点は baseline を持つ', () => {
+    const a = sample()
+    const b = { ...sample(), id: 'zz-002', hint: 'H-b' }
+    const ledger = fresh()
+    ledger.layers.hint[a.id] = {
+      fp: fingerprint(a, 'hint'),
+      at: '2026-09-01',
+      ref: 'old0000',
+      note: '据え置かれるべき',
+    }
+    const r = applyMark(ledger, [a, b], opts({ baseline: true, note: '基準' }))
+    expect(r.kept).toBe(1)
+    expect(r.n).toBe(1)
+    expect(ledger.layers.hint[a.id].note).toBe('据え置かれるべき')
+    expect(ledger.layers.hint[b.id]).toEqual({
+      fp: fingerprint(b, 'hint'),
+      at: '2026-09-06',
+      ref: 'abc1234',
+      note: '基準',
+      baseline: true,
+    })
+  })
+
+  it('存在しない ID は例外、層の対象外の ID は無視して報告する', () => {
+    const q = { ...sample(), diagrams: [] }
+    const ledger = fresh()
+    expect(() => applyMark(ledger, [q], opts({ ids: ['zz-999'] }))).toThrow(/無い ID/)
+    const r = applyMark(ledger, [q], opts({ layers: ['diagrams'], ids: [q.id], note: 'x' }))
+    expect(r.n).toBe(0)
+    expect(r.ignored).toEqual([`diagrams:${q.id}`])
   })
 })
 
