@@ -7,6 +7,7 @@ import { diffLedger, fingerprint, LAYERS, loadLedger } from '../quiz-audit-ledge
 /**
  * 監査台帳の指紋が守るべき性質。
  *
+ * 0. 層は distractors / correct / diagrams / hint の4つ。referenceUrl は入れない。
  * 1. `quiz:randomize` は選択肢順と correctIndex を入れ替えるが内容は変えない。
  *    指紋が動いたら、並べ替えのたびに全問が「台帳確定後に変わった」になり検出が無意味になる。
  * 2. 層は独立している。解説を直しても誤答の台帳は動かず、図を直しても正解の台帳は動かない。
@@ -53,11 +54,10 @@ describe('監査台帳の指紋', () => {
     expect(fps(c)).toEqual(fps(a))
   })
 
-  it('referenceUrl と hint の変更はどの層の指紋も動かさない（URL は lint:url、hint はプレイテストの担当）', () => {
+  it('referenceUrl の変更はどの層の指紋も動かさない（アンカーは lint:url の担当）', () => {
     const a = sample()
     const b = sample()
     b.referenceUrl = 'https://developers.cloudflare.com/workers/#other'
-    b.hint = 'H2'
     expect(fps(b)).toEqual(fps(a))
   })
 
@@ -75,12 +75,29 @@ describe('監査台帳の指紋', () => {
     expect(moved((q) => (q.options[0].text = 'wrong-a2'))).toEqual(['distractors'])
     expect(moved((q) => (q.options[2].wrongFeedback = 'fb2'))).toEqual(['distractors'])
     expect(moved((q) => (q.diagrams[0].steps[0].text = 's2'))).toEqual(['diagrams'])
+    expect(moved((q) => (q.hint = 'H2'))).toEqual(['hint'])
+  })
+
+  it('図を全部消した設問・multi になった設問は「対象外」であって「消えた」ではない（prune が存在する設問の記録を消さない）', () => {
+    const a = sample()
+    const b = { ...sample(), id: 'zz-002' }
+    const ledger = { layers: Object.fromEntries(LAYERS.map((l) => [l, {}])) }
+    for (const q of [a, b]) for (const l of LAYERS) ledger.layers[l][q.id] = { fp: fingerprint(q, l), at: '2026-09-06' }
+    a.diagrams = []
+    b.type = 'multi'
+    const d = diffLedger([a, b], ledger)
+    expect(d.diagrams.outOfLayer).toEqual(['zz-001'])
+    expect(d.diagrams.dead).toEqual([])
+    expect(d.distractors.outOfLayer).toEqual(['zz-002'])
+    expect(d.correct.outOfLayer).toEqual(['zz-002'])
+    expect(d.distractors.dead).toEqual([])
+    expect(d.diagrams.recorded).toBe(1)
   })
 
   it('diffLedger は「変わった」「記録なし」「設問が消えた記録」を分けて出す', () => {
     const a = sample()
     const b = { ...sample(), id: 'zz-002' }
-    const ledger = { layers: { distractors: {}, correct: {}, diagrams: {} } }
+    const ledger = { layers: Object.fromEntries(LAYERS.map((l) => [l, {}])) }
     for (const l of LAYERS) ledger.layers[l]['zz-001'] = { fp: fingerprint(a, l), at: '2026-09-02' }
     ledger.layers.correct['zz-999'] = { fp: 'deadbeef0000', at: '2026-09-02' }
     a.explanation = 'E2'

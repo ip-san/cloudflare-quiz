@@ -229,7 +229,7 @@ vp-006  Workers VPC＝Workersからプライベートネットワーク内のリ
 
 ---
 
-## 台帳は ID ではなく内容の指紋で持つ（2026-09-02）
+## 台帳は ID ではなく内容の指紋で持つ（2026-09-02、09-06 に運用を締めた）
 
 下の3つの台帳（誤答・正解・図）は判定ファイルを設問 ID と肢番号で数えている。
 **書き換えた直後でも「判定済み」と言う。** 2026-09-02 に cb-011 を全面書き換えた直後も
@@ -245,19 +245,49 @@ vp-006  Workers VPC＝Workersからプライベートネットワーク内のリ
 ```bash
 bun run quiz:ledger                                  # 層ごとに「台帳確定後に変わった N 問 / 記録なし M 問」
 node scripts/quiz-audit-ledger.mjs changed [layer]   # 一覧（JSON）。次の検証バッチの入力にする
-node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> [--note "..."] [id...]
-node scripts/quiz-audit-ledger.mjs prune                            # 設問を消したら。死んだ記録を落とす
+node scripts/quiz-audit-ledger.mjs mark <layer|all> --at HEAD [--note "..."] <id...>   # 検証した ID を記録
+node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> --bulk [--note "..."]   # 層を全数検証した回だけ
+node scripts/quiz-audit-ledger.mjs prune                                              # 設問を消した / 図を全部消した記録を落とす
 ```
 
-- 層の定義: `distractors` = 正解以外の肢の text と wrongFeedback / `correct` = 設問文・正解の text・解説 /
-  `diagrams` = 図。選択肢の順序と correctIndex には依存しない（`quiz:randomize` で動かない）
-- referenceUrl は入れない（`quiz:lint:url` の担当）。hint も入れない（ヒント層はプレイテストで覆う。
-  playtest-coverage の指紋が持っている）
-- ID を指定しない `mark` は、内容が変わっていない記録の由来（いつ・どの ref・何の検証か）を上書きしない
-- **`mark` は `--at <ref>` が必須。** 検証した状態は常にコミットなので、その ref から指紋を取る。
-  作業ツリーから取ると「直したあとの値」を「検証した値」として記録する（playtest-coverage で 08-29 に起きた形）
-- `quiz:status` にも同じ数字が出る。`bun run check` は止めない（毎回の編集で止まるのは正しくない）。
-  **次の検証は `changed` の一覧から始めること。** git log から数え直さない
+### 層の定義
+
+- `distractors` = 正解以外の肢の text と wrongFeedback / `correct` = 設問文・正解の text・解説 /
+  `diagrams` = 図 / `hint` = ヒント。選択肢の順序と correctIndex には依存しない（`quiz:randomize` で動かない）
+- referenceUrl は入れない（`quiz:lint:url` の担当。URL の付け替えが偽陽性になる）
+- **hint の記録は「基準点」であって「検証済み」ではない。** ヒント層の全数掃引は 09-01 に
+  0/28 で割に合わないと判断してやっていない。だが差分駆動の再照合（09-02）では 19 問中 2 問で
+  指摘が出て、4層の中で最も濃かった。「変わった分だけ見る」には層として持つ必要がある。
+  記録の `note` に基準か検証かが書いてある。読むこと
+
+### 運用の順番 — コミットしてから、検証した ID だけを `--at HEAD` で
+
+1. `changed` の一覧を検証の対象にする（git log から数え直さない）
+2. 直す → **コミットする**（`quiz-utils.mjs edit` で直した分はコミットするまで台帳に載せられない）
+3. `mark <layer> --at HEAD <id...>` で、**このセッションで実際に docs と突き合わせて ok / 修正が確定した ID だけ**を記録する。
+   `--at` には常に HEAD を渡してよい。検証が何回のコミットに分かれても、最後にまとめて 1 回でよい。
+   まだコミットしていない修正は記録に載らず、次の `changed` に出るだけなので嘘は作らない
+4. `--dry-run` の回は mark しない。迷ってスキップした ID も渡さない
+
+`mark` は「記録と今の内容が違うか」しか見ない。検証したかどうかは知らない。ID を省くと、
+スキップした設問や指摘だけ出した設問まで「検証済み」になる。だから ID 省略は `--bulk` を要り、
+層を文字どおり全数検証した回にしか使わない。
+
+- ID を省いた `--bulk` は、内容が変わっていない記録の由来（いつ・どの ref・何の検証か）を上書きしない。
+  内容は同じだが今回改めて確認した ID があるなら、ID を明示して渡すと日付・ref・note が更新される
+- `quiz:status` にも同じ数字が出る。`bun run check` は止めない（毎回の編集で止まるのは正しくない）
+
+### 判定ファイルとの関係
+
+`.claude/tmp/quiz-audit/` の判定ファイル（verdict / rationale / verifiedBy）はローカル限定（gitignore）で、
+**判定の中身はそこにしか無い**。指紋台帳は git 追跡され別環境にも持ち越されるが、持っているのは
+「最後に確認した時点の内容と一致するか」だけ。別環境で `quiz:status` の【誤答】【図】【正解】が 0% と出るのは
+「監査していない」ではなく「このマシンに判定ファイルが無い」。
+
+### 対象外（既知の穴）
+
+`src/domain/valueObjects/Glossary.ts` の用語の定義文は、この台帳を含めどの仕組みでも docs と照合していない。
+用語集は該当する全問に出るので、誤りの影響範囲は 1 問より広い。別途の検討が要る。
 
 ## 誤答の全数裏取り台帳（2026-08-28 に確定）
 

@@ -19,23 +19,32 @@
  *   distractors  正解以外の肢の text と wrongFeedback（ソートして順序に依存しない）
  *   correct      設問文・正解の肢の text・解説（correctIndex は randomize で動くので使わない）
  *   diagrams     図の配列そのもの
+ *   hint         ヒント。全数掃引の台帳は無い（09-01 に 0/28 で静的掃引は割に合わないと判断）が、
+ *                差分駆動の再照合では 19 問中 2 問で指摘が出た（09-02）。「変わった分だけ見る」
+ *                ためには層として持つ必要がある。記録の note に基準か検証かを書く
  *
  * referenceUrl は入れない（アンカーの検証は quiz:lint:url の担当。URL の付け替えを
  * 「内容の変更」に数えると 2026-09-02 の 14 件のような偽陽性になる）。
- * hint も入れない（ヒント層は静的な掃引ではなくプレイテストで覆うと 09-01 に決めた。
- * playtest-coverage の指紋が hint を含んでいる）。
  *
  * ### 記録は必ずコミットから取る
  *
  * `mark` は `--at <ref>` を必須にし、その時点の quizzes.json から指紋を計算する。
  * 作業ツリーから取ると「直したあとの値」を「検証した値」として記録してしまう
  * （playtest-coverage で 2026-08-29 に実際に起きた）。検証した状態は常にコミットなので、
- * それを渡させる。
+ * それを渡させる。コミットしてから `--at HEAD` でよい。
+ *
+ * ### ID を省いた一括 mark は `--bulk` を要る
+ *
+ * mark は「記録と今の内容が違うか」しか見ない。検証したかどうかは知らない。
+ * ID を省くと、迷ってスキップした設問や dry-run で指摘だけ出した設問まで
+ * 「検証済み」になる。普段は検証した ID を明示して渡す。層を文字どおり全数検証した回だけ
+ * `--bulk` を付けて省略する。
  *
  * Usage:
  *   node scripts/quiz-audit-ledger.mjs status
  *   node scripts/quiz-audit-ledger.mjs changed [layer]                  # JSON。次の検証バッチの入力
- *   node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> [--note "..."] [id...]
+ *   node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> [--note "..."] <id...>
+ *   node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> --bulk [--note "..."]   # 全数検証した回だけ
  *   node scripts/quiz-audit-ledger.mjs prune                            # 設問が消えた記録を落とす
  */
 
@@ -49,7 +58,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const QUIZ_REL = 'src/data/quizzes.json'
 const LEDGER = resolve(ROOT, '.claude/quiz-audit-ledger.json')
 
-export const LAYERS = ['distractors', 'correct', 'diagrams']
+export const LAYERS = ['distractors', 'correct', 'diagrams', 'hint']
 
 /** 層ごとの内容。ここが台帳の定義そのもの */
 export function layerPayload(quiz, layer) {
@@ -64,6 +73,8 @@ export function layerPayload(quiz, layer) {
       return { question: quiz.question, correct, explanation: quiz.explanation }
     case 'diagrams':
       return quiz.diagrams ?? null
+    case 'hint':
+      return quiz.hint ?? null
     default:
       throw new Error(`unknown layer: ${layer}`)
   }
@@ -109,10 +120,17 @@ function saveLedger(data, path = LEDGER) {
 }
 
 /**
- * 層ごとに「記録と今の内容が違う設問」「記録の無い設問」「記録はあるが設問が消えた ID」を出す。
+ * 層ごとに分けて出す:
+ *   changed     記録と今の内容が違う
+ *   unrecorded  記録が無い（足したばかりの設問。検証されるまで無いのが正しい）
+ *   outOfLayer  記録はあるが層の対象から外れた（図を全部消した / multi になった）。設問は存在する
+ *   dead        記録はあるが設問そのものが quizzes.json に無い
+ * outOfLayer と dead を分けるのは、prune のログが「quizzes.json に無い」と言いながら
+ * 存在する設問の記録を消していたから（2026-09-06 の QA で発覚）。
  */
 export function diffLedger(quizzes, ledger, layers = LAYERS) {
   const result = {}
+  const allIds = new Set(quizzes.map((q) => q.id))
   for (const layer of layers) {
     const rec = ledger.layers[layer] ?? {}
     const changed = []
@@ -125,8 +143,15 @@ export function diffLedger(quizzes, ledger, layers = LAYERS) {
       if (!r) unrecorded.push(q.id)
       else if (r.fp !== fingerprint(q, layer)) changed.push(q.id)
     }
-    const dead = Object.keys(rec).filter((id) => !ids.has(id))
-    result[layer] = { recorded: Object.keys(rec).length - dead.length, changed, unrecorded, dead }
+    const dead = Object.keys(rec).filter((id) => !allIds.has(id))
+    const outOfLayer = Object.keys(rec).filter((id) => allIds.has(id) && !ids.has(id))
+    result[layer] = {
+      recorded: Object.keys(rec).length - dead.length - outOfLayer.length,
+      changed,
+      unrecorded,
+      outOfLayer,
+      dead,
+    }
   }
   return result
 }
@@ -142,10 +167,12 @@ function cmdStatus(quizzes, ledger) {
       `  ${flag}${layer.padEnd(12)} 記録 ${String(r.recorded).padStart(4)}/${total}` +
         `  台帳確定後に変わった ${String(r.changed.length).padStart(3)} 問` +
         `  記録なし ${String(r.unrecorded.length).padStart(3)} 問` +
+        (r.outOfLayer.length ? `  対象外になった記録 ${r.outOfLayer.length} 件` : '') +
         (r.dead.length ? `  設問が消えた記録 ${r.dead.length} 件` : '')
     )
   }
-  console.log('  ※ 一覧は `node scripts/quiz-audit-ledger.mjs changed`。検証したら `mark <layer|all> --at <ref>`')
+  console.log('  ※ 一覧は `node scripts/quiz-audit-ledger.mjs changed`。検証したら `mark <layer> --at HEAD <id...>`')
+  console.log('     hint の記録は基準点（全数掃引はしていない）。note を読むこと')
 }
 
 function cmdChanged(quizzes, ledger, layer) {
@@ -162,16 +189,24 @@ function cmdMark(ledger, argv) {
   }
   let ref = null
   let note = ''
+  let bulk = false
   const ids = []
   for (let i = 0; i < rest.length; i++) {
     if (rest[i] === '--at') ref = rest[++i]
     else if (rest[i] === '--note') note = rest[++i] ?? ''
+    else if (rest[i] === '--bulk') bulk = true
     else if (rest[i].startsWith('--')) throw new Error(`unknown option: ${rest[i]}`)
     else ids.push(rest[i])
   }
   if (!ref) {
     throw new Error(
-      '--at <ref> は必須。検証した状態は常にコミットなので、その ref から指紋を取る（作業ツリーから取ると直したあとの値を記録してしまう）'
+      '--at <ref> は必須。検証した状態は常にコミットなので、その ref から指紋を取る（作業ツリーから取ると直したあとの値を記録してしまう）。コミットしてから --at HEAD でよい'
+    )
+  }
+  if (ref.startsWith('-')) throw new Error(`ref がオプションに見える: ${ref}`)
+  if (ids.length === 0 && !bulk) {
+    throw new Error(
+      'ID を省くには --bulk が要る。mark は検証したかどうかを知らないので、ID を省くと迷ってスキップした設問まで「検証済み」になる。普段は検証した ID を渡すこと'
     )
   }
   const sha = execFileSync('git', ['rev-parse', '--short', ref], { cwd: ROOT }).toString().trim()
@@ -220,9 +255,14 @@ function cmdPrune(quizzes, ledger) {
       console.log(`  ${layer}: ${id} を削除（quizzes.json に無い）`)
       n++
     }
+    for (const id of d[layer].outOfLayer) {
+      delete ledger.layers[layer][id]
+      console.log(`  ${layer}: ${id} を削除（層の対象外になった。設問は存在する）`)
+      n++
+    }
   }
   if (n) saveLedger(ledger)
-  console.log(n ? `削除した: ${n} 件` : '設問が消えた記録はありません')
+  console.log(n ? `削除した: ${n} 件` : '消えた設問・対象外になった記録はありません')
 }
 
 function main() {
@@ -243,7 +283,7 @@ function main() {
       break
     default:
       console.log(
-        'Usage: quiz-audit-ledger.mjs <status|changed [layer]|mark <layer|all> --at <ref> [--note "..."] [id...]|prune>'
+        'Usage: quiz-audit-ledger.mjs <status|changed [layer]|mark <layer|all> --at <ref> [--note "..."] (<id...>|--bulk)|prune>'
       )
       process.exit(1)
   }

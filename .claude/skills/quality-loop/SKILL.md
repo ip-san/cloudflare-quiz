@@ -124,7 +124,7 @@ E2Eは環境依存（ブラウザ・devサーバー）のため、失敗して�
 |---------|------|------|
 | 0. 決定論的チェック | 完了 | quiz:check OK, lint N件指摘, cross-check N件 |
 | 1. code-review | 完了/スキップ | Critical N件, High N件 |
-| 2. quiz-refine | 完了/スキップ | N問検証, N件修正/フラグ |
+| 2. quiz-refine | 完了/スキップ | N問検証, N件修正/フラグ, 台帳 mark N件 |
 | 3. 最終ゲート | ✅ PASS / ❌ FAIL | bun run check の結果 |
 | 3.5. playtest | 完了/スキップ | （`--playtest` 時のみ）採用/却下件数、UX課題件数 |
 
