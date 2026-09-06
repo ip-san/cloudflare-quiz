@@ -243,11 +243,11 @@ vp-006  Workers VPC＝Workersからプライベートネットワーク内のリ
   playtest-coverage.json と同じ形。
 
 ```bash
-bun run quiz:ledger                                  # 層ごとに「台帳確定後に変わった N 問 / 記録なし M 問」
-node scripts/quiz-audit-ledger.mjs changed [layer]   # 一覧（JSON）。次の検証バッチの入力にする
-node scripts/quiz-audit-ledger.mjs mark <layer|all> --at HEAD [--note "..."] <id...>   # 検証した ID を記録
-node scripts/quiz-audit-ledger.mjs mark <layer|all> --at <ref> --bulk [--note "..."]   # 層を全数検証した回だけ
-node scripts/quiz-audit-ledger.mjs prune                                              # 設問を消した / 図を全部消した記録を落とす
+bun run quiz:ledger                                  # = status。層ごとに「変わった N 問 / 記録なし M 問」
+bun run quiz:ledger changed [layer]                  # 一覧（JSON）。changed と unrecorded の両方を次の検証対象にする
+bun run quiz:ledger mark <layer|all> --at HEAD --note "何をどう検証したか" <id...>      # 検証した ID を記録
+bun run quiz:ledger mark <layer|all> --at <ref> --bulk [--baseline] --note "..."      # 層を全数検証した回だけ
+bun run quiz:ledger prune                            # 設問を消した / 図を全部消した記録を落とす
 ```
 
 ### 層の定義
@@ -255,18 +255,22 @@ node scripts/quiz-audit-ledger.mjs prune                                        
 - `distractors` = 正解以外の肢の text と wrongFeedback / `correct` = 設問文・正解の text・解説 /
   `diagrams` = 図 / `hint` = ヒント。選択肢の順序と correctIndex には依存しない（`quiz:randomize` で動かない）
 - referenceUrl は入れない（`quiz:lint:url` の担当。URL の付け替えが偽陽性になる）
-- **hint の記録は「基準点」であって「検証済み」ではない。** ヒント層の全数掃引は 09-01 に
+- **hint の記録の大半は「基準点」であって「検証済み」ではない。** ヒント層の全数掃引は 09-01 に
   0/28 で割に合わないと判断してやっていない。だが差分駆動の再照合（09-02）では 19 問中 2 問で
   指摘が出て、4層の中で最も濃かった。「変わった分だけ見る」には層として持つ必要がある。
-  記録の `note` に基準か検証かが書いてある。読むこと
+  基準点の記録は `baseline: true` を持ち、status の行に「（基準点 N / 検証 M）」と出る。
+  基準点を置くときは `--bulk --baseline` で、note にもそう書く
 
 ### 運用の順番 — コミットしてから、検証した ID だけを `--at HEAD` で
 
-1. `changed` の一覧を検証の対象にする（git log から数え直さない）
-2. 直す → **コミットする**（`quiz-utils.mjs edit` で直した分はコミットするまで台帳に載せられない）
-3. `mark <layer> --at HEAD <id...>` で、**このセッションで実際に docs と突き合わせて ok / 修正が確定した ID だけ**を記録する。
-   `--at` には常に HEAD を渡してよい。検証が何回のコミットに分かれても、最後にまとめて 1 回でよい。
-   まだコミットしていない修正は記録に載らず、次の `changed` に出るだけなので嘘は作らない
+1. `changed` の一覧の **changed と unrecorded の両方**を検証の対象にする（git log から数え直さない。
+   unrecorded は足したばかりの設問で、lint や cross-check では拾えない）
+2. 直す → **コミットする**（`git add src/data/quizzes.json && git commit`）。
+   quizzes.json が未コミットのままだと mark は拒否する。HEAD が修正前の内容を指しているので、
+   通すと「修正前を検証した」という嘘の記録になるため
+3. `mark <layer> --at HEAD --note "何をどう検証したか" <id...>` で、**このセッションで実際に docs と
+   突き合わせて ok / 修正が確定した ID だけ**を記録する。`--at` には常に HEAD を渡す。
+   検証が何回のコミットに分かれても、最後にまとめて 1 回でよい。HEAD 以外を渡すと警告が出る
 4. `--dry-run` の回は mark しない。迷ってスキップした ID も渡さない
 
 `mark` は「記録と今の内容が違うか」しか見ない。検証したかどうかは知らない。ID を省くと、
@@ -274,7 +278,8 @@ node scripts/quiz-audit-ledger.mjs prune                                        
 層を文字どおり全数検証した回にしか使わない。
 
 - ID を省いた `--bulk` は、内容が変わっていない記録の由来（いつ・どの ref・何の検証か）を上書きしない。
-  内容は同じだが今回改めて確認した ID があるなら、ID を明示して渡すと日付・ref・note が更新される
+  内容は同じだが今回改めて確認した ID があるなら、ID を明示して渡すと日付・ref・note が更新される。
+  ID 明示で `--note` を省くと前の note を引き継ぐ（09-06 に cb-011 の由来が黙って消えた。その再発防止）
 - `quiz:status` にも同じ数字が出る。`bun run check` は止めない（毎回の編集で止まるのは正しくない）
 
 ### 判定ファイルとの関係

@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { diffLedger, fingerprint, LAYERS, loadLedger } from '../quiz-audit-ledger.mjs'
+import { diffLedger, fingerprint, inLayer, LAYERS, loadLedger, parseMarkArgs } from '../quiz-audit-ledger.mjs'
 
 /**
  * 監査台帳の指紋が守るべき性質。
@@ -90,8 +90,10 @@ describe('監査台帳の指紋', () => {
     expect(d.diagrams.dead).toEqual([])
     expect(d.distractors.outOfLayer).toEqual(['zz-002'])
     expect(d.correct.outOfLayer).toEqual(['zz-002'])
+    expect(d.hint.outOfLayer).toEqual([])
     expect(d.distractors.dead).toEqual([])
     expect(d.diagrams.recorded).toBe(1)
+    expect(d.diagrams.total).toBe(1)
   })
 
   it('diffLedger は「変わった」「記録なし」「設問が消えた記録」を分けて出す', () => {
@@ -106,6 +108,48 @@ describe('監査台帳の指紋', () => {
     expect(d.distractors.changed).toEqual([])
     expect(d.correct.unrecorded).toEqual(['zz-002'])
     expect(d.correct.dead).toEqual(['zz-999'])
+  })
+})
+
+describe('mark の引数', () => {
+  it('--note の値にオプションを飲み込まない（--note --bulk が note="--bulk" として通っていた）', () => {
+    expect(() => parseMarkArgs(['correct', '--at', 'HEAD', '--note', '--bulk', 'cb-011'])).toThrow(/--note の値が無い/)
+    expect(() => parseMarkArgs(['correct', '--at', 'HEAD', '--note', '--at', 'HEAD', 'cb-011'])).toThrow(
+      /--note の値が無い/
+    )
+    expect(() => parseMarkArgs(['correct', '--at', 'HEAD', 'cb-011', '--note'])).toThrow(/--note の値が無い/)
+  })
+
+  it('--at は必須で、2 回は指定できず、オプションに見える値は弾く', () => {
+    expect(() => parseMarkArgs(['correct', 'cb-011'])).toThrow(/--at <ref> は必須/)
+    expect(() => parseMarkArgs(['correct', '--at', 'HEAD', '--at', 'abc', 'cb-011'])).toThrow(/2 回/)
+    expect(() => parseMarkArgs(['correct', '--at', '--bulk', 'cb-011'])).toThrow(/値が無い/)
+    expect(() => parseMarkArgs(['correct', '--at', '-1', 'cb-011'])).toThrow(/オプションに見える/)
+  })
+
+  it('ID を省くには --bulk が要り、--baseline は --bulk と一緒にしか使えない', () => {
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD'])).toThrow(/--bulk が要る/)
+    expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk']).bulk).toBe(true)
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--baseline', 'cb-011'])).toThrow(/--baseline は --bulk/)
+    expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline']).baseline).toBe(true)
+  })
+
+  it('空白入りの ID は zsh の単語分割の説明つきで弾く。all は 4 層に展開する', () => {
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', 'wk-001 wk-002'])).toThrow(/単語分割/)
+    const r = parseMarkArgs(['all', '--at', 'HEAD', '--note', 'n', 'wk-001', 'wk-002'])
+    expect(r.layers).toEqual(LAYERS)
+    expect(r.ids).toEqual(['wk-001', 'wk-002'])
+    expect(r.note).toBe('n')
+  })
+})
+
+describe('層の対象', () => {
+  it('hint は multi 型でも対象、誤答・正解は multi を数えない、図は空なら対象外', () => {
+    const q = { ...sample(), type: 'multi', diagrams: [] }
+    expect(inLayer(q, 'hint')).toBe(true)
+    expect(inLayer(q, 'distractors')).toBe(false)
+    expect(inLayer(q, 'correct')).toBe(false)
+    expect(inLayer(q, 'diagrams')).toBe(false)
   })
 })
 

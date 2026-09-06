@@ -51,7 +51,7 @@ node scripts/quiz-fact-check.mjs --json > /tmp/quiz-fact.json
 
 - `--full`: 全問が対象
 - incremental（デフォルト）: `git diff -U20 -- src/data/quizzes.json` を実行し、変更ハンク周辺に含まれる `"id": "..."` を抽出して対象とする。差分がなければ Step 0 の JSON 出力で `status: "flagged"` になっている問題の ID を対象に加える
-- **コミット済みの変更は `git diff` に出ない。** `node scripts/quiz-audit-ledger.mjs changed` が出す「台帳確定後に内容が変わった設問」を必ず対象に加える（2026-09-02 に git log から手で数えて2問落とした。台帳は層ごとに基準を持つので取り違えない）。記録は Step Final で、検証した ID だけを渡す
+- **コミット済みの変更は `git diff` に出ない。** `bun run quiz:ledger changed` が出す **changed（台帳確定後に内容が変わった設問）と unrecorded（記録が一度も無い設問＝新規追加分）の両方**を必ず対象に加える（2026-09-02 に git log から手で数えて2問落とした。台帳は層ごとに基準を持つので取り違えない）。記録は Step Final で、検証した ID だけを渡す
 - カテゴリ指定があれば、対象 ID を該当カテゴリの問題に絞り込む（`src/data/quizzes.json` の `category` フィールドで判定）
 
 **対象が0件の場合は「検証対象なし」と報告して即座に終了する。**
@@ -109,14 +109,16 @@ node scripts/quiz-utils.mjs randomize && node scripts/quiz-utils.mjs check && bu
 
 テストが失敗した場合は原因を調査して修正を試みる。
 
-**台帳への記録（修正モードのみ。`--dry-run` では実行しない）:** 修正をコミットしてから、
-このセッションで docs と突き合わせて ok / 修正が確定した ID だけを層ごとに渡す:
+**台帳への記録（修正モードのみ。`--dry-run` では実行しない）:** まず修正をコミットし、
+それからこのセッションで docs と突き合わせて ok / 修正が確定した ID だけを層ごとに渡す:
 
 ```bash
-node scripts/quiz-audit-ledger.mjs mark <layer> --at HEAD <id...>
+git add src/data/quizzes.json && git commit -m "fix: quiz-refine <日付> <要約>"
+bun run quiz:ledger mark <layer> --at HEAD --note "<何をどう検証したか一言>" <id...>
 ```
 
-`--at` は常に HEAD でよい（コミット済みの内容から指紋を取る）。迷ってスキップした ID は渡さない。
+quizzes.json が未コミットだと mark は拒否する（HEAD が修正前の内容を指すため）。`--at` は常に HEAD。
+迷ってスキップした ID は渡さない。`--note` を省くと前の note を引き継ぐが、今回の検証を残すために書くこと。
 ID を省く `--bulk` は層を全数検証した回だけ。詳細は `.claude/skills/quiz-audit/SKILL.md` の
 「台帳は ID ではなく内容の指紋で持つ」。
 
