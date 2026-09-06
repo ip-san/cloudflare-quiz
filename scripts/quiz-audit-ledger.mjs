@@ -179,7 +179,8 @@ export function statusLines(quizzes, ledger) {
   const lines = []
   for (const layer of LAYERS) {
     const r = d[layer]
-    const flag = r.changed.length || r.unrecorded.length ? '⚠️ ' : '✓ '
+    // ◐ = 変わってはいないが、記録の大半が基準点（検証済みではない）
+    const flag = r.changed.length || r.unrecorded.length ? '⚠️ ' : r.baseline > 0 ? '◐ ' : '✓ '
     const recorded =
       r.baseline > 0
         ? `記録 ${String(r.recorded).padStart(4)}/${r.total}（基準点 ${r.baseline} / 検証 ${r.recorded - r.baseline}）`
@@ -191,7 +192,7 @@ export function statusLines(quizzes, ledger) {
         (r.dead.length ? `  設問が消えた記録 ${r.dead.length} 件` : '')
     )
   }
-  lines.push('※ 「基準点」は検証済みではない。変わった分を差分で見るための出発点（hint 層）')
+  lines.push('※ ◐ の層は記録の大半が「基準点」。検証済みではなく、変わった分を差分で見るための出発点（hint 層）')
   lines.push(
     '   一覧: `node scripts/quiz-audit-ledger.mjs changed`。検証したら `mark <layer> --at HEAD --note "..." <id...>`'
   )
@@ -255,12 +256,14 @@ export function parseMarkArgs(argv) {
     )
   }
   if (baseline && !bulk) throw new Error('--baseline は --bulk と一緒にしか使えない（基準点は層全体に置くもの）')
+  if (bulk && ids.length) throw new Error('--bulk と ID は同時に指定できない（--bulk は ID を省くためのもの）')
   for (const id of ids) {
     if (/\s/.test(id)) {
       throw new Error(`ID に空白が入っている: "${id}"。zsh は $VAR を単語分割しないので、xargs か \${=VAR} で渡すこと`)
     }
   }
-  return { layers, ref, note: note ?? '', bulk, baseline, ids }
+  // note は null（指定なし）と ''（--note "" で明示的に空）を区別する。前者だけ前の note を引き継ぐ
+  return { layers, ref, note, bulk, baseline, ids }
 }
 
 function quizFileIsDirty() {
@@ -311,8 +314,14 @@ function cmdMark(ledger, argv) {
       }
       const entry = { fp, at, ref: sha }
       if (note) entry.note = note
-      else if (prev?.note) {
-        // ID 明示で --note を省いたら、前の由来を黙って捨てない（2026-09-06 に cb-011 で実際に消えた）
+      else if (note === null && prev?.note) {
+        // ID 明示で --note を省いたら、前の由来を黙って捨てない（2026-09-06 に cb-011 で実際に消えた）。
+        // ただし前が基準点なら、その note は「未検証」と書いてあるので引き継げない。今回の検証を書かせる
+        if (prev.baseline) {
+          throw new Error(
+            `${layer}:${q.id} は基準点の記録。検証済みに上げるには --note で何をどう検証したかを書くこと（基準点の note は引き継げない）`
+          )
+        }
         entry.note = prev.note
         carried.push(`${layer}:${q.id}`)
       }

@@ -1,5 +1,6 @@
-import { existsSync, readFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { diffLedger, fingerprint, inLayer, LAYERS, loadLedger, parseMarkArgs } from '../quiz-audit-ledger.mjs'
@@ -134,6 +135,13 @@ describe('mark の引数', () => {
     expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline']).baseline).toBe(true)
   })
 
+  it('--note は「指定なし」と「明示的に空」を区別し、--bulk と ID は同時に指定できない', () => {
+    expect(parseMarkArgs(['hint', '--at', 'HEAD', 'wk-001']).note).toBeNull()
+    expect(parseMarkArgs(['hint', '--at', 'HEAD', '--note', '', 'wk-001']).note).toBe('')
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', 'wk-001'])).toThrow(/--bulk と ID/)
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline', 'wk-001'])).toThrow(/--bulk と ID/)
+  })
+
   it('空白入りの ID は zsh の単語分割の説明つきで弾く。all は 4 層に展開する', () => {
     expect(() => parseMarkArgs(['hint', '--at', 'HEAD', 'wk-001 wk-002'])).toThrow(/単語分割/)
     const r = parseMarkArgs(['all', '--at', 'HEAD', '--note', 'n', 'wk-001', 'wk-002'])
@@ -150,6 +158,18 @@ describe('層の対象', () => {
     expect(inLayer(q, 'distractors')).toBe(false)
     expect(inLayer(q, 'correct')).toBe(false)
     expect(inLayer(q, 'diagrams')).toBe(false)
+  })
+})
+
+describe('loadLedger の互換性', () => {
+  it('layers が無い / null の JSON でも 4 層の空の台帳として読める', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ledger-'))
+    for (const body of ['{}', '{"layers": null}', '{"layers": {"correct": {}}}']) {
+      const path = join(dir, 'l.json')
+      writeFileSync(path, body)
+      const ledger = loadLedger(path)
+      for (const l of LAYERS) expect(ledger.layers[l]).toEqual({})
+    }
   })
 })
 
