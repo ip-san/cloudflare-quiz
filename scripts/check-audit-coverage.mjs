@@ -83,8 +83,11 @@ function checkOne(inputPath, verdictPath) {
   const expected = new Set()
   // build-audit-batches.mjs は `targets`、quiz-audit.mjs --json は `changed` で肢を並べる。
   // 2026-09-02 に後者を渡して TypeError で落ちた。どちらも受ける。
-  for (const item of input)
-    for (const t of item.targets ?? item.changed ?? []) expected.add(`${item.id}:${t.optionIndex}`)
+  for (const item of input) {
+    const limbs = item.targets ?? item.changed
+    if (!limbs) return { label, status: 'broken', message: `入力に targets も changed も無い（${item.id}）` }
+    for (const t of limbs) expected.add(`${item.id}:${t.optionIndex}`)
+  }
 
   let verdicts
   try {

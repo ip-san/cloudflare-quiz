@@ -138,9 +138,10 @@ describe('mark の引数', () => {
 
   it('ID を省くには --bulk が要り、--baseline は --bulk と一緒にしか使えない', () => {
     expect(() => parseMarkArgs(['hint', '--at', 'HEAD'])).toThrow(/--bulk が要る/)
-    expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk']).bulk).toBe(true)
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--bulk'])).toThrow(/--bulk には --note/)
+    expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--note', 's']).bulk).toBe(true)
     expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--baseline', 'cb-011'])).toThrow(/--baseline は --bulk/)
-    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline'])).toThrow(/--baseline には --note/)
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline'])).toThrow(/--note が必須/)
     expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline', '--note', 'b']).baseline).toBe(true)
   })
 
@@ -232,6 +233,29 @@ describe('applyMark（記録を書く本体）', () => {
       ref: 'abc1234',
       note: '基準',
       baseline: true,
+    })
+  })
+
+  it('層の全数検証（--bulk、--baseline なし）は、指紋が同じ基準点も昇格させる。基準点の一括は据え置く', () => {
+    const q = sample()
+    const ledger = fresh()
+    ledger.layers.hint[q.id] = {
+      fp: fingerprint(q, 'hint'),
+      at: '2026-09-01',
+      ref: 'old0000',
+      note: '基準',
+      baseline: true,
+    }
+    const r1 = applyMark(ledger, [q], opts({ baseline: true, note: '基準2' }))
+    expect(r1.kept).toBe(1)
+    expect(ledger.layers.hint[q.id].note).toBe('基準')
+    const r2 = applyMark(ledger, [q], opts({ note: '全数検証' }))
+    expect(r2.n).toBe(1)
+    expect(ledger.layers.hint[q.id]).toEqual({
+      fp: fingerprint(q, 'hint'),
+      at: '2026-09-06',
+      ref: 'abc1234',
+      note: '全数検証',
     })
   })
 

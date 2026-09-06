@@ -257,7 +257,7 @@ export function parseMarkArgs(argv) {
   }
   if (baseline && !bulk) throw new Error('--baseline は --bulk と一緒にしか使えない（基準点は層全体に置くもの）')
   if (bulk && ids.length) throw new Error('--bulk と ID は同時に指定できない（--bulk は ID を省くためのもの）')
-  if (baseline && !note) throw new Error('--baseline には --note が必須（基準点の記録は「何を基準にしたか」を持つ）')
+  if (bulk && !note) throw new Error('--bulk には --note が必須（層の全数検証か基準点か、何をしたかを記録する）')
   for (const id of ids) {
     if (/\s/.test(id)) {
       throw new Error(`ID に空白が入っている: "${id}"。zsh は $VAR を単語分割しないので、xargs か \${=VAR} で渡すこと`)
@@ -301,7 +301,9 @@ export function applyMark(ledger, quizzes, { layers, sha, note, baseline, ids, a
       // ID を指定しない一括 mark では、内容が変わっていない記録の由来（いつ・どの ref で・何の検証か）を
       // 上書きしない。上書きすると「今日の再照合」が触っていない 600 問にも今日の注記が付く。
       // それは台帳の嘘で、しかも毎回 2,268 行の差分になる
-      if (!want && prev?.fp === fp) {
+      // ただし前が基準点で、今回が層の全数検証（--bulk、--baseline なし）なら据え置かない。
+      // 据え置くと、全数検証しても基準点が基準点のまま残る（1 周目のコードレビューが遅れて指摘）
+      if (!want && prev?.fp === fp && (!prev.baseline || baseline)) {
         kept++
         continue
       }
