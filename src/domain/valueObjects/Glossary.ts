@@ -38,7 +38,18 @@
  *             Client-side security では「許可したもの**以外をブロック**する」で
  *             ほぼ逆の意味になる（docs: `Allow rules block any resource not
  *             explicitly listed`）
+ * Gateway    Zero Trust の Gateway として入れていたが、`AI Gateway` の 22 問でも
+ *             `Gateway` が独立語として当たり、別製品に Zero Trust の説明が出ていた
+ *             （2026-09-07 の用語集 52 語の docs 照合で発覚）。**製品名の一部になる語**は
+ *             同じ型で衝突する。入れるなら `Cloudflare Gateway` のように製品名ごと
  * ```
+ *
+ * ### 定義文は用語集に入れる時に docs で裏を取り、52 語は 2026-09-07 に全数照合した
+ *
+ * 台帳のどの仕組みも定義文を照合していなかった（既知の穴）。3 体の独立レビュアーで全数を見て、
+ * 上の Gateway と、TTL（rt-015 の TURN 認証情報の期限に合わなかった）、
+ * `IP Access rules`（小文字の表記に当たらなかった）の 3 件を直した。
+ * 語を足すときは、定義の根拠（docs のファイルと文）をコミットメッセージに書くこと。
  *
  * こうした語は**その設問の中で説明する**しかない。用語集には入れない。
  */
@@ -62,7 +73,11 @@ const ENTRIES: GlossaryEntry[] = [
   },
   { term: 'wrangler', description: 'Workersの開発とデプロイに使うCloudflareの公式コマンドラインツール。' },
   { term: 'ゾーン', description: 'Cloudflareに登録したドメイン1つ分。設定はこの単位で管理される。' },
-  { term: 'TTL', description: 'Time To Live。キャッシュやDNSレコードを、どれくらいの時間そのまま使ってよいかの期限。' },
+  {
+    term: 'TTL',
+    description:
+      'Time To Live。キャッシュ・DNSレコード・認証情報などを、どれくらいの時間そのまま有効とみなすかの期限。',
+  },
   {
     term: '権威DNS',
     description:
@@ -83,11 +98,12 @@ const ENTRIES: GlossaryEntry[] = [
     description: '会社が把握していないまま、従業員が業務に使っているサービスや端末。',
   },
   {
-    term: 'Gateway',
-    description: '社内から外へ出る通信をDNS・ネットワーク・HTTPの各層で検査し、ポリシーで制御するCloudflareの機能。',
-  },
-  {
     term: 'IP Access Rules',
+    description: 'IPアドレス・IPブロック・国・ASNを指定して、まとめて許可・ブロック・チャレンジする仕組み。',
+  },
+  // docs もコーパスも小文字の rules が多数派（docs 8:1、コーパス 9:4）。照合は大文字小文字を区別するので両方置く
+  {
+    term: 'IP Access rules',
     description: 'IPアドレス・IPブロック・国・ASNを指定して、まとめて許可・ブロック・チャレンジする仕組み。',
   },
   {
