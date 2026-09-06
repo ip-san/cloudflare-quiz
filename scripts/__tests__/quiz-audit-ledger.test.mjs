@@ -132,7 +132,8 @@ describe('mark の引数', () => {
     expect(() => parseMarkArgs(['hint', '--at', 'HEAD'])).toThrow(/--bulk が要る/)
     expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk']).bulk).toBe(true)
     expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--baseline', 'cb-011'])).toThrow(/--baseline は --bulk/)
-    expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline']).baseline).toBe(true)
+    expect(() => parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline'])).toThrow(/--baseline には --note/)
+    expect(parseMarkArgs(['hint', '--at', 'HEAD', '--bulk', '--baseline', '--note', 'b']).baseline).toBe(true)
   })
 
   it('--note は「指定なし」と「明示的に空」を区別し、--bulk と ID は同時に指定できない', () => {
