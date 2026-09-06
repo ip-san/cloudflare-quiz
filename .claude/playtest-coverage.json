@@ -656,7 +656,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "ad949e3c2b5a",
+        "fp": "8de178cce48d",
         "gt": "da39a3ee"
       }
     ],
@@ -1066,10 +1066,10 @@
     "at-002": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "d4e8504759dc",
-        "gt": "c48ff8be"
+        "fp": "17c76a8c68da",
+        "gt": "773f1259"
       }
     ],
     "at-003": [
@@ -1101,9 +1101,9 @@
     "at-013": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "95f14485dc53",
+        "fp": "1c9b8080c76f",
         "gt": "da39a3ee"
       }
     ],
@@ -1573,9 +1573,9 @@
     "hw-011": [
       {
         "persona": "beginner",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "58d81c5a9e2a",
+        "fp": "af8545be2ba0",
         "gt": "da39a3ee"
       }
     ],
@@ -1666,7 +1666,7 @@
         "outcome": "clean",
         "at": "unstamped",
         "fp": "ac5533dca7a7",
-        "gt": "da39a3ee"
+        "gt": "7a4f8ae1"
       }
     ],
     "lb-008": [
@@ -1702,7 +1702,7 @@
         "outcome": "friction",
         "at": "unstamped",
         "fp": "e7a7d1e4c57c",
-        "gt": "2da0632a"
+        "gt": "f72b9499"
       }
     ],
     "mw-012": [
