@@ -25186,28 +25186,28 @@
       "id": "as-018",
       "category": "api-shield",
       "difficulty": "intermediate",
-      "question": "API Shieldのプランごとの制限に関する正しい説明はどれですか？",
+      "question": "API Shieldにおいて、プラン(Free/Pro/Business/Enterprise)が上がるとルールアクション(`Log`/`Block`)の選択肢がどう変わるかに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "Free・Pro・Businessプランのルールアクションは`Block`のみに限られるが、API Shieldを契約したEnterpriseプランでは保存済みエンドポイント数が10,000まで拡大される"
+          "text": "Free・Pro・Businessプランのルールアクションは`Block`のみに限られるが、Enterpriseプランになると、API Shieldの契約有無に関わらず`Log`と`Block`のどちらも選択できる"
         },
         {
-          "text": "API Shieldを契約していないEnterpriseプランのルールアクションは`Log`のみが選択可能で、より強い`Block`アクションは追加契約なしには選択できず、保存済みエンドポイント数も100までに制限される",
-          "wrongFeedback": "API Shieldを契約していないEnterpriseプランでも`Log`と`Block`の両方を選択でき、保存済みエンドポイント数は3,000です。`Block`のみに制限されているのはFree・Pro・Businessプランです。"
+          "text": "Free・Pro・Businessプランのルールアクションは`Log`のみに制限されており、より強い`Block`アクションを使うにはEnterpriseプランへのアップグレードが必要である",
+          "wrongFeedback": "説明が逆です。`Block`のみに制限されているのはFree・Pro・Businessプランで、Enterpriseプランになると`Log`と`Block`のどちらも選択できます。"
         },
         {
-          "text": "保存済みエンドポイント数の上限はFree・Pro・Business・Enterpriseのどのプランでも一律で同じ500であり、プランによる差はまったく存在しないため、上位プランに契約してもエンドポイント数の上限は一切増えない",
-          "wrongFeedback": "プランによって上限は異なります。Free 100・Pro 250・Business 500・Enterprise(API Shieldなし)3,000・Enterprise(API Shieldあり)10,000です。"
+          "text": "Free・Pro・Business・Enterpriseのいずれのプランでも、ルールアクションとして`Log`と`Block`のどちらも選択でき、プランによる違いは存在しない",
+          "wrongFeedback": "プランによる違いがあります。`Log`と`Block`のどちらも選択できるのはEnterpriseプランのみで、Free・Pro・Businessプランは`Block`のみに制限されています。"
         },
         {
-          "text": "Freeプランは保存済みエンドポイント数・アップロード可能なスキーマ数のいずれにも上限がなく、上限が課されるのはEnterpriseプランのみという逆転した仕様になっているため、無料プランのユーザーはエンドポイントを際限なく登録できる",
-          "wrongFeedback": "Freeプランにも保存済みエンドポイント100・スキーマ5・合計スキーマサイズ200kBという制限があります。制限がないわけではありません。"
+          "text": "`Log`と`Block`のどちらも選択できるのはAPI Shieldを契約したEnterpriseプランに限られ、契約していないEnterpriseプランでは`Block`のみに制限される",
+          "wrongFeedback": "API Shieldを契約していないEnterpriseプランでも`Log`と`Block`のどちらも選択できます。API Shieldの契約が変えるのはアクションの選択肢ではなく、保存済みエンドポイント数の上限です。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "プランが上がると変わるのは2点です。まずルールアクションで、Free・Pro・Businessは`Block`のみ、Enterpriseになると`Log`と`Block`を選べます。次に保存済みエンドポイント数の上限で、こちらは上位プランほど増えます。API Shieldの契約はEnterpriseのなかでさらにこの上限を引き上げるもので、アクションの選択肢は契約の有無で変わりません。個々の数値は下表のとおりです。覚えるのは数値そのものより、上位のプランほど両方の軸が広がり、下位より狭くはならないという構造です。\n{{diagram:0}}",
+      "explanation": "プランが上がると変わるのはルールアクションの選択肢です。Free・Pro・Businessは`Block`のみで、Enterpriseになると`Log`と`Block`のどちらも選べます。この違いはプランの種類によるもので、API Shieldの契約の有無とは関係ありません。Enterpriseであれば、API Shieldを契約する前から`Log`と`Block`のどちらも選択できます。API Shieldの契約が変えるのはアクションの選択肢ではなく、保存済みエンドポイント数の上限です(Free 100・Pro 250・Business 500・Enterprise(API Shieldなし)3,000・Enterprise(API Shieldあり)10,000)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/plans/",
-      "hint": "「アクションの選択肢の広さ」と「保存できるエンドポイント数」は、どちらもプランや契約が上位になるほど段階的に広がっていき、下位のプランより狭くなることはありません。選択肢の中の数値や選べるアクションを、この2つの軸それぞれで下位プランと見比べ、どちらか一方でも狭くなっている選択肢を外しましょう。",
+      "hint": "`Log`は違反を記録するだけの弱いアクション、`Block`は実際に締め出す強いアクションです。ですが「下位のプランほど弱いアクションしか使えない」とは限りません。Free/Pro/BusinessとEnterpriseとで、実際にどちらが片方だけしか選べず、どちらが両方選べるのかを、思い込みで決めつけずに確認してから選びましょう。",
       "tags": [
         "api-shield",
         "practical"
@@ -27134,7 +27134,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Rules製品群(Transform Rules・Redirects・Origin Rules・Configuration Rulesなど)を利用するには、対象のドメインまたはサブドメインのDNSレコードがCloudflareを経由してプロキシされている必要があります。これにより、トラフィックがオリジンサーバーに到達する前にCloudflareネットワークを通過します。\n{{diagram:0}}",
+      "explanation": "Cloudflare Rules製品群(Transform Rules・Redirects・Origin Rules・Configuration Rulesなど)を利用するには、対象のドメインまたはサブドメインのDNSレコードがCloudflareを経由してプロキシされている(ダッシュボードでオレンジ色の雲のアイコンで示される「オレンジクラウド」の状態)必要があります。これにより、トラフィックがオリジンサーバーに到達する前にCloudflareネットワークを通過します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/",
       "hint": "Cloudflareのネットワークを「通過している」トラフィックでなければ、途中で書き換えることはできないと考えましょう。",
       "tags": [
@@ -32609,7 +32609,7 @@
       "id": "cx-016",
       "category": "client-side-security",
       "difficulty": "advanced",
-      "question": "通知対象がプランや状態によって絞り込まれることを踏まえると、Client-side securityのアラート種別に関する正しい説明はどれですか?",
+      "question": "Client-side securityのアラート種別に関する正しい説明はどれですか?",
       "options": [
         {
           "text": "証明書の有効期限切れを通知するアラート種別が、新規リソース・コード変更・悪性リソースの3種類に加えて存在する",
@@ -32630,7 +32630,7 @@
       "correctIndex": 1,
       "explanation": "アラートは3グループに分かれます。新規リソースアラートにはBusiness以上のプランが必要、コード変更アラートと悪性リソースアラートはClient-Side Security Advanced限定です。また、悪性リソースアラートはActiveステータスのリソースのみを対象とし、InfrequentやInactiveのリソースは対象外です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/alerts/alert-types/#malicious-resource-alerts",
-      "hint": "「どのプランで使えるか」と「どのステータスのリソースが対象か」を分けて整理しましょう。",
+      "hint": "アラートの種別は、新規リソース・コード変更・悪性リソースという3つのグループのみで定義されています。それ以外の種別(証明書関連など)は存在しません。",
       "tags": [
         "client-side-security",
         "practical"
@@ -39507,11 +39507,11 @@
           "wrongFeedback": "拠点間接続はCloudflare WAN(旧Magic WAN)の役割です。Spectrumは個々のTCP/UDPアプリケーションを対象とするL4プロキシです。"
         },
         {
-          "text": "SSH・RDP・ゲーム・MQTTなど、HTTPではない任意のTCP/UDPベースのアプリケーションをCloudflareの edge 経由でプロキシし、DDoS防御とオリジンの秘匿を提供するサービスである"
+          "text": "SSH・RDP・ゲーム・MQTTなど、HTTPではない任意のTCP/UDPベースのアプリケーションをCloudflareのエッジ経由でプロキシし、DDoS防御とオリジンの秘匿を提供するサービスである"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare Spectrumは、TCP/UDPベースの任意のアプリケーション(SSH、RDP、ゲーム、MQTT、メール、ファイル転送など)にセキュリティとパフォーマンスを提供するプロダクトです。トラフィックをCloudflareのedge経由でプロキシすることでオリジンのIPアドレスを隠蔽し、DDoS攻撃から保護します。カスタムのTCP/UDPアプリケーションを使うにはEnterpriseプランでSpectrumを有料アドオンとして有効化する必要があります。\n{{diagram:0}}",
+      "explanation": "Cloudflare Spectrumは、TCP/UDPベースの任意のアプリケーション(SSH、RDP、ゲーム、MQTT、メール、ファイル転送など)にセキュリティとパフォーマンスを提供するプロダクトです。トラフィックをCloudflareのエッジ経由でプロキシすることでオリジンのIPアドレスを隠蔽し、DDoS攻撃から保護します。カスタムのTCP/UDPアプリケーションを使うにはEnterpriseプランでSpectrumを有料アドオンとして有効化する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/",
       "hint": "「HTTP以外の」プロトコルという点と、アプリケーション単位で設定する点に注目しましょう。",
       "tags": [

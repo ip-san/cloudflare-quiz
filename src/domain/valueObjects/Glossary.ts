@@ -130,6 +130,9 @@ const ENTRIES: GlossaryEntry[] = [
     description:
       '大量の分析用データを、表計算ソフトの表のように行と列で保存するテーブル形式(Apache Iceberg)。テーブルの版をメタデータで管理し、複数のクエリエンジンから同じデータを扱える。',
   },
+  // 2026-09-08 プレイテスト（sc-001）で初学者が詰まった語。docs cloudflare-one protocol-detection:
+  // "MQTT | Message Queuing Telemetry Transport — lightweight IoT messaging protocol"
+  { term: 'MQTT', description: 'IoT機器などが少ない通信量でメッセージをやり取りするための軽量なプロトコル。' },
   // Parquet: 列指向ファイル形式（標準的な用語法。docs は形式名として挙げるだけで展開していない）
   {
     term: 'Parquet',
@@ -191,6 +194,9 @@ const ENTRIES: GlossaryEntry[] = [
   { term: 'Layer 4', description: 'IPアドレス・ポート・プロトコルで通信を見る段階。中身までは開かない。' },
   { term: 'レイヤー4', description: 'IPアドレス・ポート・プロトコルで通信を見る段階。中身までは開かない。' },
   { term: 'Layer 7', description: 'アプリケーション層。HTTPの中身まで見て判断できる段階。' },
+  // `Layer 4` の略記。コーパスは em-002 / sc-010 で `L4` と書く（IP Access rules と同じ表記ゆれ）。
+  // `PL4`（OWASP のパラノイアレベル）には語境界で当たらないことを確認済み
+  { term: 'L4', description: 'IPアドレス・ポート・プロトコルで通信を見る段階(Layer 4)。中身までは開かない。' },
   {
     term: 'FWaaS',
     description: 'Firewall-as-a-Service。自社に機器を置かず、サービスとして提供されるファイアウォール。',
