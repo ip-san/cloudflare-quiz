@@ -15631,15 +15631,15 @@
           "text": "`wrangler containers images delete <IMAGE:TAG>`"
         },
         {
-          "text": "`wrangler containers build --push`(イメージをビルドしプッシュするコマンドで、削除操作は含まれない)",
+          "text": "`wrangler containers build --push`",
           "wrongFeedback": "これはイメージをビルドしてレジストリにプッシュするコマンドであり、削除する操作ではありません。"
         },
         {
-          "text": "`wrangler containers delete <CONTAINER_ID>`(コンテナというアプリケーション自体を削除するコマンド)",
+          "text": "`wrangler containers delete <CONTAINER_ID>`",
           "wrongFeedback": "これはコンテナ(アプリケーション)自体を削除するコマンドであり、レジストリ内の個別イメージを削除するコマンドではありません。"
         },
         {
-          "text": "`wrangler containers registries list`(利用可能なレジストリの一覧を表示し、イメージの削除は行わない)",
+          "text": "`wrangler containers registries list`",
           "wrongFeedback": "これは利用可能なレジストリの一覧を表示するコマンドであり、イメージの削除は行いません。"
         }
       ],
@@ -25205,7 +25205,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "プランが上がると変わるのは2点です。まずルールアクションで、Free・Pro・Businessは`Block`のみ、Enterpriseになると`Log`と`Block`を選べます。次に保存済みエンドポイント数の上限で、こちらは上位プランほど増えます。API Shieldの契約はEnterpriseのなかでさらにこの上限を引き上げるもので、アクションの選択肢は契約の有無で変わりません。個々の数値は下表のとおりです(実務ではプラン比較表で都度確認する類のものです)。\n{{diagram:0}}",
+      "explanation": "プランが上がると変わるのは2点です。まずルールアクションで、Free・Pro・Businessは`Block`のみ、Enterpriseになると`Log`と`Block`を選べます。次に保存済みエンドポイント数の上限で、こちらは上位プランほど増えます。API Shieldの契約はEnterpriseのなかでさらにこの上限を引き上げるもので、アクションの選択肢は契約の有無で変わりません。個々の数値は下表のとおりです。覚えるのは数値そのものより、上位のプランほど両方の軸が広がり、下位より狭くはならないという構造です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/plans/",
       "hint": "「アクションの選択肢の広さ」と「保存できるエンドポイント数」は、どちらもプランや契約が上位になるほど段階的に広がっていき、下位のプランより狭くなることはありません。選択肢の中の数値や選べるアクションを、この2つの軸それぞれで下位プランと見比べ、どちらか一方でも狭くなっている選択肢を外しましょう。",
       "tags": [
@@ -32433,7 +32433,7 @@
       "id": "cx-013",
       "category": "client-side-security",
       "difficulty": "advanced",
-      "question": "ルールで制御できることと実際に検知されることは別だという点を踏まえると、コンテンツセキュリティルールがサポートするCSPディレクティブに関する正しい説明はどれですか?",
+      "question": "コンテンツセキュリティルールがサポートするCSPディレクティブに関する正しい説明はどれですか?",
       "options": [
         {
           "text": "`frame-ancestors`ディレクティブは、他のディレクティブと同様に`'unsafe-inline'`や`'unsafe-eval'`といった特殊な値をすべてサポートしている",
