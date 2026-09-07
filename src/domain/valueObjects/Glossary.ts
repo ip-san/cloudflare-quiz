@@ -116,6 +116,19 @@ const ENTRIES: GlossaryEntry[] = [
   },
   // docs は "customer network namespaces" を展開していない。namespace の一般的な意味（分離された空間）の範囲で書く
   { term: '顧客ネットワーク名前空間', description: 'お客様ごとに分離された、その顧客専用のネットワーク空間。' },
+  // 2026-09-07 プレイテスト（pl-001）で初学者が詰まった 2 語。コーパスは "Apache Iceberg" と裸の "Iceberg" の両方で使う。
+  // Iceberg: docs pipelines getting-started "data is organized in the Apache Iceberg format with metadata tracking table versions"、
+  //          r2 "queryable by engines like Spark, Snowflake, and R2 SQL"
+  {
+    term: 'Iceberg',
+    description:
+      '大量の分析用データを保存するテーブル形式(Apache Iceberg)。テーブルの版をメタデータで管理し、複数のクエリエンジンから同じデータを扱える。',
+  },
+  // Parquet: 列指向ファイル形式（標準的な用語法。docs は形式名として挙げるだけで展開していない）
+  {
+    term: 'Parquet',
+    description: '列(カラム)ごとにデータをまとめて保持するファイル形式。分析処理での読み取りに向く。',
+  },
   {
     term: 'IP Access rules',
     description: 'IPアドレス・IPブロック・国・ASNを指定して、まとめて許可・ブロック・チャレンジする仕組み。',
