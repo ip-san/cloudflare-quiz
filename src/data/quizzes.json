@@ -20108,7 +20108,7 @@
       "question": "同一のホスト名に対して複数の種類の証明書が存在しうる場合の、証明書タイプの優先順位に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "Keyless SSL > Custom > Custom Hostname(SaaS) > Advanced系 > Universalの順で優先される"
+          "text": "Keyless SSL > Custom系(Legacy/Modern) > Custom Hostname(SaaS) > Advanced系(Advanced/Total TLS) > Universalの順で優先される"
         },
         {
           "text": "Custom Hostname(Cloudflare for SaaS)証明書は、Advanced証明書より優先順位が低いため、両方ある場合はAdvanced証明書が選ばれ、優先させる手段は存在しない",
@@ -20179,7 +20179,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "完全に一致するホスト名の場合、優先順位は新しいカスタムホスト名 > レガシーカスタムホスト名 > DNS(論理DNSゾーン)の順です。一方、ワイルドカードホスト名の一致の場合は、DNS(論理DNSゾーン)> 新しいカスタムホスト名の順に優先順位が入れ替わります。\n{{diagram:0}}",
+      "explanation": "完全に一致するホスト名の場合、優先順位は新しいカスタムホスト名 > レガシーカスタムホスト名 > DNS(論理DNSゾーン)の順です。一方、ワイルドカードホスト名の一致の場合は、DNS(論理DNSゾーン)> 新しいカスタムホスト名の順に優先順位が入れ替わります。たとえばSaaS事業者がワイルドカードの新カスタムホスト名を使っている場合、顧客側のDNSレコードが優先されるため顧客のプラン(Freeなど)の制限がそのまま適用されます。SaaS事業者側のプラン制限を適用したい場合は、顧客側のレコードをDNS-only(プロキシなし)にするか、SaaS事業者側が完全一致のカスタムホスト名を使う必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#hostname-priority",
       "hint": "「ぴったり一致」のときと「ワイルドカードでの一致」のときとで、優先順位の並びが入れ替わることを意識しましょう。",
       "tags": [
@@ -20637,7 +20637,7 @@
           "wrongFeedback": "これらはPipelinesの構成要素ではありません。Pipelinesの構成要素はStreams・Pipelines(SQL変換)・Sinksです。またWorkers・KV・D1はそれぞれ単体でも利用でき、互いに依存し合う関係にはありません。"
         },
         {
-          "text": "データを受け取り一時的に蓄えるStreams、SQLでデータを変換するPipelines、変換後のデータの配信先を定義するSinks"
+          "text": "データを受け取り一時的に蓄えるStreams、SQLでデータを変換する構成要素であるPipelines、変換後のデータの配信先を定義するSinks"
         },
         {
           "text": "メッセージングを担うQueues・状態保持を担うDurable Objects・キャッシュを担うCache APIの組み合わせで、いずれも単一のエンドポイントに統合されて提供されている",
