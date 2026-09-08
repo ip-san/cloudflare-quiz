@@ -65,7 +65,7 @@
       "rationale": "妥当性の根拠。content/learning は必ず公式ドキュメント参照を添える",
       "docRef": "workers/configuration/compatibility-dates L55 等（content の場合必須）",
       "change": {
-        "field": "question | options[N].text | options[N].wrongFeedback | hint | explanation | difficulty | diagrams",
+        "field": "question | options[N].text | options[N].wrongFeedback | hint | explanation | difficulty | diagrams | glossary",
         "from": "現行値（一致確認用）",
         "to": "提案値"
       },
@@ -74,6 +74,23 @@
   ]
 }
 ```
+
+### `field: "glossary"` — 用語集への追加提案（2026-09-09 に対応）
+
+`from`/`to` ではなく `additions: [{term, description}]` を持つ。`playtest-apply.mjs` が
+`src/domain/valueObjects/Glossary.ts` へ追記する（既にある語は自動でスキップ）。
+09-07 と 09-08 に**2 体のレビュアーが独立に「apply できない」と報告**した。毎回の手作業をやめる。
+
+用語集は**該当する全問に出る**ので、影響範囲が 1 問より広い。提案する前に必ず:
+
+- 定義を docs で裏取りし `docRef` に引用を書く（推測で書けば全問に事実を注入することになる）
+- **その語を主題として問う設問が無いか** `quizzes.json` を grep する。あれば入れない（チップが答えを渡す。
+  R2 / Common Name / SAN / Origin CA をこの規則で不採用にした）
+- 文脈で意味が変わる語・製品名の一部になる語は入れない（`Allow` / `Gateway` の実例が Glossary.ts のヘッダーにある）
+- コーパスの実表記と一致させる（`IP Access rules` と `IP Access Rules`、`Layer 4` と `L4` は別々に登録が要る）
+
+チップが走査するのは **question / hint / options だけ**。解説と図の中の語には出ないので、
+そちらは本文の括弧書きで解決する（`sc-016` では語を削って逆に説明を失った）。
 
 - **reject 基準:** 事実誤認の誘発・難易度の意図破壊・既存の正確な内容の劣化・過剰反応（1ペルソナの主観のみで一般性に欠ける）
 - content の `accept/modify` は事実を変えないこと。変える場合は `docRef` 必須。最終的に `/quiz-refine` の検証観点で再確認する

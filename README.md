@@ -113,6 +113,7 @@ bun run quiz:fact-check             # 環境変数・CLIコマンド・設定キ
 #### Claude Code 連携
 
 - Claude Code から `/quiz-refine` を実行すると、上記スクリプトの出力とドキュメントキャッシュを踏まえて question/explanation/選択肢を1問ずつ検証・修正します（`.claude/skills/quiz-refine/`）。`/quality-loop` はコードレビューとクイズ検証、最終ゲート（`bun run check`）を一括実行します（`.claude/skills/quality-loop/`）。
+- `bun run quiz:ledger` は監査の状況を「設問 ID」ではなく**内容の指紋**で持つ台帳です（`.claude/quiz-audit-ledger.json`）。誤答・正解・図・ヒントの 4 層それぞれについて「最後に検証した時点から内容が変わった設問」を出します。ID 単位の集計は書き換えた直後でも「判定済み」と言ってしまうので、それを補います（`.claude/skills/quiz-audit/SKILL.md`）。
 - `/playtest` は模擬ユーザーエージェントが実 PWA をブラウザ操作でプレイし、分かりにくさ・学びにくさを専門家チームが検証してから改善するゲートです。`--progressive` で全問を1問ずつ計画的にカバーし、進捗は `.claude/playtest-coverage.json` に記録されます（`.claude/skills/playtest/`）。
 - `/generate-quiz-data` は公式ドキュメントから新カテゴリの問題を生成するスキルです。安全のためモデルからの自律呼び出しは無効化されており、人が明示的に実行する必要があります（`.claude/skills/generate-quiz-data/`）。
 
