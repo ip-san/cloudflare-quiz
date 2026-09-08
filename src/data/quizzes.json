@@ -28432,7 +28432,7 @@
       "id": "dn-009",
       "category": "dns",
       "difficulty": "advanced",
-      "question": "他のDNSレコードのTTL設定とは独立して管理されている「ネームサーバーTTL(Nameserver TTL)」に関する正しい説明はどれですか？",
+      "question": "「ネームサーバーTTL(Nameserver TTL)」に関する正しい説明はどれですか？",
       "options": [
         {
           "text": "ネームサーバーTTLという設定はCloudflareには存在せず、ネームサーバーのTTLは常に固定値で変更できない",
@@ -28453,7 +28453,7 @@
       "correctIndex": 2,
       "explanation": "ネームサーバーTTLは、Cloudflareのネームサーバーやカスタムネームサーバーにのみ影響する、他のDNSレコードのTTLとは別の独立した設定です。DNSレコード表に表示される他のNSレコードについては、それぞれのレコード自身が持つTTLフィールドによってTTLが制御されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/#nameserver-ttl",
-      "hint": "「ネームサーバーそのもの」に関するTTLと、「一般的なDNSレコード」のTTLは別物として管理されていると考えましょう。",
+      "hint": "ネームサーバーTTLを変更したとき、その影響は「ネームサーバー自体」に限られるのか、それとも通常のA・AAAA・CNAMEレコードのTTLにも及ぶのかを考えてみましょう。",
       "tags": [
         "dns",
         "practical"
@@ -30085,7 +30085,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Rocket Loaderは、インライン・外部の両方のJavaScriptについて、実行順序を維持したままコンテンツのレンダリング後まで読み込みを遅延させる非同期読み込みの仕組みです。これにより初期表示関連の指標(TTFP・TTFCP・TTFMPなど)が改善します。Rocket Loaderと互換性のないブラウザは、Cloudflareが自動的に検出して機能を無効化します。\n{{diagram:0}}",
+      "explanation": "Rocket Loaderは、インライン・外部の両方のJavaScriptについて、実行順序を維持したままコンテンツのレンダリング後まで読み込みを遅延させる非同期読み込みの仕組みです。これにより、ページの内容が表示され始めるまでの時間など、初期表示関連の指標が改善します。Rocket Loaderと互換性のないブラウザは、Cloudflareが自動的に検出して機能を無効化します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/rocket-loader/",
       "hint": "「コンテンツを先に見せて、JavaScriptは後回しにする」という優先順位の付け方を考えましょう。",
       "tags": [
@@ -34131,7 +34131,7 @@
       "id": "dl-008",
       "category": "data-loss-prevention",
       "difficulty": "advanced",
-      "question": "誤検知を減らすための追加検証の有無を踏まえると、クレジットカード番号と米国の社会保障番号(SSN)の検証方式の違いに関する正しい説明はどれですか?",
+      "question": "クレジットカード番号と米国の社会保障番号(SSN)の検証方式の違いに関する正しい説明はどれですか?",
       "options": [
         {
           "text": "クレジットカード番号にはチェックサムが存在せず、SSNにのみLuhnのアルゴリズムによる検証が行われる",
@@ -39146,7 +39146,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflare WANは、拠点・オフィス・クラウドリソースをCloudflareのグローバルネットワーク経由でつなぐサイト間接続サービス(WAN-as-a-Service)です。「離れた場所どうしをつなぐ」のが目的です。一方Magic Transitは、顧客が自分で持つIPアドレスの範囲(IPプレフィックス)をCloudflare経由で受け取るようインターネットへ広告(BGPでアドバタイズ)し、そこ宛てのトラフィックをDDoS攻撃から保護するサービスです。「自分のIPアドレス帯を守る」のが目的です。\n{{diagram:0}}\n※ 自社保有のIPアドレスを持ち込む形をBYOIPと呼び、/24のプレフィックス要件を満たさない場合はCloudflare所有のIPアドレスを使う選択肢もあります。Magic Transitはトラフィックアクセラレーションも提供し、両者はCloudflare Network FirewallやCNI(Cloudflare Network Interconnect)を関連製品として共有します。",
+      "explanation": "Cloudflare WANは、拠点・オフィス・クラウドリソースをCloudflareのグローバルネットワーク経由でつなぐサイト間接続サービス(WAN-as-a-Service)です。「離れた場所どうしをつなぐ」のが目的です。一方Magic Transitは、顧客が自分で持つIPアドレスの範囲(IPプレフィックス)をCloudflare経由で受け取るようインターネットへ広告(BGPでアドバタイズ)し、そこ宛てのトラフィックをDDoS攻撃から保護するサービスです。「自分のIPアドレス帯を守る」のが目的です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/magic-transit/",
       "hint": "「拠点をつなぐこと」と「攻撃から守ること」という、それぞれが主眼を置く目的の違いを考えましょう。",
       "tags": [

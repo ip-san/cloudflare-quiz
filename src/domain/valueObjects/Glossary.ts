@@ -132,6 +132,21 @@ const ENTRIES: GlossaryEntry[] = [
   },
   // 2026-09-08 プレイテスト（sc-001）で初学者が詰まった語。docs cloudflare-one protocol-detection:
   // "MQTT | Message Queuing Telemetry Transport — lightweight IoT messaging protocol"
+  // 2026-09-08 プレイテストで初学者が詰まった 4 語。いずれも設問の主題ではないことを grep で確認済み
+  // BYOIP: docs magic-transit advertise-prefixes "bring your own IP (BYOIP)"
+  {
+    term: 'BYOIP',
+    description: '顧客が自分で保有するIPアドレスをCloudflareに持ち込んで使う仕組み(Bring Your Own IP)。',
+  },
+  // エニーキャスト: docs spectrum configuration-options "anycasted from all Cloudflare data centers"
+  {
+    term: 'エニーキャスト',
+    description: '同じIPアドレスを複数の拠点から同時に広告し、利用者に近い拠点が応答する仕組み。',
+  },
+  // 認証局: docs ssl full-strict "Issued by a publicly trusted certificate authority"
+  { term: '認証局', description: '身元を確認した上でSSL/TLS証明書を発行する第三者機関。' },
+  // 526エラー: docs cloudflare-one http-policies "error-526-invalid-ssl-certificate"
+  { term: '526エラー', description: 'オリジンが提示するSSL証明書が無効なときにCloudflareが返すエラー。' },
   { term: 'MQTT', description: 'IoT機器などが少ない通信量でメッセージをやり取りするための軽量なプロトコル。' },
   // Parquet: 列指向ファイル形式（標準的な用語法。docs は形式名として挙げるだけで展開していない）
   {
