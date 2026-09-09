@@ -3094,9 +3094,9 @@
     "dn-009": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "f1897036dd6f",
+        "fp": "19e3af1b65b3",
         "gt": "6aaf85ca"
       }
     ],
@@ -3249,7 +3249,7 @@
         "persona": "reviewer",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "48c3eca0a210",
+        "fp": "62707c779c0f",
         "gt": "d5e3c8de"
       }
     ],
@@ -3312,7 +3312,7 @@
         "persona": "reviewer",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "f7bc113f07dc",
+        "fp": "edc0808fd301",
         "gt": "da39a3ee"
       }
     ],
@@ -3386,6 +3386,294 @@
         "at": "unstamped",
         "fp": "9223e3772526",
         "gt": "da39a3ee"
+      }
+    ],
+    "vp-002": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "dab0d8eb83fc",
+        "gt": "f0ae533f"
+      }
+    ],
+    "vp-003": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "0c6b3a5256da",
+        "gt": "da39a3ee"
+      }
+    ],
+    "vp-004": [
+      {
+        "persona": "beginner",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "9ad712eceadf",
+        "gt": "da39a3ee"
+      }
+    ],
+    "vp-005": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "3dd018fe0f9b",
+        "gt": "ba4fb7e7"
+      }
+    ],
+    "vp-006": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "287fea34f05a",
+        "gt": "da39a3ee"
+      }
+    ],
+    "wa-001": [
+      {
+        "persona": "beginner",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "079910d8b8ed",
+        "gt": "2da0632a"
+      }
+    ],
+    "dq-007": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "4e6a21ad6291",
+        "gt": "138c3fb6"
+      }
+    ],
+    "dq-008": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "854d04393854",
+        "gt": "da39a3ee"
+      }
+    ],
+    "dq-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "c0e53117521a",
+        "gt": "da39a3ee"
+      }
+    ],
+    "dq-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "05257ef52567",
+        "gt": "1871b697"
+      }
+    ],
+    "dq-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "51da984238cc",
+        "gt": "138c3fb6"
+      }
+    ],
+    "dq-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "d595129c64db",
+        "gt": "c48ff8be"
+      }
+    ],
+    "dq-016": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "33ef95b6cfab",
+        "gt": "da39a3ee"
+      }
+    ],
+    "dx-002": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "43913f4fd19c",
+        "gt": "be4f7df2"
+      }
+    ],
+    "dx-003": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "66eeefc94de1",
+        "gt": "be4f7df2"
+      }
+    ],
+    "dx-005": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "638fa8c5de7d",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-005": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "47c90741a433",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-006": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "40896b0608f1",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-007": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "639ad8615ab3",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-008": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "4e967a926f3b",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-010": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "8e5d6f109345",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "198bce260948",
+        "gt": "4fbcdfd9"
+      }
+    ],
+    "em-013": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "d5c3aac2e924",
+        "gt": "4fbcdfd9"
+      }
+    ],
+    "em-014": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "0b082f4c6692",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-015": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "933e9f09970d",
+        "gt": "da39a3ee"
+      }
+    ],
+    "em-018": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "f4c0c8b51af2",
+        "gt": "da39a3ee"
+      }
+    ],
+    "gw-004": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "ca12d2e55c9a",
+        "gt": "da39a3ee"
+      }
+    ],
+    "gw-005": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "528f356b83dd",
+        "gt": "da39a3ee"
+      }
+    ],
+    "gw-006": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "33f80bd25984",
+        "gt": "4fbcdfd9"
+      }
+    ],
+    "gw-007": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "8a15289c593b",
+        "gt": "c3098aa4"
+      }
+    ],
+    "gw-010": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "a384bd7448a7",
+        "gt": "da39a3ee"
+      }
+    ],
+    "gw-011": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "c006d05d2530",
+        "gt": "2da0632a"
       }
     ]
   }
