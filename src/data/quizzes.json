@@ -33019,7 +33019,7 @@
       "correctIndex": 3,
       "explanation": "Network Overrideのオーバーライド先IPアドレスに到達できない場合、Gatewayは宛先の書き換え自体は行いますが、その接続をログに記録しません。結果としてトラフィックはログに何も残らないままサイレントに失敗します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/network-policies/#actions",
-      "hint": "処理そのものが成立していても、その結果が記録として残らないケースがあることを考えましょう。",
+      "hint": "オーバーライド先IPアドレスに到達できないとき、Gatewayはオーバーライドを取り消して元の宛先への通信に戻すのかを考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -38205,7 +38205,7 @@
       "id": "em-013",
       "category": "email-security",
       "difficulty": "advanced",
-      "question": "クライアントの新旧やデバイス種別によって挙動が変わりうることを踏まえると、Outbound DLPのプラットフォームごとの安定性に関する正しい説明はどれですか?",
+      "question": "Outbound DLPのプラットフォームごとの安定性に関する正しい説明はどれですか?",
       "options": [
         {
           "text": "Outbound DLPはユーザーが管理するメールボックスだけでなく、共有メールボックスや会議室メールボックスも同様に保護する。これらもユーザーメールボックスと同一の権限体系で扱われるため、個別設定なしに保護対象に含まれる。",
@@ -38226,7 +38226,7 @@
       "correctIndex": 2,
       "explanation": "Outbound DLPは、Outlook Webアプリや新しいOutlookデスクトップクライアントでは安定して動作します。一方、旧バージョンのOutlookデスクトップクライアントではMicrosoftの制限により動作せず、モバイルクライアント(iOS・Android)でもAppleやMicrosoftの制限により不安定になります。また、保護対象はユーザーが管理するメールボックスのみです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/outbound-dlp/#limitations",
-      "hint": "「新しいクライアント」と「古いクライアント」、「デスクトップ」と「モバイル」で、安定性がすべて同じとは限らないことを考えましょう。",
+      "hint": "Outlookデスクトップクライアントは、バージョンによって動作に差が出るのか、それとも変わらないのかを考えましょう。",
       "tags": [
         "email-security",
         "practical"
