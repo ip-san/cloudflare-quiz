@@ -28453,7 +28453,7 @@
       "correctIndex": 2,
       "explanation": "ネームサーバーTTLは、Cloudflareのネームサーバーやカスタムネームサーバーにのみ影響する、他のDNSレコードのTTLとは別の独立した設定です。DNSレコード表に表示される他のNSレコードについては、それぞれのレコード自身が持つTTLフィールドによってTTLが制御されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/#nameserver-ttl",
-      "hint": "ネームサーバーTTLを変更したとき、その影響は「ネームサーバー自体」に限られるのか、それとも通常のA・AAAA・CNAMEレコードのTTLにも及ぶのかを考えてみましょう。",
+      "hint": "ネームサーバーに関するひとつの値が、ゾーン内すべてのA・AAAA・CNAMEレコードのキャッシュ時間まで一括で書き換えてしまうのは妥当か、考えてみましょう。",
       "tags": [
         "dns",
         "practical"
