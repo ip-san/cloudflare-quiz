@@ -28561,7 +28561,7 @@
       "correctIndex": 1,
       "explanation": "Email Routingなど他のCloudflare製品が自動的に作成するTXT・MXレコードなども、DNSレコードのクォータの対象としてカウントされます。ただし、こうしたサービスの中断を避けるため、若干の余裕(バッファ)を持ってクォータの上限が適用されており、結果としてゾーンが表面上の上限をわずかに超えて保持することがあります。ユーザー自身がダッシュボードやAPI経由で新規にレコードを作成するには、ゾーンがクォータの範囲内である必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/#dns-records-quota",
-      "hint": "「他のサービスが裏側で追加するレコード」を止めてしまわないよう、上限の適用に少し余裕を持たせていると考えましょう。",
+      "hint": "クォータ超過を理由に機能自体を止めてしまうのか、数え方の中で吸収するのか、という軸で選択肢を見比べましょう。",
       "tags": [
         "dns",
         "practical"
@@ -36801,7 +36801,7 @@
       "correctIndex": 1,
       "explanation": "HTTPテストは、リクエスト全体にかかった時間を示すResource `fetch` time、ターゲットからの応答までの往復時間を示すServer response time、DNSクエリの解決までの往復時間を示すDNS response time、ターゲットが返したHTTP status codesという4種類のデータを計測します。これらを組み合わせることで、問題が接続経路のどこで発生しているかを特定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/tests/http/#test-results",
-      "hint": "「全体でどれだけかかったか」と「その内訳(DNS解決・サーバー応答)」を分けて計測していることを考えましょう。",
+      "hint": "HTTPテストは合否の判定だけか、それとも接続のどこで時間がかかっているかまで分かるのか、という軸で見比べましょう。",
       "tags": [
         "dex",
         "practical"
