@@ -209,7 +209,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "ESM(ES Modules)形式のWorkerでは、`export default`されたオブジェクトの`fetch(request, env, ctx)`メソッドがHTTPリクエストのエントリーポイントになります。\n{{diagram:0}}\n`request`は標準Fetch APIのRequestオブジェクト、`env`はバインディングへのアクセス手段、`ctx`は`waitUntil`などの実行コンテキストAPIを提供します。\n{{diagram:1}}",
+      "explanation": "ESM(ES Modules)形式のWorkerでは、`export default`されたオブジェクトの`fetch(request, env, ctx)`メソッドがHTTPリクエストのエントリーポイントになります。\n{{diagram:0}}\n`request`は標準Fetch APIのRequestオブジェクト、`env`はバインディング(Workerから外部のリソースを使えるようにする宣言)へのアクセス手段、`ctx`は`waitUntil`などの実行コンテキストAPIを提供します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/handlers/fetch/",
       "hint": "ESM形式では`export default`されたオブジェクトの、決まった名前のメソッドが呼び出されます。",
       "tags": [
@@ -33227,11 +33227,11 @@
           "wrongFeedback": "サンドボックスはWindows OS環境でファイルを実行し、ネットワーク活動の監視(データ持ち出しの検知など)も行います。"
         },
         {
-          "text": "AVスキャンでマルウェアが検出されなかったファイルのうち、初めて検出されたものはサンドボックス内で挙動を監視され、同じファイルの再ダウンロード時はその判定結果がそのまま適用される"
+          "text": "AVスキャンでマルウェアが検出されなかったファイルのうち、過去にダウンロードされたことのないものはサンドボックス内で挙動を監視され、同じファイルの再ダウンロード時はその判定結果がそのまま適用される"
         }
       ],
       "correctIndex": 3,
-      "explanation": "AVスキャンでマルウェアが検出されなかったダウンロードファイルのうち、初めて検出されたファイルはサンドボックス(Windows OS環境)内で挙動を監視されます。悪意のある挙動が検出されなければファイルは解放され、以降同じファイルの再ダウンロード時には過去の許可/ブロック判定がそのまま適用されます。ファイルサンドボックスはZero Trust Enterpriseプランのアドオンです。\n{{diagram:0}}",
+      "explanation": "AVスキャンでマルウェアが検出されなかったダウンロードファイルのうち、過去にダウンロードされたことのないファイルはサンドボックス(Windows OS環境)内で挙動を監視されます。悪意のある挙動が検出されなければファイルは解放され、以降同じファイルの再ダウンロード時には過去の許可/ブロック判定がそのまま適用されます。ファイルサンドボックスはZero Trust Enterpriseプランのアドオンです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/file-sandboxing/#sandbox-environment",
       "hint": "初回は「実際に動かして確認」、2回目以降は「前回の結果を再利用」という流れを考えましょう。",
       "tags": [
@@ -33247,7 +33247,7 @@
               "text": "AVスキャンでマルウェア未検出"
             },
             {
-              "text": "初回検出のファイルをサンドボックスで実行・監視"
+              "text": "初回ダウンロードのファイルをサンドボックスで実行・監視"
             },
             {
               "text": "悪意のある挙動がなければ許可"

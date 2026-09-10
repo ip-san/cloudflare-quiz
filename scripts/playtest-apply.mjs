@@ -69,8 +69,16 @@ function addGlossaryTerms(additions, note) {
   if (!fresh.length) return { added: [], dup }
   const anchor = src.lastIndexOf('\n]')
   if (anchor === -1) throw new Error('Glossary.ts の ENTRIES 配列が見つからない')
+  // biome の行長（120）を超えると formatter が展開するので、こちらで先に折っておく。
+  // 2026-09-10 の初回自動追加で lint に引っかかった
   const block = fresh
-    .map((a) => `  // ${note}\n  { term: '${a.term}', description: '${a.description.replace(/'/g, "\\'")}' },`)
+    .map((a) => {
+      const desc = a.description.replace(/'/g, "\\'")
+      const oneLine = `  { term: '${a.term}', description: '${desc}' },`
+      const body =
+        oneLine.length <= 120 ? oneLine : `  {\n    term: '${a.term}',\n    description:\n      '${desc}',\n  },`
+      return `  // ${note}\n${body}`
+    })
     .join('\n')
   if (!DRY) fs.writeFileSync(GLOSSARY, src.slice(0, anchor) + '\n' + block + src.slice(anchor))
   return { added: fresh.map((a) => a.term), dup }

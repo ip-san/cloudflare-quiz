@@ -280,6 +280,12 @@ const ENTRIES: GlossaryEntry[] = [
     description: 'Border Gateway Protocol。経路を自動で広告・撤回する仕組み。静的な経路の手動管理に代わるもの。',
   },
   { term: 'AWS', description: 'Amazon Web Services。Amazonのクラウドサービス。' },
+  // 2026-09-10 プレイテスト（wf-009）から。docs の裏取りは判定ファイルの docRef
+  {
+    term: 'OWASP',
+    description:
+      'Open Web Application Security Project。CloudflareのOWASP Core Rulesetはこの団体のModSecurity Core Rule Setを実装したもの。',
+  },
 ]
 
 /** 長い語を先に照合するため、文字数の降順で持つ */
