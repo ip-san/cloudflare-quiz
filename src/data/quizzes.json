@@ -27718,7 +27718,7 @@
       "id": "ru-013",
       "category": "rules",
       "difficulty": "advanced",
-      "question": "TLSハンドシェイクへの影響を踏まえると、Origin Rulesで`Host`ヘッダーオーバーライドを設定する際の正しい説明はどれですか？",
+      "question": "Origin Rulesで`Host`ヘッダーオーバーライドを設定する際の正しい説明はどれですか？",
       "options": [
         {
           "text": "`Host`ヘッダーオーバーライドを設定すると、Workers `routes` の評価もオーバーライド後の`Host`に基づいて行われるため、書き換え先のホスト名にマッチする Worker が代わりに起動する",
@@ -27739,7 +27739,7 @@
       "correctIndex": 2,
       "explanation": "Origin Rulesで`Host`ヘッダーオーバーライドを設定すると、明示的に別のSNIオーバーライドを追加しない限り、SNI(Server Name Indication)の値も`Host`ヘッダーと同じ値に自動的に更新されます。実際の宛先(解決先)自体を変更するには、通常DNSレコードオーバーライドを別途組み合わせる必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/origin-rules/features/#host-header",
-      "hint": "`Host`ヘッダーの値を変えると、TLSハンドシェイクで使われる別の値まで連動して変わってしまう可能性があると考えましょう。",
+      "hint": "`Host`ヘッダーオーバーライドは、リクエストの送信先(接続先)自体を変える機能ではない、という点から考えてみましょう。",
       "tags": [
         "rules",
         "practical"
@@ -27942,7 +27942,7 @@
       "correctIndex": 0,
       "explanation": "Request Body Bufferingを`None`に設定すると、リクエストボディの検査を一切行わず、そのままオリジンサーバーへストリーミングします。これにより、リクエストボディの検査を必要とするWAFなどのセキュリティ機能の効果が損なわれる可能性があるため注意が必要です。デフォルトの`Standard`モードでは、必要に応じてボディの一部を検査できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/configuration-rules/settings/#request-body-buffering",
-      "hint": "「検査せずそのまま素通しする」設定が、ボディの中身を見て判断するセキュリティ機能にどう影響するか考えましょう。",
+      "hint": "Request Body Bufferingの3つのモード(`Standard`/`Full`/`None`)がそれぞれボディをどう扱うのかを整理してから、各選択肢の内容を見比べてみましょう。",
       "tags": [
         "rules",
         "practical"
@@ -29451,7 +29451,7 @@
       "id": "sl-011",
       "category": "ssl-tls",
       "difficulty": "advanced",
-      "question": "証明書の期限切れに気づく手段を自分で用意する必要があるかどうかを踏まえると、Cloudflare Origin CA証明書の既知の制限事項として正しいものはどれですか？",
+      "question": "Cloudflare Origin CA証明書の既知の制限事項として正しいものはどれですか？",
       "options": [
         {
           "text": "Origin CA証明書はデフォルトで期限切れの90日前にリマインダーメールが送信される",
@@ -29472,7 +29472,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflareは現時点でOrigin CA証明書の期限切れ通知を送信しません。長期間有効な証明書に依存している場合は、自分自身の証明書管理システムや監視の仕組みで有効期限を追跡しておく必要があります。また、証明書の作成・失効にはAPI Accessの権限が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/",
-      "hint": "「Cloudflareが自動で教えてくれない」情報があるため、自分で管理する必要がある点を考えましょう。",
+      "hint": "各選択肢の内容が実際にCloudflareの公式ドキュメントの記載と一致しているかどうか、一つずつ確認してみましょう。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -29623,7 +29623,7 @@
       "correctIndex": 3,
       "explanation": "Advanced Certificate Managerで選択できる証明書の有効期間は、1年(Enterpriseプランでかつ認証局にSSL.comを選んだ場合のみ)・3ヶ月(自動更新は30日前から)・1ヶ月(自動更新は7日前から、Let's Encrypt非対応)・2週間(自動更新は3日前から、Let's Encrypt非対応)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#advanced-certificates",
-      "hint": "選択できる有効期間のうち1つだけが、特定のプランと特定の認証局の組み合わせでしか選べない特別扱いになっている点を考えましょう。",
+      "hint": "Advanced Certificate Managerで選べる有効期間は1種類だけではありません。複数用意されている選択肢を思い浮かべながら、各選択肢の内容を確認してみましょう。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -29761,7 +29761,7 @@
       "id": "sl-017",
       "category": "ssl-tls",
       "difficulty": "advanced",
-      "question": "書き換えても安全かどうかをどのように判断しているかを踏まえると、「Automatic HTTPS Rewrites」機能に関する正しい説明はどれですか？",
+      "question": "「Automatic HTTPS Rewrites」機能に関する正しい説明はどれですか？",
       "options": [
         {
           "text": "Automatic HTTPS Rewritesを有効にすると、オリジン側で発生していたミックスコンテンツの原因そのものが自動的に修正され、オリジン側のコード変更は一切不要になる",
@@ -29782,7 +29782,7 @@
       "correctIndex": 2,
       "explanation": "Automatic HTTPS Rewritesは、EFFのHTTPS Everywhereリストと、ChromeのHSTSプリロードリストを参考にして、ページのレスポンス内にあるHTTPリンクをHTTPSへ安全に書き換えられるかどうかを判断します。スクリプトやiframeなどのアクティブコンテンツは常に書き換え対象ですが、画像などのパッシブコンテンツはHTTPS経由での到達性が確認できた場合にのみ書き換えられます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/automatic-https-rewrites/",
-      "hint": "「安全に書き換えられるかどうか」を判断するために、既存の信頼できるリストを参考にしていると考えましょう。",
+      "hint": "書き換えが行われずミックスコンテンツが解消されないケースも残ります。そのとき、サイト運営者側で何か対応が必要になるかどうかを考えてみましょう。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -30114,7 +30114,7 @@
       "id": "sp-006",
       "category": "speed",
       "difficulty": "advanced",
-      "question": "厳格なHTML検証ツールとの相性を踏まえると、Rocket Loaderの制限事項に関する正しい説明はどれですか？",
+      "question": "Rocket Loaderの制限事項に関する正しい説明はどれですか？",
       "options": [
         {
           "text": "Rocket LoaderがHTML検証エラーを引き起こす場合、それは必ずサイト訪問者にとって深刻な表示崩れを引き起こしていることを意味するため、検証エラーが出た時点で直ちに無効化してサイト全体を確認する必要がある",
@@ -30135,7 +30135,7 @@
       "correctIndex": 3,
       "explanation": "Rocket LoaderはEmail Obfuscationと同様に非標準のタグを使用するため、w3.orgのような厳格なHTML検証ツールで検証するとエラーになりますが、これはサイト訪問者にとっての実際の問題を意味するものではないとされています。JavaScriptやjQueryに問題が見られる場合は、Rocket Loaderを無効化して再テストすることが推奨されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/rocket-loader/#limitations",
-      "hint": "「形式的な検証ツールが指摘するエラー」と「実際に訪問者が体験する問題」は、必ずしも一致しないと考えましょう。",
+      "hint": "JavaScriptやjQueryの不具合が見られる場合に公式が勧めている対応は、ブラウザ側ではなくRocket Loaderの設定に対して行うものです。具体的にどのような対応か思い出してみましょう。",
       "tags": [
         "speed",
         "practical"
@@ -30322,7 +30322,7 @@
       "id": "sp-010",
       "category": "speed",
       "difficulty": "advanced",
-      "question": "URIの拡張子・ステータスコード・オリジンのレスポンス内容という複数の観点を踏まえると、Early Hintsが生成・キャッシュされる条件として正しいものはどれですか？",
+      "question": "Early Hintsが生成・キャッシュされる条件として正しいものはどれですか？",
       "options": [
         {
           "text": "画像ファイル(`.jpg`・`.png`など)のURIに対してのみEarly Hintsが生成され、HTMLページには適用されない。画像の読み込みが最も時間を要するリソースであるため、優先的にヒントを送る設計である",
@@ -30343,7 +30343,7 @@
       "correctIndex": 2,
       "explanation": "Early Hintsが生成・キャッシュされるのは、URIの拡張子が`.html`・`.htm`・`.php`のいずれか、または拡張子がない場合、ステータスコードが200・301・302のいずれかである場合、そしてオリジンのレスポンスに`preload`または`preconnect`のrelタイプを指定した`Link`ヘッダーが含まれている場合です。キャッシュのキーはリクエストURIによって決まり、クエリ文字列は無視されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#generate-early-hints",
-      "hint": "「どんなURLの種類」「どんなステータスコード」「オリジンが何を返しているか」という3つの条件がそろう必要があると考えましょう。",
+      "hint": "エラーページの表示を高速化するための仕組みではなく、正常に完了するはずのレスポンスを先読みで速くするための機能だと考えましょう。",
       "tags": [
         "speed",
         "practical"
