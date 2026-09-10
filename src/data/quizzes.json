@@ -2768,7 +2768,7 @@
       "correctIndex": 1,
       "explanation": "公式ドキュメントによると、Set-Cookieヘッダーを含むレスポンスは「一意なデータを含む可能性がある」ため常にキャッシュされません。Set-Cookieを含めたままキャッシュしたい場合は、事前にそのヘッダーを削除するか、`Cache-Control: private=Set-Cookie`を設定する必要があります。\n{{diagram:0}}\nまた`put()`は、Cache-Controlがキャッシュを禁じている場合、またはレスポンスが大きすぎる場合に413エラーを返します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
-      "hint": "特定のユーザー専用の応答を、他の人にも配ってしまったらどうなるか考えましょう。",
+      "hint": "選択肢の中には、Cache API自体の仕様ではなく、別のAPI(Workers KV)の概念を紛れ込ませているものがあります。Cache APIの正式な仕様に照らして考えましょう。",
       "tags": [
         "kv-cache",
         "trivia"
@@ -9156,7 +9156,7 @@
       "correctIndex": 1,
       "explanation": "Tiered Cacheは、Cloudflareのグローバルネットワークを下位層と上位層に分け、下位層(ユーザーに最も近いデータセンター)でキャッシュミスが発生した場合、直接オリジンに問い合わせるのではなく上位層のデータセンターに問い合わせる仕組みです。上位層もミスした場合のみオリジンと通信するため、オリジンへの接続が少数のデータセンターに集約され、リクエスト数の削減とキャッシュヒット率の向上が実現されます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/",
-      "hint": "近所の店で売り切れなら、街の大きな倉庫に聞きに行く方が、本社に問い合わせるより早いこともありますよね。",
+      "hint": "Tiered Cacheは、Workers KVとは別の仕組みです。HTTPコンテンツのキャッシュ(CDN)に関する機能である点を踏まえて考えましょう。",
       "tags": [
         "kv-cache",
         "trivia"
@@ -12008,7 +12008,7 @@
       "correctIndex": 0,
       "explanation": "Hyperdriveは、アプリがデータベースに書き込んでもキャッシュ済みの読み取り結果を無効化しません(write-through invalidationなし)。そのためread-after-write(書いた直後に読む)の一貫性が必要な処理では、キャッシュを無効化した別のHyperdrive設定を用意し、その接続文字列を使い分けるのが公式に案内されている方法です。\n{{diagram:0}}\n鮮度が多少古くても良い一覧表示などはキャッシュ有効の設定、書き込み直後の確認画面などはキャッシュ無効の設定、と役割で分けます。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/concepts/query-caching/#read-after-write-behavior",
-      "hint": "キャッシュの無効化を細かく制御するのではなく、「設定ごと」分けるのがHyperdrive流です。",
+      "hint": "Hyperdriveは書き込みが発生した際に、対応するキャッシュ済みの読み取り結果を自動的に無効化する仕組みを持っているか考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -25562,7 +25562,7 @@
       "correctIndex": 1,
       "explanation": "Geo Steeringでは、リクエストの発信元データセンター(PoP)に対応する`pop_pools`の設定がない場合、対応する国の`country_pools`設定を参照します。それもなければ対応するリージョンの`region_pools`設定を参照し、それも定義されていなければデフォルトPool(`default_pools`)にフォールバックします。なお、PoPステアリングはEnterprise顧客限定で、APIからのみ設定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/geo-steering/#pop-steering",
-      "hint": "「一番細かい単位から、だんだん大きな単位へ」とフォールバックしていく順序を考えましょう。",
+      "hint": "PoPに対応する設定が見つからなくても、デフォルトPoolへ落ちる前に他の設定が参照されます。",
       "tags": [
         "load-balancing",
         "practical"
@@ -33568,7 +33568,7 @@
       "correctIndex": 3,
       "explanation": "Gatewayのポリシーの優先順位は昇順で評価され、最も小さい数値を持つポリシーが最初に評価されます。最初に一致したポリシー(Allow/Block)でただちに評価が停止するfirst matchの原則に従い、APIで優先順位を明示指定しない場合は1000から割り当てが始まります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#order-of-precedence",
-      "hint": "評価がどちらの方向から始まり、一致した後にどう扱われるのか、2つの観点で考えましょう。",
+      "hint": "優先順位の数値は、小さい方と大きい方のどちらから評価が始まるか、思い出しましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -33619,7 +33619,7 @@
       "correctIndex": 0,
       "explanation": "Gatewayはまず最初に一致したHTTPポリシーに基づいてトラフィックの可否をログに記録し、その後リクエストボディに対するDLPスキャンを実行します。このためfirst matchの原則により、最初にAllowとしてログに記録された通信が、後続のDLP Blockポリシーによって実際にはブロックされるという矛盾した結果になることがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#dlp-policy-precedence",
-      "hint": "first matchの原則が、ボディ検査を伴うポリシーとどう組み合わさるかを考えましょう。",
+      "hint": "Gatewayが一度ログに記録した判定は、後から書き換えられるのか考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -33729,7 +33729,7 @@
       "correctIndex": 3,
       "explanation": "ResolverポリシーとEgressポリシー(専用Egress IPを含む)はどちらもEnterpriseプラン限定の機能です。専用Egress IPは宛先IPと宛先ポートの一意な組み合わせごとに最大4万件の同時接続をサポートし、IPv4アドレスとIPv6アドレス範囲の両方で構成されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/egress-policies/dedicated-egress-ips/#concurrent-connections",
-      "hint": "どちらの機能も上位プラン限定であること、そして接続数の上限がどの単位で区切られているかを考えましょう。",
+      "hint": "ResolverポリシーとEgressポリシーの利用に、プランによる制約があるかどうか考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -38704,7 +38704,7 @@
       "correctIndex": 0,
       "explanation": "GREはステートレスなプロトコルのため、どのCloudflareサーバーも他サーバーとの調整やネゴシエーションなしに独立してパケットを処理できます。一方IPsecはステートフルなため、顧客のルーターがIKE(Internet Key Exchange)を使って1台のCloudflareサーバーとの間でトンネルを確立しますが、その後トラフィックセレクタや鍵などのトンネル詳細情報が全Cloudflareデータセンターに伝播されるため、結果的にどのサーバーでもそのIPsecトンネルのトラフィックを処理できるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/gre-ipsec-tunnels/#anycast",
-      "hint": "「最初から調整が不要な方式」と「最初は1台が交渉し、その後で情報を広める方式」という2段階の違いを考えましょう。",
+      "hint": "Cloudflareのエニーキャスト方式では、あるトンネルのトラフィックを特定の1台のサーバーだけでなく、どのデータセンターのサーバーでも処理できるように設計されています。この前提を踏まえて選択肢を見直しましょう。",
       "tags": [
         "magic-wan",
         "practical"
