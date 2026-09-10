@@ -10055,7 +10055,7 @@
       "correctIndex": 2,
       "explanation": "R2にはStandardとInfrequent Access（IA）の2つのストレージクラスがあります。IAはアクセス頻度が低いデータ向けにストレージ単価を抑えていますが、代わりにデータ取り出し（retrieval）料金がかかり、最低保存期間などの制約が設定されています。頻繁にアクセスされるデータには不向きで、バックアップやアーカイブなど低頻度アクセスのデータに向いています。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/storage-classes/",
-      "hint": "保存は安いが、たまにしか使わないデータの取り出し時にコストが発生する仕組みがあるか考えましょう。",
+      "hint": "ストレージクラスの違いは「全部安い/全部同じ」という単純な話ではなく、多くの場合何かとのトレードオフになっています。R2のIAクラスが具体的に何と何を交換しているのか、公式ドキュメントの説明を思い出してみましょう。",
       "tags": [
         "r2",
         "trivia"
@@ -13725,7 +13725,7 @@
       "correctIndex": 0,
       "explanation": "新しいブラウザセッションの起動には時間がかかります。Durable Objects を使ってブラウザセッションを永続化し再利用すると、毎回新規に起動する時間を省けるため、パフォーマンスが向上します。\n{{diagram:0}}\nDOの「同一IDには同一インスタンス」という性質を活かして、既存のセッションを保持・使い回す構成が公式にも案内されています。",
       "referenceUrl": "https://developers.cloudflare.com/browser-run/",
-      "hint": "毎回ゼロから起動するのが遅いなら、起動済みのものを「取っておいて再利用」できないでしょうか。状態の保持といえば。",
+      "hint": "起動時間を減らす方法にはいくつか候補がありますが、実際に「毎回ゼロから起動する」という工程自体を回避できる手段はどれか考えてみましょう。",
       "tags": [
         "platform-services",
         "practical"
@@ -21459,7 +21459,7 @@
       "correctIndex": 1,
       "explanation": "SQL変換の課金は処理する(入力側の)データ量が基準になるため、この例では500GBが対象です。Sinkへの配信課金は実際にSinkへ届く(出力側の)データ量が基準になるため、変換後の300GBが対象になります。それぞれ月50GBの無料枠を差し引いた残りに単価が適用されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/pricing/#example-filtered-ingest-to-iceberg-with-sql",
-      "hint": "「処理する量」と「届ける量」は、変換でデータが減る場合には同じ数値にならないことを考えましょう。",
+      "hint": "SQL変換の課金とSink配信の課金が、それぞれどのデータ量を基準に計算されるか、個別に考えてみましょう。",
       "tags": [
         "pipelines",
         "practical"
