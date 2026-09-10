@@ -13554,7 +13554,7 @@
       "id": "px-015",
       "category": "platform-services",
       "difficulty": "advanced",
-      "question": "Cloudflare Workers で構築したアプリから、Email Service の Workers バインディングを使ってメールを送信する場合の説明として正しいものはどれですか？",
+      "question": "Cloudflare Workers で構築したアプリから Email Service でメールを送信する場合の説明として正しいものはどれですか？",
       "options": [
         {
           "text": "メール送信は Workers からはできず、`send_email` バインディングは受信専用で、送信は REST API か SMTP からのみ可能である",
@@ -13575,7 +13575,7 @@
       "correctIndex": 1,
       "explanation": "Workers アプリからメールを送るには、Wrangler設定に `send_email` バインディングを追加し、`env.EMAIL.send(...)` を呼び出します。\n{{diagram:0}}\nWorkers バインディングのほか REST API や SMTP からも送信できますが、いずれの場合も Email Service を使うにはそのドメインで Cloudflare DNS を利用している必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/email-service/get-started/send-emails/",
-      "hint": "KVやR2と同様、Workersからは「バインディング」で使います。設定キー名と、DNSの前提に注目です。",
+      "hint": "「バインディングを使わずに、好きなSMTPサーバーへ直接送るだけ」で本当にメールが届くのか、考えてみましょう。",
       "tags": [
         "platform-services",
         "practical"
