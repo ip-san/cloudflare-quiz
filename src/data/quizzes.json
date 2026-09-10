@@ -29472,7 +29472,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflareは現時点でOrigin CA証明書の期限切れ通知を送信しません。長期間有効な証明書に依存している場合は、自分自身の証明書管理システムや監視の仕組みで有効期限を追跡しておく必要があります。また、証明書の作成・失効にはAPI Accessの権限が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/",
-      "hint": "各選択肢の内容が実際にCloudflareの公式ドキュメントの記載と一致しているかどうか、一つずつ確認してみましょう。",
+      "hint": "証明書の有効期限が近づいたとき、Cloudflare 側から何が届いて何が届かないのかを確認してみましょう。",
       "tags": [
         "ssl-tls",
         "practical"
