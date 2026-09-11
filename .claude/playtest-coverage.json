@@ -4498,9 +4498,9 @@
     "ru-013": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "70b7e841e4bc",
+        "fp": "b03ad6b78381",
         "gt": "2da0632a"
       }
     ],
@@ -4516,9 +4516,9 @@
     "ru-017": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "0ec062ad0d1b",
+        "fp": "234d77d50392",
         "gt": "2da0632a"
       }
     ],
@@ -4597,18 +4597,18 @@
     "sl-011": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "ed172d097787",
+        "fp": "3bdfc86ce741",
         "gt": "da39a3ee"
       }
     ],
     "sl-014": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "09be2f706a77",
+        "fp": "901849297846",
         "gt": "aa13a26d"
       }
     ],
@@ -4624,9 +4624,9 @@
     "sl-017": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "00634c8febed",
+        "fp": "972681d3d7a1",
         "gt": "2da0632a"
       }
     ],
@@ -4642,18 +4642,18 @@
     "sp-006": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "0f91f4afff3f",
+        "fp": "18b24a7e6eae",
         "gt": "da39a3ee"
       }
     ],
     "sp-010": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "84dea11d61cf",
+        "fp": "facf0461bb24",
         "gt": "2da0632a"
       }
     ],
@@ -4664,6 +4664,204 @@
         "at": "unstamped",
         "fp": "ba5cf748125a",
         "gt": "2da0632a"
+      }
+    ],
+    "sp-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "aef41165e0aa",
+        "gt": "2da0632a"
+      }
+    ],
+    "sp-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "40357cc63d6b",
+        "gt": "2da0632a"
+      }
+    ],
+    "sp-018": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "5e6ef41c3f37",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-005": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "1f18315ca3bb",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-007": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "b4f7185a4def",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-008": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "f3fb2a1df798",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-010": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "a4a45e75184e",
+        "gt": "2da0632a"
+      }
+    ],
+    "tn-011": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "f6116fc6c8f3",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "343c276e33ca",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-014": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "175588ae67b1",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "43e9febff74f",
+        "gt": "da39a3ee"
+      }
+    ],
+    "tn-018": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "69af2ae2d36a",
+        "gt": "da39a3ee"
+      }
+    ],
+    "vp-013": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "9aa10c58fbde",
+        "gt": "da39a3ee"
+      }
+    ],
+    "vp-018": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "66bd8171600c",
+        "gt": "da39a3ee"
+      }
+    ],
+    "wa-008": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "c37c28201d98",
+        "gt": "2da0632a"
+      }
+    ],
+    "wa-012": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "5c58cf5ea252",
+        "gt": "c824dd08"
+      }
+    ],
+    "wa-015": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "b6784d27a6a4",
+        "gt": "2da0632a"
+      }
+    ],
+    "wa-016": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "b9131deb8adf",
+        "gt": "2da0632a"
+      }
+    ],
+    "wa-018": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "c2a373171b89",
+        "gt": "da39a3ee"
+      }
+    ],
+    "wf-008": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "539231ab6ef9",
+        "gt": "cc87c003"
+      }
+    ],
+    "wf-011": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "d2667437d109",
+        "gt": "da39a3ee"
+      }
+    ],
+    "wf-013": [
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "c1da39e07a9b",
+        "gt": "fc497738"
       }
     ]
   }
