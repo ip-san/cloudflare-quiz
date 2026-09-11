@@ -503,3 +503,21 @@ UX 課題は quality-loop の Step 1（code-review）へ、内容修正は Step 
 ## モデル選択
 
 - `user-simulator` / `learning-experience-reviewer`: Sonnet（文脈理解）
+
+## 詰まり報告の切り分け: クリック回数の訴えはまず環境を疑う
+
+ペルソナが「1回目のクリックで反応しない」「何回か押してやっと開いた」と報告したら、
+**実装を読む前に、そのタブの `innerWidth` と `document.visibilityState` を測る。**
+
+```js
+JSON.stringify({innerW:innerWidth, innerH:innerHeight, vis:document.visibilityState})
+```
+
+`vis` が `hidden`（ウィンドウが背面・最小化）だと合成クリックがページに届かない。
+1回目で前面化し2回目が届くので、**全問で再現する**。実装の欠陥に見える。
+
+2026-09-12 に上級の最終バッチでこれが起きた。ヒントボタンの onClick は同期で門も待ちも無く、
+`elementFromPoint` はボタン中心でボタン自身を返し、イベント列1回分でヒントが開いた。実装は正常だった。
+
+ただし**同じ「反応しない」でも本物のことがある**。用語チップの当たり判定（2026-09-05、初級ペルソナが3回外した）
+は座標のずれが実際にあった。**報告の文面だけでは区別できない。毎回測る。**
