@@ -25466,7 +25466,7 @@
       "correctIndex": 2,
       "explanation": "Randomステアリングは、健全なPoolの中からランダムに1つを選んでトラフィックを送ります。複数Poolへ均等にトラフィックを振り分けたい場合(いわゆるラウンドロビン、アクティブ-アクティブ構成)に使われます。さらにAPIの`random_steering`オブジェクトを使ってPoolごとにWeightを設定すれば、それぞれのPoolへ送られるトラフィックの割合を調整できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/#random-steering",
-      "hint": "毎回のリクエストごとに全てのPoolへトラフィックを複製して送るのは、負荷分散という目的に照らして効率的な設計と言えるでしょうか。",
+      "hint": "「どのPoolを選ぶか」の決め方と、「各Poolにどれくらい流れるか」が、同じ設定で決まるのか別の設定で決まるのかを考えましょう。",
       "tags": [
         "load-balancing",
         "practical"
