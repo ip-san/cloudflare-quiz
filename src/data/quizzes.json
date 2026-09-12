@@ -2458,7 +2458,7 @@
       "correctIndex": 3,
       "explanation": "公式ドキュメントでは「The Cache API is available globally but the contents of the cache do not replicate outside of the originating data center」と明記されています。つまりAPI自体はどこでも呼び出せますが、実際に保存されたエントリは、それが保存されたデータセンター内でしか参照できません。この点がグローバルに結果整合的に伝播するWorkers KVとの大きな違いです。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
-      "hint": "Cache APIを呼び出すWorkerはどこで実行されるか、まず思い出してみましょう。",
+      "hint": "このキャッシュは、オリジンサーバーではなくCloudflareのエッジ側に置かれます。",
       "tags": [
         "kv-cache",
         "practical"
@@ -25466,7 +25466,7 @@
       "correctIndex": 2,
       "explanation": "Randomステアリングは、健全なPoolの中からランダムに1つを選んでトラフィックを送ります。複数Poolへ均等にトラフィックを振り分けたい場合(いわゆるラウンドロビン、アクティブ-アクティブ構成)に使われます。さらにAPIの`random_steering`オブジェクトを使ってPoolごとにWeightを設定すれば、それぞれのPoolへ送られるトラフィックの割合を調整できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/#random-steering",
-      "hint": "「どのPoolを選ぶか」の決め方と、「各Poolにどれくらい流れるか」が、同じ設定で決まるのか別の設定で決まるのかを考えましょう。",
+      "hint": "トラフィックの比率は、Weightという値で調整できます。",
       "tags": [
         "load-balancing",
         "practical"

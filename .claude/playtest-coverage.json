@@ -376,7 +376,7 @@
       },
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "fd5b7ff32d2b",
         "gt": "f0ae533f"
@@ -5040,7 +5040,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "0c9ac6f9c2fc",
+        "fp": "14888960170e",
         "gt": "e1315f74"
       }
     ],
@@ -5065,9 +5065,9 @@
     "kv-014": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "156838be8db6",
+        "fp": "9143b0dc05ed",
         "gt": "cd65c712"
       }
     ],
@@ -5103,7 +5103,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "54d013529326",
+        "fp": "5b33fae1a5b7",
         "gt": "7a4f8ae1"
       }
     ],
