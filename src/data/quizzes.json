@@ -1221,7 +1221,7 @@
       "correctIndex": 0,
       "explanation": "`wrangler.toml`（または`wrangler.jsonc`）は、Workerの設定を定義する中心的なファイルです。\n{{diagram:0}}\n公式ドキュメントは、Workerをデプロイするのに最低限必要なキーとして `name`（Workerの識別名）、`main`（エントリーポイント）、`compatibility_date`（ランタイムの挙動を固定する互換性日付）の3つを挙げています。それ以外の項目（bindingsや環境変数など）は必要に応じて追加します。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
-      "hint": "Workersが1つのインスタンスで使えるメモリは128MBに固定されています。",
+      "hint": "Workersの設定は、コンテナやサーバーを動かすための設定とは考え方が別です。",
       "tags": [
         "wrangler",
         "practical",
