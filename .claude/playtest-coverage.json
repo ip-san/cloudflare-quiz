@@ -5349,6 +5349,132 @@
         "fp": "59b900b1d2cf",
         "gt": "da39a3ee"
       }
+    ],
+    "ob-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "0ed5e0df7610",
+        "gt": "c48ff8be"
+      }
+    ],
+    "ob-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "584eeffcd3ec",
+        "gt": "da39a3ee"
+      }
+    ],
+    "ob-011": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "da5b42e4bb5c",
+        "gt": "da39a3ee"
+      }
+    ],
+    "ob-012": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "04fdde75173a",
+        "gt": "5f37a7dc"
+      }
+    ],
+    "ob-013": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "e6a450f256f5",
+        "gt": "da39a3ee"
+      }
+    ],
+    "ob-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "c155189a64aa",
+        "gt": "da39a3ee"
+      }
+    ],
+    "ob-015": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "e91d0a7303ef",
+        "gt": "c48ff8be"
+      }
+    ],
+    "ob-017": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "9ce75a606f7e",
+        "gt": "da39a3ee"
+      }
+    ],
+    "pg-006": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "c8274f97c904",
+        "gt": "d50ac005"
+      }
+    ],
+    "pg-007": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "f569f5a8eb2d",
+        "gt": "da39a3ee"
+      }
+    ],
+    "pg-008": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "725443d43c27",
+        "gt": "aa13a26d"
+      }
+    ],
+    "pg-009": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "104ae2983cfa",
+        "gt": "ba4fb7e7"
+      }
+    ],
+    "pg-010": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "ef83580a44ff",
+        "gt": "700b401c"
+      }
+    ],
+    "pg-014": [
+      {
+        "persona": "busy-intermediate",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "6f0c92088b98",
+        "gt": "da39a3ee"
+      }
     ]
   }
 }

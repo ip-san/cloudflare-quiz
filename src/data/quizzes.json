@@ -5907,7 +5907,7 @@
       "correctIndex": 2,
       "explanation": "Next.js のような SSR フレームワークを Cloudflare Workers 環境で動かすには専用のビルドツールが必要です。Cloudflareは現在、Next.jsのAPI表面を再実装したViteプラグインである vinext をデフォルトの推奨手段としており、`vinext init`で既存アプリに追加するか`create-vinext-app`で新規作成できます。\n{{diagram:0}}\nまだvinextへ移行できない既存のOpenNextアプリ(`@opennextjs/cloudflare`)向けには、引き続きOpenNextアダプタが提供されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/",
-      "hint": "Node.js前提で書かれたSSRアプリを、そのままの形でCloudflare上で動かせるのか考えましょう。",
+      "hint": "Cloudflare上でSSRを動かす手段は用意されています。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -6125,7 +6125,7 @@
       "correctIndex": 1,
       "explanation": "`_headers` ファイルはビルド出力のルートに配置し、パスパターンごとにカスタムHTTPレスポンスヘッダー(セキュリティヘッダーやキャッシュ制御など)を付与するための設定ファイルです。\n{{diagram:0}}\n記法はパスの後にヘッダー行をインデントして列挙する形式です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/headers/",
-      "hint": "ファイル名の意味そのままに、何を制御するファイルか考えてみましょう。",
+      "hint": "このファイルでは、パスのパターンごとに別の設定を書き分けられます。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -14275,7 +14275,7 @@
       "correctIndex": 2,
       "explanation": "Tail WorkerはWorkers PaidプランおよびEnterpriseプランで利用でき、リクエスト数ではなくCPU時間に基づいて課金されます。\n{{diagram:0}}\nProducer Workerとは独立した課金対象として扱われます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/tail-workers/",
-      "hint": "「何回呼ばれたか」ではなく「どれだけ処理にかかったか」で料金が決まる課金方式を考えましょう。",
+      "hint": "無料プランでは使えない機能です。",
       "tags": [
         "observability",
         "practical"
@@ -14379,7 +14379,7 @@
       "correctIndex": 3,
       "explanation": "wrangler設定ファイルに`analytics_engine_datasets`バインディングを追加してWorkerをデプロイし、`writeDataPoint()`で最初にデータを書き込むと、そのタイミングでデータセットが自動的に作成されます。事前にダッシュボードでデータセットを作る必要はありません。\n{{diagram:0}}\nデータセットはSQLのテーブルのようにふるまい、行・列の意味は一貫させておく必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/get-started/",
-      "hint": "KVのネームスペースやD1のテーブルと違い、「先に何かを作っておく」手順が必要かどうかを考えましょう。",
+      "hint": "データセットは、wrangler設定のバインディングで指定します。",
       "tags": [
         "observability",
         "practical"
@@ -14645,7 +14645,7 @@
       "correctIndex": 3,
       "explanation": "Workers Analytics Engineでは、1回の`writeDataPoint`呼び出しにつき`blobs`・`doubles`はそれぞれ最大20件、`indexes`は実質1件のみ有効です。1件のデータポイント内の`blobs`合計サイズは16KBまで、1回のWorker呼び出し(クライアントのHTTPリクエスト)につき最大250件のデータポイントを書き込めます。書き込んだデータは3か月間保存されます。\n{{diagram:0}}\nこれらの上限を踏まえて、記録する指標の粒度を設計する必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/limits/",
-      "hint": "「何個まで」「何バイトまで」「何か月保存されるか」という3種類の数字を整理してみましょう。",
+      "hint": "`blobs`や`doubles`に指定できる件数は、百の単位ではなく十の単位です。",
       "tags": [
         "observability",
         "practical"
