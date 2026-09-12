@@ -13131,7 +13131,7 @@
       "correctIndex": 2,
       "explanation": "Variantは、ホスト画像を「どうリサイズして出すか」をあらかじめ定義しておく仕組みです。例えば `width`・`height`・`fit`・`blur` を指定した「thumbnail」バリアント(100x100)を作っておくと、そのバリアントで配信するだけで元画像が100x100にリサイズされた版が返ります。\n{{diagram:0}}\nよく使うサイズを名前付きで定義しておくことで、都度パラメータを組み立てずに済みます。",
       "referenceUrl": "https://developers.cloudflare.com/images/get-started/key-concepts/",
-      "hint": "「あらかじめ決めておく」サイズのプリセット、と考えるとどれが当てはまるでしょうか。",
+      "hint": "配信するときにVariantの名前を指定すると、その定義どおりの版が返ります。",
       "tags": [
         "platform-services",
         "practical"
