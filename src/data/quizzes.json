@@ -1157,7 +1157,7 @@
       "correctIndex": 1,
       "explanation": "`wrangler deploy`（旧`wrangler publish`）は、`wrangler.toml`/`wrangler.jsonc` の設定に基づいてコードをビルドし、Cloudflareのグローバルネットワークにアップロードして公開します。\n{{diagram:0}}\n実行後はコンソールに公開されたURL（`*.workers.dev` またはカスタムドメイン）が表示されます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#deploy",
-      "hint": "『deploy』という単語の意味そのものです。",
+      "hint": "ローカルで動かすためのコマンドと、公開するためのコマンドは別のものです。",
       "tags": [
         "wrangler",
         "practical",
@@ -1221,7 +1221,7 @@
       "correctIndex": 0,
       "explanation": "`wrangler.toml`（または`wrangler.jsonc`）は、Workerの設定を定義する中心的なファイルです。\n{{diagram:0}}\n公式ドキュメントは、Workerをデプロイするのに最低限必要なキーとして `name`（Workerの識別名）、`main`（エントリーポイント）、`compatibility_date`（ランタイムの挙動を固定する互換性日付）の3つを挙げています。それ以外の項目（bindingsや環境変数など）は必要に応じて追加します。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
-      "hint": "Workerを一意に識別する項目と、ランタイムの動作バージョンを固定する項目を考えましょう。",
+      "hint": "Workersが1つのインスタンスで使えるメモリは128MBに固定されています。",
       "tags": [
         "wrangler",
         "practical",
@@ -14108,7 +14108,7 @@
       "correctIndex": 2,
       "explanation": "`head_sampling_rate`は0〜1の値で、記録するリクエストの割合を指定します。デフォルトは1(100%)で、0.01を指定すると約100件に1件のリクエストが記録対象になります。記録対象になったリクエストは、そのコンテキスト内のログがまとめて記録されます。\n{{diagram:0}}\n高トラフィックなWorkerでログ量とコストを抑えるのに有効です。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#head-based-sampling",
-      "hint": "指定した割合の数字を、記録するかどうかの確率だと考えてみましょう。",
+      "hint": "この設定は、記録するログの量を絞るためのものです。",
       "tags": [
         "observability",
         "practical"
@@ -26089,7 +26089,7 @@
       "correctIndex": 1,
       "explanation": "非Enterpriseプランでは、Load Balancer・Pool・Endpointはそれぞれ最大20個までという上限があります。Monitorの上限はPool数の1.5倍という計算式で決まり、Monitorの間隔(interval)は最小15秒〜最大3600秒です。Enterpriseプランでは、Load Balancer・Pool・Endpointの上限が「custom」(要相談)になり、Monitor間隔の最小値も10秒まで短縮できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/reference/limitations/",
-      "hint": "「固定された個数の上限」と「Pool数に連動して変わる上限」の2種類が混在していることを考えましょう。",
+      "hint": "ヘルスチェックの間隔は、秒単位まで自由に詰められるわけではありません。",
       "tags": [
         "load-balancing",
         "practical"
@@ -39252,7 +39252,7 @@
       "correctIndex": 0,
       "explanation": "Magic Transit on-demandでは、攻撃発生時にダッシュボードまたはAPIからプレフィックスのアドバタイズを有効化してCloudflareの保護を受け、インシデントが解消したら無効化するという運用が一般的です。ダッシュボード/API経由の動的アドバタイズは、BGP制御によるアドバタイズを使うプレフィックスには対応していません。またon-demandはCloudflareのリースIPアドレスとは組み合わせて使えず、希望するアドバタイズ方法はプレフィックスのオンボーディング時に指定します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/magic-transit/on-demand/",
-      "hint": "「平常時は止めておき、必要なときだけ有効にする」という運用の目的を考えましょう。",
+      "hint": "Cloudflareのリース IP と、自分で持ち込んだプレフィックスでは、この機能が使えるかどうかが違います。",
       "tags": [
         "magic-wan",
         "practical"
