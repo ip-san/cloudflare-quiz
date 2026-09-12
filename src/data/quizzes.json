@@ -1261,25 +1261,25 @@
       "question": "Next.jsやAstroなどのフレームワークを使ったアプリケーションを、Cloudflare向けに素早くスキャフォールディングして最初のデプロイまで一気に行いたい場合、どのコマンドを使うのが適切ですか？",
       "options": [
         {
-          "text": "`wrangler init --framework=nextjs`",
+          "text": "`npm create cloudflare@latest -- --template=nextjs`",
           "wrongFeedback": "`wrangler init` は内部的にC3（create-cloudflare）を呼び出すため、フレームワークテンプレートの選択自体はできますが、`--framework`というフラグはサポートされていません。"
         },
         {
           "text": "`npm create cloudflare@latest`"
         },
         {
-          "text": "`wrangler pages init`",
+          "text": "`wrangler init --from-dash <WORKER_NAME>`",
           "wrongFeedback": "そのようなサブコマンドは存在しません。Pagesプロジェクトの作成は`wrangler pages project create`、デプロイは`wrangler pages deploy`です。"
         },
         {
-          "text": "`wrangler deploy --template=nextjs`",
+          "text": "`wrangler pages deploy`",
           "wrongFeedback": "`wrangler deploy` は既存プロジェクトを公開するコマンドであり、テンプレートから新規作成する機能はありません。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "`npm create cloudflare@latest`（C3 = create-cloudflare CLI）は、Next.js・Astro・Remix・Honoなど各種フレームワークのテンプレートから対話形式でプロジェクトを作成できるスキャフォールディングツールです。\n{{diagram:0}}\n依存関係のインストールから初回デプロイまでを一連のフローでサポートしてくれるため、フレームワークを使ったアプリケーションを始める際の入口として推奨されています。\n{{diagram:1}}",
+      "explanation": "`npm create cloudflare@latest`（C3 = create-cloudflare CLI）は、Next.js・Astro・Remix・Honoなど各種フレームワークのテンプレートから対話形式でプロジェクトを作成できるスキャフォールディングツールです。\n{{diagram:0}}\nフレームワークの選択は対話プロンプトで行うもので、`--template`オプションはGitHubなどの既存リポジトリを指定するためのものであり、`nextjs`のようなフレームワーク名を直接渡す用途ではありません。`wrangler init --from-dash`はダッシュボード上にすでに存在するWorkerの内容を取り込むためのオプションで、新規にフレームワークをスキャフォールディングするものではありません。`wrangler pages deploy`はビルド済みの静的アセットをアップロードするコマンドで、依存関係のインストールやテンプレートからの生成は行いません。依存関係のインストールから初回デプロイまでを一連のフローでサポートしてくれるため、フレームワークを使ったアプリケーションを始める際の入口として推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/get-started/guide/",
-      "hint": "フレームワークの雛形生成から初回デプロイまでを一括で行う、npm経由のコマンドを考えましょう。",
+      "hint": "このコマンドは依存関係のインストールまで済ませ、そのまま最初のデプロイに進めます。",
       "tags": [
         "wrangler",
         "practical",
@@ -1571,25 +1571,25 @@
       "question": "WorkerからKVネームスペースやR2バケットなどのCloudflareリソースにアクセスするための「バインディング」は、どこで宣言しますか？",
       "options": [
         {
-          "text": "ブラウザの開発者ツールのコンソールから `env` オブジェクトに直接プロパティを追加し、デプロイ後のWorkerに反映させる",
+          "text": "`wrangler.toml`の`vars`セクションに、KVネームスペースのIDを文字列としてそのまま書き込む",
           "wrongFeedback": "ブラウザの開発者ツールでバインディングを設定する仕組みはありません。"
         },
         {
-          "text": "Cloudflareダッシュボードの請求設定画面で、課金対象のリソースとしてのみ宣言するため、コードから直接アクセスできず、請求明細に紐づけるためだけの登録になる",
+          "text": "Cloudflareダッシュボードの対象Worker設定画面でバインディングを追加する。設定ファイルへの反映は不要である",
           "wrongFeedback": "請求設定画面ではバインディングは宣言できません。設定ファイルで宣言します。"
         },
         {
-          "text": "Workerのコード内で `import` 文を使い、デプロイ時ではなく実行時に生成するため、リクエストごとに識別子を`import`で読み込み直す処理が必要になる",
+          "text": "プロジェクトルートの`.dev.vars`ファイルに`MY_KV=<ネームスペースID>`のように書く",
           "wrongFeedback": "バインディングはコード内で動的に生成するものではなく、設定ファイルで宣言し、実行時に `env` オブジェクト経由でアクセスします。"
         },
         {
-          "text": "`wrangler.toml` に `kv_namespaces` などのリソース種別ごとのセクションとして宣言する"
+          "text": "`wrangler.toml`に`kv_namespaces`などのリソース種別ごとのセクションとして宣言する"
         }
       ],
       "correctIndex": 3,
-      "explanation": "バインディングは `wrangler.toml`（または`wrangler.jsonc`）にリソースの種類ごとのセクション（`kv_namespaces`、`r2_buckets`、`d1_databases` など）で宣言します。\n{{diagram:0}}\n宣言した `binding` 名は、Worker実行時に `env.<binding名>` としてコードからアクセスできます。ローカル開発では `wrangler dev` がこれらのバインディングをローカルにエミュレートします。\n{{diagram:1}}",
+      "explanation": "バインディングは`wrangler.toml`（または`wrangler.jsonc`）にリソースの種類ごとのセクション（`kv_namespaces`、`r2_buckets`、`d1_databases`など）で宣言します。`vars`セクションは文字列やJSON値をそのまま渡す環境変数用で、KVやR2のようなリソースへの接続を表すバインディングは含みません。ダッシュボードからもバインディングを追加できますが、Wranglerを使う場合は設定ファイルを正（source of truth）とするのが推奨されており、ダッシュボード側の変更を設定ファイルに反映しない限り、次回デプロイ時にWranglerによって上書きされます。`.dev.vars`はローカル開発用のシークレットや環境変数を読み込むための仕組みで、KVネームスペースやR2バケットのようなリソースバインディングの宣言には使いません。\n{{diagram:0}}\n宣言した`binding`名は、Worker実行時に`env.<binding名>`としてコードからアクセスできます。ローカル開発では`wrangler dev`がこれらのバインディングをローカルにエミュレートします。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/#bindings",
-      "hint": "リソースの接続情報をハードコードせず、設定ファイルで宣言してコードからは名前で参照する仕組みです。",
+      "hint": "ただの文字列を渡す環境変数（`vars`）と、実際のリソースに接続するバインディングとでは、宣言の作法が分かれています。",
       "tags": [
         "wrangler",
         "practical"
@@ -13060,25 +13060,25 @@
       "question": "Cloudflare Images の「Transformations(変換)」と「Hosted images(ホスト画像)」の違いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Transformations はブラウザ側のJavaScriptで画像を加工し、Hosted images はCloudflareのサーバー側で加工するという、処理が行われる場所の違いである",
+          "text": "Transformations はURLのクエリパラメータを指定して呼び出す方式、Hosted images はWorkersのImagesバインディング（`env.IMAGES`）を経由してのみ呼び出す方式という、アクセス方法の違いである",
           "wrongFeedback": "どちらもCloudflareのエッジで処理します。違いは「元画像がどこにあるか」であって処理場所ではありません。"
         },
         {
-          "text": "Transformations は動画専用、Hosted images は静止画専用の機能である",
+          "text": "Transformations もHosted imagesも、配信前にダッシュボードで許可するオリジンを『Define source origins』として明示する必要がある点は共通である",
           "wrongFeedback": "どちらも静止画像の機能です。動画は Stream が扱います。両者の違いは画像の保存場所です。"
         },
         {
-          "text": "Transformations は有料、Hosted images は完全無料という料金体系上の区分である",
+          "text": "Transformations もHosted imagesも、あらかじめ用意した`Variant`（`width`/`height`/`fit`/`blur`の組み合わせ）を指定して配信するという点で違いはない",
           "wrongFeedback": "料金区分ではなく、画像の保存場所と管理方法の違いです(リモート画像の最適化か、Images へのホストか)。"
         },
         {
-          "text": "Transformations は任意のオリジンに置いたリモート画像をその場で最適化し、Hosted images は画像を Images 側に保存して配信まで任せる"
+          "text": "Transformations は任意のオリジンに置いたリモート画像をその場で最適化し、Hosted images は画像をImages側に保存して配信まで任せる"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Imagesには2つの使い方があります。Transformations は、R2やS3互換バケットなど任意のオリジンに保存された「リモート画像」を、その場で最適化・変換して配信します。\n{{diagram:0}}\nHosted images は、画像を Images のストレージにアップロードし、保存・最適化・配信までを一括でCloudflareに任せる方式です。",
+      "explanation": "Imagesには2つの使い方があります。Transformations は、R2やS3互換バケットなど任意のオリジンに保存された「リモート画像」を、その場で最適化・変換して配信します。\n{{diagram:0}}\nHosted images は、画像をImagesのストレージにアップロードし、保存・最適化・配信までを一括でCloudflareに任せる方式です。呼び出し方（URLのクエリパラメータか、Workersのバインディングか）はどちらの使い方でも選べる別軸の話であり、Hosted images専用のアクセス方法ではありません。また、外部のオリジンを許可する「Define source origins」の設定が必要なのは、外部にある画像を取りに行くTransformationsだけで、画像自体をImagesに保存するHosted imagesには不要です。画像を`width`/`height`/`fit`/`blur`の組み合わせで指定する定義済みの`Variant`という仕組みは、Hosted images側だけに存在し、Transformationsにはこの概念はありません。",
       "referenceUrl": "https://developers.cloudflare.com/images/get-started/key-concepts/",
-      "hint": "違いは「元画像をどこに置くか」です。自分のストレージのまま使うか、Imagesに預けるか。",
+      "hint": "定義済みの`Variant`を指定して配信できるのは、2つのうち一方だけです。",
       "tags": [
         "platform-services",
         "practical"
@@ -25966,25 +25966,25 @@
       "question": "Session Affinity(セッションアフィニティ)の3つのタイプの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "User-Agent文字列で判定するタイプ、Refererヘッダーで判定するタイプ、Acceptヘッダーで判定するタイプの3つ",
+          "text": "Cloudflare Cookieのみで判定するタイプ、Cloudflare CookieにHTTPヘッダーをフォールバックとして加えるタイプ、クライアントIPアドレスのみで判定するタイプの3つ",
           "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
         },
         {
           "text": "Cloudflare Cookieのみで判定するタイプ、Cloudflare Cookieに加えクライアントIPをフォールバックとして使うタイプ、HTTPヘッダーで判定するタイプの3つ"
         },
         {
-          "text": "TCPコネクションのポート番号で判定するタイプ、TLSセッションIDで判定するタイプ、DNSクエリの送信元で判定するタイプの3つ",
+          "text": "Cloudflare Cookieのみで判定するタイプ、HTTPヘッダーで判定するタイプ、DNS-onlyモード向けのDNS persistenceを使うタイプの3つ",
           "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
         },
         {
-          "text": "IPアドレスの上位2オクテットのみで判定するタイプ、地理的リージョンで判定するタイプ、常にランダムに再割り当てするタイプの3つ",
+          "text": "フェイルオーバーが起きないNoneタイプ、一時的に他のエンドポイントへ振り替えるTemporaryタイプ、Cookieを更新して新エンドポイントへ切り替えるStickyタイプの3つ",
           "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Session Affinityには、Cloudflare Cookie(`__cflb`)のみで判定するタイプ、Cloudflare Cookieに加えCookieが存在しない場合にクライアントIPアドレスをフォールバックとして使うタイプ、指定したHTTPヘッダーで判定するタイプの3つがあります。いずれもDNS-onlyモード(グレークラウド)ではサポートされていません。\n{{diagram:0}}",
+      "explanation": "Session Affinityには、Cloudflare Cookie（`__cflb`）のみで判定するタイプ、Cloudflare Cookieに加えCookieが存在しない場合にクライアントIPアドレスをフォールバックとして使うタイプ、指定したHTTPヘッダーで判定するタイプの3つがあります。フォールバックとして使われるのは常にクライアントIPアドレスであり、HTTPヘッダーをフォールバックに使うタイプや、クライアントIPアドレスのみで判定する独立したタイプはありません。いずれもDNS-onlyモード（グレークラウド）ではサポートされておらず、その場合はDNS persistenceという別の代替機能を使いますが、これはSession Affinityの3タイプの1つではありません。None・Temporary・StickyはZero-Downtime Failoverの3つの選択肢であり、Session Affinityのタイプではありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/session-affinity/#types",
-      "hint": "そのまま使う識別子と、フォールバックを伴う識別子、リクエスト側が指定する識別子という3つの異なる手がかりの取り方を考えましょう。",
+      "hint": "この3タイプは、DNS-onlyモード（グレークラウド）を使う際の代替手段とは別のものです。",
       "tags": [
         "load-balancing",
         "practical"
