@@ -4550,7 +4550,7 @@
       "correctIndex": 2,
       "explanation": "R2の料金体系はストレージ容量、Class A操作（PUT/LIST/バケット作成など書き込み系）、Class B操作（GET/HEADなど読み取り系）の3要素からなり、それぞれに毎月無料枠が設定されています。加えてR2最大の特徴として、エグレス（データ送信）は無料枠の有無にかかわらず常に無料です。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/pricing/",
-      "hint": "保存量・書き込み系操作・読み取り系操作、それぞれに無料の範囲があるかどうか考えましょう。",
+      "hint": "無料枠は毎月あらためて設定されるもので、一度きりのトライアルではありません。",
       "tags": [
         "r2",
         "trivia",
@@ -9907,7 +9907,7 @@
           "wrongFeedback": "D1はリレーショナルデータベースであり、オブジェクトデータの一括移行手段ではありません。R2への移行にはSuper Slurperを使います。"
         },
         {
-          "text": "Workers KVを経由してデータを一時保管し、その後R2に転送する仕組みで、KVを使うことで移行速度が大幅に向上する",
+          "text": "Sippyを有効にし、移行元のクレデンシャルを指定してバケット全体のオブジェクトをR2へ一括コピーする",
           "wrongFeedback": "KVは小さな値向けであり、大量データの移行経路としては使われません。専用の移行ツールSuper Slurperを使います。"
         },
         {
@@ -9916,9 +9916,9 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflareは Super Slurper という移行ツールを提供しており、移行元クラウドストレージ（S3など）のクレデンシャルを指定するだけで、バケット全体のオブジェクトをR2に一括コピーできます。\n{{diagram:0}}\n逐次的なオンデマンド移行が必要な場合は、リクエスト時に未移行のオブジェクトをR2にコピーする Sippy という別の仕組みも用意されています。\n{{diagram:1}}",
+      "explanation": "Cloudflareは Super Slurper という移行ツールを提供しており、移行元クラウドストレージ（S3など）のクレデンシャルを指定するだけで、バケット全体のオブジェクトをR2に一括コピーできます。\n{{diagram:0}}\n逐次的なオンデマンド移行が必要な場合は、リクエスト時に未移行のオブジェクトをR2にコピーする Sippy という別の仕組みも用意されています。Sippy はリクエストされたオブジェクトを都度コピーするもので、バケット全体を一括でコピーする用途には使いません。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/data-migration/super-slurper/",
-      "hint": "Cloudflareの移行専用ツールの名前を考えてみましょう。",
+      "hint": "移行用のツールは複数あり、一括で移すものと、必要になった分だけ移すものがあります。",
       "tags": [
         "r2",
         "practical"
@@ -13292,7 +13292,7 @@
       "correctIndex": 1,
       "explanation": "Streamはアップロードされた動画を自動的に H.264 コーデックでエンコードし、アダプティブビットレートストリーミング(360p〜1080p)で配信します。\n{{diagram:0}}\nこれにより、視聴者の回線速度や端末に応じて最適な解像度が選ばれ、さまざまな環境で滑らかに再生されます。埋め込みは Stream Player(iframe)や自前のプレーヤーが使えます。",
       "referenceUrl": "https://developers.cloudflare.com/stream/viewing-videos/using-the-stream-player/",
-      "hint": "回線が細いときと太いときで、視聴者に同じビットレートを送るのが良いでしょうか。",
+      "hint": "動画の埋め込みには、iframeのプレーヤーか自前のプレーヤーを使えます。",
       "tags": [
         "platform-services",
         "practical"
@@ -13343,7 +13343,7 @@
       "correctIndex": 3,
       "explanation": "Direct Creator Uploads は、エンドユーザー(クリエイター)に自分の動画を直接アップロードさせるための仕組みです。ユーザーごとに一時的なアップロード用URLを発行し、動画データは自分のサーバーを経由せず Stream へ直接送られます。\n{{diagram:0}}\n自分のAPIトークンを渡さずに済み、大きな動画ファイルでサーバーの帯域を消費することもありません。",
       "referenceUrl": "https://developers.cloudflare.com/stream/uploading-videos/",
-      "hint": "ユーザーの大きな動画を、わざわざ自分のサーバーで中継したいでしょうか。トークンも渡したくありません。",
+      "hint": "Streamには、管理者以外の利用者が自分で動画を送れるようにする仕組みがあります。",
       "tags": [
         "platform-services",
         "practical"
@@ -13462,7 +13462,7 @@
       "correctIndex": 0,
       "explanation": "受信メールをWorkerで処理するには、`fetch` や `scheduled` と同じくハンドラの一種である `email(message, env, ctx)` を実装します。`cloudflare:email` モジュールの EmailMessage などを使い、`message.from`(送信元)や `message.to`(宛先)を読み取って独自ロジックを適用できます。\n{{diagram:0}}\n転送・返信・別処理へのルーティングなど、受信メールをトリガーにした自動化が書けます。",
       "referenceUrl": "https://developers.cloudflare.com/email-service/get-started/route-emails/",
-      "hint": "fetch / scheduled / queue と並ぶ、もう一つのハンドラ名を考えましょう。受信メール専用のものです。",
+      "hint": "受信メールの内容は、Workerが取りに行くのではなく、起動時に渡されます。",
       "tags": [
         "platform-services",
         "practical"
