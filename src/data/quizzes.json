@@ -10759,7 +10759,7 @@
       "correctIndex": 3,
       "explanation": "Pages のビルド環境で使用するNode.jsのバージョンは、環境変数 `NODE_VERSION` を設定するか、リポジトリのルートに `.nvmrc` または `.node-version` ファイルを配置することで指定できます。\n{{diagram:0}}\n指定がない場合はビルドイメージのデフォルトバージョンが使用されます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-image/#override-default-versions",
-      "hint": "他のNode.jsプロジェクトでもよく使われる、バージョン指定の慣習がCloudflare Pagesでも通用するか考えましょう。",
+      "hint": "ビルド時のNode.jsのバージョンは、プロジェクト側で変更できます。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -12977,7 +12977,7 @@
       "correctIndex": 0,
       "explanation": "Turnstileのトークンは「有効期限つき・単回使用」です。生成から300秒で失効し、Siteverify での検証は1トークンにつき1回だけ有効です。使い回された(リプレイされた)トークンは `timeout-or-duplicate` エラーで拒否されます。\n{{diagram:0}}\nこの性質により、攻撃者がトークンを盗んで再利用する攻撃を防げます。",
       "referenceUrl": "https://developers.cloudflare.com/turnstile/get-started/server-side-validation/",
-      "hint": "「使い捨て」「時間制限」という2つのキーワードが、リプレイ攻撃をどう防ぐか考えましょう。",
+      "hint": "トークンの検証は、サーバー側から`siteverify`を呼んで行います。",
       "tags": [
         "platform-services",
         "practical"
@@ -21035,7 +21035,7 @@
       "correctIndex": 2,
       "explanation": "構造化されたStreamで定義済みスキーマに違反するイベントは、送信元にエラーとして通知されることなく、黙って破棄(ドロップ)されます。そのため、送信前にデータを検証するか、`wrangler types`で生成した型付きバインディングでコンパイル時に検出するか、ユーザーエラーメトリクスを監視してドロップされたイベントを把握する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#schema-validation",
-      "hint": "「拒否された」という通知が来ない場合、どうやって問題に気づけばよいか考えましょう。",
+      "hint": "スキーマに違反したイベントは保存されません。",
       "tags": [
         "pipelines",
         "practical"
@@ -21240,7 +21240,7 @@
       "correctIndex": 2,
       "explanation": "1つのStreamを参照する複数の`INSERT INTO sink SELECT ... FROM stream WHERE ...`文をセミコロンで区切って1つのPipelineに記述することで、条件(`WHERE`句)に応じて同じStreamのデータを異なるSinkへ振り分けることができます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/sql-reference/select-statements/#multiple-statements",
-      "hint": "1つの「流れ」から、条件に応じて複数の「行き先」に分岐させる方法を考えましょう。",
+      "hint": "1つのPipelineの中に、条件つきの`INSERT`文を複数書けます。",
       "tags": [
         "pipelines",
         "practical"
@@ -21342,7 +21342,7 @@
       "correctIndex": 1,
       "explanation": "オープンベータ期間中、Cloudflare Pipelinesには、1アカウントあたりStream・Sink・Pipelineをそれぞれ最大20個まで、1回の取り込みリクエストのペイロードは最大5MB、1つのStreamあたりの取り込みレートは最大5MB/秒という制限があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/limits/",
-      "hint": "「個数」「1回あたりのサイズ」「1秒あたりの速度」という3種類の異なる上限があることを整理しましょう。",
+      "hint": "1回の取り込みリクエストで送れるペイロードは、数MBの規模です。",
       "tags": [
         "pipelines",
         "practical"
