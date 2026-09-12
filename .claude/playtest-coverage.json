@@ -369,13 +369,14 @@
     ],
     "ag-001": [
       {
-        "persona": "beginner",
+        "persona": "busy-intermediate",
         "outcome": "friction",
-        "at": "2026-08-26",
-        "fp": "c580a0cc81e2"
+        "at": "unstamped",
+        "fp": "fd5b7ff32d2b",
+        "gt": "f0ae533f"
       },
       {
-        "persona": "busy-intermediate",
+        "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
         "fp": "fd5b7ff32d2b",
@@ -5274,7 +5275,7 @@
         "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "169dd3723f49",
+        "fp": "595e12851e60",
         "gt": "c48ff8be"
       }
     ],
@@ -5362,9 +5363,9 @@
     "ob-010": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "584eeffcd3ec",
+        "fp": "b1c1df9b07f9",
         "gt": "da39a3ee"
       }
     ],
@@ -5380,9 +5381,9 @@
     "ob-012": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "04fdde75173a",
+        "fp": "1d4e246a263e",
         "gt": "5f37a7dc"
       }
     ],
@@ -5416,9 +5417,9 @@
     "ob-017": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "9ce75a606f7e",
+        "fp": "8c8e689538a0",
         "gt": "da39a3ee"
       }
     ],
@@ -5434,9 +5435,9 @@
     "pg-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "f569f5a8eb2d",
+        "fp": "d0b00b5f1eb4",
         "gt": "da39a3ee"
       }
     ],
@@ -5463,7 +5464,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "ef83580a44ff",
+        "fp": "867772893a60",
         "gt": "700b401c"
       }
     ],
@@ -5488,9 +5489,9 @@
     "wr-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "17d6d9237536",
+        "fp": "b48d596873d4",
         "gt": "5f37a7dc"
       }
     ],
@@ -5542,9 +5543,9 @@
     "wr-016": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "35aff8af474c",
+        "fp": "a18a9a1efcc2",
         "gt": "c48ff8be"
       }
     ],

@@ -6125,7 +6125,7 @@
       "correctIndex": 1,
       "explanation": "`_headers` ファイルはビルド出力のルートに配置し、パスパターンごとにカスタムHTTPレスポンスヘッダー(セキュリティヘッダーやキャッシュ制御など)を付与するための設定ファイルです。\n{{diagram:0}}\n記法はパスの後にヘッダー行をインデントして列挙する形式です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/headers/",
-      "hint": "このファイルでは、パスのパターンごとに別の設定を書き分けられます。",
+      "hint": "書き方は、パスを1行書いて、その下に適用したい行をインデントして並べる形式です。",
       "tags": [
         "pages-deploy",
         "practical"
