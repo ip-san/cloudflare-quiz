@@ -1437,7 +1437,7 @@
       "correctIndex": 1,
       "explanation": "Wranglerは `[env.<name>]` セクションを使って、トップレベル設定を環境ごとに上書きできます。\n{{diagram:0}}\nデプロイ時に `--env` フラグで対象の環境を指定します（例: `wrangler deploy --env production`）。指定しない場合はトップレベルの設定（デフォルト環境）が使われます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/environments/",
-      "hint": "設定ファイル内でセクションを分け、デプロイ時にフラグで切り替える仕組みを考えてみましょう。",
+      "hint": "1つのコードベースのまま、環境ごとの違いだけを切り替えられます。",
       "tags": [
         "wrangler",
         "practical"
@@ -8687,7 +8687,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflare Workersは独自のランタイム上で動作しますが、`nodejs_compat` が有効だと `node:buffer` や `node:events` といった一部のNode.js組み込みAPIが利用できます。\n{{diagram:0}}\n`compatibility_date` が `2026-08-04` 以降のWorkers/Pagesプロジェクトでは、`nodejs_compat` と `nodejs_compat_v2` の両方がデフォルトで有効になり、追加設定なしに組み込みAPIとポリフィルが使えます。それより前の日付を使っている場合のみ、`compatibility_flags = [\"nodejs_compat\"]` を明示して opt-in する必要があります(既存プロジェクトが日付を更新する際、書いてあるフラグを消す必要はありません)。",
       "referenceUrl": "https://developers.cloudflare.com/workers/configuration/compatibility-dates/",
-      "hint": "日付だけでなく、機能を個別にオン/オフする配列の設定項目を考えましょう。",
+      "hint": "この設定は`compatibility_`で始まる項目で行います。",
       "tags": [
         "wrangler",
         "practical"
