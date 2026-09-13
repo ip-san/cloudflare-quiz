@@ -13068,8 +13068,8 @@
           "wrongFeedback": "「Define source origins」が必要なのは、外部のオリジンから画像を取りに行く Transformations だけです。"
         },
         {
-          "text": "Transformations もHosted imagesも、あらかじめ用意した`Variant`（`width`/`height`/`fit`/`blur`の組み合わせ）を指定して配信するという点で違いはない",
-          "wrongFeedback": "`Variant` を使えるのは Hosted images 側だけで、Transformations にこの仕組みはありません。"
+          "text": "Transformations もHosted imagesも、あらかじめ用意した`Variant`を指定して配信するという点で違いはない",
+          "wrongFeedback": "`Variant` を使えるのは Hosted images 側だけです。Transformations にこの仕組みは無いため、両方が使うという説明は当たりません。"
         },
         {
           "text": "Transformations は任意のオリジンに置いたリモート画像をその場で最適化し、Hosted images は画像をImages側に保存して配信まで任せる"
@@ -13131,7 +13131,7 @@
       "correctIndex": 2,
       "explanation": "Variantは、ホスト画像を「どうリサイズして出すか」をあらかじめ定義しておく仕組みです。例えば `width`・`height`・`fit`・`blur` を指定した「thumbnail」バリアント(100x100)を作っておくと、そのバリアントで配信するだけで元画像が100x100にリサイズされた版が返ります。\n{{diagram:0}}\nよく使うサイズを名前付きで定義しておくことで、都度パラメータを組み立てずに済みます。",
       "referenceUrl": "https://developers.cloudflare.com/images/get-started/key-concepts/",
-      "hint": "配信するときにVariantの名前を指定すると、その定義どおりの版が返ります。",
+      "hint": "配信のときにVariantの名前を指定して呼び出します。",
       "tags": [
         "platform-services",
         "practical"
