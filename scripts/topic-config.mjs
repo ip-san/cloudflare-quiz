@@ -311,6 +311,7 @@ export const DOC_PAGES = [
   { name: 'speed' },
   { name: 'speed/observatory' },
   { name: 'speed/observatory/run-speed-test' },
+  { name: 'speed/observatory/test-results' },
   { name: 'speed/optimization/content/rocket-loader' },
   { name: 'images/polish' },
   { name: 'speed/optimization/images/mirage' },

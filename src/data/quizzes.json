@@ -4360,18 +4360,18 @@
           "wrongFeedback": "定期ポーリングは非効率でリアルタイム性に欠けます。R2はイベント通知機能を提供しており、それを使う方が適切です。"
         },
         {
-          "text": "D1データベースのトリガー機能を使ってR2の変更を検知する",
-          "wrongFeedback": "D1はR2の変更を検知するトリガー機能を持ちません。R2自体のEvent Notifications機能を使います。"
+          "text": "R2 Event Notificationsを設定し、イベント発生時点でCloudflare Workersを直接呼び出して後続処理を行う構成にする",
+          "wrongFeedback": "R2 Event Notificationsは、Workerを直接呼び出す仕組みではありません。通知はQueueへ送信され、Queue Consumer(またはHTTP pull)を介してメッセージを受け取る必要があります。"
         },
         {
-          "text": "R2にはイベント通知の仕組みがないため、クライアント側でアップロード完了後に別途Workersを直接呼び出す実装をする以外に方法はない",
-          "wrongFeedback": "R2にはEvent Notifications機能があり、クライアント側の追加実装なしにサーバーサイドでイベント駆動処理を組めます。"
+          "text": "R2 Event Notificationsを設定し、オブジェクトの変更内容をWorkers KVに書き込ませ、WorkerがそのKVを定期的に読み取って後続処理をトリガーする",
+          "wrongFeedback": "R2 Event Notificationsは、Workers KVには書き込みません。通知の送信先はQueueであり、Queue Consumer(またはHTTP pull)を介してメッセージを受け取る必要があります。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "R2 Event Notificationsを使うと、オブジェクトの作成・削除などのイベントをCloudflare Queuesに送信できます。Queue Consumer として動作するWorkerがそのメッセージを受け取り、画像リサイズやサムネイル生成などの後続処理を非同期に実行できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "R2 Event Notificationsを使うと、オブジェクトの作成・削除などのイベントをCloudflare Queuesに送信できます。Queue Consumer として動作するWorkerがそのメッセージを受け取り、画像リサイズやサムネイル生成などの後続処理を非同期に実行できます。Event Notificationsの送信先は必ずQueueであり、Workerを直接呼び出したり、Workers KVに書き込んだりする仕組みではありません。定期的にバケット全体をポーリングする方法は、非効率でリアルタイム性にも欠けます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/event-notifications/",
-      "hint": "アップロード完了を検知して、非同期の後続処理へ橋渡しする仕組みが必要な場面を考えましょう。",
+      "hint": "R2 Event Notificationsは、Workerを直接呼び出す仕組みではありません。",
       "tags": [
         "r2",
         "practical"
@@ -21222,25 +21222,25 @@
       "question": "1つのStreamのデータを、条件に応じて複数の異なるSinkに振り分けたい場合の正しい方法はどれですか？",
       "options": [
         {
-          "text": "複数の`INSERT`文を1つのPipelineに書く場合、カンマで区切って記述する",
-          "wrongFeedback": "複数の`INSERT`文はカンマではなくセミコロンで区切って記述します。"
+          "text": "1つの`INSERT`文の中に条件付きの`INTO`句を複数並べれば、1回の`INSERT`文だけで条件に応じて複数のSinkへ振り分けられる",
+          "wrongFeedback": "Pipelinesの`INSERT`文は、条件付きの`INTO`句を複数並べても、1つの`SELECT`につき書き込める宛先(Sink)は1つだけです。1文で複数の宛先に条件付きで振り分ける構文はサポートされていません。宛先ごとに独立した`INSERT`文をセミコロンで区切って並べる必要があります。"
         },
         {
-          "text": "Streamごとに専用のPipelineしか作成できないため、宛先ごとに別々のStreamを用意する必要があり、Sinkの数だけ個別にStreamを作成しなければならない",
-          "wrongFeedback": "同じStreamを参照する複数の`INSERT INTO ... SELECT ...`文を1つのPipeline内に書くことで、宛先ごとにStreamを分ける必要はありません。"
+          "text": "同じStreamを参照する複数の`INSERT`文は1つのPipelineには書けないため、Sinkの数だけ別々のPipelineを作成する必要がある",
+          "wrongFeedback": "同じStreamを参照する複数の`INSERT`文は1つのPipeline内に書けます。Pipelineを分ける必要はありません。"
         },
         {
           "text": "同じStreamを参照する複数の`INSERT ... SELECT ... WHERE ...`文をセミコロンで区切って1つのPipelineに記述する"
         },
         {
           "text": "条件による振り分けはPipelinesのSQLでは実現できず、SQL変換は1つのSinkへの単純な整形にしか使えないため、Worker側でロジックを実装してStreamを使い分ける必要がある",
-          "wrongFeedback": "Pipelinesの複数`INSERT`文とWHERE句の組み合わせで、SQLだけで振り分けを実現できます。"
+          "wrongFeedback": "Pipelinesの複数`INSERT`文と`WHERE`句の組み合わせで、SQLだけで振り分けを実現できます。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "1つのStreamを参照する複数の`INSERT INTO sink SELECT ... FROM stream WHERE ...`文をセミコロンで区切って1つのPipelineに記述することで、条件(`WHERE`句)に応じて同じStreamのデータを異なるSinkへ振り分けることができます。\n{{diagram:0}}",
+      "explanation": "1つのStreamを参照する複数の`INSERT INTO sink SELECT ... FROM stream WHERE ...`文をセミコロンで区切って1つのPipelineに記述することで、条件(`WHERE`句)に応じて同じStreamのデータを異なるSinkへ振り分けることができます。1つの`INSERT`文が書き込める宛先(Sink)は1つだけなので、複数の`INTO`句を並べて1回の`INSERT`文だけで複数の宛先に書き込むことはできません。また、同じStreamを参照する複数の`INSERT`文を1つのPipeline内にまとめて書くことができるため、宛先ごとに専用のPipelineやStreamを用意する必要はなく、`WHERE`句を使えばSQLだけで条件による振り分けが完結するため、Worker側で別途ロジックを実装する必要もありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/sql-reference/select-statements/#multiple-statements",
-      "hint": "1つのPipelineの中に、条件つきの`INSERT`文を複数書けます。",
+      "hint": "1つの`INSERT`文が書き込めるSinkは1つだけです。",
       "tags": [
         "pipelines",
         "practical"
@@ -29815,25 +29815,25 @@
       "question": "Cloudflareが発行する証明書の有効期間を短く保つ理由に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "認証局(CA)の技術的な制約により、Cloudflareが3ヶ月を超える有効期間の証明書を発行すること自体が不可能で、Enterpriseプランでも1年間の証明書を選ぶ選択肢は存在しないからである",
-          "wrongFeedback": "技術的に不可能というわけではありません(実際、Enterprise+SSL.comの組み合わせでは1年間の証明書も選択できます)。短い有効期間は意図的なセキュリティ方針によるものです。"
+          "text": "鍵が漏洩・誤発行された場合の被害期間を限定できることと、DCV(ドメイン所有権の検証)がHTTP検証からTXT検証にフォールバックするまでの猶予期間を短縮できることの2つが理由である",
+          "wrongFeedback": "前半(被害期間の限定)は正しい理由の1つですが、後半は誤りです。DCV検証のフォールバック猶予期間は有効期間ごとに異なりますが、これは短い有効期間を選ぶ理由として挙げられているものではありません。もう1つの理由は、更新頻度が上がることで自動化が促進される点です。"
         },
         {
-          "text": "証明書の発行コストを削減するためであり、セキュリティ上の理由はほとんど関係していない",
-          "wrongFeedback": "コスト削減が主な理由ではありません。鍵の漏洩リスクの限定と、自動化の促進というセキュリティ上の理由が挙げられています。"
+          "text": "更新頻度が上がることで自動化が促進され期限切れや鍵材料の不適切な管理を防げることと、Cloudflareが契約している認証局(CA)側が90日を超える証明書発行に対応していないため、それに合わせているだけであることの2つが理由である",
+          "wrongFeedback": "前半(自動化の促進)は正しい理由の1つですが、後半は誤りです。Cloudflareが契約しているCAでも実際にはEnterprise向けに1年間の証明書を選べる場合があり(SSL.com)、CAの制約に単に合わせているわけではなく、Cloudflare自身がセキュリティ上の方針として有効期間を短くしています。もう1つの理由は、鍵が漏洩・誤発行された場合の被害期間を限定できる点です。"
         },
         {
           "text": "鍵が漏洩・誤発行された場合の被害期間を限定できることと、更新頻度が上がることで自動化が促進され期限切れや鍵材料の不適切な管理を防げることの2つが理由である"
         },
         {
-          "text": "証明書の有効期間が短いほど、Webサイトの表示速度(パフォーマンス)が向上するという直接的な技術的因果関係があるためで、TLSハンドシェイク時に検証する証明書チェーンのサイズが短縮され接続確立が速くなる",
-          "wrongFeedback": "有効期間の長さと表示速度に直接的な技術的因果関係はありません。短い有効期間の理由はセキュリティと自動化の促進です。"
+          "text": "DCV(ドメイン所有権の検証)がHTTP検証からTXT検証にフォールバックするまでの猶予期間を短縮できることと、Cloudflareが契約している認証局(CA)側が90日を超える証明書発行に対応していないため、それに合わせているだけであることの2つが理由である",
+          "wrongFeedback": "どちらも誤りです。DCV検証のフォールバック猶予の短縮は短い有効期間を選ぶ理由として挙げられておらず、また有効期間はCAの制約に合わせているのではなくCloudflare自身の方針で決められています(SSL.comではEnterprise向けに1年間の証明書も選べます)。実際の2つの理由は、鍵が漏洩・誤発行された場合の被害期間を限定できることと、更新頻度が上がることで自動化が促進されることです。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cloudflareが発行する証明書の有効期間を3ヶ月以下に抑える主な理由は2つあります。1つは、鍵が漏洩したり誤って発行されたりした場合でも、被害が及ぶ期間を短く限定できることです。もう1つは、更新作業を頻繁に行う必要があることで自動化が促進され、証明書の期限切れや鍵材料への不適切なアクセスを防ぎやすくなることです。\n{{diagram:0}}",
+      "explanation": "Cloudflareが発行する証明書の有効期間を3ヶ月以下に抑える主な理由は2つあります。1つは、鍵が漏洩したり誤って発行されたりした場合でも、被害が及ぶ期間を短く限定できることです。もう1つは、更新作業を頻繁に行う必要があることで自動化が促進され、証明書の期限切れや鍵材料への不適切なアクセスを防ぎやすくなることです。DCV(ドメイン所有権の検証)がHTTP検証からTXT検証にフォールバックするまでの猶予期間は有効期間ごとに異なりますが、これは短い有効期間を選ぶ理由としては説明されていません。また、有効期間はCloudflare自身が方針として決めており、契約しているCAの制約に単に合わせているわけではありません(SSL.comではEnterprise向けに1年間の証明書も選べます)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#benefits-of-shorter-validity-periods",
-      "hint": "「何か問題が起きたときの被害の範囲」と「作業の自動化」という、2つのセキュリティ上のメリットを考えましょう。",
+      "hint": "鍵が漏洩したり誤って発行されたりした場合に、被害が及ぶ期間をどれだけ短くできるか、という観点を考えましょう。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -29915,22 +29915,22 @@
           "text": "Interaction to Next Paint(INP)のような、合成テストでは取得できない実際のユーザー操作の応答性を示す指標"
         },
         {
-          "text": "ページの読み込みに使われたHTTPステータスコードの一覧",
-          "wrongFeedback": "HTTPステータスコードの一覧はRUM特有の指標として説明されているわけではありません。RUM特有の指標として挙げられているのは、合成テストでは提供できないInteraction to Next Paint(INP)というユーザー操作関連の指標です。"
+          "text": "Largest Contentful Paint(LCP)のような、合成テストでは取得できない実際の描画完了までの時間を示す指標",
+          "wrongFeedback": "LCPは合成テストとRUMの両方で取得できる指標です。合成テストでは取得できずRUM特有と言えるのはInteraction to Next Paint(INP)です。"
         },
         {
-          "text": "合成テストとRUMは全く同じ指標セットを提供し、取得できる指標に違いは一切存在しない",
-          "wrongFeedback": "違いはあります。RUMはInteraction to Next Paint(INP)という、合成テストにはないユーザー操作に関する指標を提供します。"
+          "text": "Cumulative Layout Shift(CLS)のような、合成テストでは取得できないレイアウトのずれを示す指標",
+          "wrongFeedback": "CLSも合成テストとRUMの両方で取得できる指標です。合成テストでは取得できずRUM特有と言えるのはInteraction to Next Paint(INP)です。"
         },
         {
-          "text": "Lighthouseスコアそのものであり、これは実ユーザーの環境でしか算出できないため合成テストのBrowser testでは取得できず、RUMのみが計算できる指標である",
-          "wrongFeedback": "Lighthouseスコアは合成テストのBrowser testが提供するものであり、RUM特有の指標ではありません。"
+          "text": "Total Blocking Time(TBT)のような、合成テストでは取得できないメインスレッドのブロック時間を示す指標",
+          "wrongFeedback": "TBTは逆に合成テスト(Lighthouse)でのみ算出される指標で、RUMでは提供されません。合成テストでは取得できずRUM特有と言えるのはInteraction to Next Paint(INP)です。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "RUMは、実際に世界中のさまざまな環境からアクセスするユーザーのデータを収集するため、合成テストでは再現できない多様な条件を反映できます。加えて、Interaction to Next Paint(INP)という、実際のユーザー操作に関わる指標を提供しますが、これは合成テストでは取得できません。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
-      "hint": "「実際に人が操作したときの反応の速さ」を測るには、本物のユーザーからのデータが必要だと考えましょう。",
+      "explanation": "RUMは、実際に世界中のさまざまな環境からアクセスするユーザーのデータを収集するため、合成テストでは再現できない多様な条件を反映できます。加えて、Interaction to Next Paint(INP)という、実際のユーザー操作に関わる指標を提供しますが、これは合成テストでは取得できません。一方、Largest Contentful Paint(LCP)やCumulative Layout Shift(CLS)は合成テストとRUMの両方で取得できる共通の指標であり、Total Blocking Time(TBT)は逆に合成テスト(Lighthouse)でのみ算出されRUMでは提供されません。\n{{diagram:0}}",
+      "referenceUrl": "https://developers.cloudflare.com/speed/observatory/test-results/",
+      "hint": "描画の完了時刻やレイアウトのずれは、ヘッドレスブラウザでページを読み込むだけでも計測できます。",
       "tags": [
         "speed",
         "practical"

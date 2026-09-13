@@ -313,6 +313,7 @@ const VALID_DOC_PAGES = [
   'speed/',
   'speed/observatory/',
   'speed/observatory/run-speed-test/',
+  'speed/observatory/test-results/',
   'speed/optimization/content/rocket-loader/',
   'images/polish/',
   'speed/optimization/images/mirage/',
