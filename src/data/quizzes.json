@@ -12362,7 +12362,7 @@
       "correctIndex": 2,
       "explanation": "Workflow(処理を複数のステップに分けて順に実行する仕組み)の本体は、`WorkflowEntrypoint` を継承したクラスとして書きます。`run(event, step)` メソッドが実行の入口で、`event` には起動時に渡したパラメータ(payload)が、`step` にはステップを定義するAPIが入っています。有効なWorkflowと見なされるには、`run` の中で最低1つの `step` 呼び出しが必要です。\n{{diagram:0}}\n※ `run` の中では if 文・ループ・try/catch など通常のJavaScriptの制御構文をそのまま使ってステップを組み立てられます。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/workers-api/",
-      "hint": "YAMLやGUIのような宣言的な定義ではなく、通常のコードとして書きます。選択肢のコードの形を見ると、専用の親クラスを継承するクラスとして書く形と、`fetch`ハンドラと同じようにオブジェクトをexportする形の2通りがあります。Workflowはどちらの形で定義する仕組みだったか思い出しましょう。",
+      "hint": "ステップの組み立てには、if文やループなど普通の制御構文をそのまま使えます。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -27942,7 +27942,7 @@
       "correctIndex": 0,
       "explanation": "Request Body Bufferingを`None`に設定すると、リクエストボディの検査を一切行わず、そのままオリジンサーバーへストリーミングします。これにより、リクエストボディの検査を必要とするWAFなどのセキュリティ機能の効果が損なわれる可能性があるため注意が必要です。デフォルトの`Standard`モードでは、必要に応じてボディの一部を検査できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/configuration-rules/settings/#request-body-buffering",
-      "hint": "Request Body Bufferingの3つのモード(`Standard`/`Full`/`None`)がそれぞれボディをどう扱うのかを整理してから、各選択肢の内容を見比べてみましょう。",
+      "hint": "`None`にすると、ボディはそのままオリジンへ流れます。",
       "tags": [
         "rules",
         "practical"
