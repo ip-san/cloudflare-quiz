@@ -1578,6 +1578,13 @@
         "at": "unstamped",
         "fp": "af8545be2ba0",
         "gt": "da39a3ee"
+      },
+      {
+        "persona": "reviewer",
+        "outcome": "clean",
+        "at": "unstamped",
+        "fp": "51e0864867cc",
+        "gt": "da39a3ee"
       }
     ],
     "hw-012": [
@@ -3887,9 +3894,9 @@
     "kv-012": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "65952114f4d8",
+        "fp": "d2cf3885001a",
         "gt": "da39a3ee"
       }
     ],
@@ -4517,9 +4524,9 @@
     "ru-017": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
-        "fp": "234d77d50392",
+        "fp": "54457d3ea42d",
         "gt": "2da0632a"
       }
     ],
@@ -6020,9 +6027,9 @@
     "sc-017": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "d3f72386b0b6",
+        "fp": "9d089975d528",
         "gt": "08be6a1d"
       }
     ],
@@ -6299,18 +6306,18 @@
     "wa-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "408201b548eb",
+        "fp": "b07f61fba9fc",
         "gt": "da39a3ee"
       }
     ],
     "wa-009": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "042a4630fe00",
+        "fp": "69b60f46ea0b",
         "gt": "da39a3ee"
       }
     ],
@@ -6326,27 +6333,27 @@
     "wa-013": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "87e6db6de145",
+        "fp": "d3aac7573bd4",
         "gt": "2da0632a"
       }
     ],
     "wa-014": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "038edb573fb9",
+        "fp": "39fe159ec5a6",
         "gt": "da39a3ee"
       }
     ],
     "wa-017": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "321cd49b097c",
+        "fp": "015c967e16be",
         "gt": "da39a3ee"
       }
     ],
@@ -6380,9 +6387,9 @@
     "wf-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "dec3b71d2778",
+        "fp": "71f1d929ecec",
         "gt": "da39a3ee"
       }
     ],
@@ -6470,27 +6477,27 @@
     "zr-004": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "c7bfbdc33d65",
+        "fp": "5a7b17fe4e1b",
         "gt": "d50ac005"
       }
     ],
     "zr-006": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "3785b7468b0a",
+        "fp": "4b31806dbb15",
         "gt": "da39a3ee"
       }
     ],
     "zr-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "3c3b77298299",
+        "fp": "26b4089ae603",
         "gt": "da39a3ee"
       }
     ],
@@ -6515,9 +6522,9 @@
     "zr-015": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "194157996ae9",
+        "fp": "4f3029381e86",
         "gt": "da39a3ee"
       }
     ],
@@ -6533,36 +6540,36 @@
     "wf-010": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "f39a7eba4566",
+        "fp": "efa81c07243e",
         "gt": "da39a3ee"
       }
     ],
     "wf-012": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "90331bb0dd09",
+        "fp": "c3eca02ca886",
         "gt": "fc497738"
       }
     ],
     "wf-014": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "9a9d616d7b20",
+        "fp": "e8129ef8bd87",
         "gt": "da39a3ee"
       }
     ],
     "wf-017": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "7739ea684762",
+        "fp": "02aa00c5fd10",
         "gt": "2da0632a"
       }
     ],

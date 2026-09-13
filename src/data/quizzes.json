@@ -27942,7 +27942,7 @@
       "correctIndex": 0,
       "explanation": "Request Body Bufferingを`None`に設定すると、リクエストボディの検査を一切行わず、そのままオリジンサーバーへストリーミングします。これにより、リクエストボディの検査を必要とするWAFなどのセキュリティ機能の効果が損なわれる可能性があるため注意が必要です。デフォルトの`Standard`モードでは、必要に応じてボディの一部を検査できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/configuration-rules/settings/#request-body-buffering",
-      "hint": "`None`にすると、ボディはそのままオリジンへ流れます。",
+      "hint": "リクエストボディ全体をバッファリングするのは`Full`です。",
       "tags": [
         "rules",
         "practical"
