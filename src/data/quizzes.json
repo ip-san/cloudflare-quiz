@@ -21270,25 +21270,25 @@
       "question": "2025年9月25日より前に作成された「レガシーパイプライン」と、新しいPipelinesアーキテクチャの違いに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "レガシーパイプラインは、Pipelinesが正式リリース(GA)された時点で即座に動作を停止する",
-          "wrongFeedback": "Pipelinesが正式リリースされるまでレガシーパイプラインは動作を継続しますが、新機能や改善はレガシーパイプラインには提供されません。"
+          "text": "新しいPipelinesはSQLによる変換・複数の出力フォーマット(JSON・Parquet・Apache Iceberg)・構造化スキーマの検証に対応しているが、レガシーパイプラインは、Pipelinesが正式リリース(GA)された時点で即座に動作を停止する",
+          "wrongFeedback": "前半の新しいPipelinesの機能についての説明は正しいですが、後半が誤りです。レガシーパイプラインはPipelinesが正式リリース(GA)されるまで動作を継続し、新機能や改善が提供されなくなるだけで、GAになった瞬間に停止するわけではありません。"
         },
         {
-          "text": "レガシーパイプラインは複数の出力フォーマット(Parquet・Iceberg)に対応しており、新しいPipelinesはJSON形式のみをサポートする",
-          "wrongFeedback": "説明が逆です。新しいPipelinesがJSON・Parquet・Apache Icebergに対応し、レガシーパイプラインはJSON形式のみでした。"
+          "text": "新しいPipelinesはSQLによる変換には対応しておらず、出力フォーマットも旧来通りJSON形式のみで、構造化スキーマの検証にも対応していないが、レガシーパイプラインは廃止(非推奨)の方向にあり、Pipelinesが正式リリース(GA)されるまでは動作を継続する",
+          "wrongFeedback": "後半のレガシーパイプラインの今後についての説明は正しいですが、前半が逆です。SQLによる変換や複数の出力フォーマット(JSON・Parquet・Apache Iceberg)、構造化スキーマの検証に対応しているのは新しいPipelinesの方であり、JSON形式のみだったのはレガシーパイプラインの方です。"
         },
         {
-          "text": "レガシーパイプラインはStreams・Pipelines・Sinksという3つの独立したリソースに分かれているが、新しいPipelinesは単一のリソースとして統合されている",
-          "wrongFeedback": "逆です。新しいPipelinesがStreams・Pipelines・Sinksという別々のリソースに分離されており、レガシーパイプラインは分離されていませんでした。"
+          "text": "新しいPipelinesはSQLによる変換・複数の出力フォーマット(JSON・Parquet・Apache Iceberg)・構造化スキーマの検証に対応しているが、レガシーパイプラインは廃止(非推奨)の方向にあり、Pipelinesが正式リリース(GA)されるまでは動作を継続する"
         },
         {
-          "text": "新しいPipelinesではSQLによる変換や複数の出力フォーマット(JSON・Parquet・Apache Iceberg)、構造化スキーマの検証に対応しているが、レガシーパイプラインは廃止(非推奨)の方向にあり、正式リリースまでは動作を継続する"
+          "text": "新しいPipelinesはSQLによる変換には対応しておらず、出力フォーマットも旧来通りJSON形式のみで、構造化スキーマの検証にも対応していないが、レガシーパイプラインは、Pipelinesが正式リリース(GA)された時点で即座に動作を停止する",
+          "wrongFeedback": "前半・後半とも誤りです。SQLによる変換や複数の出力フォーマット(JSON・Parquet・Apache Iceberg)、構造化スキーマの検証に対応しているのは新しいPipelinesの方です。また、レガシーパイプラインはPipelinesが正式リリース(GA)されるまで動作を継続し、GAになった瞬間に停止するわけではありません。"
         }
       ],
-      "correctIndex": 3,
-      "explanation": "2025年9月25日より前にレガシーAPIで作成された「レガシーパイプライン」は廃止の方向にあります。新しいPipelinesアーキテクチャでは、SQLによる変換、複数の出力フォーマット(JSON・Parquet・Apache Iceberg)への対応、Streams・Pipelines・Sinksという別々のリソースへの分離、構造化スキーマの検証などが追加されています。レガシーパイプラインはPipelinesが正式リリースされるまで動作を継続しますが、新機能はレガシーパイプラインには提供されません。\n{{diagram:0}}",
+      "correctIndex": 2,
+      "explanation": "2025年9月25日より前にレガシーAPIで作成された「レガシーパイプライン」は廃止(非推奨)の方向にあります。新しいPipelinesアーキテクチャでは、SQLによる変換、複数の出力フォーマット(JSON・Parquet・Apache Iceberg)への対応、Streams・Pipelines・Sinksという別々のリソースへの分離、構造化スキーマの検証などが追加されており、レガシーパイプラインはJSON形式のみしか扱えません。レガシーパイプラインはPipelinesが正式リリース(GA)されるまで動作を継続し、GAになった瞬間に停止するわけではありませんが、新機能や改善はレガシーパイプラインには提供されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/reference/legacy-pipelines/",
-      "hint": "「新しい方が対応している機能」と「古い方が今後どうなるか」を分けて整理しましょう。",
+      "hint": "GAによって変わるのは新機能の提供の有無であって、レガシーパイプラインの動作そのものが止まるわけではありません。",
       "tags": [
         "pipelines",
         "practical"
