@@ -18245,7 +18245,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Realtime SFUのDataChannelは、デフォルトではパブリッシャーからサブスクライバーへの一方向です(`canReply`のデフォルトは`false`)。サブスクライバー側のリモートDataChannelに`canReply: true`を指定すると、そのサブスクライバーだけがパブリッシャーへ返信できるようになります。返信できるのは1つのパブリッシャーDataChannelにつき最大1つのサブスクライバーで、別のサブスクライバーに権限を与えると前のサブスクライバーの権限は置き換えられます。返信を受け取るのはパブリッシャーのみで、他のサブスクライバーには転送されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/datachannels/#return-to-publisher-canreply",
-      "hint": "設定を変えなければ、やり取りは片方向のままです。",
+      "hint": "`canReply`を設定する側は、送る側ではなく受け取る側です。",
       "tags": [
         "realtime",
         "practical"
@@ -27338,7 +27338,7 @@
       "correctIndex": 2,
       "explanation": "Request Header Transform Rulesでは、`x-cf-`や`cf-`で始まる名前のリクエストヘッダーを変更・削除することはできません。ただし例外として、`cf-connecting-ip`ヘッダーだけは削除することが許可されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/transform/request-header-modification/#important-remarks",
-      "hint": "`cf-`で始まるヘッダーには、変更や削除に制約があります。",
+      "hint": "`cf-`で始まるヘッダーは、値を書き換えることができません。",
       "tags": [
         "rules",
         "practical"
