@@ -19128,7 +19128,7 @@
       "correctIndex": 0,
       "explanation": "`cert-verification-mode`には3つのモードがあります。デフォルトの`verify_full`は証明書チェーンとホスト名の両方を検証します。`verify_ca`は証明書チェーンのみを検証し、ホスト名検証は省略します。`disabled`はサーバー証明書の検証を一切行いません。この設定はHTTP・TCPの両方のサービスタイプに適用されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#tls-certificate-verification-mode",
-      "hint": "検証の「厳しさ」が3段階に分かれていることを意識しましょう。",
+      "hint": "`disabled`は検証を行わない設定で、接続を拒否するものではありません。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -30490,7 +30490,7 @@
       "correctIndex": 2,
       "explanation": "Auto Minify(HTML・CSS・JSの自動圧縮)は2024年8月5日に非推奨となりました。APIの設定エンドポイント(`/zones/{zone_id}/settings/minify`)自体は現在も存在しますが、これはすでにAuto Minifyを使っている既存ユーザーが機能をオフに切り替えられるようにするためだけに残されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/troubleshooting/disable-auto-minify/",
-      "hint": "「新規に有効化することを推奨する機能」ではなく、「すでに使っている人がオフにするための出口」だけが残っていると考えましょう。",
+      "hint": "この機能はすでに非推奨です。",
       "tags": [
         "speed",
         "practical"
@@ -30697,7 +30697,7 @@
       "correctIndex": 0,
       "explanation": "訪問者へのコンテンツ配信時にCloudflareがデフォルトで使用する圧縮方式は、Freeプランで Zstandard、Pro・Businessプランで Brotli、Enterpriseプランで Gzipです。実際に適用される圧縮方式は、訪問者のブラウザが`accept-encoding`ヘッダーで対応を示している方式にも依存します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/content/compression/#compression-methods-by-plan",
-      "hint": "「最も新しい圧縮方式」と「最も伝統的な圧縮方式」が、意外なプランの組み合わせで既定値になっていると考えましょう。",
+      "hint": "Enterpriseプランの既定は、3つのうちいちばん新しい方式ではありません。",
       "tags": [
         "speed",
         "practical"
@@ -31269,7 +31269,7 @@
       "correctIndex": 3,
       "explanation": "公開アプリケーションではなくプライベートネットワークをCloudflare One Client経由で公開する場合、config.ymlに`warp-routing`キーを追加し`enabled: true`と設定する必要があります。設定ファイルが存在しない場合、cloudflaredはデフォルトでポート8080番にアウトバウンドトラフィックをプロキシします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/configuration-file/",
-      "hint": "公開アプリケーションとプライベートネットワークとで、設定ファイルに追加すべきキーが違うことを思い出しましょう。",
+      "hint": "設定ファイルが無いときの既定のポートは8080番です。",
       "tags": [
         "tunnel",
         "practical"
