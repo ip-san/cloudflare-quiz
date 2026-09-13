@@ -3887,9 +3887,9 @@
     "kv-012": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
-        "fp": "666bd3d03c6e",
+        "fp": "65952114f4d8",
         "gt": "da39a3ee"
       }
     ],
@@ -4609,7 +4609,7 @@
         "persona": "reviewer",
         "outcome": "clean",
         "at": "unstamped",
-        "fp": "901849297846",
+        "fp": "9fb67a19243b",
         "gt": "aa13a26d"
       }
     ],
@@ -5633,9 +5633,9 @@
     "pl-013": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "864aa619ea16",
+        "fp": "9bb6225dbcdd",
         "gt": "da39a3ee"
       }
     ],
@@ -5777,9 +5777,9 @@
     "r2-010": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "159052193a00",
+        "fp": "f7d551322ae0",
         "gt": "da39a3ee"
       }
     ],
@@ -6002,9 +6002,9 @@
     "sc-010": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "48dc9a1430e8",
+        "fp": "5ced5770f955",
         "gt": "a398ae88"
       }
     ],
@@ -6074,18 +6074,18 @@
     "sl-018": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "e4bdcde648a7",
+        "fp": "b354f5a3736e",
         "gt": "aa13a26d"
       }
     ],
     "sp-002": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "0a19b42bf15f",
+        "fp": "5d7b440873f0",
         "gt": "da39a3ee"
       }
     ],

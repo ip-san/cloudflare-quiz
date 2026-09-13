@@ -2768,7 +2768,7 @@
       "correctIndex": 1,
       "explanation": "公式ドキュメントによると、Set-Cookieヘッダーを含むレスポンスは「一意なデータを含む可能性がある」ため常にキャッシュされません。Set-Cookieを含めたままキャッシュしたい場合は、事前にそのヘッダーを削除するか、`Cache-Control: private=Set-Cookie`を設定する必要があります。\n{{diagram:0}}\nまた`put()`は、Cache-Controlがキャッシュを禁じている場合、またはレスポンスが大きすぎる場合に413エラーを返します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
-      "hint": "`put()`が条件を満たさないときは、エラーが返るだけです。",
+      "hint": "`put()`が拒否されても、Workerの実行が止まるわけではありません。",
       "tags": [
         "kv-cache",
         "trivia"
