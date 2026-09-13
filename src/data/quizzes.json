@@ -18245,7 +18245,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Realtime SFUのDataChannelは、デフォルトではパブリッシャーからサブスクライバーへの一方向です(`canReply`のデフォルトは`false`)。サブスクライバー側のリモートDataChannelに`canReply: true`を指定すると、そのサブスクライバーだけがパブリッシャーへ返信できるようになります。返信できるのは1つのパブリッシャーDataChannelにつき最大1つのサブスクライバーで、別のサブスクライバーに権限を与えると前のサブスクライバーの権限は置き換えられます。返信を受け取るのはパブリッシャーのみで、他のサブスクライバーには転送されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/datachannels/#return-to-publisher-canreply",
-      "hint": "大勢へ配信する仕組みで「返信」を許すと送り先が曖昧になります。その曖昧さをどう解消しているか(誰が何人まで返せるか)を考えましょう。",
+      "hint": "設定を変えなければ、やり取りは片方向のままです。",
       "tags": [
         "realtime",
         "practical"
@@ -18395,7 +18395,7 @@
       "correctIndex": 1,
       "explanation": "Simulcastの`priorityOrdering`は、帯域が制約されたときにどの品質レベル(RID)を優先するかを制御する設定で、`none`(常に`preferredRid`を維持)または`asciibetical`(アルファベット順で優先度を決定)を指定できます。`ridNotAvailable`は、優先していたRIDが利用できなくなった場合(パブリッシャーがそのRIDの送信を止めた場合など)の挙動を制御し、`none`(何もしない)または`asciibetical`(次点のRIDへ切り替え)を選べます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/simulcast/#quality-control",
-      "hint": "「普段の優先順位」と「いざその選択肢が消えたときの対応」は、別々の設定項目になっていると考えましょう。",
+      "hint": "どちらの設定にも、選べる値が2つずつ用意されています。",
       "tags": [
         "realtime",
         "practical"
@@ -27338,7 +27338,7 @@
       "correctIndex": 2,
       "explanation": "Request Header Transform Rulesでは、`x-cf-`や`cf-`で始まる名前のリクエストヘッダーを変更・削除することはできません。ただし例外として、`cf-connecting-ip`ヘッダーだけは削除することが許可されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/transform/request-header-modification/#important-remarks",
-      "hint": "「Cloudflare自身が内部的に使う情報を持つヘッダー」に対して、原則と唯一の例外があると考えましょう。",
+      "hint": "`cf-`で始まるヘッダーには、変更や削除に制約があります。",
       "tags": [
         "rules",
         "practical"
@@ -27587,7 +27587,7 @@
       "correctIndex": 1,
       "explanation": "301(恒久的)と302(一時的)は、リダイレクトの際にリクエストメソッドがPOSTからGETへダウングレードされることがあります。一方、307(一時的)と308(恒久的)はリクエストメソッドを保持します。「恒久的か一時的か」と「メソッドを保持するかどうか」という2つの軸で4種類のコードが整理されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/url-forwarding/",
-      "hint": "「恒久的か一時的か」という軸だけでなく、リクエストのメソッドが変わってしまうことがあるかどうか、という別の軸もあると考えましょう。",
+      "hint": "メソッドが必ずGETに変わるわけではありません。",
       "tags": [
         "rules",
         "practical"
