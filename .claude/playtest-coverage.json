@@ -6004,7 +6004,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "882d2fb62f37",
+        "fp": "48dc9a1430e8",
         "gt": "a398ae88"
       }
     ],
@@ -6056,9 +6056,9 @@
     "sl-013": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "00ae87af01bd",
+        "fp": "dab69df928e3",
         "gt": "3611f6d0"
       }
     ],
@@ -6092,9 +6092,9 @@
     "sp-003": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "1a56b82da26c",
+        "fp": "924d30a53c17",
         "gt": "da39a3ee"
       }
     ],

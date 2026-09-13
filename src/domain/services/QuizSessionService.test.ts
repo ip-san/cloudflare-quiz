@@ -546,6 +546,21 @@ describe('QuizSessionService', () => {
       expect(newState.hintsUsedCount).toBe(1)
     })
 
+    // 2026-09-13: プレイテストで「ヒントを開くと直前の選択が消える」と報告された。
+    // useHint は2つのフラグしか触らないので論理層では起きないはずで、それを固定する。
+    it('should keep the answer the user already selected', () => {
+      const questions = [createTestQuestion('q1')]
+      const config = createDefaultConfig()
+      let state = QuizSessionService.createInitialState(questions, config)
+      state = QuizSessionService.selectAnswer(state, 2)
+      expect(state.selectedAnswer).toBe(2)
+
+      const newState = QuizSessionService.useHint(state)
+
+      expect(newState.hintUsed).toBe(true)
+      expect(newState.selectedAnswer).toBe(2)
+    })
+
     it('should not change if already answered', () => {
       const questions = [createTestQuestion('q1')]
       const config = createDefaultConfig()

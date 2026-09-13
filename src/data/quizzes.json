@@ -39986,7 +39986,7 @@
       "correctIndex": 2,
       "explanation": "Spectrumはアプリケーション(ドメイン・ポートの組)単位で設定するL4のTCP/UDPプロキシで、個々のアプリケーションにDDoS防御やTLS終端を提供します。これに対しCloudflare WAN(旧Magic WAN)は拠点(サイト)間をCloudflare経由で接続するWAN-as-a-Serviceであり、Magic TransitはBGPアドバタイズしたIPプレフィックス全体をネットワーク層(L3/4)のDDoS攻撃から保護するサービスです。3つはいずれもHTTP以外のトラフィックを扱える点で共通しますが、設定・保護の単位がアプリケーション単位か、拠点単位か、IPプレフィックス全体かという点で異なります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/",
-      "hint": "Cloudflare WANが扱うのはHTTPに限りません。",
+      "hint": "Magic Transitが対象にするのは、個々のアプリケーションでしょうか、IPプレフィックス全体でしょうか。",
       "tags": [
         "spectrum",
         "magic-wan"
