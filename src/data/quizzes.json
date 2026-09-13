@@ -19390,7 +19390,7 @@
       "correctIndex": 2,
       "explanation": "Workers VPCでは、ダッシュボードを通じてリモート管理型トンネルを作成することが推奨されています。リモート管理型トンネルの設定はCloudflare側に保存されるため、ダッシュボード・API・Terraformを使ってどのマシンからでも管理できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/#create-and-run-tunnel-cloudflared",
-      "hint": "設定を「どこか1台のマシンだけに置く」のと「クラウド側で一元管理する」のとで、どちらが運用しやすいか考えましょう。",
+      "hint": "ローカルで`cloudflared tunnel create`を実行する方式は、Workers VPCで推奨される方式ではありません。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -19442,7 +19442,7 @@
       "correctIndex": 3,
       "explanation": "`cloudflared`はレプリカ間の負荷分散を行わず、レプリカはあくまで高可用性のためのものです。リクエストは最も近いレプリカにルーティングされます。オートスケーリングでレプリカを削除(ダウンスケール)すると、そのレプリカへの既存のユーザー接続が切断されてしまうため、オートスケーリング環境での`cloudflared`の利用は推奨されていません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/#cloud-platform-setup-guides",
-      "hint": "「レプリカを増減させる仕組み」と「レプリカ間で負荷を分け合う仕組み」は、必ずしもセットではないことを考えましょう。",
+      "hint": "リクエストは常に、そのとき最も近い1つのレプリカへルーティングされます。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -40864,7 +40864,7 @@
       "correctIndex": 3,
       "explanation": "Eventsは、製品ローンチのような特定の期間だけ`Total active users`・`New users per minute`・`Session duration`・`Queueing Method`などを待機室のデフォルト設定から上書きするための機能です。イベントで明示的に設定しなかった項目はデフォルト設定を継承できます。イベントは対象の待機室自体がEnabledになっていないと有効化されず、1つの待機室に持てるイベント数は5件までという上限があります。\n{{diagram:0}}\nイベント期間が重複する場合は同じ待機室内ではなく別の待機室を使う必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
-      "hint": "「恒久的な変更」なのか「期間限定の上書き」なのかに注目しましょう。",
+      "hint": "1つの待機室に設定できるイベントの数には、5件までという上限があります。",
       "tags": [
         "waiting-room",
         "topic-events"
@@ -41268,7 +41268,7 @@
       "correctIndex": 2,
       "explanation": "キューイング前後どちらにも訪問者を待たせずにメンテナンスページを配信するには、まず`Passthrough`のキューイングメソッドで待機室を作成し、平常時は全トラフィックを素通りさせます。その上で、メンテナンス期間に合わせて`Reject`のキューイングメソッドを指定したイベントを作成すると、その期間だけ全トラフィックが拒否され静的ページが返されます。イベント終了後は自動的に`Passthrough`の挙動に戻るため、メンテナンス期間の前後で訪問者が不要に待たされることがありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/additional-options/create-events/",
-      "hint": "平常時とメンテナンス期間とで、キューイングメソッドがどのように切り替わるかを考えましょう。",
+      "hint": "`Random`や`FIFO`は、名前のとおりどちらも訪問者を待機列に並ばせる方式です。",
       "tags": [
         "waiting-room",
         "topic-queueing-methods"
@@ -41434,7 +41434,7 @@
       "correctIndex": 0,
       "explanation": "`turnstile_mode`は、Turnstileウィジェットの表示形式を`off`・`invisible`・`visible_non_interactive`・`visible_managed`から選択する設定です(デフォルトは`invisible`)。`off`に設定すると統合自体を完全に無効化できます。`turnstile_action`は、訪問者がTurnstileチャレンジに失敗した場合の挙動を`log`と`infinite_queue`から選択する設定です(デフォルトは`log`)。なお、Turnstileはブラウザ向けのHTMLレスポンスにのみ適用され、JSON応答が有効な非ブラウザ向けのレスポンスでは無効化されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
-      "hint": "「表示形式」を決めるのと「失敗時の挙動」を決めるのはそれぞれどちらの設定か整理しましょう。",
+      "hint": "Turnstileチャレンジは、ブラウザ向け(HTML)のレスポンスにのみ適用され、JSON応答では無効化されます。",
       "tags": [
         "waiting-room",
         "practical"
