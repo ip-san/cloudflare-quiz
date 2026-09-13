@@ -5678,9 +5678,9 @@
     "px-006": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "8805a2f678d3",
+        "fp": "fa6ee890af6a",
         "gt": "4944e8a3"
       }
     ],
@@ -5689,7 +5689,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "54955a576db9",
+        "fp": "129ef1f754d8",
         "gt": "da39a3ee"
       }
     ],
@@ -5858,9 +5858,9 @@
     "rt-011": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "3ec8de55ce6b",
+        "fp": "92767311a7e3",
         "gt": "65776863"
       }
     ],
@@ -5912,9 +5912,9 @@
     "ru-005": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "51813760f282",
+        "fp": "07db5cbe344b",
         "gt": "da39a3ee"
       }
     ],
@@ -6004,7 +6004,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "f94ca998a3ce",
+        "fp": "882d2fb62f37",
         "gt": "a398ae88"
       }
     ],
@@ -6029,9 +6029,9 @@
     "sl-003": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "9d9d6f0bcdbd",
+        "fp": "a3c581ed324f",
         "gt": "d72d92ce"
       }
     ],
@@ -6047,9 +6047,9 @@
     "sl-010": [
       {
         "persona": "busy-intermediate",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
-        "fp": "ce9485a2e460",
+        "fp": "5cdacfbd1619",
         "gt": "2da0632a"
       }
     ],
@@ -6058,7 +6058,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "91c70bda19e1",
+        "fp": "00ae87af01bd",
         "gt": "3611f6d0"
       }
     ],
@@ -6094,7 +6094,7 @@
         "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
-        "fp": "58398d7a8945",
+        "fp": "1a56b82da26c",
         "gt": "da39a3ee"
       }
     ],

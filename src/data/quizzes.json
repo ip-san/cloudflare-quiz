@@ -29572,7 +29572,7 @@
       "correctIndex": 0,
       "explanation": "Advanced Certificate Managerで発行する証明書には、最大50個のホスト名(SAN)を含めることができ、そのうちの1つはゾーンApexである必要があります。Enterpriseプランでは、Advanced Certificate Managerのサブスクリプションによって1ゾーンあたり最大100個のエッジ証明書を追加できます。証明書はDomain Validated(DV)で、Cloudflare PagesやR2のカスタムドメインには適用されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/advanced-certificate-manager/",
-      "hint": "発行される証明書はDomain Validated(DV)です。",
+      "hint": "1つの証明書に入れられるホスト名は無制限ではありません。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -29982,7 +29982,7 @@
       "correctIndex": 1,
       "explanation": "Freeプランでは、RUMが自動的に有効化されており、デフォルトではEEA/UK/スイスのトラフィックが除外されます。この挙動は必要に応じてオフに切り替えることができます。Free以外のプランでは、必要に応じてRUMを有効化します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/observatory/#real-user-monitoring-rum",
-      "hint": "一部の地域は、収集の対象から外れます。",
+      "hint": "Freeプランでも使えます。",
       "tags": [
         "speed",
         "practical"
@@ -39986,7 +39986,7 @@
       "correctIndex": 2,
       "explanation": "Spectrumはアプリケーション(ドメイン・ポートの組)単位で設定するL4のTCP/UDPプロキシで、個々のアプリケーションにDDoS防御やTLS終端を提供します。これに対しCloudflare WAN(旧Magic WAN)は拠点(サイト)間をCloudflare経由で接続するWAN-as-a-Serviceであり、Magic TransitはBGPアドバタイズしたIPプレフィックス全体をネットワーク層(L3/4)のDDoS攻撃から保護するサービスです。3つはいずれもHTTP以外のトラフィックを扱える点で共通しますが、設定・保護の単位がアプリケーション単位か、拠点単位か、IPプレフィックス全体かという点で異なります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/",
-      "hint": "3つのサービスは、何を単位に設定するかが違います。",
+      "hint": "Cloudflare WANが扱うのはHTTPに限りません。",
       "tags": [
         "spectrum",
         "magic-wan"
