@@ -19494,7 +19494,7 @@
       "correctIndex": 1,
       "explanation": "Workers VPCでは、1アカウントあたり最大1,000個までのVPC Serviceを作成できます。VPC Service経由のリクエストにも、リクエストサイズ・タイムアウト・サブリクエスト数といった通常のWorkersの制限がそのまま適用されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/reference/limits/",
-      "hint": "「VPC Service固有の上限」と「Workers全般にもともとある上限」の両方が関係することを意識しましょう。",
+      "hint": "VPC Serviceの作成数には上限があります。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -22536,7 +22536,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflareのセキュリティ機能はRuleset Engineが管理する固定のフェーズ順序で実行されます。具体的には、`ddos_l7`(DDoS対策) → `http_request_firewall_custom`(カスタムルール) → `http_ratelimit`(レート制限ルール) → `http_request_firewall_managed`(マネージドルール) → `http_request_sbfm`(Super Bot Fight Mode)の順です。途中でBlockなどの終端アクションに一致すると、以降のフェーズは評価されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/feature-interoperability/",
-      "hint": "「まず攻撃の大波を防ぎ」「次に自分のルールで絞り」「それから頻度を見て」「最後にCloudflare標準の防御とボット対策」という流れを考えましょう。",
+      "hint": "Super Bot Fight Modeの評価はいちばん最後です。",
       "tags": [
         "waf",
         "practical"
@@ -22638,7 +22638,7 @@
       "correctIndex": 2,
       "explanation": "カスタムルールの最大作成数は、カスタムルールが実行される`http_request_firewall_custom`フェーズに属するすべてのルールに適用されます。具体的には、ゾーンレベルではカスタムルール本体とゾーンレベルのカスタムルールセット内のルールを合算し、アカウントレベルではアカウントレベルのカスタムルールセット内のルールを合算します。ゾーンとアカウントはそれぞれ別のスコープとして上限が管理されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/custom-rules/",
-      "hint": "「同じフェーズで動くルールをすべて合算する」という数え方を、ゾーンとアカウントそれぞれで考えましょう。",
+      "hint": "マネージドルールは別のフェーズで実行されます。",
       "tags": [
         "waf",
         "practical"
@@ -22740,7 +22740,7 @@
       "correctIndex": 3,
       "explanation": "Non-Interactive Challenge(`js_challenge`)・Managed Challenge(`managed_challenge`)・Interactive Challenge(`challenge`)・Block(`block`)はいずれも終端アクションで、一致すると以降のルール評価を停止します。`log`アクションはマッチしたリクエストを記録するだけの非終端アクションで、Enterpriseプランでのみ利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ruleset-engine/rules-language/actions/",
-      "hint": "「チャレンジ系とBlock」がどちらも同じ性質を持ち、「ログだけ残す」アクションがどのプラン限定かを考えましょう。",
+      "hint": "`execute`はダッシュボードのアクション選択には表示されません。",
       "tags": [
         "waf",
         "practical"
@@ -22793,7 +22793,7 @@
       "correctIndex": 1,
       "explanation": "Blockアクションが返すHTTPステータスコードは、多くのセキュリティ機能では`403`ですが、レート制限ルールによるBlockでは`429`が返されます。Proプラン以上では、カスタムルールやレート制限ルールごとにブロック時のレスポンス(HTML・JSON・XML・プレーンテキストや任意のステータスコード)をカスタマイズできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ruleset-engine/rules-language/actions/",
-      "hint": "「一般的な拒否」と「頻度制限による拒否」とで、返るステータスコードの意味合いが異なることを考えましょう。",
+      "hint": "ステータスコードやレスポンス内容を変えられるかは、プランによります。",
       "tags": [
         "waf",
         "practical"
@@ -40979,7 +40979,7 @@
       "correctIndex": 2,
       "explanation": "JSON応答を利用するには、リクエストヘッダーに`Accept: application/json`を(他の値を混在させず)厳密に一致させて送信する必要があります。待機中は`cfWaitingRoom`オブジェクトにJSONで待機情報が返されるため、クライアント(モバイルアプリやバックエンドサービス)は`refreshIntervalSeconds`で指定された間隔ごとにリクエストを再送し、待機列内での順番を進める必要があります。また、レスポンスヘッダーで受け取ったクッキーを次のリクエストに含める必要があり、これを怠ると新規ユーザーとして待機列の末尾に回されます。\n{{diagram:0}}\nTurnstileはブラウザ向けのHTMLレスポンスでのみ有効で、JSON応答では無効化されます。この機能はAdvanced Waiting Room customer限定です。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/how-to/json-response/",
-      "hint": "ヘッダーの厳密な一致条件と、クライアント側が定期的に何をすべきかに注目しましょう。",
+      "hint": "JSON応答モードでもクッキーの送受信は必須です。",
       "tags": [
         "waiting-room",
         "practical"
@@ -41215,7 +41215,7 @@
       "correctIndex": 2,
       "explanation": "`queueing_method`を`Passthrough`に設定すると、全トラフィックが即座にオリジンへ素通りします。この状態でもtotal active users・new users per minute・time on originなどのトラフィック分析データは引き続き収集されるため、閾値設定を検討するための有用なテストとして利用できます。イベント機能と組み合わせ、平常時はPassthroughにしておき、需要が急増する期間だけEventsでキューイングメソッドをFIFOなどへ切り替える、という運用によく使われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/queueing-methods/",
-      "hint": "「素通りさせつつ何を収集し続けるか」に注目しましょう。",
+      "hint": "`Passthrough`は通常の待機室の`queueing_method`としても指定できます。",
       "tags": [
         "waiting-room",
         "topic-queueing-methods"
