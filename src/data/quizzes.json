@@ -1207,15 +1207,15 @@
         },
         {
           "text": "`name` と `main` の2つだけが必須で、`compatibility_date` は省略すると常に最新のランタイムが自動的に使われる",
-          "wrongFeedback": "WorkersはDockerコンテナではなくV8アイソレート上で動作するため、コンテナイメージやポートの指定は不要です。"
+          "wrongFeedback": "`compatibility_date` は必須項目です。省略すると最新のランタイムが自動で使われる、という挙動ではありません。"
         },
         {
           "text": "`name`、`main`、`compatibility_date` に加えて `account_id`（アカウントID）も必須で、設定ファイルに書かないとデプロイできない",
-          "wrongFeedback": "デプロイに必須なのは`name`・`main`・`compatibility_date`です。`placement.region`のような配置ヒントの設定は実在しますが必須項目ではなく、`memory_limit`という項目自体がありません。"
+          "wrongFeedback": "`account_id` は任意です。環境変数 `CLOUDFLARE_ACCOUNT_ID` からも与えられます。"
         },
         {
           "text": "`name`、`main`、`compatibility_date`、`compatibility_flags`（互換性フラグ）の4つが必須で、フラグは日付と必ず対で指定する",
-          "wrongFeedback": "接続文字列や秘密鍵は`wrangler secret`で管理すべき機密情報であり、平文の設定ファイルに直接書くべきではありません。"
+          "wrongFeedback": "`compatibility_flags` は任意です。`compatibility_date` と併用することは多いものの、対で指定しなければならないわけではありません。"
         }
       ],
       "correctIndex": 0,
@@ -1262,18 +1262,18 @@
       "options": [
         {
           "text": "`npm create cloudflare@latest -- --template=nextjs`",
-          "wrongFeedback": "`wrangler init` は内部的にC3（create-cloudflare）を呼び出すため、フレームワークテンプレートの選択自体はできますが、`--framework`というフラグはサポートされていません。"
+          "wrongFeedback": "`--template` に渡すのは `user/repo` のような既存リポジトリの参照で、フレームワーク名ではありません。フレームワークは対話プロンプトで選びます。"
         },
         {
           "text": "`npm create cloudflare@latest`"
         },
         {
           "text": "`wrangler init --from-dash <WORKER_NAME>`",
-          "wrongFeedback": "そのようなサブコマンドは存在しません。Pagesプロジェクトの作成は`wrangler pages project create`、デプロイは`wrangler pages deploy`です。"
+          "wrongFeedback": "`--from-dash` は実在するフラグですが、ダッシュボード上にすでにあるWorkerをローカルへ取り込むためのものです。フレームワークの雛形を新規に作る用途ではありません。"
         },
         {
           "text": "`wrangler pages deploy`",
-          "wrongFeedback": "`wrangler deploy` は既存プロジェクトを公開するコマンドであり、テンプレートから新規作成する機能はありません。"
+          "wrongFeedback": "`wrangler pages deploy` はビルド済みの成果物をアップロードするコマンドで、テンプレートからの生成や依存関係のインストールは行いません。"
         }
       ],
       "correctIndex": 1,
@@ -1572,15 +1572,15 @@
       "options": [
         {
           "text": "`wrangler.toml`の`vars`セクションに、KVネームスペースのIDを文字列としてそのまま書き込む",
-          "wrongFeedback": "ブラウザの開発者ツールでバインディングを設定する仕組みはありません。"
+          "wrongFeedback": "`vars` は文字列やJSON値を渡す環境変数用のセクションです。KVのようなリソースへの接続は `kv_namespaces` など専用のセクションで宣言します。"
         },
         {
           "text": "Cloudflareダッシュボードの対象Worker設定画面でバインディングを追加する。設定ファイルへの反映は不要である",
-          "wrongFeedback": "請求設定画面ではバインディングは宣言できません。設定ファイルで宣言します。"
+          "wrongFeedback": "ダッシュボードからも追加できますが、Wranglerを使う場合は設定ファイルが正（source of truth）です。設定ファイルに反映しないと次回のデプロイで上書きされます。"
         },
         {
           "text": "プロジェクトルートの`.dev.vars`ファイルに`MY_KV=<ネームスペースID>`のように書く",
-          "wrongFeedback": "バインディングはコード内で動的に生成するものではなく、設定ファイルで宣言し、実行時に `env` オブジェクト経由でアクセスします。"
+          "wrongFeedback": "`.dev.vars` はローカル開発用のシークレットや環境変数を読み込む仕組みで、リソースバインディングの宣言には使いません。"
         },
         {
           "text": "`wrangler.toml`に`kv_namespaces`などのリソース種別ごとのセクションとして宣言する"
@@ -9908,7 +9908,7 @@
         },
         {
           "text": "Sippyを有効にし、移行元のクレデンシャルを指定してバケット全体のオブジェクトをR2へ一括コピーする",
-          "wrongFeedback": "KVは小さな値向けであり、大量データの移行経路としては使われません。専用の移行ツールSuper Slurperを使います。"
+          "wrongFeedback": "Sippy はリクエストされたオブジェクトを都度コピーする仕組みで、バケット全体を一括でコピーする用途には使いません。一括コピーは Super Slurper です。"
         },
         {
           "text": "R2にはデータ移行支援機能はなく、S3互換APIを使って自前でダウンロード＆アップロードのスクリプトを書く必要がある",
@@ -13061,22 +13061,22 @@
       "options": [
         {
           "text": "Transformations はURLのクエリパラメータを指定して呼び出す方式、Hosted images はWorkersのImagesバインディング（`env.IMAGES`）を経由してのみ呼び出す方式という、アクセス方法の違いである",
-          "wrongFeedback": "どちらもCloudflareのエッジで処理します。違いは「元画像がどこにあるか」であって処理場所ではありません。"
+          "wrongFeedback": "Imagesバインディングは Hosted images 専用ではありません。R2 や `fetch()` のレスポンスなど、任意のソースの画像に使えます。"
         },
         {
           "text": "Transformations もHosted imagesも、配信前にダッシュボードで許可するオリジンを『Define source origins』として明示する必要がある点は共通である",
-          "wrongFeedback": "どちらも静止画像の機能です。動画は Stream が扱います。両者の違いは画像の保存場所です。"
+          "wrongFeedback": "「Define source origins」が必要なのは、外部のオリジンから画像を取りに行く Transformations だけです。"
         },
         {
           "text": "Transformations もHosted imagesも、あらかじめ用意した`Variant`（`width`/`height`/`fit`/`blur`の組み合わせ）を指定して配信するという点で違いはない",
-          "wrongFeedback": "料金区分ではなく、画像の保存場所と管理方法の違いです(リモート画像の最適化か、Images へのホストか)。"
+          "wrongFeedback": "`Variant` を使えるのは Hosted images 側だけで、Transformations にこの仕組みはありません。"
         },
         {
           "text": "Transformations は任意のオリジンに置いたリモート画像をその場で最適化し、Hosted images は画像をImages側に保存して配信まで任せる"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Imagesには2つの使い方があります。Transformations は、R2やS3互換バケットなど任意のオリジンに保存された「リモート画像」を、その場で最適化・変換して配信します。\n{{diagram:0}}\nHosted images は、画像をImagesのストレージにアップロードし、保存・最適化・配信までを一括でCloudflareに任せる方式です。呼び出し方（URLのクエリパラメータか、Workersのバインディングか）はどちらの使い方でも選べる別軸の話であり、Hosted images専用のアクセス方法ではありません。また、外部のオリジンを許可する「Define source origins」の設定が必要なのは、外部にある画像を取りに行くTransformationsだけで、画像自体をImagesに保存するHosted imagesには不要です。画像を`width`/`height`/`fit`/`blur`の組み合わせで指定する定義済みの`Variant`という仕組みは、Hosted images側だけに存在し、Transformationsにはこの概念はありません。",
+      "explanation": "Imagesには2つの使い方があります。Transformations は、R2やS3互換バケットなど任意のオリジンに保存された「リモート画像」を、その場で最適化・変換して配信します。\n{{diagram:0}}\nHosted images は、画像をImagesのストレージにアップロードし、保存・最適化・配信までを一括でCloudflareに任せる方式です。呼び出し方（URLのクエリパラメータか、Workersのバインディングか）はどちらの使い方でも選べる別軸の話であり、Hosted images専用のアクセス方法ではありません。また、外部のオリジンを許可する「Define source origins」の設定が必要なのは、外部にある画像を取りに行くTransformationsだけで、画像自体をImagesに保存するHosted imagesには不要です。あらかじめ定義しておく`Variant`という仕組みを使えるのも Hosted images 側だけで、Transformations にこの仕組みはありません。",
       "referenceUrl": "https://developers.cloudflare.com/images/get-started/key-concepts/",
       "hint": "定義済みの`Variant`を指定して配信できるのは、2つのうち一方だけです。",
       "tags": [
@@ -25967,18 +25967,18 @@
       "options": [
         {
           "text": "Cloudflare Cookieのみで判定するタイプ、Cloudflare CookieにHTTPヘッダーをフォールバックとして加えるタイプ、クライアントIPアドレスのみで判定するタイプの3つ",
-          "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
+          "wrongFeedback": "フォールバックに使われるのはクライアントIPアドレスであり、HTTPヘッダーではありません。クライアントIPのみで判定する独立したタイプもありません。"
         },
         {
           "text": "Cloudflare Cookieのみで判定するタイプ、Cloudflare Cookieに加えクライアントIPをフォールバックとして使うタイプ、HTTPヘッダーで判定するタイプの3つ"
         },
         {
           "text": "Cloudflare Cookieのみで判定するタイプ、HTTPヘッダーで判定するタイプ、DNS-onlyモード向けのDNS persistenceを使うタイプの3つ",
-          "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
+          "wrongFeedback": "DNS persistence は、DNS-onlyモードで Session Affinity が使えない場合の別の代替手段であり、3タイプの1つではありません。"
         },
         {
           "text": "フェイルオーバーが起きないNoneタイプ、一時的に他のエンドポイントへ振り替えるTemporaryタイプ、Cookieを更新して新エンドポイントへ切り替えるStickyタイプの3つ",
-          "wrongFeedback": "そのようなタイプはありません。Session Affinityのタイプは「Cloudflare Cookieのみ」「Cloudflare Cookie + クライアントIPフォールバック」「HTTPヘッダー」の3つです。"
+          "wrongFeedback": "None・Temporary・Sticky は Zero-Downtime Failover の選択肢であり、Session Affinity のタイプではありません。"
         }
       ],
       "correctIndex": 1,
