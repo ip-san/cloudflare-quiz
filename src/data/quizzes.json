@@ -16464,7 +16464,7 @@
       "correctIndex": 2,
       "explanation": "Workers for Platformsは月額$25の基本プランに、月2000万リクエスト・月6000万CPUミリ秒・1000スクリプトまでの利用枠が含まれており、超過分にのみ追加料金(リクエスト100万件あたり$0.30など)が発生します。dispatch Worker→user Worker→Outbound Workerのチェーン全体でリクエスト課金は1回分としてカウントされます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/pricing/",
-      "hint": "「基本料金に含まれる範囲」と「それを超えた分の追加料金」という2段階の構造を意識しましょう。",
+      "hint": "課金の対象はWorkerへの受信リクエストで、サブリクエストには別途課金されません。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -16524,7 +16524,7 @@
       "correctIndex": 3,
       "explanation": "Workers for Platformsでは、分離のためnamespace内の全Workerで`caches.default`が無効化されています。また現時点ではuser WorkerはGradual Deploymentsに対応しておらず、変更を加えると新しいバージョンが一括で100%のトラフィックにデプロイされます。一方でスクリプト数やDurable Objectのnamespace数には上限がありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/limits/",
-      "hint": "「上限がないもの」と「まだ対応していない機能」を分けて整理しましょう。",
+      "hint": "Durable Objectのnamespace数に、Workers for Platforms特有の上限はありません。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -41708,7 +41708,7 @@
       "correctIndex": 2,
       "explanation": "Zarazでサーバーサイド実行されるツールへの通信は、ブラウザから直接ではなくCloudflareのエッジから送信されます。そのため、エッジを通過する際に「Trim IP addresses」(IPアドレスの一部を切り詰める)や「Clean User Agent strings」(User Agent文字列からセンシティブな情報を除去する)といった設定を使い、第三者に渡す前に情報を加工できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
-      "hint": "サーバーサイドで実行されるツールへの通信が、どこから送信され、途中でどのような加工が可能かを考えましょう。",
+      "hint": "サードパーティのツールへの通信は、ブラウザが直接送っているわけではありません。",
       "tags": [
         "zaraz",
         "topic-privacy"
@@ -41830,7 +41830,7 @@
       "correctIndex": 3,
       "explanation": "ユーザーの同意設定は、JSON形式のファーストパーティCookieに保存され、各PurposeのIDに対してtrue(同意)/false(拒否)/値なし(未選択)のいずれかがマッピングされます。\n{{diagram:0}}\nPurposeが割り当てられていないツールはデフォルトで同意チェックをスキップしてロードされてしまうため、意図しない動作を避けるにはPurposeの割り当てを確認する必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/consent-management/",
-      "hint": "同意状態がどこに、どのような形式で保存されるかを思い出しましょう。",
+      "hint": "同意モーダルは、`zaraz.showConsentModal()`を呼べば再表示できます。",
       "tags": [
         "zaraz",
         "topic-consent"
@@ -41880,7 +41880,7 @@
       "correctIndex": 0,
       "explanation": "Preview & Publishワークフローを有効にすると、ダッシュボードでの変更はすぐには公開されず、ブラウザのコンソールで`zaraz.preview(\"<デバッグキー>\")`を実行することで、自分のブラウザ上だけで未公開の変更を試すことができます。問題なければダッシュボードから「Publish」を選択して全ユーザーに反映します。\n{{diagram:0}}\nなおZarazはデフォルトではリアルタイムに変更を反映する設計であり、Preview & Publishはあえて有効化するオプションです。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/history/preview-mode/",
-      "hint": "「公開前に自分だけで試す」ためにブラウザのコンソールで何を実行するかを考えましょう。",
+      "hint": "Preview & Publishを有効にすると、`Zaraz History`にはむしろアクセスできるようになります。",
       "tags": [
         "zaraz",
         "topic-workflow"
@@ -42338,7 +42338,7 @@
       "correctIndex": 3,
       "explanation": "Click listenerをCSSセレクタ型で設定する場合、`#`(ID)や`.`(クラス)などの記号を省略すると正しく動作しないため、必ず含める必要があります。また、`<a>`タグのようなリンク要素のクリックを追跡したい場合は、要素そのものではなく`href`属性に対するリスナーを個別に作成する必要があります。`Wait for actions`はミリ秒単位で指定し、指定した時間だけページ遷移を待たせてリクエストの送信を完了させます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
-      "hint": "CSSセレクタの書き方やリンク要素の扱いについて、細かな設定上の注意点を思い出しましょう。",
+      "hint": "`Wait for actions`はミリ秒単位で指定します。",
       "tags": [
         "zaraz",
         "topic-triggers"
