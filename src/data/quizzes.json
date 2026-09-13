@@ -1649,25 +1649,25 @@
       "question": "本番環境にデプロイ済みのWorkerで発生しているエラーの原因を、リアルタイムのログを見ながら調査したい場合、どのコマンドを使いますか？",
       "options": [
         {
-          "text": "`wrangler logs export`",
-          "wrongFeedback": "そのようなコマンドはWranglerには存在しません。"
+          "text": "`wrangler tail`を実行すると、対象Workerへのリクエストに対する例外(エラー)情報のみが表示され、`console.log`による出力はストリーミング対象に含まれない",
+          "wrongFeedback": "説明が逆です。`wrangler tail`は例外情報だけでなく、`console.log`によるコンソール出力も含めてリアルタイムのログフィードに表示します。"
         },
         {
-          "text": "`wrangler tail`"
+          "text": "`wrangler tail`を実行すると、対象Workerへの実際のリクエストに対する`console.log`の出力や例外情報をリアルタイムでストリーミング表示できる"
         },
         {
-          "text": "`wrangler dev --logs`",
-          "wrongFeedback": "`wrangler dev` はローカル開発サーバーを起動するコマンドであり、本番Workerのログをストリーミングする機能ではありません。"
+          "text": "`wrangler dev --logs`を実行すれば、ローカル開発サーバーを起動しながら本番Workerのリアルタイムログも確認できる",
+          "wrongFeedback": "`wrangler dev`はローカル開発サーバーを起動するコマンドであり、本番Workerのリアルタイムログをストリーミングする機能ではありません。"
         },
         {
-          "text": "`wrangler deploy --verbose`",
-          "wrongFeedback": "`--verbose` はデプロイ処理自体の詳細出力を増やすものであり、デプロイ後のリアルタイムログとは異なります。"
+          "text": "`wrangler deploy --verbose`を実行すれば、デプロイ完了後もそのまま本番Workerのリアルタイムログを表示し続けられる",
+          "wrongFeedback": "`--verbose`はデプロイ処理自体の詳細出力を増やすフラグであり、デプロイ後も継続してログを表示し続けるものではありません。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "`wrangler tail` を実行すると、指定したWorkerに対する実際のリクエストのログ（`console.log` の出力や例外情報など）をリアルタイムでストリーミング表示できます。\n{{diagram:0}}\nフィルタ（ステータスコードやHTTPメソッドなど）を付けて絞り込むこともでき、本番障害の原因調査に役立ちます。",
+      "explanation": "`wrangler tail` を実行すると、指定したWorkerに対する実際のリクエストのログ(`console.log` の出力や例外情報など)をリアルタイムでストリーミング表示できます。例外情報だけでなく`console.log`の出力も対象に含まれます。\n{{diagram:0}}\n一方、`wrangler dev`はローカル開発サーバーを起動するコマンド、`wrangler deploy --verbose`はデプロイ処理自体の詳細出力を増やすフラグであり、どちらも本番Workerのリアルタイムログをストリーミングする機能ではありません。フィルタ(ステータスコードやHTTPメソッドなど)を付けて絞り込むこともでき、本番障害の原因調査に役立ちます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#tail",
-      "hint": "デプロイ済みWorkerの今のログをリアルタイムで流し見したいときのコマンドを考えましょう。",
+      "hint": "`wrangler dev`はローカル開発サーバーを起動するコマンド、`wrangler deploy`はデプロイ処理を行うコマンドです。どちらも本番環境で実行中のログを継続的に流し見る機能ではありません。",
       "tags": [
         "wrangler",
         "practical",
@@ -4263,25 +4263,25 @@
       "question": "Workers バインディングでR2バケット内のオブジェクト一覧を取得したい場合に使用するメソッドはどれですか？",
       "options": [
         {
-          "text": "env.MY_BUCKET.get()",
-          "wrongFeedback": "get()は特定のキーのオブジェクトを取得するためのメソッドです。一覧取得にはlist()を使います。"
+          "text": "`env.MY_BUCKET.get()`。指定したキーに対応する単一のオブジェクトを取得するメソッドで、バケット内のオブジェクト一覧を取得することはできない",
+          "wrongFeedback": "キーが分かっている1件を取り出す用途のメソッドなので、どんなキーがあるかを知りたい今回の場面では使えません。"
         },
         {
-          "text": "env.MY_BUCKET.head()",
-          "wrongFeedback": "head()は特定オブジェクトのメタデータのみを取得するメソッドで、一覧取得には使えません。"
+          "text": "`env.MY_BUCKET.list()`。ただし返されるのはオブジェクトのキー(名前)のみで、サイズや最終更新日時などのメタデータは含まれない",
+          "wrongFeedback": "list()というメソッド名自体は正しいのですが、返り値の説明が誤りです。list()が返す`R2Object`には、キーだけでなくサイズ・アップロード日時(`uploaded`)・`etag`・`httpMetadata`・`customMetadata`なども含まれます。"
         },
         {
-          "text": "env.MY_BUCKET.put()",
-          "wrongFeedback": "put()はオブジェクトを書き込む（アップロードする）メソッドです。一覧取得にはlist()を使います。"
+          "text": "`env.MY_BUCKET.put()`。指定したキーでオブジェクトを書き込む(アップロードする)メソッドで、バケット内のオブジェクト一覧を取得することはできない",
+          "wrongFeedback": "put()はオブジェクトを書き込む(アップロードする)メソッドです。一覧取得にはlist()を使います。"
         },
         {
-          "text": "env.MY_BUCKET.list()"
+          "text": "`env.MY_BUCKET.list()`。返り値の`R2Objects`にはキーだけでなく、サイズ・アップロード日時・メタデータなどを含む`R2Object`の配列が含まれる"
         }
       ],
       "correctIndex": 3,
-      "explanation": "R2 Workers バインディングAPIには get/put/delete/head/list などのメソッドがあります。list()はプレフィックスによるフィルタやページネーション（cursor）をサポートし、バケット内のオブジェクト一覧を取得できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "R2 Workers バインディングAPIには get/put/delete/head/list などのメソッドがあります。list()はプレフィックスによるフィルタやページネーション(cursor)をサポートし、バケット内のオブジェクト一覧を取得できます。返り値の`R2Objects`に含まれる各`R2Object`には、キーだけでなくサイズ・アップロード日時(`uploaded`)・`etag`・`httpMetadata`・`customMetadata`などのメタデータも含まれます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
-      "hint": "バケットの中身を洗い出すために使う、R2バインディングのメソッドを考えましょう。",
+      "hint": "`get()`は特定の1件を取得するメソッド、`put()`は書き込み(アップロード)のためのメソッドです。",
       "tags": [
         "r2",
         "practical"
@@ -8543,15 +8543,15 @@
       "question": "WranglerはTOML形式（`wrangler.toml`）に加えて、コメントを書けるJSON形式でも設定ファイルを記述できます。その場合の正しいファイル名はどれですか？",
       "options": [
         {
-          "text": "`wrangler.config.json`",
-          "wrongFeedback": "Wranglerが認識する設定ファイル名ではありません。"
+          "text": "`wrangler.config.jsonc`",
+          "wrongFeedback": "他のツールによくある「ツール名.config.拡張子」という命名とは異なり、Wranglerが認識する設定ファイル名は`wrangler.json`または`wrangler.jsonc`です。`.config`を挟んだ名前は認識されません。"
         },
         {
           "text": "`wrangler.jsonc`"
         },
         {
-          "text": "`config/wrangler.json`",
-          "wrongFeedback": "プロジェクトルート以外のこのようなパス配置は、Wranglerが自動的には認識しません。"
+          "text": "`config/wrangler.jsonc`",
+          "wrongFeedback": "`wrangler.jsonc`という名前自体は正しい拡張子ですが、Wranglerは既定でプロジェクトルート直下のファイルを探すため、`config/`のようなサブディレクトリに置いても自動的には認識されません。"
         },
         {
           "text": "`.wranglerrc.json`",
@@ -8559,9 +8559,9 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Wranglerはプロジェクトルートに置かれた `wrangler.toml` に加え、`wrangler.json` または `wrangler.jsonc`（コメント付きJSON）形式の設定ファイルもサポートしています。\n{{diagram:0}}\n記述できる項目はTOML版と同じで、好みや既存のツールチェインとの親和性に応じて選べます。ただし1つのプロジェクトに複数の設定ファイルを混在させるのは避け、どちらか一方の形式に統一するのが安全です。",
+      "explanation": "Wranglerはプロジェクトルート直下に置かれた `wrangler.toml` に加え、`wrangler.json` または `wrangler.jsonc`（コメント付きJSON）形式の設定ファイルもサポートしています。他のツールに見られる「ツール名.config.拡張子」という命名(例: `vite.config.ts`)や、`config/`サブディレクトリへの配置、`.wranglerrc`のようなdotfile+rc形式は、Wranglerでは使われません。\n{{diagram:0}}\n記述できる項目はTOML版と同じで、好みや既存のツールチェインとの親和性に応じて選べます。ただし1つのプロジェクトに複数の設定ファイルを混在させるのは避け、どちらか一方の形式に統一するのが安全です。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
-      "hint": "TOMLではなくJSON形式で書きたいが、コメントも残したい場合の拡張子を考えましょう。",
+      "hint": "Wranglerの設定ファイルは、プロジェクトルート直下に置く必要があります。",
       "tags": [
         "wrangler",
         "practical"
@@ -10666,25 +10666,25 @@
       "question": "Gitリポジトリと連携せずに、ローカルのビルド成果物を直接 Cloudflare Pages にデプロイする方法として正しいものはどれか。",
       "options": [
         {
-          "text": "`wrangler pages deploy <ビルド出力ディレクトリ>` を実行して、ビルド済みファイルを直接アップロードする(Direct Upload)"
+          "text": "`wrangler pages deploy <ビルド出力ディレクトリ>` を実行してビルド済みファイルを直接アップロードする(Direct Upload)。この方法はGitHub Actionsに限らず、任意のCI/CD環境やローカル環境から実行できる"
         },
         {
-          "text": "GitHub Actions以外のCI/CDサービスからはPagesへデプロイできない",
-          "wrongFeedback": "`wrangler pages deploy` はどのCI/CD環境やローカル環境からでも実行でき、GitHub Actionsに限定されません。"
+          "text": "`wrangler pages deploy`でDirect Uploadとしてプロジェクトを開始した場合でも、後から必要に応じてGit連携(GitHub/GitLab)に切り替えて自動デプロイへ移行できるため、柔軟に運用方法を変更できる",
+          "wrongFeedback": "逆です。Direct Uploadを選んだプロジェクトは、後からGit連携に切り替えることはできません。自動デプロイを使いたい場合は、Git連携の新しいプロジェクトを作り直す必要があります。"
         },
         {
-          "text": "Pages に`wrangler pages deploy`のようなCLIコマンドは存在せず、GitHubまたはGitLabとの連携以外のデプロイ方法をサポートしていない",
-          "wrongFeedback": "`wrangler pages deploy` コマンドを使ったDirect Uploadにより、Git連携なしでもデプロイできます。"
+          "text": "`wrangler pages deploy`コマンドは、ドラッグ&ドロップと同様にZIPファイルをそのまま指定してアップロードすることにも対応しており、フォルダにまとめる手間を省いてデプロイできる",
+          "wrongFeedback": "逆です。ZIPファイルのアップロードに対応しているのはドラッグ&ドロップの方です。Wrangler CLIでは単一フォルダのアセットのみに対応しており、ZIPファイルはサポートされていません。"
         },
         {
-          "text": "デプロイ用のZIPファイルをメールでCloudflareサポートに送付し、手動でアップロードしてもらう",
-          "wrongFeedback": "そのような手動プロセスは不要で、`wrangler` CLIから直接アップロードできます。"
+          "text": "Cloudflareダッシュボードでビルド出力フォルダをドラッグ&ドロップしてデプロイする方法でも、`functions/`フォルダに書かれたPages Functionsが問題なくコンパイルされ、Wranglerを使わずに済む",
+          "wrongFeedback": "逆です。ドラッグ&ドロップによるデプロイは`functions/`フォルダ(Pages Functions)のコンパイルに対応していません。Functionsを使う場合はWranglerでのデプロイが必要です。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflare Pages はGit連携によるデプロイに加え、`wrangler pages deploy <ビルド出力ディレクトリ>` コマンドを使ってビルド済みの静的ファイルを直接アップロードする「Direct Upload」もサポートしています。\n{{diagram:0}}\nこれにより、任意のCI/CDパイプラインやローカル環境から、Gitリポジトリ連携なしでデプロイが可能です。\n{{diagram:1}}",
+      "explanation": "Cloudflare Pages はGit連携によるデプロイに加え、`wrangler pages deploy <ビルド出力ディレクトリ>` コマンドを使ってビルド済みの静的ファイルを直接アップロードする「Direct Upload」もサポートしています。この方法はGitHub Actionsに限らず、任意のCI/CDパイプラインやローカル環境から実行できます。\n{{diagram:0}}\nWrangler CLIでのDirect Uploadで送れるのは単一フォルダにまとめられたアセットのみで、ZIPファイルはサポートされていません(ZIPファイルの直接アップロードに対応するのはダッシュボードのドラッグ&ドロップの方です)。また、Direct Uploadとして作成したプロジェクトは後からGit連携に切り替えることはできず、自動デプロイを使いたい場合はGit連携の新しいプロジェクトを作り直す必要があります。ドラッグ&ドロップによるデプロイは`functions/`フォルダ(Pages Functions)のコンパイルに対応しておらず、Functionsを使う場合はWranglerでのデプロイが必要です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/get-started/direct-upload/",
-      "hint": "GitHubを経由しない場合、手元のビルド成果物をCloudflareに届ける別の手段があるか考えましょう。",
+      "hint": "Wrangler CLIでのDirect Uploadで送れるのは、単一フォルダにまとめられたアセットです。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -40351,25 +40351,25 @@
       "question": "Spectrumの制限事項(Limitations)に関する説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "Universal SSLはSpectrumアプリケーションに対しても自動的に発行・適用され、追加の証明書設定は不要である",
-          "wrongFeedback": "Universal SSLはSpectrumと互換性がありません。SpectrumアプリケーションでTLS証明書を使うには、Advanced Certificate Managerまたはカスタム証明書を利用する必要があります。"
+          "text": "Universal SSLはSpectrumと互換性がないため、SpectrumでTLSを使うにはカスタム証明書のみが利用可能で、Advanced Certificate Managerは使用できない",
+          "wrongFeedback": "Advanced Certificate Managerも利用できます。SpectrumではUniversal SSLの代わりに、Advanced Certificate Managerとカスタム証明書のどちらも使用可能です。"
         },
         {
-          "text": "SpectrumでUDPパケットが断片化(フラグメンテーション)された場合でも、Cloudflareのエッジで再構成してからオリジンへ転送される",
-          "wrongFeedback": "SpectrumはUDPパケットの断片化をサポートしておらず、断片化されたパケットはCloudflareのエッジでドロップされます。"
+          "text": "SpectrumはUDPパケットの断片化をサポートしておらず、断片化されたパケットはいったんオリジンまで到達したうえで、オリジン側のアプリケーションによって破棄される",
+          "wrongFeedback": "破棄される場所が違います。断片化されたUDPパケットは、オリジンに到達する前にCloudflareのエッジ側でドロップされます。"
         },
         {
           "text": "Universal SSLはSpectrumと互換性がなく、Spectrumで証明書を使うにはAdvanced Certificate Managerまたはカスタム証明書を利用する必要がある"
         },
         {
-          "text": "SpectrumのHTTPSアプリケーションは現時点でHTTP/3に完全対応しており、HTTP/3に関する制限は存在しない",
-          "wrongFeedback": "SpectrumのHTTPSアプリケーションは現時点でHTTP/3をサポートしていません。これはSpectrumの既知の制限事項の一つです。"
+          "text": "SpectrumのHTTPSアプリケーションだけでなく、TCP/UDPタイプのアプリケーションを含むすべてのSpectrumアプリケーションでHTTP/3が明示的にサポート対象外とされている",
+          "wrongFeedback": "HTTP/3非対応が明記されているのはHTTPSタイプのアプリケーションのみです。TCP/UDPタイプのアプリケーションはそもそもHTTP/3を含むHTTPプロトコル自体を扱わないため、この制限の対象には含まれません。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "Universal SSLはCloudflare Spectrumと互換性がありません。Spectrumアプリケーションで証明書を利用するには、Advanced Certificate Managerまたはカスタム証明書を使う必要があります。\n{{diagram:0}}\nまたSpectrumのHTTPSアプリケーションは現時点でHTTP/3をサポートしておらず、UDPパケットの断片化もサポートされていないため断片化されたパケットはエッジでドロップされます。",
+      "explanation": "Universal SSLはCloudflare Spectrumと互換性がありません。Spectrumアプリケーションで証明書を利用するには、Advanced Certificate Managerまたはカスタム証明書のどちらかを使う必要があります(どちらか一方に限定されるわけではありません)。\n{{diagram:0}}\nまたSpectrumのHTTPSアプリケーションは現時点でHTTP/3をサポートしておらず、この制限はHTTPSタイプに限られます(TCP/UDPタイプのアプリケーションはHTTP/3という概念自体の対象外です)。UDPパケットの断片化もサポートされておらず、断片化されたパケットはオリジンに到達する前にCloudflareのエッジでドロップされます。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/limitations/",
-      "hint": "Universal SSL・HTTP/3・UDPの断片化のそれぞれについて、Spectrumで何がサポートされていないかを一つずつ照らし合わせましょう。",
+      "hint": "断片化されたUDPパケットは、Cloudflareのエッジの時点で処理が終わり、オリジンには到達しません。",
       "tags": [
         "spectrum",
         "ssl-tls"
