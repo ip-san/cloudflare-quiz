@@ -465,7 +465,7 @@
       "correctIndex": 2,
       "explanation": "通常、Workerはレスポンスを返すとその実行コンテキストが終了してしまいます。`ctx.waitUntil(promise)`にPromiseを渡すことで、レスポンスをクライアントに返した後も、そのPromiseが完了するまでWorkerの実行を延長できます。\n{{diagram:0}}\nログの送信やアナリティクスの記録、キャッシュへの書き込みなど、クライアントへの応答を遅延させたくないが完了は保証したい処理に使われます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/context/",
-      "hint": "お客さんへの返事は先に済ませつつ、裏側の後片付けだけ続けたい場面を考えましょう。",
+      "hint": "`waitUntil`が受け取るのは、ミリ秒のような数値ではありません。",
       "tags": [
         "workers",
         "practical"
@@ -618,7 +618,7 @@
       "correctIndex": 1,
       "explanation": "Service Bindingsを使うと、Worker Aから`env`経由でWorker Bを直接呼び出せます。\n{{diagram:0}}\n公開インターネットを経由しないため、通常のHTTPリクエストよりも低レイテンシで通信でき、さらにWorker Bを公開URLなしでデプロイして、Service Bindingを持つWorkerからのみアクセス可能にする(インターネットから隔離する)構成も可能です。呼び出し方式にはRPC(メソッド呼び出し)とHTTP(Requestの転送)の2種類があります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/",
-      "hint": "Worker同士が話すときに、わざわざインターネットに出て戻ってくる必要があるかどうか考えましょう。",
+      "hint": "呼び出す相手はインターネット上の任意のドメインでしょうか、それとも自分の別のWorkerでしょうか。",
       "tags": [
         "workers",
         "practical"
@@ -935,7 +935,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflare Workersの実行時間に関する課金は、コードが実際にCPUを消費して処理を行っている「CPU時間」を基準にしています。\n{{diagram:0}}\n外部APIの応答待ちやデータベースクエリの完了待ちなど、CPUを使わずに待機している時間(I/O待ち)はCPU時間としてカウントされません。これは、リクエストの処理時間全体(壁時計時間)に対して課金される一般的なサーバー型の課金モデルとは異なる点です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/pricing/",
-      "hint": "「壁時計時間」と「CPU時間」の違いを意識しましょう。I/O待ちの間、CPUは何をしているでしょうか。",
+      "hint": "課金額は、リクエストを何回送ったかという数だけで決まるのか、それとも処理の中身によっても変わるのか考えましょう。",
       "tags": [
         "workers",
         "practical"
@@ -8175,7 +8175,7 @@
       "correctIndex": 2,
       "explanation": "`compatibility_date`は、Workerが利用するランタイムの機能やバグ修正の挙動を、指定した日付時点の仕様に固定するための設定です。\n{{diagram:0}}\nCloudflareはランタイムを継続的に更新しますが、古い`compatibility_date`のWorkerは古い挙動のまま動き続けるため、意図しない破壊的変更を受けません。新機能を使いたい場合は、開発者が明示的に日付を更新することでオプトインします。個別の挙動だけを制御したい場合は`compatibility_flags`を併用します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/configuration/compatibility-dates/",
-      "hint": "本の発行日を固定しておけば、後で図書館の本棚が模様替えされても中身は変わりませんよね。",
+      "hint": "この設定は、日付を記録するだけのメタ情報でしょうか、それとも実際にWorkerの動作に影響を与える設定でしょうか。",
       "tags": [
         "workers",
         "practical"
@@ -16186,7 +16186,7 @@
       "correctIndex": 3,
       "explanation": "dynamic dispatch Workerでは、KVに保存したマッピングを参照する「KVベース」、ホスト名のサブドメイン部分を使う「サブドメインベース」、URLパスの先頭セグメントを使う「パスベース」など、コードで自由にルーティングロジックを実装できます。KVベースならKVの値を書き換えるだけでルーティングを変更でき、dispatch Worker自体の再デプロイは不要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/dynamic-dispatch/#routing-examples",
-      "hint": "ホスト名・パス・外部データストアなど、ルーティング判断の材料として何を使えるか考えましょう。",
+      "hint": "KVベースのルーティングを使った場合、ルーティング表を変えるたびにdispatch Worker自体を再デプロイする必要があるか考えましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -22948,7 +22948,7 @@
       "correctIndex": 2,
       "explanation": "WAFマネージドルールは`http_request_firewall_managed`フェーズで実行され、これはDDoS対策(`ddos_l7`)・カスタムルール(`http_request_firewall_custom`)・レート制限ルール(`http_ratelimit`)のいずれよりも後です。したがって、これらの早いフェーズで終端アクションに一致したリクエストは、マネージドルールによる評価を受けません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/#execution-order",
-      "hint": "「最後の砦」として動くマネージドルールが、他のどの機能より後に評価されるかを考えましょう。",
+      "hint": "DDoS対策(ddos_l7)が真っ先に評価される、という順序を思い出しましょう。",
       "tags": [
         "waf",
         "practical"
@@ -23050,7 +23050,7 @@
       "correctIndex": 1,
       "explanation": "OWASP Core Rulesetのパラノイアレベルは、PL1(デフォルト)からPL4(最も厳格)まであり、あるレベルを選択するとそれ以下のすべてのレベルに属するルールも有効になります。例えばPL3を選ぶとPL1・PL2・PL3のルールがすべて有効になります。レベルを引き上げるほど保護は強化されますが、複雑な入力を送るアプリケーションでは誤検知が増える可能性があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/reference/owasp-core-ruleset/concepts/",
-      "hint": "レベルを上げるほど「その下のレベルのルールも全部まとめて有効になる」という積み上げ式の仕組みを考えましょう。",
+      "hint": "パラノイアレベルは、1つだけを独立して有効・無効にできる設定でしょうか、それとも他のレベルも巻き込む仕組みでしょうか。",
       "tags": [
         "waf",
         "practical"
@@ -23163,7 +23163,7 @@
       "correctIndex": 0,
       "explanation": "レート制限ルールの特性のうち、`IP`はAPIフィールド`ip.src`に対応し、`IP with NAT support`はCookie(`_cfuvid`)ベースの識別を使う`cf.unique_visitor_id`に対応します。NAT配下で同じIPアドレスを共有する環境などに有用ですが、この2つの特性は互いに非互換であり、同じルール内で同時に使用することはできません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/parameters/",
-      "hint": "似た目的を持つ2つの特性が、識別の仕組みや併用可否の面でどう違うか整理しましょう。",
+      "hint": "この2つの特性は、同じルール内で同時に指定できるでしょうか、それとも二者択一でしょうか。",
       "tags": [
         "waf",
         "practical"
@@ -23317,7 +23317,7 @@
       "correctIndex": 3,
       "explanation": "漏洩認証情報検知は、一致したリクエストに`Exposed-Credential-Check`ヘッダーを追加します。値はユーザー名とパスワードのペアが漏洩していた場合は`1`、ユーザー名のみ漏洩していた場合は`2`、パスワードのみ漏洩していた場合は`4`です。オリジン側でこのヘッダーを見て、ユーザーにパスワード変更を促すといった対応ができます。パスワード漏洩の検知自体は全プランで利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/detections/leaked-credentials/",
-      "hint": "「両方漏洩」「ユーザー名だけ」「パスワードだけ」という3パターンを、それぞれ異なる数値で区別すると考えましょう。",
+      "hint": "パスワード漏洩の検知そのものは、どのプランでも使えます。",
       "tags": [
         "waf",
         "practical"
