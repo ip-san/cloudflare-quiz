@@ -2768,7 +2768,7 @@
       "correctIndex": 1,
       "explanation": "公式ドキュメントによると、Set-Cookieヘッダーを含むレスポンスは「一意なデータを含む可能性がある」ため常にキャッシュされません。Set-Cookieを含めたままキャッシュしたい場合は、事前にそのヘッダーを削除するか、`Cache-Control: private=Set-Cookie`を設定する必要があります。\n{{diagram:0}}\nまた`put()`は、Cache-Controlがキャッシュを禁じている場合、またはレスポンスが大きすぎる場合に413エラーを返します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
-      "hint": "選択肢の中には、Cache API自体の仕様ではなく、別のAPI(Workers KV)の概念を紛れ込ませているものがあります。Cache APIの正式な仕様に照らして考えましょう。",
+      "hint": "`put()`が条件を満たさないときは、エラーが返るだけです。",
       "tags": [
         "kv-cache",
         "trivia"
@@ -29623,7 +29623,7 @@
       "correctIndex": 3,
       "explanation": "Advanced Certificate Managerで選択できる証明書の有効期間は、1年(Enterpriseプランでかつ認証局にSSL.comを選んだ場合のみ)・3ヶ月(自動更新は30日前から)・1ヶ月(自動更新は7日前から、Let's Encrypt非対応)・2週間(自動更新は3日前から、Let's Encrypt非対応)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-validity-periods/#advanced-certificates",
-      "hint": "Advanced Certificate Managerで選べる有効期間は1種類だけではありません。複数用意されている選択肢を思い浮かべながら、各選択肢の内容を確認してみましょう。",
+      "hint": "Advanced Certificate Managerで選べる有効期間は1種類だけではありません。",
       "tags": [
         "ssl-tls",
         "practical"
