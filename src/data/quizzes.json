@@ -4275,7 +4275,7 @@
           "wrongFeedback": "put()はオブジェクトを書き込む(アップロードする)メソッドです。一覧取得にはlist()を使います。"
         },
         {
-          "text": "`env.MY_BUCKET.list()`。返り値の`R2Objects`にはキーだけでなく、サイズ・アップロード日時・メタデータなどを含む`R2Object`の配列が含まれる"
+          "text": "`env.MY_BUCKET.list()`。返り値の`R2Objects`にはキーだけでなく、サイズやアップロード日時を含む`R2Object`の配列が含まれる"
         }
       ],
       "correctIndex": 3,
@@ -8561,7 +8561,7 @@
       "correctIndex": 1,
       "explanation": "Wranglerはプロジェクトルート直下に置かれた `wrangler.toml` に加え、`wrangler.json` または `wrangler.jsonc`（コメント付きJSON）形式の設定ファイルもサポートしています。他のツールに見られる「ツール名.config.拡張子」という命名(例: `vite.config.ts`)や、`config/`サブディレクトリへの配置、`.wranglerrc`のようなdotfile+rc形式は、Wranglerでは使われません。\n{{diagram:0}}\n記述できる項目はTOML版と同じで、好みや既存のツールチェインとの親和性に応じて選べます。ただし1つのプロジェクトに複数の設定ファイルを混在させるのは避け、どちらか一方の形式に統一するのが安全です。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
-      "hint": "Wranglerの設定ファイルは、プロジェクトルート直下に置く必要があります。",
+      "hint": "Wranglerは既定では、プロジェクトルート直下の設定ファイルを読みます。",
       "tags": [
         "wrangler",
         "practical"
@@ -21270,25 +21270,25 @@
       "question": "2025年9月25日より前に作成された「レガシーパイプライン」と、新しいPipelinesアーキテクチャの違いに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "新しいPipelinesはSQLによる変換・複数の出力フォーマット(JSON・Parquet・Apache Iceberg)・構造化スキーマの検証に対応しているが、レガシーパイプラインは、Pipelinesが正式リリース(GA)された時点で即座に動作を停止する",
-          "wrongFeedback": "前半の新しいPipelinesの機能についての説明は正しいですが、後半が誤りです。レガシーパイプラインはPipelinesが正式リリース(GA)されるまで動作を継続し、新機能や改善が提供されなくなるだけで、GAになった瞬間に停止するわけではありません。"
+          "text": "新しいPipelinesはSQLによる変換・複数の出力フォーマット(JSON・Parquet・Apache Iceberg)・構造化スキーマの検証に対応しており、レガシーパイプラインにも同じ新機能や改善が引き続き提供される",
+          "wrongFeedback": "新機能や改善が提供されるのは新しいPipelinesだけで、レガシーパイプラインには提供されません。前半の新機能の説明は正しいですが、後半が誤りです。"
         },
         {
           "text": "新しいPipelinesはSQLによる変換には対応しておらず、出力フォーマットも旧来通りJSON形式のみで、構造化スキーマの検証にも対応していないが、レガシーパイプラインは廃止(非推奨)の方向にあり、Pipelinesが正式リリース(GA)されるまでは動作を継続する",
-          "wrongFeedback": "後半のレガシーパイプラインの今後についての説明は正しいですが、前半が逆です。SQLによる変換や複数の出力フォーマット(JSON・Parquet・Apache Iceberg)、構造化スキーマの検証に対応しているのは新しいPipelinesの方であり、JSON形式のみだったのはレガシーパイプラインの方です。"
+          "wrongFeedback": "新しいPipelinesはSQLによる変換・JSON/Parquet/Apache Icebergの各フォーマット・構造化スキーマの検証に対応しています。後半のレガシーについての説明は正しいですが、前半が誤りです。"
         },
         {
           "text": "新しいPipelinesはSQLによる変換・複数の出力フォーマット(JSON・Parquet・Apache Iceberg)・構造化スキーマの検証に対応しているが、レガシーパイプラインは廃止(非推奨)の方向にあり、Pipelinesが正式リリース(GA)されるまでは動作を継続する"
         },
         {
-          "text": "新しいPipelinesはSQLによる変換には対応しておらず、出力フォーマットも旧来通りJSON形式のみで、構造化スキーマの検証にも対応していないが、レガシーパイプラインは、Pipelinesが正式リリース(GA)された時点で即座に動作を停止する",
-          "wrongFeedback": "前半・後半とも誤りです。SQLによる変換や複数の出力フォーマット(JSON・Parquet・Apache Iceberg)、構造化スキーマの検証に対応しているのは新しいPipelinesの方です。また、レガシーパイプラインはPipelinesが正式リリース(GA)されるまで動作を継続し、GAになった瞬間に停止するわけではありません。"
+          "text": "新しいPipelinesはSQLによる変換には対応しておらず、出力フォーマットも旧来通りJSON形式のみで、構造化スキーマの検証にも対応していないが、レガシーパイプラインにも同じ新機能や改善が引き続き提供される",
+          "wrongFeedback": "前半・後半とも誤りです。新しいPipelinesはSQL変換・複数フォーマット・スキーマ検証に対応しており、新機能や改善がレガシーパイプラインに提供されることもありません。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "2025年9月25日より前にレガシーAPIで作成された「レガシーパイプライン」は廃止(非推奨)の方向にあります。新しいPipelinesアーキテクチャでは、SQLによる変換、複数の出力フォーマット(JSON・Parquet・Apache Iceberg)への対応、Streams・Pipelines・Sinksという別々のリソースへの分離、構造化スキーマの検証などが追加されており、レガシーパイプラインはJSON形式のみしか扱えません。レガシーパイプラインはPipelinesが正式リリース(GA)されるまで動作を継続し、GAになった瞬間に停止するわけではありませんが、新機能や改善はレガシーパイプラインには提供されません。\n{{diagram:0}}",
+      "explanation": "2025年9月25日より前にレガシーAPIで作成された「レガシーパイプライン」は廃止の方向にあります。新しいPipelinesアーキテクチャでは、SQLによる変換、複数の出力フォーマット(JSON・Parquet・Apache Iceberg)への対応、Streams・Pipelines・Sinksという別々のリソースへの分離、構造化スキーマの検証などが追加されています。 {{diagram:0}} レガシーパイプラインはPipelinesが正式リリースされるまで動作を継続しますが、**新機能や改善は新しいアーキテクチャにのみ提供され、レガシーパイプラインには提供されません。**",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/reference/legacy-pipelines/",
-      "hint": "GAによって変わるのは新機能の提供の有無であって、レガシーパイプラインの動作そのものが止まるわけではありません。",
+      "hint": "新機能や改善が提供されるのは、新しいPipelinesだけです。",
       "tags": [
         "pipelines",
         "practical"
