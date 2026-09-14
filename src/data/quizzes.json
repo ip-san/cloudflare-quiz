@@ -11197,7 +11197,7 @@
       "correctIndex": 0,
       "explanation": "AI Gatewayでは、リクエストに `cf-aig-cache-ttl` ヘッダーを付与することで、そのリクエストのレスポンスをキャッシュする期間を秒単位でカスタマイズできる。指定可能な範囲は最小60秒〜最大1ヶ月で、範囲内であれば同一リクエストに対してキャッシュから高速にレスポンスを返せる（以前は `cf-cache-ttl` という名前だったが、現在は `cf-aig-cache-ttl` への移行が推奨されている）。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/caching/",
-      "hint": "ヘッダー名の先頭 'cf-aig-' はAI Gateway由来を示します。",
+      "hint": "指定できる値には、下限と上限があります。",
       "tags": [
         "ai-vectorize",
         "trivia"
@@ -11253,7 +11253,7 @@
       "correctIndex": 3,
       "explanation": "Vectorizeのinsert/upsertは1回のリクエストで複数ベクトルをまとめて送信するバッチ処理をサポートしており、Workersバインディング経由では最大1,000件、HTTP API経由では最大5,000件というバッチサイズの上限がある。大量のベクトル（例: 25万件）を投入する場合、1件ずつ送るより数千件単位のバッチに分けて送信する方が大幅に高速になる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/platform/limits/",
-      "hint": "Workersのコードから呼ぶ場合と、外部からHTTP経由で呼ぶ場合とで、送れる量に差がありそうか考えましょう。",
+      "hint": "まとめて送るためのバッチの仕組みは用意されています。",
       "tags": [
         "ai-vectorize",
         "trivia"
@@ -11684,7 +11684,7 @@
       "correctIndex": 0,
       "explanation": "Workersの課金はリクエスト数とCPU時間の組み合わせであり、I/O待ちなどの壁時計時間には課金や制限がありません。したがって、コスト最適化では「CPUを使い切る重い処理をいかに減らすか」が主な判断軸になります。具体的には、不要な計算の削減、計算結果のキャッシュ活用、Smart Placementでバックエンドとの往復回数・遅延を減らすことなどが有効です。逆に、壁時計時間を延ばすことやメモリ使用量の削減自体は、直接のコスト最適化にはつながりません。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/pricing/",
-      "hint": "Workersの課金軸は何だったか(リクエスト数と何の時間か)を思い出してみましょう。",
+      "hint": "壁時計時間を延ばしても、処理にかかるCPU時間の合計は減りません。",
       "tags": [
         "architecture",
         "practical",
@@ -21774,7 +21774,7 @@
       "correctIndex": 0,
       "explanation": "Requireルール内の複数の値はAND演算子で結合されるため、単純に複数の国を並べても「両方の国に同時に存在する」という誰も満たせない条件になってしまいます。この問題を解決するには、対象の国をIncludeルールで束ねたRule group(例:「Country requirements」)を作成し、そのRule groupをポリシーのRequireルールとして指定します。Rule group内のIncludeルールはOR条件として評価されるため、結果的にRequire側でOR条件を実現できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#require-rules-with-or-operators",
-      "hint": "AND条件の中に「OR条件のかたまり」を1つの部品として持ち込む方法を考えましょう。",
+      "hint": "Accessのポリシーだけで表現できます。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -21822,7 +21822,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare AccessではまずService AuthとBypassのポリシーが、表示されている順に上から評価されます。次にBlockとAllowのポリシーが、それぞれの表示順に上から評価されます。したがってこの例では、Service Auth C → Bypass D → Allow A → Block B → Allow Eの順に評価され、いずれかのAllowまたはBlockに一致した時点で評価が停止します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#cloudflare-access-policy-order-of-execution",
-      "hint": "「ログイン不要組」が先に判定され、その後「許可か拒否か」が判定される2段階の流れを考えましょう。",
+      "hint": "最後に置いたポリシーが最優先になることはありません。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -22124,7 +22124,7 @@
       "correctIndex": 1,
       "explanation": "サービストークンで認証する場合、`CF-Access-Client-Id`と`CF-Access-Client-Secret`のヘッダーは認証したいHTTPリクエストごとに付与します。ブラウザのログインのように、初回の認証結果を`CF_Authorization`クッキーとして保持して以降のリクエストで使い回す、という運用は前提にされていません。Service Authポリシーで保護されたAPIをスクリプトやSaaSから叩く場合は、毎回このヘッダーを送る実装にしておくのが確実です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#request",
-      "hint": "「Allowポリシーがあるかないか」で、発行されたクッキーを使い回せるかどうかが変わることを考えましょう。",
+      "hint": "`CF_Authorization`クッキーには有効期限があります。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -22175,7 +22175,7 @@
       "correctIndex": 0,
       "explanation": "1つのカスタムヘッダーしか送信できないSaaSサービスの場合、Access Applicationの設定APIで`read_service_tokens_from_header`にヘッダー名(例:`Authorization`)を指定します。これにより、そのヘッダーの値としてClient IDとClient SecretをまとめたJSON(例:`{\"cf-access-client-id\": \"...\", \"cf-access-client-secret\": \"...\"}`)を送信することで、通常の2ヘッダー方式の代わりに単一ヘッダーでの認証が可能になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#authenticate-with-a-single-header",
-      "hint": "ヘッダーが1つしか使えないなら、2つの値を1つの値の「中」に詰め込む方法を考えましょう。",
+      "hint": "この制約があっても、サービストークンによる認証は使えます。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -22331,7 +22331,7 @@
       "correctIndex": 3,
       "explanation": "Accessの署名鍵は既定で6週間ごとにローテーションされ、ローテーション後も古い鍵は7日間有効なまま残ります。検証時にオリジンのキャッシュが古い鍵を参照してしまう事故を避けるため、JWTの`kid`フィールドを`public_certs`(現行・直前の両方の証明書を含む)内の該当する証明書と突き合わせて検証するべきであり、単一の現行鍵を返す`public_cert`の値をハードコードすることは推奨されていません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/#access-signing-keys",
-      "hint": "「今使われている鍵」と「ついさっきまで使われていた鍵」の両方が有効な期間があることを考えましょう。",
+      "hint": "`public_cert`と`public_certs`では、返ってくる証明書の数が違います。",
       "tags": [
         "zero-trust-access",
         "practical"
