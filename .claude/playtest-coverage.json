@@ -3077,7 +3077,7 @@
     "dl-012": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "27eb3b1877b8",
         "gt": "4fbcdfd9"
@@ -3095,7 +3095,7 @@
     "dl-014": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "dbc1ce96752f",
         "gt": "da39a3ee"
@@ -3104,7 +3104,7 @@
     "dl-015": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "5ae54c0becf9",
         "gt": "da39a3ee"
@@ -3113,7 +3113,7 @@
     "dl-017": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "931d358e410e",
         "gt": "77fd9f08"
@@ -3122,7 +3122,7 @@
     "dl-018": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "2ee02747ac03",
         "gt": "1b245cc7"
@@ -3131,7 +3131,7 @@
     "dn-006": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "6191619ed3a9",
         "gt": "e1315f74"
@@ -3302,7 +3302,7 @@
     "dn-013": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "e7a32b963ce8",
         "gt": "878260df"

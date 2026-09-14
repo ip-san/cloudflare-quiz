@@ -5308,7 +5308,7 @@
       "correctIndex": 3,
       "explanation": "idFromName(name)は文字列から決定論的にIDを導出するため、ユーザーIDやルーム名のように「既知の名前」から常に同じインスタンスに到達したい設計に向きます。一方newUniqueId()はランダムなIDを生成し、初回アクセス時のレイテンシが低いという利点がありますが、後で同じオブジェクトを参照するにはIDを文字列化してKVやCookieなど外部に保存し、idFromString()で復元する必要があります。名前が事前に分かっているか、生成後に外部保存する運用にするかを基準に使い分けます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/namespace/",
-      "hint": "ルーム名のように先に分かっている手がかりがあるか、それとも後で控えを取っておく前提か考えましょう。",
+      "hint": "`newUniqueId()`で作ったIDは、同じ引数から作り直すことができません。",
       "tags": [
         "do-queues",
         "trivia"
@@ -28300,7 +28300,7 @@
       "correctIndex": 0,
       "explanation": "CloudflareはCNAMEチェーンの先がプロキシ済みであれば、その手前のホスト名宛てのトラフィックもプロキシされたものとして扱います。この例では、`example.net`側のCNAMEがプロキシ済みであるため、`example.com`宛てのトラフィックもプロキシされたものとして扱われます。なお、CNAMEの参照先が異なるCloudflareアカウントの場合は、Error 1014(CNAME Cross-User Banned)としてエラーになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#mix-proxied-and-unproxied",
-      "hint": "プロキシの設定が「チェーンの末端」から「入り口」へ向かって伝わっていくと考えましょう。",
+      "hint": "別ゾーンへのCNAMEチェーンの設定そのものは、エラーになりません。",
       "tags": [
         "dns",
         "practical"
@@ -28660,7 +28660,7 @@
       "correctIndex": 3,
       "explanation": "SOAレコードのMinimum TTLフィールドのデフォルト値は1,800秒で、60秒から86,400秒までの範囲で設定できます。SOAレコードには他にもRefresh(デフォルト10,000秒)・Retry(デフォルト2,400秒)・Expire(デフォルト604,800秒)・Record TTL(デフォルト3,600秒)といったフィールドがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/dns-record-types/",
-      "hint": "SOAレコードの複数のTTL系フィールドの中でも、「最小値」を意味するフィールドの数値だと考えましょう。",
+      "hint": "既定値は1時間より短い値です。",
       "tags": [
         "dns",
         "practical"
@@ -28759,7 +28759,7 @@
       "correctIndex": 1,
       "explanation": "外部DNSKEYレコードの追加(マルチシグナーDNSSEC)に対応していないDNSプロバイダーからCloudflareへDNSSEC有効のまま移行する場合は、まずレジストラ側のDSレコードを削除し、そのDSレコードのTTLが親ゾーンで完全に失効するのを待つ必要があります(TLDによって一般的に24〜48時間程度)。その後、ネームサーバーをCloudflareへ切り替え、古いNSレコードのTTLが失効するのを待ってから、CloudflareでDNSSECを有効化して新しいDSレコードをレジストラに追加します。この順序を守らないと、検証リゾルバがSERVFAILを返す可能性があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/dnssec/#migrate-to-cloudflare-with-dnssec-active",
-      "hint": "「古い鍵の情報が完全に消えるのを待ってから」次のステップに進む必要がある、という順序の重要性を考えましょう。",
+      "hint": "DNSSECの検証は、親ゾーンに残っている情報にも左右されます。",
       "tags": [
         "dns",
         "practical"
@@ -33998,7 +33998,7 @@
       "correctIndex": 2,
       "explanation": "ドキュメントエントリは、契約書テンプレートや社内レポートのように個々の値のリストへ単純化できない内容を保護するための仕組みです。ドキュメント全体の一意なフィンガープリントを作成し、トラフィックとの類似度を比較します。`.docx`・`.txt`形式で10MB未満のファイルに対応し、0%〜100%の「最小一致度」を設定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/detection-entries/configure-detection-entries/#document-entries",
-      "hint": "「個々の値のリスト」に落とし込めない、まとまった文書全体をどう保護するかを考えましょう。",
+      "hint": "登録できるファイルには、大きさの上限があります。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34360,7 +34360,7 @@
       "correctIndex": 3,
       "explanation": "Low/Medium信頼度のプロファイルをAllowアクションのポリシーで運用してログのみ記録し(誤検知を許容しつつ可視化)、High信頼度のプロファイルを別のBlockアクションのポリシーで実際にブロックするという、2つの独立したHTTPポリシーを組み合わせる設計が推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/advanced-settings/#gateway-detections",
-      "hint": "「広く拾ってログに残す役割」と「確実なものだけ止める役割」を、別々のポリシーに分担させると考えましょう。",
+      "hint": "この考え方は、カスタムプロファイルにも使えます。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34466,7 +34466,7 @@
       "correctIndex": 2,
       "explanation": "選択したマスキングレベル(Full Mask・Partial Mask・Clear Text)は、ポリシーの引き金となった一致だけでなく、同じペイロードウィンドウ内で検出された他のすべての機密データの一致にも一律に適用されます。マスキングはペイロードが暗号化される前、検知時点で適用されます。Partial Maskではマッチした内容の25%が明らかになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-settings/#payload-log-masking",
-      "hint": "「ポリシーの引き金になった一致」だけでなく、周囲にある他の機密データにも同じルールが及ぶことを考えましょう。",
+      "hint": "Partial Maskでは、一致した内容の一部だけが見える状態になります。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34523,7 +34523,7 @@
       "correctIndex": 0,
       "explanation": "ペイロード暗号化キーの秘密鍵はCloudflareが保持していないため、紛失した場合はサポートに連絡しても復元できません。新しい鍵ペアを生成して公開鍵をアップロードする必要がありますが、古い鍵で暗号化された過去のログは永久に読めなくなり、新しい鍵は今後生成されるログにのみ有効です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-settings/#payload-encryption-key",
-      "hint": "Cloudflare自身がその鍵を保持していない、という設計の意味を考えましょう。",
+      "hint": "鍵ペアの生成と公開鍵のアップロードは、管理者が行います。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34627,7 +34627,7 @@
       "correctIndex": 1,
       "explanation": "Microsoft側での感度ラベルの追加・編集は最大24時間でCloudflare DLPへ反映されますが、Microsoft側でラベルを削除しても、Cloudflare DLPプロファイル内のエントリは自動的には削除されません。インテグレーションプロファイル内の検知エントリはサードパーティ側で管理されているため、Cloudflareのダッシュボードから手動で編集・削除することもできません。利用にはCloudflare CASBとの連携が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/integration-profiles/#syncing",
-      "hint": "「追加・編集」の同期と「削除」の同期が、同じように働くとは限らないことを考えましょう。",
+      "hint": "インテグレーションプロファイルを使うには、CASBとの連携が要ります。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34678,7 +34678,7 @@
       "correctIndex": 3,
       "explanation": "AIコンテキスト分析は、マッチしたテキストを編集(redact)したうえで、周辺の文脈をベクトル埋め込みに変換してCloudflare Workers AIへ送信します。生のテキストではなくベクトル埋め込みが、ユーザー専用のプライベートな名前空間に最長6か月保持されます。プロファイルレベルとアカウントレベルの両方でこの機能を構成した場合、いずれかの設定が検知条件を満たせば検知が発生するOR条件で評価されます。この機能はGatewayのHTTP/HTTPSトラフィックのみをサポートします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-settings/#ai-context-analysis",
-      "hint": "「生のテキストを送るのか、変換した形で送るのか」、そして「両方の設定があるとき、どちらか一方で十分なのか」という2点を考えましょう。",
+      "hint": "AIコンテキスト分析が対象にするのは、GatewayのHTTP/HTTPSトラフィックです。",
       "tags": [
         "data-loss-prevention",
         "practical"
