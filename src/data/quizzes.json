@@ -24912,7 +24912,7 @@
       "correctIndex": 2,
       "explanation": "異なる発行者の2つのJWTを1つのリクエストで検証したい場合は、まず2つの異なるトークン検証設定を作成します。次に、検証ルールでその両方の設定を選択し、「複数設定の検証挙動(Validation behavior for multiple configurations)」として「Validate all configurations」を選ぶことで、両方のJWTを検証できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/#validate-two-jwts-with-different-identity-providers-on-a-single-request",
-      "hint": "1つのルールで「どちらか一方」ではなく「両方とも」検証させるための、専用の選択肢があると考えましょう。",
+      "hint": "2つ目のJWTの検証を、API Shield 側で扱えないわけではありません。",
       "tags": [
         "api-shield",
         "practical"
@@ -25008,7 +25008,7 @@
       "correctIndex": 0,
       "explanation": "precedence scoreは、シーケンス内のある操作が他の操作より先行して発生する可能性の高さを表す確率的なスコアで、直近24時間のデータをもとに推定されます。スコアが高いシーケンスほど、そこに含まれるAPIリクエストが一緒に、かつその順序で発生する可能性が高いことを意味します。シーケンスは最大9つの操作の長さに制限されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/sequence-analytics/#sequence-scoring",
-      "hint": "「固定的に決められた値」なのか、「直近のトラフィックから継続的に推定される確率」なのかを考えましょう。",
+      "hint": "このスコアが表しているのは、シーケンス内での操作の順序に関することです。",
       "tags": [
         "api-shield",
         "practical"
@@ -25107,7 +25107,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflareダッシュボードで作成したSequence Mitigationルールは、Endpoint Management内のエンドポイントに対する同一セッション識別子のリクエストが、互いに10リクエスト以内、かつ10分以内の間隔であれば、シーケンスの一致と判定するルックバックウィンドウを使用します。このデフォルト値が不十分な場合は、account teamに相談することで調整を依頼できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/sequence-mitigation/#process",
-      "hint": "「何回前まで」と「何分前まで」という2つの軸で振り返り範囲が制限されていることを考えましょう。",
+      "hint": "一致の判定は、セッション識別子ごとに行われます。",
       "tags": [
         "api-shield",
         "practical"
@@ -43344,7 +43344,7 @@
       "correctIndex": 1,
       "explanation": "Agentのcronスケジュールはデフォルトで冪等に扱われます。同じタスク名・同じパラメータで`this.schedule()`を再度呼び出しても、重複したスケジュールが新規作成されるのではなく、既存のスケジュールがそのまま返されます。\n{{diagram:0}}\nこれにより、デプロイのたびにスケジュール登録コードが再実行されても、ジョブが際限なく増殖することを防げます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
-      "hint": "デプロイのたびに同じスケジュール登録コードが再実行されても、ジョブが増殖しないようにする仕組みです。",
+      "hint": "同じ条件でもう一度登録しても、例外が投げられることはありません。",
       "tags": [
         "agents",
         "topic-scheduling"
@@ -43408,7 +43408,7 @@
       "correctIndex": 1,
       "explanation": "公式ドキュメントは、「Agentから独立して動作し、ステップごとのリトライやマルチステップのオーケストレーションが必要な処理にはWorkflowsを使う。Fibersは、Agent自身の実行の一部である処理のために使う」と説明しています。例えば、LLMへのリクエスト中にAgentインスタンスが退避(eviction)された場合でも、`runFiber()`で登録した処理はチェックポイント(`stash()`)から`onFiberRecovered()`で再開できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/durable-execution/",
-      "hint": "「Agent自身の処理の一部かどうか」が使い分けの基準です。",
+      "hint": "Agentインスタンスが退避しても、`runFiber()`で登録した処理は続きから進められます。",
       "tags": [
         "agents",
         "topic-durable-execution"

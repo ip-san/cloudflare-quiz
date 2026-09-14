@@ -753,56 +753,63 @@
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "6faad76299e8"
+        "at": "unstamped",
+        "fp": "6faad76299e8",
+        "gt": "da39a3ee"
       }
     ],
     "as-008": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "6f98567ae8f2"
+        "at": "unstamped",
+        "fp": "6f98567ae8f2",
+        "gt": "da39a3ee"
       }
     ],
     "as-011": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "f81eba814e25"
+        "at": "unstamped",
+        "fp": "f81eba814e25",
+        "gt": "d5e3c8de"
       }
     ],
     "as-012": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "7c72a4954f47"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "7c72a4954f47",
+        "gt": "2da0632a"
       }
     ],
     "as-014": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "6e977f6c6987"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "6e977f6c6987",
+        "gt": "da39a3ee"
       }
     ],
     "as-016": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "82a648d10982"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "82a648d10982",
+        "gt": "da39a3ee"
       }
     ],
     "as-017": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "b56383c87530"
+        "at": "unstamped",
+        "fp": "b56383c87530",
+        "gt": "d5e3c8de"
       }
     ],
     "at-006": [
@@ -817,24 +824,27 @@
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "711f0ad05a03"
+        "at": "unstamped",
+        "fp": "711f0ad05a03",
+        "gt": "da39a3ee"
       }
     ],
     "at-015": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "c4807dcdf493"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "c4807dcdf493",
+        "gt": "da39a3ee"
       }
     ],
     "at-016": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "ec3c7f1e8656"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "ec3c7f1e8656",
+        "gt": "d50ac005"
       }
     ],
     "bi-009": [
@@ -938,48 +948,54 @@
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "cc980c7b15a3"
+        "at": "unstamped",
+        "fp": "cc980c7b15a3",
+        "gt": "da39a3ee"
       }
     ],
     "bi-004": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "820f30153f2f"
+        "at": "unstamped",
+        "fp": "820f30153f2f",
+        "gt": "da39a3ee"
       }
     ],
     "bi-005": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "9b692a370e4d"
+        "at": "unstamped",
+        "fp": "9b692a370e4d",
+        "gt": "da39a3ee"
       }
     ],
     "bi-006": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "73a9b859bb6b"
+        "at": "unstamped",
+        "fp": "73a9b859bb6b",
+        "gt": "da39a3ee"
       }
     ],
     "bi-007": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "8e575be07387"
+        "at": "unstamped",
+        "fp": "8e575be07387",
+        "gt": "da39a3ee"
       }
     ],
     "bi-010": [
       {
         "persona": "reviewer",
         "outcome": "clean",
-        "at": "2026-08-30",
-        "fp": "2445c806557a"
+        "at": "unstamped",
+        "fp": "2445c806557a",
+        "gt": "da39a3ee"
       }
     ],
     "bi-012": [
