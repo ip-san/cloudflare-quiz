@@ -22379,7 +22379,7 @@
       "correctIndex": 1,
       "explanation": "IdPログインによる認証のJWTペイロードには、認証されたユーザーのメールアドレスや、ユーザーの一意なIDである`sub`などが含まれます。一方、サービストークンによる認証のJWTペイロードでは`sub`が空文字列になり、代わりに`common_name`にそのサービストークンのClient IDが入ります。どちらの方式でも`aud`(Application Audienceタグ)や`exp`(有効期限)は共通してペイロードに含まれます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/application-token/#service-token-authentication",
-      "hint": "「人間としてログインした」場合と「機械として認証された」場合とで、ユーザーを特定するフィールドがどう変わるか考えましょう。",
+      "hint": "サービストークン認証でも、JWTに有効期限は入ります。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -23677,7 +23677,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Tunnelを利用している組織がSuper Bot Fight Modeを有効化する場合、「Definitely Automated」のアクションを`Allow`のままにしておく必要があります。これを変更してChallengeやBlockに設定すると、SBFMがTunnel接続をブロックしてしまい、`websocket: bad handshake`エラーで接続が失敗することがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/#enable-super-bot-fight-mode",
-      "hint": "Tunnelの通信は人間が直接ブラウザを操作しているわけではないため、SBFMのどのカテゴリ判定に引っかかりやすいか考えましょう。",
+      "hint": "Cloudflare TunnelもSBFMの判定を受けます。",
       "tags": [
         "bots",
         "practical"
@@ -23998,7 +23998,7 @@
       "correctIndex": 2,
       "explanation": "`cf.bot_management.verified_bot`は、Cloudflareが逆引きDNS検証(送信元IPがそのサービスと一致するか)を主な方法とし、ASNブロックの確認や公開リストなどの追加の検証も組み合わせて維持している、GoogleやPingdomといった「良性の自動化されたボットの許可リスト」に一致するリクエストで真(true)になるブール値フィールドです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/reference/bot-management-variables/",
-      "hint": "「自己申告のUser-Agent」だけでなく、送信元の正当性を裏付ける技術的な検証手段が使われていることを考えましょう。",
+      "hint": "`cf.bot_management.verified_bot`はブール値です。",
       "tags": [
         "bots",
         "practical"
@@ -24097,7 +24097,7 @@
       "correctIndex": 0,
       "explanation": "「Definite Bots」テンプレートの`(cf.bot_management.score eq 1 and not cf.bot_management.verified_bot and not cf.bot_management.static_resource)`という式は、スコア1(明らかに自動化)のトラフィックのうち、GoogleやPingdomのような良性のVerified bot、および静的ファイルへの正当なアクセス(メールクライアントの画像取得など)を除外することで、悪性の疑いが強いトラフィックだけに絞り込むために使われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/bot-management/#deploy-custom-rule-templates",
-      "hint": "スコア1という条件だけに頼った場合、除外しておかないと困る「例外的なトラフィック」が他にないか考えましょう。",
+      "hint": "`cf.bot_management.score`だけでも、式としては成立します。",
       "tags": [
         "bots",
         "practical"
@@ -24242,7 +24242,7 @@
       "correctIndex": 0,
       "explanation": "新しいタクソノミーでは、Directは単一の限定された運営者(通常は自社インフラ)だけがそのボットとして振る舞えることを示し、Intermediaryは幅広いエンドユーザーが操作できるエージェント型サービスであることを示します。Intermediaryの場合、ソフトウェアを運営する事業者と、実際にアクションを起こすエンドユーザーが異なる当事者になるため、「transitive trust(推移的な信頼)」という考慮が必要になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/concepts/bot/verified-bots/#classification",
-      "hint": "「1つの会社が動かしている」のか「多くの利用者がそれぞれ動かしている」のか、運営の主体が誰かを考えましょう。",
+      "hint": "どちらも、レガシーの文字列カテゴリとは別の分類です。",
       "tags": [
         "bots",
         "practical"
@@ -24860,7 +24860,7 @@
       "correctIndex": 0,
       "explanation": "API ShieldのJWT検証は、クライアントのリクエストヘッダーまたはCookieに含まれるJWTのみを検証対象とし、`POST`ボディに含まれるJWTは現時点で検証できません(この制限の緩和を希望する場合はaccount teamに問い合わせるよう案内されています)。\n{{diagram:0}}\nなお検証そのものは、トークン設定を作った時点でゾーン内の全リクエストが対象になります。Endpoint Managementへの登録が要るのは、特定のオペレーションだけに`log`/`block`を効かせる「JWT検証ルール」を使う場合だけです。",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/",
-      "hint": "JWTが「どこに載っているか」という点で、対応している場所と対応していない場所があることを考えましょう。",
+      "hint": "`Bearer`プレフィックスの有無は問いません。",
       "tags": [
         "api-shield",
         "practical"
@@ -35010,7 +35010,7 @@
       "correctIndex": 2,
       "explanation": "Keyboardの入力をDo not allowに設定しても、マウス操作(ハイパーリンクのクリックやスクロール)によるWebサイトの閲覧は引き続き可能です。また、この設定は分離されたWebサイト内のサードパーティ製の仮想キーボードへのユーザー入力までは防げません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/isolation-policies/#keyboard",
-      "hint": "「キーボード入力」と「マウス操作」は別々の入力手段であることを考えましょう。",
+      "hint": "Keyboardの設定は、Printingの設定とは独立しています。",
       "tags": [
         "browser-isolation",
         "practical"
@@ -35317,7 +35317,7 @@
       "correctIndex": 2,
       "explanation": "Clientless Web IsolationはYubikeyやWebAuthNのようなハードウェアセキュリティキー認証をサポートしていません。Clientless Web IsolationはURLにプレフィックスを追加することでドメイン名が変わってしまい、分離前後で同一ドメインである必要があるこれらの認証技術の要件を満たせなくなるためです。インライン展開のような、URLが変わらない方式では問題なく機能します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#multifactor-authentication",
-      "hint": "URLにプレフィックスが付くことで、「同じドメインである」という前提がどう崩れるかを考えましょう。",
+      "hint": "インライン方式とクライアントレス方式で、対応状況が違います。",
       "tags": [
         "browser-isolation",
         "practical"
@@ -35550,7 +35550,7 @@
       "correctIndex": 2,
       "explanation": "Clientless Web Isolation自体はTLS復号を有効にしなくても機能します。しかし、GatewayがHTTPポリシーによってトラフィックの中身を検査・フィルタリングするにはTLS復号が必須です。証明書ピニングを使うような、TLS復号と非互換のサイトにはDo Not Inspectポリシーのような対応が必要になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/setup/clientless-browser-isolation/#bypass-tls-decryption",
-      "hint": "「機能そのものが動くこと」と「中身を検査できること」は別の話だと考えましょう。",
+      "hint": "証明書ピニングを使うサイトは、TLS復号と相性が悪いままです。",
       "tags": [
         "browser-isolation",
         "practical"
