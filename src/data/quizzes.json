@@ -3546,7 +3546,7 @@
       "correctIndex": 1,
       "explanation": "D1のSessions APIでは、`env.DB.withSession()`でセッションを開始し、そのセッション内のクエリ結果から`bookmark`(処理位置を示すマーカー)を取得できます。次回以降のリクエストでこのbookmarkを渡すことで、グローバルに分散した読み取りレプリカを使いながらも「自分が書いた内容を確実に読める」(read-your-writes)一貫性を維持できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/best-practices/read-replication/",
-      "hint": "前回どこまで読んだかの目印を、次回に持ち越す発想の仕組みを考えましょう。",
+      "hint": "作成時のオプションだけで一貫性が決まるわけではありません。",
       "tags": [
         "d1",
         "trivia"
@@ -7027,7 +7027,7 @@
       "correctIndex": 2,
       "explanation": "AI GatewayのUniversal Endpointでフォールバック機能を使うと、優先順位付きで複数のプロバイダー/モデルを1つのリクエストにまとめて指定できる。最初に指定したプロバイダーへのリクエストがエラーやタイムアウトになった場合、Gatewayが自動的に次に指定されたプロバイダーへリクエストをリトライするため、特定のAIプロバイダーで障害やレート制限が発生してもアプリケーション全体の可用性を保ちやすくなる。どのステップで成功したかはレスポンスヘッダー（cf-aig-step）で確認できる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/fallbacks/",
-      "hint": "『フォールバック』という言葉が示す通り、うまくいかなかった時の『次善の策』を考えてみましょう。",
+      "hint": "切り替え先には、外部のプロバイダーも指定できます。",
       "tags": [
         "ai-vectorize",
         "trivia"
@@ -15581,7 +15581,7 @@
       "correctIndex": 0,
       "explanation": "`Container`サブクラスに`static outbound`(全リクエスト共通)や`static outboundByHost`(ホスト名ごと)を定義すると、コンテナが行う外向きのHTTPリクエストをWorker側のコードでインターセプト・モック・ブロックできます。AI生成コードの実行サンドボックスや、外部通信のテスト・プロキシに応用できます。`enableInternet`が`false`の場合はそもそも外向き通信自体がブロックされます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#outbound-interception",
-      "hint": "コンテナが外の世界へ話しかけようとする通信を、間に立って制御する仕組みを想像してみましょう。",
+      "hint": "この仕組みは、Dockerfileではなく Worker 側のコードで書きます。",
       "tags": [
         "containers",
         "practical"
@@ -15697,7 +15697,7 @@
       "correctIndex": 1,
       "explanation": "`wrangler deploy --containers-rollout=immediate`を使うと、通常は複数ステップに分かれるコンテナインスタンスの更新を1ステップで100%まとめて行います。ただし`rollout_active_grace_period`が設定されている場合、そのグレースピリオド(既存インスタンスへの`SIGTERM`送信から強制停止までの猶予)は引き続き適用されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/containers/configuration/rollouts/#immediate-rollouts",
-      "hint": "「ステップを一気に減らす」ことと「安全装置(猶予期間)をなくす」ことは同じではない、という点を考えましょう。",
+      "hint": "Worker本体のコードとコンテナイメージで、反映の順番が入れ替わることはありません。",
       "tags": [
         "containers",
         "practical"
@@ -31921,7 +31921,7 @@
       "correctIndex": 3,
       "explanation": "モニタリング用ヘッダーはreport-onlyモードのため`connect-src 'none'`が付与されていても実際には接続をブロックしません。しかしポリシー上はあらゆる接続が「許可されていない」ため違反と見なされ、ブラウザはその接続についての違反レポートをCloudflareへ送信します。この仕組みを利用して、スクリプトが行うすべての接続を検知しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/reference/csp-header/",
-      "hint": "「何も許可しない」というポリシーの厳しさと、report-onlyモードという緩さが両立している点に注目しましょう。",
+      "hint": "サンプリングの対象かどうかで、この指定の適用有無が変わることはありません。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32080,7 +32080,7 @@
       "correctIndex": 2,
       "explanation": "JS整合性スコアは1〜99の範囲で各スクリプトバージョンに付与され、数値が低いほどリスクが高いことを示します。現在の悪性判定の閾値は10に設定されており、これを下回ると悪性と分類されます。加えて、Magecart・Crypto mining・Malwareそれぞれについて個別のスコア(1〜99)も提供されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/#malicious-script-detection",
-      "hint": "スコアの数値がどちらの方向に振れると危険なのか、そして悪性と判定される境界が存在することに注目しましょう。",
+      "hint": "3種類を合算した単一のスコアだけが提供されるわけではありません。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32293,7 +32293,7 @@
       "correctIndex": 1,
       "explanation": "変更されたスクリプトのレビューは、時間の経過に伴うJavaScript依存関係の変化を追跡し、その変更が想定内かどうかを検証する作業です。一方、悪性スクリプトのレビューでは、Malicious code analysisのスコアや脅威インテリジェンスとの一致状況(URL・ドメインの一致)を確認して脅威度を判断します。Code change alertは毎日送信される通知です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/detection/review-changed-scripts/",
-      "hint": "「変化を追跡する」作業と「脅威度をスコアで判断する」作業、それぞれ何を確認しているか考えましょう。",
+      "hint": "変更のレビューで確認するのは、スコアとの一致状況ではありません。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32454,7 +32454,7 @@
       "correctIndex": 2,
       "explanation": "コンテンツセキュリティルールは`default-src`・`img-src`・`style-src`など多くのCSPディレクティブをサポートしますが、Cloudflareのリソースモニタリング機能によって実際に検知(monitored)されているのは`script-src`(Scripts)と`connect-src`(Connections)の2つのディレクティブのみです。それ以外はルールによる制御は可能でも、モニタリングの対象外です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/csp-directives/",
-      "hint": "「ルールで制御できるディレクティブの数」と「実際に検知されているディレクティブの数」は同じとは限りません。",
+      "hint": "ワイルドカードを置ける位置には制約があります。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32507,7 +32507,7 @@
       "correctIndex": 0,
       "explanation": "CSPレポートの送信先を自社ホスト名へ変更する設定はClient-Side Security Advanced契約者のみが利用できます。切り替える前に、`cdn-cgi/*`のURLパスに一致するレート制限ルールやカスタムルールが存在しないことを確認する必要があります。これらが存在すると、CSPレポートの送信に干渉する可能性があるためです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/reference/settings/#prerequisites-for-using-the-same-hostname-for-csp-reports",
-      "hint": "レポート送信先を自社ドメイン配下に変更することで、既存の他のルールと衝突する可能性を考えましょう。",
+      "hint": "送信先を自社ホスト名に変えても、レポートの送信そのものが止まることはありません。",
       "tags": [
         "client-side-security",
         "practical"
