@@ -20449,7 +20449,7 @@
       "correctIndex": 2,
       "explanation": "WAF for SaaSでは、カスタムホスト名にcustom metadata(例: `security_level`というタグと`low`/`medium`/`high`といった値)を付与し、Ruleset Engineの式(`lookup_json_string(cf.hostname.metadata, \"security_level\")`)でそのタグを参照します。これにより、同じゾーン内でタグの値に応じて異なるWAFカスタムルール・レート制限ルール・マネージドルールを適用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/security/waf-for-saas/",
-      "hint": "「ホスト名そのもの」ではなく「ホスト名に付けたラベル」を条件式が参照する仕組みを考えましょう。",
+      "hint": "カスタムホスト名ごとに別のゾーンを作る必要はありません。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20498,7 +20498,7 @@
       "correctIndex": 3,
       "explanation": "ワイルドカードホスト名が一致する場合、DNS(顧客の論理ゾーン)が新しいカスタムホスト名より優先されるため、顧客の無料プランの制限がそのまま適用されます(Cloudflareはそのゾーンを無料ゾーンとして扱います)。SaaS事業者のEnterpriseプランの上限を適用したい場合は、顧客側のレコードをDNSのみ(プロキシなし)にするか、SaaS事業者側で完全一致のカスタムホスト名を使う必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#scenario-2",
-      "hint": "ワイルドカード一致のときの優先順位のルールを、前の設問で整理したことを思い出しましょう。",
+      "hint": "この競合が自動的に検出されて解消されることはありません。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20550,7 +20550,7 @@
       "correctIndex": 0,
       "explanation": "同じホスト名・同じ証明書タイプの証明書が複数存在する場合、基本的には最も新しく発行された証明書が優先されます。ただし証明書の削除が発生した場合は、残っている証明書のうち有効期限が最も遅い(最も先の日付の)ものが優先されるようになります。その後、有効期限が近かった証明書が更新されると、再びその証明書が最新の有効期限を持つものとして優先されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#certificate-deployment",
-      "hint": "「普段のルール」と「証明書が削除されたときだけ適用される例外」を分けて考えましょう。",
+      "hint": "新しく発行された証明書が無視されることはありません。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -26659,7 +26659,7 @@
       "correctIndex": 3,
       "explanation": "デフォルトのキャッシュキーは、スキーム・ホスト・URI・クエリ文字列を含むフルURLに加えて、`Origin`リクエストヘッダー、メソッドオーバーライド関連のヘッダー、`x-forwarded-host`のようなルーティング関連ヘッダーで構成されます。すべてのヘッダーやCookie、訪問者のIPアドレスがデフォルトで含まれるわけではありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-keys/",
-      "hint": "「URL全体」に加えて、「ごく一部の特定のヘッダー」だけがデフォルトで対象になっていると考えましょう。",
+      "hint": "訪問者のIPアドレスは、既定のキャッシュキーには入りません。",
       "tags": [
         "cache",
         "practical"
@@ -26710,7 +26710,7 @@
       "correctIndex": 3,
       "explanation": "カスタムキャッシュキーのクエリ文字列設定には、「すべてのクエリ文字列パラメータを含める」「特定のパラメータを除いてすべて含める」「特定のパラメータのみ含める」「クエリ文字列を無視する」といった選択肢があります(一部はEnterprise限定)。カスタムキャッシュキー設定に含められるクエリ文字列パラメータの最大数は100個です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#cache-key",
-      "hint": "「全部」「全部だけど一部除く」「一部だけ」「無視」という4通りの選択肢と、それに伴う個数の上限を考えましょう。",
+      "hint": "クエリ文字列の扱いは、プランによって選べる範囲が違います。",
       "tags": [
         "cache",
         "practical"
@@ -26923,7 +26923,7 @@
       "correctIndex": 3,
       "explanation": "Cache Ruleの「Cache Reserve Eligibility」は、マッチしたリクエストのうちどのリソースをCache Reserve(R2ベースの永続キャッシュ)へ書き込むかを、最小ファイルサイズ(`minimum_file_size`)で絞り込める設定です。例えば100MB以上のアセットだけを対象にするといった指定ができます。`eligible`をtrueにしつつこの値を省略した場合は、デフォルトで0バイトとして扱われます。この設定を使う場合も、プランに基づくキャッシュ可能ファイルサイズの上限は引き続き適用され、Tiered Cacheとの併用が推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#cache-reserve-eligibility",
-      "hint": "「対象にするかしないか」の二択だけでなく、「どのくらいの大きさから対象にするか」という数値の指定もできると考えましょう。",
+      "hint": "Cache Rule単位で設定できます。",
       "tags": [
         "cache",
         "practical"
@@ -36185,7 +36185,7 @@
       "correctIndex": 0,
       "explanation": "修復のステータスにはPending(修復予定として設定済み)・Processing(修復実行中)・Validating(修復完了後、解決の確認待ち)・Completed(修復完了かつ解決を確認済み)・Failed(修復失敗)・Rejected(権限不足で修復不可)があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#remediate-a-finding",
-      "hint": "修復には「準備」「実行」「確認」という段階があることを考えましょう。",
+      "hint": "修復は実行して終わりではなく、解決の確認まで行われます。",
       "tags": [
         "casb",
         "practical"
@@ -36545,7 +36545,7 @@
       "correctIndex": 2,
       "explanation": "サードパーティアプリケーション側での権限不足が、セットアップ失敗の最も頻度の高い原因とされています。Microsoft 365ではGlobal Administrator、Google WorkspaceではSuper Admin、GitHubではOrganization Ownerという権限が必要です。また、以前に別のCloudflareアカウントで連携していた場合は、SaaS側の管理画面で古いアプリの登録を手動で取り消す必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/troubleshoot-casb/#check-permissions-in-the-third-party-application",
-      "hint": "セットアップでつまずく最も多い原因が、Cloudflare側ではなく連携先アプリ側の設定にあることを考えましょう。",
+      "hint": "必要な権限の要件は、SaaSアプリごとに違います。",
       "tags": [
         "casb",
         "practical"
