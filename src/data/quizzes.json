@@ -5364,7 +5364,7 @@
       "correctIndex": 0,
       "explanation": "デフォルトではqueue()ハンドラが例外なく正常終了すればバッチ内の全メッセージが暗黙的にackされ、例外がスローされるとバッチ全体がリトライ対象になります。しかしmsg.ack()を使って個別のメッセージを明示的に確認応答しておくと、そのメッセージは処理済みとして扱われ、バッチ内の他のメッセージが失敗してリトライされても再配信されません。逆にmsg.retry()を使えば、特定のメッセージだけを明示的に再配信対象にできます。これにより「バッチ内の一部だけが失敗した」ケースを適切にハンドリングできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/configuration/batching-retries/",
-      "hint": "バッチの一部だけやり直したいとき、すでに終わった分をどう区別するか考えましょう。",
+      "hint": "`ack`はConsumer側から呼び出せます。",
       "tags": [
         "do-queues",
         "trivia"
@@ -9641,7 +9641,7 @@
       "correctIndex": 1,
       "explanation": "D1の各データベースにはストレージ容量の上限があるため、1つの巨大なデータベースにすべてのデータを詰め込むのではなく、テナント(顧客)ごとや機能ドメインごとに複数のD1データベースへ分割する設計(database-per-tenantのようなパターン)が、単一データベースの肥大化を避けるための現実的な対応です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/platform/limits/",
-      "hint": "荷物を1つの巨大な倉庫に詰め込み続けるのと、用途別に倉庫を分けるのと、どちらが管理しやすいか考えましょう。",
+      "hint": "D1のデータベースが、データ量に応じて自動的に分割されることはありません。",
       "tags": [
         "d1",
         "practical"
@@ -10395,7 +10395,7 @@
       "correctIndex": 1,
       "explanation": "SQLiteバックエンドのDurable Objectsでは、embeddedされたSQLiteデータベースを過去30日以内の任意の時点へ復元できるPITR APIが提供されています。復元したい時点は「bookmark」と呼ばれる、レキシカル比較可能な文字列で指定します。APIを呼び出してbookmarkを設定した後、アプリケーション側でctx.abort()などによりDurable Objectを再起動することで、次回起動時にストレージがその時点の状態へ復元されます。このAPIはSQL形式のデータとKV形式のデータ両方に適用され、ローカル開発環境(`wrangler dev`)では変更履歴のログが保存されないためサポートされていません。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/",
-      "hint": "巻き戻したい場所の目印を渡した後、その変更を反映させるには何をする必要があるか考えましょう。",
+      "hint": "復元できる範囲は、1年分もありません。",
       "tags": [
         "do-queues",
         "trivia"
@@ -10468,7 +10468,7 @@
       "correctIndex": 2,
       "explanation": "Durable Object Stubは、リモートのDurable Objectに対してメソッドを呼び出すRPCクライアントとして機能します。Durable Objectクラスに定義した非プライベートなメソッドは自動的にRPC経由で公開され、Worker側からはstub.methodName()のように、HTTPのfetch()を経由せず直接呼び出せます。呼び出しはすべて非同期でシリアライズ可能な型を受け渡しし、例外は呼び出し元に伝播します（スタックトレースは含まれません）。また同一のスタブに対して複数回呼び出しを行った場合、それらは呼び出した順序どおりにDurable Objectへ配信されることが保証されており、これはE言語に由来する「E-order semantics」と呼ばれます。ただし異なるスタブ間ではこの順序保証は適用されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/stub/",
-      "hint": "同じ相手に続けて何度も話しかけたとき、話した順番通りに届くと約束されているか考えましょう。",
+      "hint": "RPCの呼び出しで、呼び出し元の処理が完全に止まることはありません。",
       "tags": [
         "do-queues",
         "trivia"
@@ -37345,7 +37345,7 @@
       "correctIndex": 3,
       "explanation": "Download throughput・Upload throughputは通信速度(Mbps)を示す指標であるのに対し、Download latency・Upload latencyは転送中の往復遅延を示します。Unloaded latencyは通信が行われていない状態でのベースラインの遅延を示し、Jitterは時間経過に伴う遅延のばらつきを示します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/diagnostics/speed-test/#speed-test-metrics",
-      "hint": "「速さ」を測る指標と、「遅延」を測る指標、「ばらつき」を測る指標は、それぞれ別物だと考えましょう。",
+      "hint": "Unloaded latencyは、負荷がかかっていない状態で測る値です。",
       "tags": [
         "dex",
         "practical"
@@ -37403,7 +37403,7 @@
       "correctIndex": 3,
       "explanation": "PCAPには時間上限600秒・ファイルサイズ上限50MB・パケットサイズ上限1500バイトという制約があります。一方、Cloudflare One Client診断ログ自体にはファイルサイズの上限はありませんが、100MBを超えるファイルはCloudflareへアップロードできず、管理者へ直接共有する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/diagnostics/client-packet-capture/#limitations",
-      "hint": "「ファイル自体に上限があるもの」と「アップロードできる上限があるだけのもの」の違いを考えましょう。",
+      "hint": "PCAPのキャプチャは、無制限に続けられるわけではありません。",
       "tags": [
         "dex",
         "practical"
@@ -37505,7 +37505,7 @@
       "correctIndex": 3,
       "explanation": "診断ログは直近96時間分のCloudflare One Clientの動作記録として取得されます。キャプチャ実行時にCloudflare One Clientが切断されている場合、そのキャプチャリクエストは10分後にタイムアウトします。「`Test all routes`」オプションを有効にすると、診断にかかる時間が延び、デバイスのパフォーマンスへ一時的に影響する可能性があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/diagnostics/client-packet-capture/#diagnostic-log-files",
-      "hint": "「何時間分のログを遡って取得するか」と「デバイスが応答しない場合にいつ諦めるか」を分けて考えましょう。",
+      "hint": "`Test all routes`を有効にすると、診断にかかる時間は延びます。",
       "tags": [
         "dex",
         "practical"
@@ -37869,7 +37869,7 @@
       "correctIndex": 2,
       "explanation": "1通のメールは複数のdetectionを持つことができますが、最終的なdispositionは常に1つに定まります。SPAMと判定されたメールのdispositionヘッダーには「SPAM」ではなく「UCE」(unsolicited commercial emails)という値がタグ付けされます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/dispositions-and-attributes/#dispositions",
-      "hint": "「脅威を見つけるプロセス」と「最終的に1つに絞られる結論」の違いを考えましょう。",
+      "hint": "SPAMの場合、ヘッダーの表記は判定名称そのままではありません。",
       "tags": [
         "email-security",
         "practical"
