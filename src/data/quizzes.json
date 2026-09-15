@@ -19660,25 +19660,25 @@
       "question": "Cloudflare for SaaSの目的として正しいものはどれですか？",
       "options": [
         {
-          "text": "SaaS事業者自身のドメインを、顧客ごとに異なるCloudflareアカウントへ自動的に分割して割り当てる仕組み",
-          "wrongFeedback": "アカウントを分割する仕組みではありません。顧客が自分の独自ドメインをSaaS事業者のサービスに向けられるようにする仕組みです。"
+          "text": "SaaS事業者が自分のサービスのホスト名を顧客側のCloudflareゾーンにカスタムホスト名として登録し、証明書の発行と配信設定を顧客のアカウント側で管理してもらう",
+          "wrongFeedback": "登録する向きが逆です。カスタムホスト名は顧客のゾーンではなく、SaaS事業者自身のゾーンに追加します。公式ドキュメントも「SaaS事業者として、顧客が所有する独自ドメインを自分のゾーンにカスタムホスト名として追加することで、Cloudflareの製品を拡張できる」と説明しています。証明書の発行とルーティングを担うのもSaaS事業者側のゾーンです。"
         },
         {
-          "text": "SaaS事業者のインフラをすべてCloudflareのゾーンに移行し、オンプレミスやクラウド上のサーバーを完全に廃止してWorkersとR2へ置き換えるための、専任チームによる移行支援サービス",
-          "wrongFeedback": "インフラ移行支援サービスではありません。顧客の独自ドメインにCloudflareの機能を拡張する仕組みです。"
+          "text": "顧客が書いたコードをSaaS事業者のアカウント配下のディスパッチ名前空間にデプロイし、事業者側のWorkerから顧客ごとに呼び分けて隔離された環境で実行できるようにする",
+          "wrongFeedback": "これは姉妹製品のWorkers for Platformsの説明です。顧客が書いたコードをディスパッチ名前空間にデプロイし、顧客ごとに隔離された環境で実行するのはそちらの役割です。Cloudflare for SaaSが扱うのは、顧客の独自ドメインのルーティングと証明書です。"
         },
         {
           "text": "SaaS事業者の顧客が自分の独自ドメインをSaaS事業者のCloudflareゾーン上のサービスに向けられるようにし、その独自ドメインにもCloudflareの機能を拡張する"
         },
         {
-          "text": "SaaS事業者が`wrangler deploy`で公開するWorkerのソースコードを、顧客がカスタムドメインを追加するたびに顧客ごとに個別にコンパイルし直し、それぞれ別のWorkerバイナリとしてデプロイし直す仕組み",
-          "wrongFeedback": "コードのコンパイルに関する仕組みではありません。カスタムドメインのルーティング・証明書発行を扱う仕組みです。"
+          "text": "顧客のドメインの権威DNSをCloudflareへ移したうえで、その顧客ゾーンをSaaS事業者のアカウントに取り込み、DNSレコードやWAFの設定をSaaS事業者がまとめて代理で管理できるようにする",
+          "wrongFeedback": "顧客のゾーンをSaaS事業者のアカウントへ取り込む必要はありません。顧客が行うのは、自分の権威DNSにCNAMEレコードを1本置いて独自ドメインを有効化することだけです。顧客が自分のCloudflareゾーンを持っている場合でも、2つのゾーンは別々のアカウントに属したまま動きます(これがO2Oと呼ばれる構成です)。"
         }
       ],
       "correctIndex": 2,
       "explanation": "Cloudflare for SaaSは、SaaS事業者の顧客が自分の独自ドメイン(例: `app.customer.com`)を、SaaS事業者のCloudflareゾーン(例: `service.saas.com`)上のサービスに向けられるようにする仕組みです。これにより、顧客の独自ドメインにもCloudflareの暗号化・パフォーマンス・可用性・トラフィック分析といった機能を拡張できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/",
-      "hint": "4つの肢は、アカウントの分け方・インフラの移行・ドメインの扱い・コードのビルドという、別々の話をしています。`for SaaS` という名前がSaaS事業者の何を助けるものかを手がかりにしましょう。",
+      "hint": "顧客の独自ドメインは、顧客側とSaaS事業者側のどちらのゾーンに登録されて配信されるのでしょうか。その向きを手がかりに読み比べましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20604,16 +20604,16 @@
       "question": "Cloudflare Pipelinesの目的として正しいものはどれですか？",
       "options": [
         {
-          "text": "複数のWorkerスクリプトを1つにバンドルし、単一のデプロイ単位として配信するビルドツールであり、開発時に分割されたモジュールをまとめてデプロイ時に1つのスクリプトとして出力する",
-          "wrongFeedback": "Workerのビルド・バンドリングツールではありません。ストリーミングデータをR2に配信する仕組みです。"
+          "text": "取り込んだイベントを受け取った順にJSON形式のままR2へ書き出す仕組みで、列の絞り込みや型の変換は保存したあとのクエリ側で行う",
+          "wrongFeedback": "これは2025年9月25日より前に作られた「レガシーパイプライン」の姿です。当時の出力はJSONのみで、SQLによる変換もありませんでした。現在のPipelinesはSQL変換を備え、JSON・Parquet・Apache Icebergの各形式で書き出せます。"
         },
         {
-          "text": "サーバーログやIoTテレメトリを取り込み、Cloudflareネットワーク上のトラフィックをリアルタイムに可視化するモニタリングダッシュボード専用の機能",
-          "wrongFeedback": "トラフィック可視化ダッシュボードではありません。データの取り込み・変換・配信のためのデータパイプラインです。"
+          "text": "WAFやWorkers、GatewayといったCloudflare製品が出力するログを、あらかじめ決まったスキーマのままR2やAmazon S3などの保存先へ、届き次第まとめて押し出す",
+          "wrongFeedback": "Cloudflare製品のログを保存先へ押し出すのはLogpushです。WAFやWorkers、GatewayのログをR2やAmazon S3、SIEMへ届けるのはLogpushのジョブが担います。Pipelinesが受け取るのは、HTTPエンドポイントやWorkerバインディング経由で自分のアプリケーションから送るイベントです。LogpushをStreamsの入力元として使うことはできますが、それはPipelinesへデータを届ける経路の一つであって、Pipelines自身の目的ではありません。"
         },
         {
-          "text": "R2に保存済みのデータを定期的にスキャンし、不要なファイルを自動的に削除するライフサイクル管理サービスであり、古いオブジェクトや一時ファイルを期限切れとして自動的に消去する",
-          "wrongFeedback": "データのライフサイクル管理(自動削除)機能ではありません。ストリーミングデータの取り込み・変換・配信を行う仕組みです。"
+          "text": "R2に置いたParquetファイルをApache Icebergのテーブルとしてカタログに登録し、外部のクエリエンジンから標準のIceberg REST APIで読めるようにする",
+          "wrongFeedback": "R2上のApache Icebergテーブルをカタログとして管理し、Iceberg REST APIで外部のクエリエンジンから読めるようにするのはR2 Data Catalogです。PipelinesにとってR2 Data CatalogやR2上のParquet/JSONファイルは配信先(Sink)の候補であり、Pipelines自身が担うのは取り込み・SQL変換・配信です。"
         },
         {
           "text": "ストリーミングデータを取り込み、SQLで変換し、Apache IcebergテーブルやParquet/JSONファイルとしてR2に配信する"
@@ -20622,7 +20622,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Pipelinesは、サーバーログ・モバイルアプリのイベント・IoTテレメトリ・クリックストリームといったストリーミングデータを取り込み、SQLで変換したうえで、Apache IcebergテーブルやParquet/JSONファイルとしてR2に配信する仕組みです。ストリーミング基盤を自前で管理することなく、分析に使えるデータウェアハウス・レイクハウスを構築できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/",
-      "hint": "4つの肢は、コードのまとめ方・トラフィックの可視化・保存済みファイルの整理・取り込んだデータの行き先という、別々の話をしています。`Pipelines` という名前がどれを指すかを手がかりにしましょう。",
+      "hint": "4つの肢はいずれもデータがR2へ向かう話をしています。データが入口に届いてからR2に書き出されるまでのあいだに、この製品自身が何をするのかを考えましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -20654,19 +20654,19 @@
       "question": "Cloudflare Pipelinesを構成する3つの主要コンポーネントの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "サーバーレス実行環境であるWorkers・キーバリューストアであるKV・リレーショナルデータベースであるD1の組み合わせ",
-          "wrongFeedback": "これらはPipelinesの構成要素ではありません。Pipelinesの構成要素はStreams・Pipelines(SQL変換)・Sinksです。"
+          "text": "イベントを受け取って一時的に蓄えるバッファであるQueues、SQLでデータを変換するPipelines、変換後のデータの配信先を定義するSinks",
+          "wrongFeedback": "役割の説明は合っていますが、名前が違います。ドキュメントはStreamsを「durable, buffered queues(耐久性のあるバッファ付きキュー)」と説明しており、そのためQueuesと混同しやすい箇所です。Pipelinesの入口にあたる構成要素の名前はStreamsで、Queuesはこれとは独立した別の製品です。"
         },
         {
           "text": "データを受け取り一時的に蓄えるStreams、SQLでデータを変換する構成要素であるPipelines、変換後のデータの配信先を定義するSinks"
         },
         {
-          "text": "メッセージングを担うQueues・状態保持を担うDurable Objects・キャッシュを担うCache APIの組み合わせ",
-          "wrongFeedback": "いずれも実在するCloudflareの製品ですが、Pipelinesの構成要素ではありません。Pipelinesは、データを受け取って一時的に蓄えるStreams、SQLで変換するPipelines、配信先を定義するSinksの3つで構成されます。"
+          "text": "データを受け取り一時的に蓄えるStreams、SQLでデータを変換するPipelines、書き込み先のIcebergテーブルやParquetファイルの置き場所を指定するR2 Data Catalog",
+          "wrongFeedback": "前半2つ(データを受け取るStreamsと、SQLで変換するPipelines)は合っていますが、3つ目が違います。R2 Data Catalogは構成要素ではなく、Sinksが書き込む宛先の一つです。配信先を定義する構成要素の名前はSinksで、SinksがR2 Data CatalogへApache Icebergテーブルとして、あるいはR2へJSON/Parquetファイルとして書き出します。"
         },
         {
-          "text": "オンプレミス接続用のTunnel・プライベートリソースを定義するVPC Service・それらを束ねる仮想ネットワークであるVPC Networkの組み合わせ",
-          "wrongFeedback": "これらはWorkers VPCの構成要素です。Pipelinesの構成要素とは異なります。"
+          "text": "取り込みとSQL変換をまとめて担うPipelines、変換の結果を配信されるまで保持するStreams、配信先のクエリエンジンへ引き渡すSinks",
+          "wrongFeedback": "3つの名前は合っていますが、担当がずれています。データを受け取って蓄える入口がStreamsで、そのStreamsとSinksをSQL変換でつなぐのがPipelinesです。Streamsは変換後の結果を預かる役ではありません。"
         }
       ],
       "correctIndex": 1,
@@ -23632,25 +23632,25 @@
       "question": "Super Bot Fight Modeで設定できる3つのトラフィックカテゴリ(グルーピング)の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "危険度が低いLow Risk・中程度のMedium Risk・高いHigh Riskという、リスクレベル別に区分された3つのカテゴリ",
-          "wrongFeedback": "SBFMのカテゴリはリスクレベルではなく、Definitely automated・Likely automated・Verified botsという3つの区分です。"
+          "text": "Automated(ボットスコア1)・Likely automated(ボットスコア2〜29)・Likely human(ボットスコア30〜99)という、スコアの範囲で区切られた3つ",
+          "wrongFeedback": "これはBot Analyticsでボットトラフィックを分けて表示するときの区分(bot groupings)で、ボットスコアの範囲に対応しています。Super Bot Fight Modeでアクションを設定する3つは、Definitely automated traffic・Likely automated traffic・Verified botsです。Likely humanはSBFMのアクション設定の対象には並びません。"
         },
         {
           "text": "Definitely automated traffic(明らかに自動化されたトラフィック)・Likely automated traffic(自動化されている可能性が高いトラフィック)・Verified bots(検証済みボット)"
         },
         {
-          "text": "自動化を示すAutomated・人間を示すHuman・未判定を示すUnknownという、判定結果の確度を表す3つのカテゴリ",
-          "wrongFeedback": "SBFMのトラフィックカテゴリはDefinitely automated・Likely automated・Verified botsの3つです。"
+          "text": "Static resource protection(静的リソースの保護)・JavaScript detections(JavaScriptによる検知)・Optimize for WordPress(WordPressサイト向けの最適化)",
+          "wrongFeedback": "この3つはSuper Bot Fight Modeの設定画面に実際に並びますが、トラフィックのグルーピングではなく追加設定にあたります。公式の手順も、値をAllowにする「すべてのボットのグルーピング」(Definitely automated traffic・Likely automated traffic・Verified bots)と、オン/オフを確認する「その他のオプション」(Static resource protection・JavaScript detections・Optimize for WordPress)を分けて説明しています。"
         },
         {
-          "text": "検索エンジン向けのSearch Engine・SNS向けのSocial Media・監視ツール向けのMonitoringという、ボットの用途別の3つのカテゴリ",
-          "wrongFeedback": "これはVerified botsのレガシーカテゴリの一部の例であり、SBFMの3つのトラフィックグルーピングとは異なります。"
+          "text": "Search(検索インデックス向けのクロール)・Agent(利用者の指示で動くエージェント)・Training(モデルの学習向けのクロール)",
+          "wrongFeedback": "Search・Agent・Trainingは、AIボットに対して全プランで使えるマネージドプリセットの分類です。Super Bot Fight Modeでアクションを選ぶ3つのトラフィックカテゴリは、自動化の度合いと検証済みかどうかで分かれるDefinitely automated traffic・Likely automated traffic・Verified botsです。"
         }
       ],
       "correctIndex": 1,
       "explanation": "Super Bot Fight Modeは、届いたトラフィックがどれくらい自動化されたものかでカテゴリ分けし、カテゴリごとに個別のアクションを設定できる機能です。カテゴリはDefinitely automated traffic(明らかに自動化されたトラフィック)・Likely automated traffic(自動化されている可能性が高いトラフィック)・Verified bots(Cloudflareが身元を確認したボット)の3つです。\n{{diagram:0}}\n※ カテゴリ以外にも、Static resource protection・JavaScript detections・Optimize for WordPressといった追加設定があります。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/",
-      "hint": "SBFMが何を基準にトラフィックを分けているのかを考えましょう。ボットの用途か、危険度の高低か、自動化の度合いか。",
+      "hint": "SBFMでは区分ごとに「許可する・チャレンジする・ブロックする」のどれを取るかを選びます。アクションを選ぶ対象として画面に並ぶ3つはどれかを考えましょう。",
       "tags": [
         "bots",
         "practical"
@@ -24406,16 +24406,16 @@
           "text": "多くの企業が把握していないエンドポイントを含む大量のAPIを抱えており、負のセキュリティモデルはクレデンシャルスタッフィング攻撃に弱く、高度な多段階攻撃は見逃されやすい"
         },
         {
-          "text": "APIはHTMLページと違って必ずキャッシュされないため、CDNのキャッシュヒット率が下がることが最大の課題である",
-          "wrongFeedback": "キャッシュヒット率の低下が課題として挙げられているわけではありません。ゾンビエンドポイントや高度な攻撃パターンの見逃しが課題として挙げられています。"
+          "text": "多くのAPIが正のセキュリティモデルで守られているため、許可リストに載っていない正規の呼び出しまで遮断されてしまい、クレデンシャルスタッフィング対策としては過剰になりやすい",
+          "wrongFeedback": "モデルの向きが逆です。ドキュメントは「多くのAPIが負のセキュリティモデル(既知の攻撃だけをブロックし、それ以外は通す方式)で守られているため、クレデンシャルスタッフィング攻撃や自動スキャンツールに対して脆弱である」と述べています。正のセキュリティモデル(許可したものだけを通す方式)はむしろAPI Shieldのスキーマ検証が目指す側です。"
         },
         {
-          "text": "APIのバージョニングを行うと`/v1/`・`/v2/`のようにURLパスの数が増えすぎるため、WAFカスタムルールやEndpoint Managementのルール上限にすぐ到達してしまうことが最大の課題である",
-          "wrongFeedback": "バージョニングによるルール上限到達が課題として挙げられているわけではありません。"
+          "text": "把握していないエンドポイントを洗い出すには、まず全エンドポイントを書き出したOpenAPIスキーマを用意して読み込ませる手順が先に必要で、その作成作業そのものが負担になる",
+          "wrongFeedback": "順序が逆です。API Discoveryは、あらかじめスキーマを用意しなくても、実際に流れているトラフィック全体からエンドポイントの地図を作ります。ドキュメントが課題として挙げているのは、そうやって見つかるまで企業自身が把握していないエンドポイント(いわゆるゾンビエンドポイント)を大量に抱えている、という点です。"
         },
         {
-          "text": "APIのレスポンスは常にJSON形式でなければならず、それ以外の形式を返すAPIはCloudflareの保護対象外になってしまうため、XMLを返すレガシーなSOAP APIは保護の恩恵を受けられない",
-          "wrongFeedback": "レスポンス形式に関するそのような制約が課題として挙げられているわけではありません。"
+          "text": "APIへのリクエストがブラウザからのHTMLリクエストと同じ経路を流れるため、WAFのマネージドルールがAPIの正規のリクエストを攻撃と取り違えやすい",
+          "wrongFeedback": "ドキュメントがAPIならではの課題として挙げているのは、(1)把握していないエンドポイントを含む大量のAPI、(2)負のセキュリティモデルゆえのクレデンシャルスタッフィングや自動スキャンへの弱さ、(3)数の多さに紛れるブルートフォース攻撃、(4)高度な多段階攻撃の見逃し、の4点です。マネージドルールの誤検知はこの中に含まれていません。"
         }
       ],
       "correctIndex": 0,
@@ -27292,19 +27292,19 @@
       "question": "URL Rewrite Rulesの「静的な書き換え(static rewrite)」と「動的な書き換え(dynamic rewrite)」の違いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "静的な書き換えはURIパスのみを対象とし、動的な書き換えはクエリ文字列のみを対象とするという対象範囲による区分であり、1つのルールでパスとクエリ文字列の両方を書き換えることはできない",
-          "wrongFeedback": "対象範囲による区分ではありません。静的・動的のどちらも、URIパス・クエリ文字列のいずれか、または両方を対象にできます。"
+          "text": "静的な書き換えは301や302の応答を返して訪問者のブラウザのアドレス欄を新しいURLに差し替えるのに対し、動的な書き換えはアドレス欄をそのままにオリジンへ渡すパスだけを差し替える",
+          "wrongFeedback": "これはURL redirect(リダイレクト)の説明です。リダイレクトは301などの応答を返してブラウザ側でURLを読み替えさせるクライアント側の操作で、訪問者にはURLが変わったことが見えます。URL rewriteはサーバー側の操作で、静的・動的のどちらでもブラウザに表示されるURLは変わりません。"
         },
         {
           "text": "静的な書き換えはURLの一部を固定の文字列に置き換えるのに対し、動的な書き換えはリクエストのプロパティに基づく数式で結果のパスやクエリ文字列を定義する"
         },
         {
-          "text": "静的な書き換えはAPI経由でのみ設定でき、動的な書き換えはダッシュボード経由でのみ設定できるという、設定手段による区分であるため、ダッシュボードで作成したルールは固定文字列への置き換えを選べない",
-          "wrongFeedback": "設定手段による区分ではありません。静的・動的の違いは、固定文字列を使うか、リクエストのプロパティに基づく数式を使うかという点です。"
+          "text": "静的な書き換えはホスト名を含むURL全体を固定の文字列に置き換える用途で使い、動的な書き換えはURIパスとクエリ文字列だけを対象に数式で組み立てる用途で使う",
+          "wrongFeedback": "ホスト名は対象外です。ドキュメントは「URL rewrite ruleでホスト名を書き換えることはできません。ホスト名を書き換えるにはorigin ruleを使ってください」と明記しています。静的・動的のどちらも、対象になるのはURIパスとクエリ文字列です。"
         },
         {
-          "text": "静的な書き換えはリクエストごとに異なる結果を返し、動的な書き換えは常に同じ固定の結果を返す",
-          "wrongFeedback": "説明が逆です。静的な書き換えは固定文字列に置き換え、動的な書き換えはリクエストの内容に応じて結果が変わります。"
+          "text": "静的な書き換えはルールを作るときに決めた固定の文字列を使い、動的な書き換えはオリジンが返した応答の内容を読み取ってから結果のパスを組み立てる",
+          "wrongFeedback": "動的な書き換えが読むのはリクエスト側のプロパティで、オリジンの応答ではありません。URL Rewrite Rulesは`http_request_transform`フェーズ、つまりリクエストがオリジンへ向かう前の段階で評価されるため、応答の内容を材料にすることはできません。"
         }
       ],
       "correctIndex": 1,
@@ -28111,16 +28111,16 @@
           "text": "IPアドレス解決に使われるA・AAAA・CNAMEレコードのみがプロキシ可能で、MXやTXTなど他の種類は常にDNS-onlyになる"
         },
         {
-          "text": "TXT・MX・NS・SRVレコードを含むすべての種類のDNSレコードをプロキシでき、レコードの種類によってプロキシの可否が変わることはない",
-          "wrongFeedback": "すべての種類をプロキシできるわけではありません。プロキシできるのはIPアドレス解決に使われるA・AAAA・CNAMEレコードのみです。"
+          "text": "A・AAAA・CNAMEに加えてMXレコードもプロキシ対象にでき、プロキシにするとメールの配送経路もCloudflareのネットワークを経由するようになる",
+          "wrongFeedback": "MXレコードはプロキシできません。ドキュメントは「IPアドレス解決に使われるレコード — A・AAAA・CNAME — だけがプロキシ可能で、その他の種類(MXやTXTなど)は常にDNS-onlyです」と定めています。プロキシが扱うのはHTTP/HTTPSトラフィックであり、メールの配送経路はその対象ではありません。"
         },
         {
-          "text": "プロキシできるかどうかはレコードの種類ではなく、レコードのTTL値によって決まる",
-          "wrongFeedback": "TTL値によって決まるわけではありません。プロキシ可能かどうかはレコードの種類(A・AAAA・CNAMEかどうか)によって決まります。"
+          "text": "プロキシ対象はA・AAAAレコードで、CNAMEは宛先をたどった先のA・AAAAレコードのプロキシ設定をそのまま引き継ぐ扱いになる",
+          "wrongFeedback": "CNAMEはそれ自体がプロキシ対象です。ドキュメントはA・AAAA・CNAMEの3種類をプロキシできると明記しており、CNAMEレコードにも個別のプロキシ状態があります。プロキシ済みのCNAMEは別のCNAMEを指すこともできますが、最終的に有効なIPアドレスを持つホスト名へ行き着く必要があります。"
         },
         {
-          "text": "MXレコードのみがプロキシ可能で、A・AAAA・CNAMEレコードは常にDNS-onlyになる。メールサーバーへの到達性を保護するため、MXの経路だけを保護する設計だからである",
-          "wrongFeedback": "逆です。プロキシ可能なのはA・AAAA・CNAMEレコードであり、MXレコードは常にDNS-onlyです。"
+          "text": "A・AAAA・CNAMEに加えてHTTPSレコードもプロキシ対象にでき、プロキシ済みの名前では手動で追加したHTTPSレコードがそのまま配信される",
+          "wrongFeedback": "HTTPSレコードにプロキシ状態はありません。プロキシ済み(オレンジクラウド)の名前では、Universal SSLが有効なときにCloudflareがHTTPSレコードを自動生成して応答に使い、手動で追加したHTTPSレコードは配信されません。手動のHTTPSレコードが使われるのは、同じ名前のレコードがすべてDNS-onlyの場合です。"
         }
       ],
       "correctIndex": 0,
@@ -28617,16 +28617,16 @@
           "text": "A・AAAA・CNAMEの3種類"
         },
         {
-          "text": "NS・SOA・DSの3種類",
-          "wrongFeedback": "これらはゾーン管理やDNSSECに関わるレコードタイプであり、IPアドレス解決の目的ではありません。"
+          "text": "A・AAAA・PTRの3種類",
+          "wrongFeedback": "PTRはIPアドレスから名前を引く逆引き用のレコードで、ドキュメントでは「特殊なレコード(Specialized records)」に分類されています。名前からIPアドレスを引く「IPアドレス解決」に使われるのはA・AAAA・CNAMEの3種類です。"
         },
         {
-          "text": "SRV・URI・NAPTRの3種類",
-          "wrongFeedback": "これらは特定用途向けのレコードタイプであり、IPアドレス解決の目的ではありません。"
+          "text": "CNAME・HTTPS・SVCBの3種類",
+          "wrongFeedback": "HTTPSとSVCBは、接続の方法(対応プロトコルやポートなど)を接続前にクライアントへ伝えるためのレコードで、CNAMEと違って「特殊なレコード」に分類されます。「IPアドレス解決」に分類されるのはA・AAAA・CNAMEです。"
         },
         {
-          "text": "MX・TXT・CAAの3種類",
-          "wrongFeedback": "これらはIPアドレス解決の目的では使われません。IPアドレス解決に使われるのはA・AAAA・CNAMEです。"
+          "text": "A・AAAA・SRVの3種類",
+          "wrongFeedback": "SRVは特定のサービスのホスト名とポート番号を示すレコードで、「特殊なレコード」に分類されます。「IPアドレス解決」の目的で使われるのはA・AAAA・CNAMEの3種類で、これらだけがCloudflareでプロキシできる対象でもあります。"
         }
       ],
       "correctIndex": 0,
@@ -28716,16 +28716,16 @@
       "question": "CloudflareでDNSSECを有効化する際の正しい流れはどれですか？",
       "options": [
         {
-          "text": "DNSSECを有効化するとCloudflareが自動的にレジストラ側の設定も変更するため、利用者が手動でレジストラ側に何かを設定する必要は一切なく、DSレコードの発行や登録作業もすべてCloudflare側で完結する",
-          "wrongFeedback": "自動的にレジストラ側の設定まで変更されるわけではありません。生成されたDSレコードを利用者がレジストラに追加する必要があります(Cloudflare Registrarの場合は自動化されています)。"
+          "text": "CloudflareでDNSSECを有効化するとCloudflareがゾーンに署名するので、公開された署名鍵そのもの(DNSKEYレコード)の内容をレジストラ側に登録する",
+          "wrongFeedback": "レジストラに登録するのはDNSKEYではなくDSレコードです。ドキュメントは「DNSSECを有効にすると、Cloudflareがゾーンに署名し、公開署名鍵を公開し、DSレコードを生成します」と述べ、続く手順を「DSレコードをレジストラに追加する」としています。DNSKEY(公開鍵そのもの)はゾーン側に置かれ、その要約であるDSが上位に載ることで信頼の連鎖がつながります。"
         },
         {
-          "text": "レジストラ側でDS(Delegation Signer)レコードを事前に作成し、そのダイジェスト値をCloudflareのDNSSEC設定画面にインポートすることでゾーンの署名が開始されDNSSECが有効になる",
-          "wrongFeedback": "順序が逆です。Cloudflareがゾーンに署名してDSレコードを生成し、それをレジストラ側に追加します。レジストラ側で先にDSレコードを作成するわけではありません。"
+          "text": "CloudflareでDNSSECを有効化するとCloudflareがゾーンに署名してDSレコードを生成するので、そのDSレコードを同じゾーンのDNSレコード一覧にも追加して公開し、検証するリゾルバーから引けるようにする",
+          "wrongFeedback": "DSレコードの置き場所が違います。DSは上位のゾーン、つまりレジストラ側に登録して初めて意味を持ちます。自分のゾーンの中にDSを置いても、そのゾーンの正しさを上位から保証することにはなりません。"
         },
         {
-          "text": "DNSSECの有効化にはDS・DNSKEYレコードのどちらか一方のみが必要で、両方を同時に扱う必要はない",
-          "wrongFeedback": "DNSSECの仕組み自体はDNSKEY・DSレコードの両方を使います。DNSSEC有効化の手順として、Cloudflare側での署名とDSレコードの生成、レジストラへのDSレコード追加が必要です。"
+          "text": "移行元のDNSプロバイダーでDNSSECを有効にしたままCloudflareへネームサーバーを切り替えると、レジストラに登録済みのDSレコードがそのまま引き継がれて検証が続く",
+          "wrongFeedback": "ネームサーバーを切り替える前に、レジストラ側でDNSSECを無効にしておく必要があります。古いDSレコードが残ったままCloudflareへ切り替えると、キャッシュされたDSがCloudflareの鍵と一致しないため、検証するリゾルバーはSERVFAILを返します。移行後にCloudflareで改めてDNSSECを有効化し、新しいDSレコードをレジストラに登録し直します。"
         },
         {
           "text": "CloudflareでDNSSECを有効化するとCloudflareがゾーンに署名し、公開署名鍵を公開してDSレコードを生成するので、そのDSレコードをレジストラに追加する"
@@ -28866,16 +28866,16 @@
       "question": "Cloudflareの「Full(Primary)セットアップ」と「Partial(CNAME)セットアップ」の違いに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "Fullセットアップは Business・Enterpriseプラン限定であり、Partialセットアップは全プランで利用できる",
-          "wrongFeedback": "逆です。Fullセットアップは全プランで利用でき、Business・Enterprise限定なのはPartialセットアップです。"
+          "text": "Fullセットアップは全プランで利用でき、Cloudflareが権威DNSプロバイダーになるのに対し、Partialセットアップは既存のDNSプロバイダーを権威のまま維持し、AXFR/IXFRによるゾーン転送でレコードをCloudflareへ同期させて、プロキシ対象のホスト名を作る",
+          "wrongFeedback": "ゾーン転送を使うのは別の設定です。AXFR/IXFRでレコードをやり取りするのは「Zone transfers(Cloudflareをセカンダリとして使う設定)」で、Partial(CNAME)セットアップではレコードの同期は行われません。Partialでは、権威DNSプロバイダー側に置いたCNAMEレコードが`{ホスト名}.cdn.cloudflare.net`を指すことで解決がCloudflareへ向きます。"
         },
         {
-          "text": "Partialセットアップは、Cloudflare Registrarでドメインを登録している場合にのみ利用できる特別な設定である",
-          "wrongFeedback": "Cloudflare Registrarで登録されたドメインではPartial(CNAME)セットアップはサポートされていません。"
+          "text": "Fullセットアップは全プランで利用でき、Cloudflareが権威DNSプロバイダーになるのに対し、Partialセットアップは既存のDNSプロバイダーを維持したまま、Pro以上のプランで追加のアドオンを購入すると利用できる",
+          "wrongFeedback": "プランの境目が違います。Partial(CNAME)セットアップはBusiness・Enterpriseプラン限定で、FreeとProでは利用できません。別売りのアドオンとして追加する形でもありません。"
         },
         {
-          "text": "FullセットアップとPartialセットアップは、権威DNSプロバイダーがどこであるかという点では違いがなく、単にダッシュボードの表示名が異なるだけである",
-          "wrongFeedback": "権威DNSプロバイダーの違いは実質的な差です。FullではCloudflareが権威DNSになりますが、Partialでは既存のプロバイダーが権威DNSのままです。"
+          "text": "Fullセットアップは全プランで利用でき、Cloudflareが権威DNSプロバイダーになるのに対し、Partialセットアップは既存のDNSプロバイダーを維持したまま、ゾーン頂点(apex)も含めて好きなホスト名を追加の条件なしでプロキシできる",
+          "wrongFeedback": "頂点(apex)は無条件ではありません。Partialセットアップはプロキシしたいホスト名をCNAMEでCloudflareへ向ける仕組みで、CNAMEはゾーン頂点には置けないため、apexをプロキシできるかどうかは権威DNSプロバイダーがCNAME Flatteningに対応しているかに依存します。対応していない場合は、サブドメインへのリダイレクトや静的IP/BYOIPを使う必要があります。"
         },
         {
           "text": "Fullセットアップは全プランで利用でき、Cloudflareが権威DNSプロバイダーになるのに対し、Partialセットアップは既存のDNSプロバイダーを維持したままBusiness・Enterpriseプランでのみ利用できる"
@@ -28973,16 +28973,16 @@
           "text": "エッジ証明書は訪問者とCloudflare間の通信を暗号化し、オリジン証明書はCloudflareとオリジンサーバー間の通信を暗号化する、対象とする区間が異なる証明書である"
         },
         {
-          "text": "エッジ証明書・オリジン証明書という区分はCloudflareには存在せず、常に単一の証明書だけがすべての区間をカバーする",
-          "wrongFeedback": "そのような区分がないわけではありません。Cloudflareでは訪問者側・オリジン側で別々の証明書を扱う仕組みが用意されています。"
+          "text": "Cloudflareが発行するオリジン証明書は提携先のパブリックな認証局から出されており、訪問者のブラウザからも信頼されるため、プロキシを外して訪問者を直接オリジンへ到達させたときも同じ証明書を使い続けられる",
+          "wrongFeedback": "オリジン証明書(Origin CA証明書)はCloudflareとオリジンの間だけで通用します。ドキュメントは「これらの証明書はCloudflareとオリジンサーバー間の通信だけを暗号化するものであり、クライアントのブラウザからオリジンへの通信は対象外です」と述べ、プロキシを一時停止したり解除したりすると訪問者に信頼できない証明書のエラーが表示される、と注意しています。"
         },
         {
-          "text": "エッジ証明書とオリジン証明書は全く同じ証明書であり、どちらも訪問者とオリジンサーバー間を直接暗号化する",
-          "wrongFeedback": "同じ証明書ではありません。エッジ証明書は訪問者↔Cloudflare間、オリジン証明書はCloudflare↔オリジン間という別々の区間を暗号化します。"
+          "text": "エッジ証明書はCloudflareが自動で発行・更新するものを指す呼び名で、自分で用意した証明書をCloudflareにアップロードして使う場合は、その証明書はオリジン証明書として扱われる",
+          "wrongFeedback": "アップロードした証明書もエッジ証明書です。自分で用意した証明書を使う「カスタム証明書」は、Universal SSLやAdvanced Certificate Managerと同じくエッジ証明書の一種で、訪問者に提示されます。違いは発行と更新をCloudflareが担うか自分で担うかであって、区間が変わるわけではありません。"
         },
         {
-          "text": "オリジン証明書は訪問者のブラウザに直接提示され、エッジ証明書はオリジンサーバーにのみインストールされる",
-          "wrongFeedback": "説明が逆です。訪問者のブラウザに提示されるのはエッジ証明書で、オリジンサーバーにインストールされるのがオリジン証明書です。"
+          "text": "オリジン証明書はCloudflareがオリジンへ接続する際にクライアント証明書として提示するもので、オリジン側は提示元がCloudflareであることを確かめてから応答を返す",
+          "wrongFeedback": "オリジン証明書はオリジン側のサーバー証明書です。手順も「Origin CA証明書をオリジンのWebサーバーにアップロードし、Webサーバーの設定を更新する」となっており、提示するのはオリジン、受け取って検証するのがCloudflareです。Cloudflareがクライアント証明書を提示してオリジンに身元を証明させる仕組みは、これとは別のAuthenticated Origin Pullsです。"
         }
       ],
       "correctIndex": 0,
