@@ -29190,7 +29190,7 @@
       "correctIndex": 3,
       "explanation": "Strict(SSL-Only Origin Pull)モードでは、訪問者がリクエストしたスキーム(HTTPかHTTPSか)に関わらず、Cloudflareとオリジン間の通信は常にHTTPSで行われます。オリジン証明書の検証要件はFull(strict)モードと同じです。このモードはEnterpriseプラン限定です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/ssl-only-origin-pull/",
-      "hint": "「訪問者側の要求内容に関わらず、オリジン側は常に暗号化を強制する」という、より厳格な挙動を考えましょう。",
+      "hint": "暗号化の挙動だけでなく、このモードをどのプランで選べるかも確かめましょう。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -30415,7 +30415,7 @@
       "correctIndex": 2,
       "explanation": "Early Hintsのレスポンスは、オリジンサーバーやWorkerに到達する前に送信されることがあります。そのため、認証が必要なページでEarly Hintsを有効にしている場合、未認証の訪問者に対しても、本来返されるはずの403 Forbiddenレスポンスより先に、キャッシュされたLinkヘッダーを含む103レスポンスが送信されてしまう可能性がある点に注意が必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/advanced-configuration/early-hints/#emit-early-hints",
-      "hint": "「本来の認証チェックが行われる前に」何かが先に送られてしまう可能性があると考えましょう。",
+      "hint": "Early Hintsがどの時点でどこから出るのか、あるいは出ないのかを整理しましょう。",
       "tags": [
         "speed",
         "practical"
@@ -40114,7 +40114,7 @@
       "correctIndex": 2,
       "explanation": "Spectrumアプリケーションを作成すると、ユニークなIPv4/IPv6アドレスが割り当てられます(IPv6のみで運用するよう構成することも可能です)。これらのアドレスは固定ではなく変化する可能性があるため、IPアドレスを直接書き込むのではなく、Spectrumアプリケーションに割り当てられたDNS名を参照して現在のアドレスを確認するのが最良の方法です。\n{{diagram:0}}\n※ このアドレスは、中国のデータセンターを除くCloudflareの各データセンターから同一のアドレスとして広報されます(エニーキャスト)。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
-      "hint": "「アドレスが固定かどうか」と「どうやって現在のアドレスを調べるべきか」を考えましょう。",
+      "hint": "一度割り当てられたアドレスが、その後どうなるのかを考えましょう。",
       "tags": [
         "spectrum",
         "dns"
@@ -40529,7 +40529,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Waiting Roomは、Webサイトへのトラフィックが事前に定義した閾値に近づいたとき、超過分の訪問者をカスタマイズ可能な仮想の待機室(待機列)へルーティングするプロダクトです。これにより顧客体験を維持しつつ、オリジンサーバーがリクエストで過負荷になることを防ぎます。チケット販売やセール、製品ローンチなど、需要が急増するイベントでの利用が典型例です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/",
-      "hint": "「超過分の訪問者をどう扱うか」という観点で選択肢を比較してみましょう。",
+      "hint": "処理しきれない分のトラフィックがどこへ向かうのかで、4つの説明を見比べましょう。",
       "tags": [
         "waiting-room",
         "practical"
@@ -40585,7 +40585,7 @@
       "correctIndex": 3,
       "explanation": "`total active users`は対象の`host/path`で同時に許容するアクティブセッション数の上限で、`new users per minute`はその`host/path`への1分あたりの新規ユーザー流入の閾値です。両方とも200より大きい値である必要があり、`new users per minute`は`total active users`以下に設定します。目安として`total active users`はオリジンの処理能力の75%程度、`new users per minute`はピークトラフィックの100%程度に設定することが推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
-      "hint": "どちらが「同時アクティブ数」で、どちらが「1分あたりの流入」を表すかを整理しましょう。",
+      "hint": "2つの値がそれぞれ何を数えているのか、そして両者の大小にどんな決まりがあるのかを確かめましょう。",
       "tags": [
         "waiting-room",
         "practical"
@@ -40639,7 +40639,7 @@
       "correctIndex": 2,
       "explanation": "`session duration`は1分から30分の範囲(デフォルト5分)で設定する値で、訪問者が対象の`host/path`にアクセスしてから、その時間内であれば再び待機室を経由せずに直接戻ってこられることを保証します。これにより、一連の操作の途中で何度も待機室に並び直させられることを防げます。\n{{diagram:0}}\n※ 逆に、この時間が過ぎてセッションのクッキーが失効すると、その分が空き枠として戻り、待機中の次の訪問者を通す余地が生まれます。",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/configuration-settings/",
-      "hint": "「待機室を出た後」に関する設定である点に注目しましょう。",
+      "hint": "名前だけでは、どの時点の時間を指すかまでは決まりません。各選択肢が「いつの時間か」をどう述べているかを見比べましょう。",
       "tags": [
         "waiting-room",
         "practical"
@@ -40769,7 +40769,7 @@
       "correctIndex": 2,
       "explanation": "`__cfwaitingroom`クッキーは、待機室が有効かつキューイング対象のhost/pathへのアクセス時にのみ発行される暗号化されたクッキーです。待機室で待機している間は有効期限が常に5分に設定されますが、訪問者がタブを閉じたりアプリケーションを離れたりしない限り20秒ごとに自動更新されます。訪問者がアプリケーションに到達した後は、`session duration`で指定した時間の経過後にクッキーが失効します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/reference/waiting-room-cookie/",
-      "hint": "「待機中」と「アプリケーション到達後」でクッキーの有効期限がどう変わるかに注目しましょう。",
+      "hint": "このクッキーがどの場面で発行され、発行された後どのくらい生きるのかを整理しましょう。",
       "tags": [
         "waiting-room",
         "practical"
@@ -41620,7 +41620,7 @@
       "correctIndex": 3,
       "explanation": "Zarazでは、ページビューやクリックなどの「発火条件」を定義するのがトリガーで、そのトリガーが一致したときにツールが実行する具体的な処理(データ送信など)を定義するのがアクションです。\n{{diagram:0}}\n1つのアクションには複数のトリガーを「Firing Triggers」として割り当てることができ、そのいずれかが一致すればアクションが発火します。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
-      "hint": "「いつ発火するか」を決める役割と、「発火した結果何をするか」を決める役割、それぞれの名前を思い出しましょう。",
+      "hint": "トリガーとアクションがそれぞれ何を指すのか、そして両者がいくつずつ組み合わさるのかを整理しましょう。",
       "tags": [
         "zaraz",
         "topic-triggers"
@@ -42138,7 +42138,7 @@
       "correctIndex": 0,
       "explanation": "Zaraz Monitoringでは、Loads(Zarazの読み込み回数)、Events(Pageview・Track・E-commerceを含むイベント数)、Triggers(発火したトリガー数)、Actions(実行されたアクション数)に加えて、Zarazがサードパーティツールに対して行うサーバーサイドリクエストのステータスコードも確認できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/monitoring/",
-      "hint": "Monitoringが対象とする範囲が、ブラウザ側のイベントだけに限られるのかどうかを考えましょう。",
+      "hint": "Monitoringに並ぶ各項目が、それぞれ何を数えているのかを1つずつ確かめましょう。",
       "tags": [
         "zaraz",
         "topic-monitoring"
@@ -42690,7 +42690,7 @@
       "correctIndex": 0,
       "explanation": "initialStateは、Agentクラスに書いておく設定値(プロパティ)で、新しく作られたAgentインスタンス(Agent1個分の実体)が最初に使う既定の状態を定義します。適用は遅延的に行われ、新規インスタンスはinitialStateを使い、すでに状態が保存されている既存インスタンスはSQLiteに保存された状態を読み込みます。\n{{diagram:0}}\n※ initialStateを定義しない場合、`this.state`は`undefined`を返します。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
-      "hint": "「新規インスタンス」と「既存インスタンス」で挙動が異なる点がポイントです。",
+      "hint": "initialStateが効くのは、どのインスタンスの、どの時点なのかを考えましょう。",
       "tags": [
         "agents",
         "topic-state"
@@ -42961,7 +42961,7 @@
         },
         {
           "text": "`onOpen()`で接続を確立し、`onData()`でメッセージを受信し、`onDisconnect()`で切断を検知する命名規則に従えばAgentクラスが自動的に呼び出す",
-          "wrongFeedback": "Agentsのフック名は`onConnect`/`onMessage`/`onClose`であり、`onOpen`/`onData`/`onDisconnect`という名前のフックは提供されていません。"
+          "wrongFeedback": "Agentsのフックは`onConnect`/`onMessage`/`onClose`や`onError`などで、`onOpen`/`onData`/`onDisconnect`という名前のフックは提供されていません。"
         }
       ],
       "correctIndex": 1,
