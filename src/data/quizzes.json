@@ -15761,7 +15761,7 @@
       "correctIndex": 1,
       "explanation": "Workers for Platformsは、顧客が書いたコードやAIが生成したコードを、テナントごとに隔離された安全なサンドボックス(Worker)で実行できるようにする仕組みです。各顧客は自分専用のWorkerを持ち、完全に分離された環境でコードが実行されます。\n{{diagram:0}}\nSaaSプラットフォーム上で顧客ごとのカスタムロジックを安全に動かしたい場合に使われます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/",
-      "hint": "「他人のコードを、自分のインフラの上で安全に動かす」にはどんな隔離の仕組みが必要か考えましょう。",
+      "hint": "4つの肢は、可用性・高速化・デプロイ運用・誰のWorkerを動かすのか、という別々の話をしています。`for Platforms` という名前がどれを指すかを手がかりにしましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -15861,7 +15861,7 @@
       "correctIndex": 1,
       "explanation": "dynamic dispatch Workerは、プラットフォームへの全リクエストの入り口です。ホスト名・パス・ヘッダーなどをもとにどのuser Workerが処理すべきかを判断してルーティングし、認証やレート制限、カスタム上限の適用などのプラットフォーム側のロジックを実行します。`env.DISPATCHER.get(name)`でnamespace内のuser Workerを呼び出します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/#dynamic-dispatch-worker",
-      "hint": "「最初にリクエストを受け取って、誰に処理させるか決める」役割は誰が担うか考えましょう。",
+      "hint": "名前にある `dispatch` が何をする役目を表しているか、そしてそれを担うのは顧客側と運営側のどちらのWorkerかを考えましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -15913,8 +15913,8 @@
           "wrongFeedback": "1つのuser Workerは1顧客分のコードを実行します。複数顧客のコードを1つのWorkerが同時に実行するものではありません。"
         },
         {
-          "text": "プラットフォーム運営者だけが書けるコードで、顧客が直接コードを書くことはできないため、顧客は運営者があらかじめ用意したテンプレートから選ぶことしかできない",
-          "wrongFeedback": "user Workerは顧客(またはAI)が書いたコードを実行するためのものです。プラットフォーム運営者専用ではありません。"
+          "text": "プラットフォーム運営者だけが書けるコードで、顧客は運営者があらかじめ用意したテンプレートから選ぶことしかできない",
+          "wrongFeedback": "user Workerが実行するのは顧客自身が書いたコードです。顧客が自分のコードをプラットフォームへ送り、運営者がそれを顧客の代わりにデプロイする形になります。用意されたテンプレートから選ぶだけの仕組みではありません。"
         }
       ],
       "correctIndex": 1,
@@ -15968,7 +15968,7 @@
       "correctIndex": 2,
       "explanation": "Service BindingsとWorkers for Platformsはどちらもワーカー間通信を可能にしますが、Service Bindingsは呼び出す相手のWorkerが事前にわかっている場合に使い、Workers for Platformsは顧客が動的にアップロードするWorkerを呼び出す場合に使います。両者は同時に使うこともできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/how-workers-for-platforms-works/#workers-for-platforms-versus-service-bindings",
-      "hint": "呼び出す相手が「あらかじめ決まっているか」「後から動的に増えるか」という違いに注目しましょう。",
+      "hint": "Service BindingsとWorkers for Platformsは、それぞれどんな場面のために用意された仕組みでしょうか。機能の優劣ではなく、想定される使いどころの違いに目を向けましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -16021,7 +16021,7 @@
       "correctIndex": 0,
       "explanation": "Workers for Platformsでは、プラットフォームの利用者がデプロイしたWorker(user Worker)が動きます。Outbound Workerは、そのuser Workerが外部へ送る`fetch()`リクエストを間で横取りする仕組みです。どの外部ホストにアクセスしているかのログ記録、許可リスト・ブロックリストによる制御、認証ヘッダーの自動付与などに使えます。\n{{diagram:0}}\n※ Outbound Workerが有効な場合、user Workerは`connect()`によるTCPソケットの直接作成ができなくなります。外向きの通信をすべてOutbound Workerで受けられるようにするためです。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/",
-      "hint": "user Workerが「外の世界へ話しかける」通信を、誰かが間に立ってチェックする仕組みを考えましょう。",
+      "hint": "user Workerには、外から入ってくる通信と、そこから先へ出ていく通信の両方があります。この機能が関わるのはどちらの向きかを考えましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -16811,7 +16811,7 @@
       "correctIndex": 1,
       "explanation": "Rate limitingは、特定の時間枠内に送信できるリクエスト数を制限する機能です。制限を超えると、サーバーは`429 Too Many Requests`を返し、リクエストは処理されません。高額な請求や不審なアクティビティを防ぐために使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/rate-limiting/",
-      "hint": "「一定時間にどれだけ呼べるか」を制限する仕組みを考えましょう。",
+      "hint": "AI Gatewayには、止める基準の異なる機能がいくつも並んでいます。この機能が上限と比べているのが何かを考えましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -16859,7 +16859,7 @@
       "correctIndex": 0,
       "explanation": "Spend limitsは、リクエストごとのコストをモデルの料金とトークン使用量から計算し、一定期間の累計支出が設定した予算を超えるとリクエストをブロックする機能です。Rate limitingがリクエストの「件数」を基準にするのに対し、Spend limitsは実際の「金額」を基準にします。予算超過時にブロックする代わりに、安いモデルへフォールバックさせることもできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/spend-limits/",
-      "hint": "「何回呼んだか」ではなく「いくら使ったか」を基準に制限する仕組みを考えましょう。",
+      "hint": "AI Gatewayの制限機能は、それぞれ見ている量が違います。名前にある `Spend` がどの量を指すのかを考えましょう。",
       "tags": [
         "ai-gateway",
         "practical",
@@ -16912,7 +16912,7 @@
       "correctIndex": 1,
       "explanation": "Guardrailsは、アプリケーションとモデルプロバイダーの間に立つプロキシとして、ユーザーのプロンプトとモデルの応答の両方を暴力的・有害なコンテンツなどの観点で検査します。検査結果に応じて、フラグ付け(記録のみ)またはブロック(処理を止める)を選択できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/guardrails/",
-      "hint": "ユーザーとモデルのやり取りの「内容」そのものを、誰かが間でチェックしている場面を想像しましょう。",
+      "hint": "止めるかどうかの判断を、リクエストの送信元で行うのか、やり取りされる文面そのもので行うのか。この機能がどちらを見ているかを考えましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -16981,7 +16981,7 @@
       "correctIndex": 1,
       "explanation": "Unified Billingは、OpenAIやAnthropicなど複数のAIプロバイダーへのリクエストを、各プロバイダー自身のAPIキーを用意することなく、事前にチャージしたCloudflareのクレジットで支払い、単一のCloudflare請求にまとめる機能です。購入したクレジットには5%の手数料がかかりますが、推論そのものの単価にはプロバイダーの料金がそのまま適用されます。\n{{diagram:0}}\nWorkers AI(`@cf/`から始まるモデル)も対象です。ただし自動ではなく、ゲートウェイの「Workers AI Billing」設定を「Unified billing」にして初めて、そのゲートウェイ経由のWorkers AIリクエストが前払いクレジットからリアルタイムで差し引かれます。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/unified-billing/",
-      "hint": "複数のプロバイダーそれぞれに個別のAPIキーや請求書を持たずに済む方法を考えましょう。",
+      "hint": "この機能が変えるのは、モデルの選び方でも鍵の保管場所でもなく、お金の流れです。4つの肢のうち、お金の流れについて述べているのはどれかを見比べましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -17749,7 +17749,7 @@
       "correctIndex": 2,
       "explanation": "SFU(Selective Forwarding Unit)は、各参加者が送った音声・映像などのトラックを受け取り、それを必要な相手へ転送する中継役です。Cloudflare Realtime SFUは、これを特定のリージョンやスケーリングを意識することなく使えるようにしたインフラで、WebRTCによるリアルタイムの音声・映像・データ通信を実現できます。\n{{diagram:0}}\n※ 専用のSDKは提供されず、生のWebRTC APIへ直接アクセスする前提の、意図的にシンプルなAPI設計になっています。",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/introduction/",
-      "hint": "「どこに、どれだけのユーザーがいても」通信できるようにするには何が必要か考えましょう。",
+      "hint": "選択肢はそれぞれ、開発者に渡される道具立て・使う通信の方式・サーバーの置き方のどれかについて述べています。Cloudflare Realtimeがその点でどう作られているかを1つずつ確かめましょう。",
       "tags": [
         "realtime",
         "practical"
@@ -17899,7 +17899,7 @@
       "correctIndex": 3,
       "explanation": "Trackは、音声や映像1本ぶんの流れを表す単位で、ブラウザのWebRTCが扱うMediaStreamTrackに対応する概念です。あるSession(クライアントとCloudflareの間に張られた1本の接続)からCloudflareへTrackをpush(公開)すると、そのTrackにグローバルに一意なIDが割り当てられます。別の場所にいる別のクライアントは、そのIDを指定するだけで同じTrackをpull(購読)できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/sessions-tracks/",
-      "hint": "1つの「放送」を、世界中のどこからでも受信できるようにするには何が必要か考えましょう。",
+      "hint": "Trackは、Sessionの中を流れる1本1本の流れです。何を運べるのか、そしてSessionの外からも参照できるのか、という2点で肢を見比べましょう。",
       "tags": [
         "realtime",
         "practical"
@@ -17947,7 +17947,7 @@
       "correctIndex": 2,
       "explanation": "TURN(Traversal Using Relays around NAT)は、NAT(ルーターが内側のプライベートIPと外側のグローバルIPを変換する仕組み)やファイアウォールに阻まれて相手と直接つながれないときに、間に立つサーバーが通信を中継(リレー)することでピア間のリアルタイム通信を成立させるプロトコルです。\n{{diagram:0}}\n※ STUNというプロトコルの拡張として、RFC 8656で定義されています。",
       "referenceUrl": "https://developers.cloudflare.com/realtime/turn/what-is-turn/",
-      "hint": "直接つながれない2者の間に立って、荷物を運んでくれる「仲介役」を考えましょう。",
+      "hint": "設問文に書かれた正式名称の各語が、この仕組みの働きをそのまま表しています。どの語が何を指すのかを読み解きましょう。",
       "tags": [
         "realtime",
         "practical"
