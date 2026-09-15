@@ -17779,22 +17779,22 @@
       "id": "rt-002",
       "category": "realtime",
       "difficulty": "beginner",
-      "question": "Cloudflare Realtimeにおける「room(部屋)」の扱いに関する正しい説明はどれですか？",
+      "question": "Cloudflare Realtime SFUにおける「room(部屋)」の扱いに関する正しい説明はどれですか？",
       "options": [
         {
           "text": "1つのroomにつき同時に接続できる参加者数は自動的に無制限になるよう保証されており、開発者側でスケーリングや上限に関する設計を考慮する必要は一切ない",
           "wrongFeedback": "そもそもRealtimeにroomという概念がないため、そのような保証も存在しません。"
         },
         {
-          "text": "RealtimeはSessionとTrackという概念のみを扱い、「room」のような参加者管理の抽象化は提供しない"
+          "text": "Realtime SFUはSessionとTrackという概念のみを扱い、「room」のような参加者管理の抽象化は提供しない"
         },
         {
-          "text": "Realtime自体がroomという概念を持ち、参加者の入退室をAPIで直接管理できるため、アプリケーション側で独自に参加者リストや入退室イベントを実装する必要がない",
-          "wrongFeedback": "Realtimeは`room`という概念自体を持ちません。roomの概念はアプリケーション側で実装する必要があります。"
+          "text": "Realtime SFU自体がroomという概念を持ち、参加者の入退室をAPIで直接管理できるため、アプリケーション側で独自に参加者リストや入退室イベントを実装する必要がない",
+          "wrongFeedback": "Realtime SFUは`room`という概念自体を持ちません。SFUが扱うのはSessionとTrackで、参加者リストや入退室イベントはアプリケーション側で実装します。参加者管理を最初から備えているのは上位のRealtimeKitです。"
         },
         {
           "text": "roomを作成するには専用の`rooms/new`というAPIエンドポイントを呼び出し、返却されたroom IDを参加者ごとに紐づける必要がある",
-          "wrongFeedback": "そのようなAPIエンドポイントは存在しません。RealtimeはSessionとTrackという概念のみを扱います。"
+          "wrongFeedback": "Realtime SFUにそのようなAPIエンドポイントはありません。SFUが扱うのはSessionとTrackで、参加者管理の抽象化は上位のRealtimeKitが提供します。"
         }
       ],
       "correctIndex": 1,
