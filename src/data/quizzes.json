@@ -12439,7 +12439,7 @@
       "correctIndex": 2,
       "explanation": "ステップはWorkflowにおける「リトライと永続化の最小単位」です。`step.do()` のコールバックが返した値は永続化され、後のステップが失敗してリトライされても、成功済みステップが再実行されることはありません。\n{{diagram:0}}\nこの性質があるからこそ、決済APIの呼び出しのような「二度実行したくない処理」を安全に組み込めます。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/rules-of-workflows/",
-      "hint": "「どこまで終わったか」を覚えているのは誰か、を考えましょう。",
+      "hint": "失敗が起きたとき、やり直しはどの範囲に及ぶのか。`step.do()` という区切りが実行時にどう扱われるかを考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -13032,8 +13032,8 @@
           "wrongFeedback": "画像認識・AI解析ではありません。Images はリサイズ・最適化・配信を行うサービスです。"
         },
         {
-          "text": "画像ファイルのバックアップを世界中に複製して保管する専用ストレージであり、元データの冗長化保存が主な役割で、リサイズや形式変換は行わない",
-          "wrongFeedback": "単なるバックアップ保管ではありません。中心的な価値はエッジでの動的な最適化・変換と配信です。"
+          "text": "画像ファイルのバックアップを世界中に複製して保管する専用ストレージであり、元データの冗長化保存が主な役割",
+          "wrongFeedback": "単なるバックアップ保管ではありません。Images の中心的な価値はエッジでの動的な最適化・変換と配信であり、リサイズや形式変換もこのサービスが行います。"
         },
         {
           "text": "動画をアップロードしてストリーミング配信するサービスであり、エンコードした動画をアダプティブビットレートで再生できる形に変換し配信を行う",
@@ -13238,8 +13238,8 @@
       "question": "Cloudflare Stream の役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "静止画像を最適化してレスポンシブに配信するサービスであり、動画ファイルのアップロード自体には対応していない",
-          "wrongFeedback": "静止画像は Images の役割です。Stream は動画を扱います。"
+          "text": "静止画像を最適化してレスポンシブに配信するサービス",
+          "wrongFeedback": "静止画像の最適化・配信は Images の役割です。Stream は動画のアップロード・保存・エンコード・配信を1つのAPIで扱うサービスです。"
         },
         {
           "text": "動画のアップロード・保存・エンコード・配信を1つのAPIで扱えるサーバーレス動画サービス"
@@ -13249,8 +13249,8 @@
           "wrongFeedback": "データのストリーム処理ではありません。Stream は動画(ビデオ)の保存・エンコード・配信を扱うサービスです。"
         },
         {
-          "text": "WebSocketを使った双方向のリアルタイム通信基盤であり、動画の保存やエンコード処理は一切行わない",
-          "wrongFeedback": "汎用の双方向通信基盤ではありません。Stream は動画配信に特化しています。"
+          "text": "WebSocketを使った双方向のリアルタイム通信基盤",
+          "wrongFeedback": "汎用の双方向通信基盤ではありません。Stream は動画の保存・エンコード・配信に特化したサービスで、これらの処理は Stream 側で行われます。"
         }
       ],
       "correctIndex": 1,
@@ -13850,7 +13850,7 @@
       "correctIndex": 2,
       "explanation": "Workers Logsは、wrangler設定ファイルの`observability`フィールドに`enabled: true`を指定し、再デプロイすることで有効になります。コードを書き換える必要はなく、設定ファイルへの追記とデプロイだけで有効化できます。\n{{diagram:0}}\n※ 新規作成したWorkerにはこの設定が最初から入っているため、そのままで有効です。この設定が入っていないWorkerでは、上記のとおり自分で追記してデプロイしてください。\n※ `head_sampling_rate`を併せて指定すると、記録する割合も調整できます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs",
-      "hint": "コードを書き換えるのではなく、いつもの「設定ファイル」側で何を切り替えればよいか考えましょう。",
+      "hint": "この機能のオン/オフが、どの単位で・どこに記録される設定なのかを考えましょう。",
       "tags": [
         "observability",
         "practical"
@@ -14074,7 +14074,7 @@
       "correctIndex": 3,
       "explanation": "head-based samplingは、高トラフィックなWorkerにおいて記録するリクエストの割合を制御し、ログ量とコストを抑えながらもアプリケーションの傾向を把握できるようにする仕組みです。`head_sampling_rate`で0〜1の割合を指定します。\n{{diagram:0}}\n記録対象になったリクエストは、そのコンテキスト内のログがまとめて記録されます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#head-based-sampling",
-      "hint": "膨大な量のログをすべて残すとコストがかさむとき、「一部だけ抜き取る」という発想を考えましょう。",
+      "hint": "`head`(先頭)という語に注目し、記録するかどうかを判断するのがリクエスト処理のどの時点なのかを考えましょう。",
       "tags": [
         "observability",
         "practical"
@@ -15046,7 +15046,7 @@
       "correctIndex": 0,
       "explanation": "`wrangler deploy`を実行すると、まず新しいWorkerバージョンがアップロードされて有効化され、続いてDockerでコンテナイメージがビルドされてCloudflareのコンテナイメージレジストリへプッシュされ、最後にコンテナインスタンス(コンテナ1個分の実体)へのロールアウトが始まります。Worker本体はイメージとロールアウトの手順が始まる前に有効になっているため、ロールアウトが終わるまでは新しいWorkerコードが旧イメージのインスタンスへ届く時間帯が生じます。初回デプロイ後は準備が完了するまで数分かかり、その間コンテナへの呼び出しはエラーになります。\n{{diagram:0}}\n2回目以降のデプロイはDockerのキャッシュ済みレイヤーを再利用するため高速です。",
       "referenceUrl": "https://developers.cloudflare.com/containers/get-started/",
-      "hint": "普段のWorkerデプロイと違い、イメージという「もう1つの成果物」をどこかに送る手順が挟まることを考えましょう。",
+      "hint": "コードとコンテナイメージという2種類の成果物が、それぞれどの手順で扱われ、いつ使える状態になるのかを順に追いましょう。",
       "tags": [
         "containers",
         "practical"
