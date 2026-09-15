@@ -16420,7 +16420,7 @@
         },
         {
           "text": "untrusted modeでは`caches.default`によるキャッシュ操作が利用可能で、trusted modeでは逆にnamespace内の全Workerで無効化されるため、キャッシュを使うにはuntrustedを選ぶ必要がある",
-          "wrongFeedback": "逆です。`caches.default`はnamespace内の全Workerで無効化されており、これはuntrusted/trusted両方に共通する制約です。また`request.cf`が参照できるようになるのはtrusted modeのほうです。"
+          "wrongFeedback": "逆です。`caches.default`が無効化されるのは untrusted mode のほうで、namespace 内の全Workerに適用されます。trusted mode では namespace 内の全Workerが同じキャッシュ空間を共有します。また`request.cf`が参照できるようになるのも trusted mode のほうです。"
         }
       ],
       "correctIndex": 1,
@@ -16658,7 +16658,7 @@
       "correctIndex": 1,
       "explanation": "Outbound Workerは、user Worker本体が発行する外向きの`fetch()`リクエストをインターセプトしますが、Durable Objectsから発生する`fetch()`リクエストや、mTLS証明書バインディングを使った通信はインターセプトの対象外です。\n{{diagram:0}}\nこれらの通信経路を使う処理がある場合は、別途アクセス制御を検討する必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/",
-      "hint": "「user Worker本体からの外向き通信」以外に、別の経路でも外部と通信できる仕組みがあることを思い出しましょう。",
+      "hint": "user Worker本体が直接呼ぶ`fetch()`以外の経路は、Outbound Workerの下でどう扱われるかを確かめましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -17672,7 +17672,7 @@
       "correctIndex": 1,
       "explanation": "AI Gatewayのログ保存件数は、有料プランでは1ゲートウェイあたり1000万件までという「ゲートウェイごと」の上限が適用されるのに対し、無料プランでは「アカウント全体」で10万件までという上限が適用される点が異なります。ゲートウェイ数の上限も無料プランは1アカウントあたり10個、有料プランは20個までと、同じく「プランで適用範囲が変わる」形です。\n{{diagram:0}}\n※ プランによらず一律の上限は下表のとおりです。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/reference/limits/",
-      "hint": "上限の中には、数値そのものよりも「どの範囲で数えるか」(アカウント単位でまとめてか、個々のゲートウェイ単位か)によって扱いが変わるものがあります。どの項目がそれに当たるか考えてみましょう。",
+      "hint": "どの上限がプランによって変わり、どれがプランによらず一律なのかを整理しましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -18166,7 +18166,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflareがメディアパケットを受信しない(非アクティブな)状態が30秒間続くと、そのTrackは自動的にタイムアウトしてガベージコレクションされます。これはリソースの効率的な利用とセッションの健全性を保つための仕組みです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/#inactivity-timeout",
-      "hint": "「何も届かない状態」がどれくらい続いたら、リソースを片付けるべきか考えましょう。",
+      "hint": "タイムアウトで片付けられる範囲は、そのTrackだけなのか、Session全体にまで及ぶのかを考えましょう。",
       "tags": [
         "realtime",
         "practical"
@@ -18214,7 +18214,7 @@
       "correctIndex": 0,
       "explanation": "1回のAPI呼び出しで追加できるTrackは最大64個までです。それ以上のTrackをSessionに追加したい場合は、複数回のAPI呼び出しに分けて追加する必要があります。一方、1つのSessionが持てるTrackの総数自体には明確な上限がなく、実質的には接続の帯域幅が制約になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/",
-      "hint": "「1回のリクエストで運べる荷物の数」と「最終的に持てる荷物の総数」は別の話だと考えましょう。",
+      "hint": "1回の呼び出しで追加できる数と、1つのSessionが最終的に持てる総数。それぞれに上限があるのかどうかを確かめましょう。",
       "tags": [
         "realtime",
         "practical"
@@ -18521,7 +18521,7 @@
       "correctIndex": 1,
       "explanation": "TURNの利用にあたっては、まずサーバー側で長期的なシークレットであるTURNキーを作成し、保管します。フロントエンドに渡す認証情報は、このTURNキーを使ってAPIリクエストごとに生成する、TTL(有効期限)付きの短期的な認証情報(username/credential)です。短期的な認証情報は失効前でも明示的に無効化(revoke)できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/turn/generate-credentials/",
-      "hint": "「ずっと使う秘密の鍵」と「毎回配る使い捨ての鍵」を、それぞれ誰が持つべきか考えましょう。",
+      "hint": "フロントエンドに渡す認証情報の有効期限が、あらかじめ固定されているのか、発行のたびに決められるのかを確かめましょう。",
       "tags": [
         "realtime",
         "practical"
@@ -18628,7 +18628,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflare Realtime TURNのカスタムドメインは、`turn.cloudflare.com`を指すCNAMEレコードを設定するだけで利用できます。STUN over UDP・TURN over UDP・TURN over TCPのプロトコルで利用できますが、TURN over TLSではカスタムドメインを利用できません。パフォーマンスへの影響はなく、追加料金もかかりません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/turn/custom-domains/",
-      "hint": "対応しているプロトコルと対応していないプロトコルが分かれていることを意識しましょう。",
+      "hint": "カスタムドメインにすると、料金・性能・使えるプロトコルのそれぞれがどうなるのかを確かめましょう。",
       "tags": [
         "realtime",
         "practical"
@@ -19566,7 +19566,7 @@
       "correctIndex": 1,
       "explanation": "Workers VPCのエラーは、「Bad Upstream」(トンネルやプライベートサービス側に原因があり到達できない)・「Client」(VPC Serviceの設定やWorkerのコード側に原因がある)・「Internal」(Cloudflare基盤側の問題)の3種類に分類されます。`dns_error`は原因によって分類が変わり、ホスト名が存在しないNXDOMAINの場合は設定ミスの可能性が高いため「Client」、それ以外のDNS障害(SERVFAILやタイムアウトなど)は「Bad Upstream」に分類されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/reference/troubleshooting/",
-      "hint": "同じ「DNSエラー」でも、原因が「設定ミス」か「相手側の問題」かで扱いが変わることを意識しましょう。",
+      "hint": "同じ`dns_error`というコードが常に同じ分類になるのか、それとも原因によって分類が変わるのかを確かめましょう。",
       "tags": [
         "workers-vpc",
         "practical"
