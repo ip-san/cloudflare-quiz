@@ -3060,25 +3060,25 @@
       "question": "Workers内でD1にバインドされた `env.DB` を使い、ユーザーIDを条件に1件だけユーザー情報を取得したい場合、最も適切なメソッドチェーンはどれですか？",
       "options": [
         {
-          "text": "`env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).all()`(配列で返るため単一取得には手動アクセスが必要)",
-          "wrongFeedback": "動作はしますが、`all()`は複数行の配列を返すため1件取得の目的には非効率です。1件だけ欲しい場合は`first()`が適切です。"
+          "text": "`env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).all()`",
+          "wrongFeedback": "動作はしますが、`all()`は該当行を配列にまとめて返すメソッドです。1件だけ欲しい場合でも配列で返るため、`results[0]`のように手で取り出す必要があります。最初の1行だけを直接受け取りたいときは`first()`を使います。"
         },
         {
           "text": "`env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first()`"
         },
         {
-          "text": "await env.DB.exec('SELECT * FROM users WHERE id = ? LIMIT 1').bind(userId).first()",
-          "wrongFeedback": "`exec()`はバインドパラメータをサポートしておらず、主にDDLなど管理用途で使うメソッドです。"
+          "text": "`env.DB.exec('SELECT * FROM users WHERE id = ? LIMIT 1').bind(userId).first()`",
+          "wrongFeedback": "`exec()`はプリペアドステートメントやパラメータバインドを伴わずにSQLをそのまま実行するメソッドで、`bind()`を繋ぐことはできません。"
         },
         {
-          "text": "`env.DB.query('SELECT * FROM users WHERE id = ' + userId)`(文字列連結でuserIdを埋め込むためSQLインジェクションを招く)",
-          "wrongFeedback": "D1のClient APIに`query()`というメソッドは存在しません。また文字列連結はSQLインジェクションのリスクがあります。"
+          "text": "`env.DB.query('SELECT * FROM users WHERE id = ' + userId)`",
+          "wrongFeedback": "D1の`D1Database`が提供するのは`prepare()`・`batch()`・`exec()`などで、値は`prepare()`のプレースホルダに`bind()`で渡すのが推奨される方法です。文字列連結はSQLインジェクションを招きます。"
         }
       ],
       "correctIndex": 1,
       "explanation": "`prepare()`でプレースホルダ`?`を含むSQLを準備し、`bind()`で安全に値を渡します。1件だけの結果が欲しい場合は`first()`を、複数行なら`all()`を、書き込み系なら`run()`を使い分けます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/worker-api/prepared-statements/",
-      "hint": "「1件だけ」取得したいときに使う専用メソッドがあります。",
+      "hint": "値をどう渡すか、結果をどう受け取るか。この2つの軸で4つのメソッドチェーンを見比べましょう。",
       "tags": [
         "d1",
         "practical"
@@ -3975,7 +3975,7 @@
       "correctIndex": 0,
       "explanation": "R2はS3と同様、オブジェクトストレージのデータモデルを採用しています。バケットはオブジェクトの入れ物で、各オブジェクトは一意のキー（文字列）、バイナリデータ本体、そしてメタデータを持ちます。\n{{diagram:0}}\nキーに「/」を含めることでディレクトリのように見せることはできますが、実体はフラットな名前空間です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/",
-      "hint": "ディレクトリのように見えても、実体としては階層構造を持っているのかどうか考えましょう。",
+      "hint": "1つのバケットに何件置けるのか、そしてキーの付け方にどんな制約があるのか。この2点で絞りましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4703,7 +4703,7 @@
       "correctIndex": 2,
       "explanation": "Durable Objects は単一インスタンス(1個分の実体)で強整合な状態管理ができるため、複数クライアントが同時に同じ状態を読み書きするリアルタイム協調(チャットルーム、マルチプレイヤーゲーム、カウンタ、排他制御など)に向いています。一方 Workers KV は結果整合性を前提とした分散ストアで、読み取りが多く書き込みが少ないデータの配信に最適化されています。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/",
-      "hint": "大勢が同時に同じ盤面を見ながら書き込むゲームのような場面を考えましょう。",
+      "hint": "KVは世界中にコピーを配って読ませる仕組み、Durable Objectsは一か所で順に処理する仕組みです。4つの場面を当てはめましょう。",
       "tags": [
         "do-queues",
         "practical",
@@ -4954,7 +4954,7 @@
       "correctIndex": 1,
       "explanation": "waitUntil() はレスポンスを返した後も同じ Worker 実行の中で処理を継続する仕組みで、途中で失敗しても自動的な永続化やリトライは行われません。一方 Queues は処理内容をメッセージとして永続的なキューに書き込み、それを取り出して処理する側の Worker(Consumer)で失敗時のリトライ（デフォルト最大3回）を行えます。それでも処理できなかったメッセージは Dead Letter Queue(DLQ＝処理しきれなかったメッセージの退避先として指定する別のキュー)へ送れるため、確実性が求められるバックグラウンド処理を分離するのに適しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/reference/how-queues-works/",
-      "hint": "後処理が失敗したとき、誰にも気づかれず消えてしまってよいかどうか考えましょう。",
+      "hint": "`ctx.waitUntil()` はレスポンス返却後も同じWorker実行の続きとして動きます。その前提で4つの主張を確かめましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -5411,18 +5411,18 @@
           "text": "静的サイトのホスティングに加え、Pages Functions によるサーバーレス処理も統合できるプラットフォーム"
         },
         {
-          "text": "自前の仮想マシン上でコンテナイメージを実行・スケールさせるためのオーケストレーション基盤であり、静的ファイルの配信機能は含まない",
-          "wrongFeedback": "それは Cloudflare Pages ではなく、コンテナ/仮想化基盤の説明です。"
+          "text": "自前の仮想マシン上でコンテナイメージを実行・スケールさせるためのオーケストレーション基盤",
+          "wrongFeedback": "それは Cloudflare Pages ではなく、コンテナ/仮想化基盤の説明です。Pages は静的アセットの配信と Pages Functions を組み合わせたプラットフォームです。"
         },
         {
-          "text": "権威DNSのレコード登録・編集のみを行う専用ツールで、ファイル配信の機能は持たず、ゾーン情報の管理のみに機能が限定されているサービスである",
-          "wrongFeedback": "DNS管理は Cloudflare DNS の機能であり、Pages とは別物です。"
+          "text": "権威DNSのレコードの登録・編集やゾーン情報の管理を行う専用ツール",
+          "wrongFeedback": "DNS管理は Cloudflare DNS の機能であり、Pages とは別物です。Pages はビルド成果物の配信とサーバーサイド処理を担います。"
         }
       ],
       "correctIndex": 1,
       "explanation": "Cloudflare Pages は静的サイト(HTML/CSS/JS等のビルド成果物)をグローバルCDNに配信し、加えて `functions/` ディレクトリに配置したコードを Pages Functions として動作させることで、API エンドポイントなどのサーバーサイド処理も同じプロジェクト内で扱えるプラットフォームです。\n{{diagram:0}}\nGitリポジトリと連携して自動ビルド・デプロイを行うのが基本的な使い方です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/",
-      "hint": "HTMLを配るだけでなく、裏側で動くコードも同じプロジェクトに置けるかどうか考えましょう。",
+      "hint": "4つはそれぞれCloudflareの別の製品の説明です。Pagesの守備範囲がどこまでかを考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -5655,7 +5655,7 @@
       "correctIndex": 2,
       "explanation": "Pages Functions はファイルベースルーティングを採用しており、`functions/` ディレクトリ以下のファイルパスがそのままURLルートに対応します。`functions/api/hello.js` は `/api/hello` にマッピングされます。\n{{diagram:0}}\n`[param].js` で動的ルート、`_middleware.js` でミドルウェア処理も実現できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/functions/routing/",
-      "hint": "functions/ というディレクトリ名自体はURLパスに含まれません。",
+      "hint": "URLはファイルの置き場所から決まります。`functions/` 自体も数えるのか、拡張子は残るのか、の2点で見比べましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -5748,7 +5748,7 @@
       "correctIndex": 1,
       "explanation": "Pages はプロジェクト作成時に Next.js, Astro, Remix, SvelteKit, Hugo など主要フレームワークのプリセットを提供しており、選択すると各フレームワークに適したビルドコマンド(例: `npm run build`)とビルド出力ディレクトリが自動入力されます。\n{{diagram:0}}\n必要に応じて手動で上書きすることも可能です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-configuration/",
-      "hint": "フレームワークプリセットが自動入力するのは「ビルド方法」に関する項目です。",
+      "hint": "プリセットが自動入力できるのは、フレームワークを選んだ時点で決まる値だけです。どこからが個別に決める設定かを考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -13910,7 +13910,7 @@
       "correctIndex": 1,
       "explanation": "Tail Workerは、`tail_consumers`で紐づけられたproducer Workerの実行が完了した後に自動的に呼び出され、HTTPステータスや`console.log`の出力、例外情報などを受け取れます。\n{{diagram:0}}\nアラート通知やデバッグ、集計処理などに活用できます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/tail-workers/",
-      "hint": "「実行を追いかける」役割だとすれば、対象の処理が終わった後と前のどちらで動くべきか考えましょう。",
+      "hint": "他のWorkerの実行を、別のWorkerに渡す仕組みです。対象の処理のどの段階で呼ばれるかが分かれ目です。",
       "tags": [
         "observability",
         "practical"
@@ -27207,7 +27207,7 @@
       "correctIndex": 3,
       "explanation": "URL rewriteは、Webサーバーがリクエストを完全に処理する前に行われるサーバー側の操作で、ブラウザに表示されるURLは変化しません。一方、URL redirectはWebサーバーが最初のURLを読み込んだ後に行われるクライアント側の操作で、訪問者にはURLが変化する様子が見えます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/transform/url-rewrite/",
-      "hint": "「裏側でこっそり変換する」のか「訪問者の目の前でURLが変わる」のか、見える/見えないの違いを考えましょう。",
+      "hint": "片方は訪問者に気づかれずサーバー側で差し替え、片方はブラウザに新しいURLを伝えて再アクセスさせます。どちらがどちらでしょう。",
       "tags": [
         "rules",
         "practical"
@@ -39588,7 +39588,7 @@
       "correctIndex": 2,
       "explanation": "ダッシュボードでSpectrumアプリケーションを作成する際は、アプリケーションタイプ、Spectrumを利用するドメイン、CloudflareがトラフィックをリッスンするEdge Port、そしてオリジンのIPアドレスとポートを設定します。\n{{diagram:0}}\nIPアドレス方式・CNAMEレコード方式・ロードバランサー方式・仮想ネットワーク方式のいずれかでオリジンを指定できます。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/get-started/",
-      "hint": "「どのポートで受けて、どこに転送するか」を指定する項目群を考えましょう。",
+      "hint": "Spectrumはアプリケーション1つ単位の設定です。ネットワーク全体をCloudflareに引き込む仕組みとは粒度が違います。",
       "tags": [
         "spectrum",
         "practical"
@@ -41564,7 +41564,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Zarazは、Google AnalyticsやFacebook Pixelのようなサードパーティのアナリティクス・広告・マーケティングツールを、ブラウザ上ではなくCloudflareのエッジ側で実行するツールです。これにより、ブラウザが直接ダウンロード・実行するスクリプトの数や重さを減らし、ページの速度・セキュリティを改善しつつ、外部に送信されるデータをより細かく制御できるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/",
-      "hint": "「ブラウザ側」と「エッジ側」のどちらでスクリプトを実行する仕組みかを考えましょう。",
+      "hint": "Zarazが扱うのはサードパーティのツールです。それを使えなくするのか、動かす場所を変えるのかが分かれ目です。",
       "tags": [
         "zaraz",
         "practical"

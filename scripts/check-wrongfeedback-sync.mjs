@@ -12,6 +12,11 @@
  * 見るべきは git の差分である。**新しい本文に、古い feedback がそのまま乗っている**のが欠陥。
  *
  *   node scripts/check-wrongfeedback-sync.mjs [baseRef]   既定 HEAD（作業ツリーとの比較）
+ *
+ * 誤検知が出る形が一つある。**選択肢から自己説明の括弧書きだけを削った場合**、
+ * 本文は変わるが feedback は正しいままなので「据え置き」と判定される（d1-004・ch-008 で実際に出た）。
+ * それでもチェックは緩めない。**括弧書きを外したなら、その説明は feedback 側で言い直すべき**であり、
+ * 書き直せば自然に通る。緩めると本物の据え置きを見逃す。
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
