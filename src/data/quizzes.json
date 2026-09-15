@@ -14556,7 +14556,7 @@
       "correctIndex": 3,
       "explanation": "Workers Trace Events LogpushはWorkers Paidプランで利用可能です。ダッシュボードまたはAPIでLogpushジョブ(送信先・データセット`workers_trace_events`)を作成したうえで、Workerのwrangler設定ファイルに`\"logpush\": true`を追加してデプロイすると、そのWorkerのログが送信され始めます。\n{{diagram:0}}\n一般のLogpushはEnterprise限定ですが、Workers向けはPaidプランからアクセスできます。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/logpush/",
-      "hint": "「送信先の準備」と「Worker側のフラグ」、両方がそろって初めて動く2段階の仕組みだと考えましょう。",
+      "hint": "この機能が、どのプランから使えるものなのかをまず確かめましょう。",
       "tags": [
         "observability",
         "practical"
@@ -15098,7 +15098,7 @@
       "correctIndex": 2,
       "explanation": "`fetch()`をオーバーライドすることで、認証やパスによるルーティングなどのミドルウェア処理を追加できます。コンテナへ処理を委譲する箇所では、無限再帰を避けるために`this.fetch()`ではなく`this.containerFetch()`を呼び出します。WebSocketのプロキシをサポートするのは`fetch()`のみです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#fetch",
-      "hint": "同じ名前のメソッドを自分自身から呼び出すと何が起きるか、それを避けるための「内部委譲用」の別メソッドを考えましょう。",
+      "hint": "オーバーライドした`fetch()`の中から、同じ`fetch()`をもう一度呼び出すと何が起きるかを考えましょう。",
       "tags": [
         "containers",
         "practical"
@@ -15157,7 +15157,7 @@
       "correctIndex": 2,
       "explanation": "カスタムインスタンスタイプでは、vCPUは1〜4、メモリは最大12GiB、ディスクは最大20GBという上限に加えて、メモリはvCPU1つあたり最低3GiB、ディスクはメモリ1GiBあたり最大2GBという比率の制約もあります。1vCPU未満の小さなワークロードには`lite`や`basic`などの定義済みインスタンスタイプを使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/containers/platform/limits/#custom-instance-types",
-      "hint": "「何個まで」という上限だけでなく、「比率としての下限・上限」もセットで存在することを意識しましょう。",
+      "hint": "ディスクに指定できる上限は、それ単独で決まる値なのか、選んだメモリ量によって変わるのかを確かめましょう。",
       "tags": [
         "containers",
         "practical"
@@ -15216,7 +15216,7 @@
       "correctIndex": 0,
       "explanation": "Containerは実際に稼働している10ms単位で課金されます。リクエストが送られるか手動で起動したときに課金が始まり、コンテナがスリープ(停止)すると課金も止まるため、使った分だけの支払いで済みます。メモリ・ディスクはプロビジョニングされた容量ベース、CPUは実際のアクティブ使用量ベースで課金される点も特徴です。\n{{diagram:0}}\nこれによりバーストするトラフィックでもゼロスケールと高い利用効率を両立できます。",
       "referenceUrl": "https://developers.cloudflare.com/containers/platform/pricing/",
-      "hint": "「契約した瞬間から」ではなく「実際に動いている時間」に紐づく課金の仕組みを考えましょう。",
+      "hint": "デプロイしてあるだけで、リクエストが来ていないコンテナにも料金は発生するのでしょうか。",
       "tags": [
         "containers",
         "practical"
@@ -15329,7 +15329,7 @@
       "correctIndex": 1,
       "explanation": "`wrangler deploy`を実行すると、Worker本体のコードは即座に更新されますが、コンテナインスタンスは段階的にロールアウトされます。既定のステップは`max_instances`に依存し、2以上なら2段階(最初のステップで10%、次のステップで100%)、省略または2未満なら単発の100%です。更新対象になったインスタンスにはまず`SIGTERM`が送られ、15分間の猶予の後もまだ停止していなければ`SIGKILL`で強制停止されます。\n{{diagram:0}}\n`rollout_step_percentage`でこの段階配分をカスタマイズできます。",
       "referenceUrl": "https://developers.cloudflare.com/containers/configuration/rollouts/",
-      "hint": "Worker本体とコンテナ、2つの更新スピードが同じとは限らないことを考えましょう。",
+      "hint": "`wrangler deploy`のあと、Worker本体のコードとコンテナインスタンスが同じタイミングで切り替わるのかどうかを確かめましょう。",
       "tags": [
         "containers",
         "practical"
@@ -15434,7 +15434,7 @@
       "correctIndex": 0,
       "explanation": "`onActivityExpired()`は`sleepAfter`で設定したアイドルタイムアウトが経過したときに呼ばれるフックで、デフォルト実装は`stop()`を呼び出します。このフックをオーバーライドする場合、自分で`await this.stop()`または`await this.destroy()`を呼ばないと、コンテナが停止しないままタイマーが延長されてしまい、フックが繰り返し呼ばれ続けます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#onactivityexpired",
-      "hint": "デフォルトの挙動を上書きしたとき、「もともと自動でやってくれていたこと」を自分で呼び直す必要がないか考えましょう。",
+      "hint": "上書きする前に、`onActivityExpired()`の既定の実装の中身を確かめましょう。",
       "tags": [
         "containers",
         "practical"
@@ -15536,7 +15536,7 @@
       "correctIndex": 3,
       "explanation": "Containerのネットワークegressは地域別に料金が異なります。北米・欧州は1GBあたり$0.025(月1TBまで無料)、オセアニア/韓国/台湾は$0.05(月500GBまで無料)、それ以外の地域は$0.04(月500GBまで無料)です。\n{{diagram:0}}\nリージョンをまたぐトラフィックが多い構成では、この地域差を踏まえたコスト試算が必要です。",
       "referenceUrl": "https://developers.cloudflare.com/containers/platform/pricing/#network-egress",
-      "hint": "世界中の通信インフラのコストが本当にどこでも同じかどうか、地理的な観点で考えてみましょう。",
+      "hint": "egressについて、毎月いくらか無料で送れる分が含まれているのかどうかを確かめましょう。",
       "tags": [
         "containers",
         "practical"
@@ -16141,7 +16141,7 @@
       "correctIndex": 1,
       "explanation": "custom limitsは、dynamic dispatch Worker側から`env.DISPATCHER.get(workerName, {}, { limits: { cpuMs, subRequests } })`のように第3引数として指定します。顧客のプラン(enterprise/pro/freeなど)に応じて異なる上限値を動的に設定できます。上限を超えるとuser Workerは例外を投げます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/custom-limits/",
-      "hint": "上限を「守らせる側」と「守る側」、どちらが上限値を決めて渡すのが自然か考えましょう。",
+      "hint": "上限の値は、user Worker を取り出す呼び出しに渡す情報のうち、どのまとまりに入るのでしょうか。外向き通信の制御のために渡す情報と同じまとまりなのか、別なのかが分かれ目です。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -16327,7 +16327,7 @@
       "correctIndex": 0,
       "explanation": "user Workerへのバインディング追加は、Upload User Worker APIのmultipartアップロードリクエストにおける`metadata`オブジェクトの`bindings`配列で行います。既存のバインディングを保持したまま新しいバインディングを追加したい場合は、`keep_bindings`パラメータを使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/bindings/",
-      "hint": "user Workerはwrangler CLIではなくAPI経由でデプロイされることを踏まえ、設定情報がどこに含まれるか考えましょう。",
+      "hint": "1回のアップロードの中で、スクリプト本体とバインディングの設定はそれぞれどの部分に入るのかを考えましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -16375,7 +16375,7 @@
       "correctIndex": 3,
       "explanation": "Tagsは顧客ID・プラン種別・環境などのラベルをuser Workerに付与し、検索・フィルタ・一括操作(顧客が退会した際の一括削除など)を可能にする機能です。1スクリプトあたり最大8個までのタグを設定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/tags/",
-      "hint": "大量のWorkerの中から「特定の顧客の分だけ」を探したり消したりしたいとき、何を目印にするか考えましょう。",
+      "hint": "タグは探すための目印にとどまるのか、タグを条件にした操作までできるのかを確かめましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
