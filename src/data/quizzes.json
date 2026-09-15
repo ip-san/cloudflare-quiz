@@ -4451,7 +4451,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflareのストレージ製品はそれぞれ得意分野が異なります。R2は大容量オブジェクト（画像・動画・バックアップ）、Workers KVは小さな値をグローバルに低レイテンシで読み取る用途（設定値、フィーチャーフラグなど）、D1はリレーショナルなデータをSQLで扱う用途に向いています。\n{{diagram:0}}\n適材適所で組み合わせることで、コストとパフォーマンスの両方を最適化できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/",
-      "hint": "それぞれの製品の「得意なデータサイズ」と「アクセスパターン」を考えてみましょう。",
+      "hint": "Workers KVは、大きなバイナリを配信するための保存先ではありません。",
       "tags": [
         "r2",
         "practical",
@@ -10901,7 +10901,7 @@
       "correctIndex": 1,
       "explanation": "Pages Functions は Cloudflare Workers ランタイム上で動作しており、KV Namespace, D1 Database, R2 Bucket, Durable Objects などWorkersと同様のバインディングをサポートしています。\n{{diagram:0}}\nどちらも `env` オブジェクト経由でバインディングにアクセスするという基本的な書き方が共通しているため、ロジックの多くを共有・移植しやすい設計になっています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/functions/bindings/",
-      "hint": "Pages FunctionsはどのランタイムでWorkersと共通しているか考えてみましょう。",
+      "hint": "バインディングはダッシュボードのPagesプロジェクト設定から追加します。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -12917,7 +12917,7 @@
       "correctIndex": 1,
       "explanation": "クライアント側のウィジェットが発行するトークンは、攻撃者が任意の文字列をフォーム送信先に送れてしまうため、それだけでは保護になりません。サーバー側で `https://challenges.cloudflare.com/turnstile/v0/siteverify` にシークレットキーとトークンを送って検証する必要があります。\n{{diagram:0}}\nトークンは発行後300秒(5分)で失効し、一度しか検証できません(再利用すると `timeout-or-duplicate` エラー)。",
       "referenceUrl": "https://developers.cloudflare.com/turnstile/get-started/server-side-validation/",
-      "hint": "クライアントから送られてくる値は、本当に信用できるでしょうか。誰がそれを確かめるべきでしょう。",
+      "hint": "クライアント側だけで完結させても、料金は変わりません。",
       "tags": [
         "platform-services",
         "practical"
@@ -18549,7 +18549,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Realtimeの課金は、Cloudflareのエッジからアプリケーションへ送信されるデータ(egress)のみを対象としています。SFUとTURNの無料枠(月1,000GB)は合算で、請求もまとめて1つの明細項目として表示されます。TURNとSFU(またはCloudflare StreamのWHIP/WHEP)の間のトラフィックは二重に課金されることはありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/pricing/",
-      "hint": "「送信する方向」と「複数のサービスをまたぐ場合に二重に数えられないか」という2つの観点を意識しましょう。",
+      "hint": "TURNとSFUを同時に使っても、料金が単純に2倍になることはありません。",
       "tags": [
         "realtime",
         "practical"
@@ -21399,7 +21399,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflare Pipelinesは3つの軸で課金されます。Streamへの取り込み(ingress)は常に無料です。SQL変換は月50GBまで無料で、それを超えると$0.04/GBが課金されます。Sinkへの配信は月50GBまで無料で、それを超えると出力形式に応じて$0.03/GB(JSON)または$0.06/GB(Parquet/Iceberg)が課金されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/pricing/",
-      "hint": "「取り込み」「変換」「配信」という3つの段階それぞれに、別々の料金体系があることを意識しましょう。",
+      "hint": "無料枠が用意されている段階があります。",
       "tags": [
         "pipelines",
         "practical"
@@ -39303,7 +39303,7 @@
       "correctIndex": 1,
       "explanation": "Magic Transitは、Addressing APIによる手動制御、Cloudflareのグローバルに分散したRoute Reflectorとのピアリング、ユーザーが定義したトラフィック閾値に基づいて自動アドバタイズするNetwork Flow(旧Magic Network Monitoring)、CNIやIPsec/GREトンネルで学習したBGPルートに連動してアドバタイズ・撤回を自動化するVirtual Networkルーティングテーブル制御という複数のプレフィックス制御方式を提供しています。複数の制御方式を混在させるとアドバタイズ状態が競合するため、1つのプレフィックスには1つの制御方式のみを使うべきとされています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/magic-transit/how-to/advertise-prefixes/#bgp-prefix-advertisement-control-methods",
-      "hint": "「手動」「他社機器とのBGPピアリング」「トラフィック量に応じた自動化」「学習したルートとの連動」という4つの切り口で整理してみましょう。",
+      "hint": "利用できる制御方式は1種類ではありません。",
       "tags": [
         "magic-wan",
         "practical"
@@ -39358,7 +39358,7 @@
       "correctIndex": 2,
       "explanation": "AS prependingによるプロバイダ移行では、まずasn_prepend_count 0のデフォルト優先度でCloudflare経由のプレフィックスをアドバタイズします。次にasn_prepend_countを増やす(最大3まで)ことでAS_PATHを長くし、Cloudflare経由の経路を外部ネットワークから選ばれにくくします。その間に代替プロバイダから同じプレフィックスを短いAS_PATHでアドバタイズし始めることで、外部ネットワークは両方の経路を認識し、BGPポリシーに基づいて段階的に新しい経路へ切り替わっていきます。この設定はAPIのasn_prepend_countパラメータ、またはBGPコミュニティ(13335:50101など)から行えます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/magic-transit/how-to/advertise-prefixes/#use-the-api-to-set-as-prepends-on-a-bgp-prefix",
-      "hint": "「一気に切り替える」のではなく「徐々に不利にしながら並行稼働させる」移行の考え方に注目しましょう。",
+      "hint": "prependの回数を増やすほど、その経路は選ばれにくくなります。",
       "tags": [
         "magic-wan",
         "practical"
@@ -39462,7 +39462,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Network FirewallをCDNやSpectrumのようにトラフィックをプロキシする他のCloudflareサービスと併用する場合、いくつか注意点があります。ルールはCloudflareが受信TCPコネクションを終端した後に評価されるため、送信元IPアドレスに基づくブロックルールが意図通りに機能しないことがあります。また断片化された(フラグメント化された)パケットは検査前に完全なパケットへ再構成されるため、フラグメント単位でのファイアウォールルールは作成できません。さらにCloudflareの公式IPアドレスを許可リストに含めておく必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-network-firewall/about/",
-      "hint": "「ルールが評価されるタイミング」と「パケットが検査される前に何が起きるか」という2つの注意点を分けて考えましょう。",
+      "hint": "断片化されたパケットを、フラグメント単位で個別に検査することはできません。",
       "tags": [
         "magic-wan",
         "practical"

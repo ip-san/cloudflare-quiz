@@ -4166,7 +4166,7 @@
     "mw-015": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "69c05273ea4b",
         "gt": "6ba35bc6"
@@ -4184,7 +4184,7 @@
     "mw-018": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "7721e181b6fb",
         "gt": "da39a3ee"
@@ -4238,7 +4238,7 @@
     "pl-016": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "01a68662f27a",
         "gt": "191f3603"
@@ -4301,7 +4301,7 @@
     "r2-011": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "477198cb2d4e",
         "gt": "bb8975a4"
@@ -4328,7 +4328,7 @@
     "rt-016": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "8dad4f55ed44",
         "gt": "d4461cb5"
