@@ -11839,19 +11839,19 @@
       "question": "既存のNode.js向けPostgresドライバ(pgパッケージ)を使っているコードをHyperdrive経由に切り替える場合、必要な変更として正しいものはどれですか？",
       "options": [
         {
-          "text": "`pg` パッケージをCloudflare専用SDKに置き換え、SQLをHyperdrive独自のクエリ言語に書き直したうえで、接続処理も専用APIへ移行する必要がある",
-          "wrongFeedback": "専用SDKも独自クエリ言語も不要です。Hyperdriveは既存のドライバ・ORM・SQLをそのまま使えることが特長です。"
+          "text": "接続文字列を `env.HYPERDRIVE.connectionString` に差し替えたうえで、ドライバを `pg` から `postgres.js` に載せ替える",
+          "wrongFeedback": "ドライバの載せ替えは不要です。Hyperdriveは `node-postgres`(`pg`) と `postgres.js` のどちらでも動き、名前付きプリペアドステートメントも両方でサポートされています。既存のドライバやORMはそのまま使えます。"
         },
         {
-          "text": "データベースのスキーマをHyperdrive形式に変換する",
-          "wrongFeedback": "スキーマ変換は発生しません。データベース自体には手を加えず、接続経路だけが変わります。"
+          "text": "接続文字列に `sslmode=disable` を加えて平文接続に切り替え、TLSの終端はHyperdrive側に任せる",
+          "wrongFeedback": "接続文字列に手を加える必要はありません。`env.HYPERDRIVE.connectionString` はそのまま渡すもので、パラメータを足す手順はありません。なおHyperdriveとオリジンDBの間のTLSモードはHyperdrive側の設定(既定は `require`)で、Postgresの `none` は選べません。"
         },
         {
           "text": "接続文字列を `env.HYPERDRIVE.connectionString` に差し替えるだけで、ドライバやORMのコードはそのまま使える"
         },
         {
-          "text": "SQLの実行をすべてREST API呼び出しに書き換える",
-          "wrongFeedback": "REST化は不要です。ドライバは通常のデータベースプロトコルのままHyperdriveに接続できます。"
+          "text": "SQLをドライバに渡す形をやめ、バインディングの `prepare()` と `bind()` を連ねるメソッド呼び出しに書き換える",
+          "wrongFeedback": "`prepare()` と `bind()` を連ねる書き方はD1のWorker APIのものです。Hyperdriveは既存のデータベースへの接続をCloudflare側でまとめる仕組みで、ドライバは通常のデータベースプロトコルのまま接続します。"
         }
       ],
       "correctIndex": 2,
@@ -12810,25 +12810,25 @@
       "question": "Cloudflare Turnstile の役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "サイトへのすべてのリクエストを暗号化してTLS証明書を自動で発行・更新し、通信内容の盗聴や改ざんを防いで安全な接続を保つためのセキュリティ機能",
-          "wrongFeedback": "それはSSL/TLS関連の機能です。Turnstileは通信の暗号化ではなく、訪問者が人間かボットかを判定する仕組みです。"
+          "text": "リクエストごとに自動化の度合いを1から99の範囲のスコアで算出し、そのスコアをWAFのカスタムルールやWorkersから参照できるようにする機能",
+          "wrongFeedback": "ボットらしさを1から99のスコアで表し、WAFのルールやWorkersから参照できるようにするのはBot Managementのボットスコアです。Turnstileはサイトに埋め込むウィジェットで、判定結果は有効期限付きの使い捨てトークンとして渡され、サーバー側がSiteverify APIに問い合わせて確かめます。"
         },
         {
           "text": "アクセスしてきた利用者が人間かどうかを、画像や文字を読ませる従来のCAPTCHAなしに、プライバシーを保ちながら判定するサービス"
         },
         {
-          "text": "アクセス数やページビューを計測するWebアナリティクスのツール",
-          "wrongFeedback": "アクセス解析はWeb Analyticsなど別の製品です。Turnstileはボット対策のための人間判定に特化しています。"
+          "text": "式に一致するリクエストの数を指定した期間で数え、上限に達したら以後のリクエストを一定時間ブロックするルールを作れる機能",
+          "wrongFeedback": "一致するリクエストの数を期間で数え、上限に達したらブロックするのはレート制限ルールです。Turnstileが見るのは訪問の回数や頻度ではなく、そのブラウザ環境から集めた手がかりです。"
         },
         {
-          "text": "ユーザーのログイン情報(ID・パスワード)を保存・管理する認証データベース",
-          "wrongFeedback": "Turnstileは認証情報を保存しません。あくまで「人間らしさ」を判定するだけで、誰であるかの認証(ログイン)は別途アプリ側で行います。"
+          "text": "利用者をIDプロバイダで認証し、メールアドレスのドメインや所属などの条件を満たす人だけをアプリケーションに到達させる仕組み",
+          "wrongFeedback": "IDプロバイダで本人を確認して到達可否を決めるのはCloudflare Accessです。Turnstileは相手が誰であるかを確かめず、人間らしいかどうかだけを判定します。ログインの可否はアプリ側で決めます。"
         }
       ],
       "correctIndex": 1,
       "explanation": "Turnstileは、従来のCAPTCHA(歪んだ文字や画像選択)を利用者に見せることなく、訪問者が人間かボットかを判定するプライバシー重視の代替手段です。\n{{diagram:0}}\nCloudflareにサイトのトラフィックをルーティングしていなくてもWebサイトに埋め込めるため、フォームの不正送信対策などに手軽に導入できます。",
       "referenceUrl": "https://developers.cloudflare.com/turnstile/",
-      "hint": "この製品が扱うのは、通信の保護・アクセスしてきた相手の性質・訪問数の計測・認証情報の保管のどれか、という軸で4肢を見比べましょう。",
+      "hint": "4肢はどれも訪問者をふるいにかける仕組みですが、判定に使う手がかりが違います。相手が誰かを確かめるのか、どれだけ来たかを数えるのか、それとも相手が自動化されているかを見るのかを切り分けましょう。",
       "tags": [
         "platform-services",
         "practical"
@@ -13628,16 +13628,16 @@
           "text": "Cloudflareのネットワーク上でヘッドレスの Chrome を動かし、ブラウザ自動化を行える"
         },
         {
-          "text": "利用者の手元のブラウザを高速化するために、画像やスクリプトを事前に取得してキャッシュし、再訪時の読み込みを短縮するサービス",
-          "wrongFeedback": "利用者側ブラウザの高速化ではありません。サーバー側でヘッドレスChromeを動かして自動化するサービスです。"
+          "text": "利用者が開いたページのJavaScriptなどをCloudflare側のブラウザで実行し、その結果だけを手元の端末に届けることで端末を攻撃から守るサービス",
+          "wrongFeedback": "利用者の代わりにページを実行して端末を守るのはBrowser Isolation(リモートブラウザ分離)です。Browser Runは、開発者が書いたコードからヘッドレスブラウザを操作するための仕組みで、利用者の閲覧を肩代わりするものではありません。"
         },
         {
-          "text": "WebサイトのデザインをGUI上でドラッグ&ドロップ操作しながら編集でき、コードを書かずに配置を組み立てられるビジュアルエディタ",
-          "wrongFeedback": "デザインエディタではありません。プログラムからヘッドレスブラウザを制御する仕組みです。"
+          "text": "サイトが読み込むサードパーティのツールを訪問者のブラウザから切り離してCloudflare側で実行し、ページの表示速度と安全性を改善するサービス",
+          "wrongFeedback": "サードパーティのツールをブラウザから剥がしてCloudflare側で読み込むのはZarazです。Browser Runの目的はサイトの表示を速くすることではなく、スクリーンショットやPDF生成、スクレイピング、テストのためにブラウザを操作することです。"
         },
         {
-          "text": "ブラウザ拡張機能を開発・審査・配布するためのプラットフォームであり、申請した拡張機能は審査を経てストアに公開される",
-          "wrongFeedback": "拡張機能の開発配布基盤ではありません。ヘッドレスブラウザの自動操作を提供します。"
+          "text": "訪問者のブラウザが読み込んだスクリプトとその接続先を継続的に監視し、新しいものや変更されたものを検知して通知するサービス",
+          "wrongFeedback": "訪問者のブラウザで動くスクリプトと接続先を監視するのはクライアントサイドセキュリティ(旧 Page Shield)です。Browser Runが動かすのはCloudflare側のブラウザで、訪問者のブラウザを覗くわけではありません。"
         }
       ],
       "correctIndex": 0,
@@ -13775,25 +13775,25 @@
       "question": "Cloudflare Workers の「Workers Logs」(observability設定)が提供する機能として正しいものはどれですか？",
       "options": [
         {
-          "text": "`wrangler dev`実行時のローカルコンソール出力を行単位で整形してファイルに保存し、本番環境のログからは完全に切り離して隠すための機能",
-          "wrongFeedback": "Workers Logsはローカル専用ではなく、本番デプロイ後のWorkerからのログをダッシュボードに集約する機能です。"
+          "text": "対象のWorkerとは別にWorkerを割り当て、実行が終わるたびにHTTPステータスや `console.log()` の内容を受け取らせて、任意のHTTPエンドポイントへ送れるようにする機能",
+          "wrongFeedback": "実行後に別のWorkerを呼び出してイベントを受け取らせるのはTail Workersです。Tail Workersでは宛先も整形も自分でWorkerを書いて決めますが、Workers Logsは設定を有効にするだけでログがCloudflareアカウント内に集まり、そのまま照会できます。"
         },
         {
-          "text": "デプロイ前にコードの脆弱性を自動スキャンして警告する機能",
-          "wrongFeedback": "脆弱性スキャンはWorkers Logsの機能ではありません。Workers Logsはあくまでログの収集・分析に特化しています。"
+          "text": "リクエストとレスポンスのメタデータや `console.log()` の出力を、対応する外部のストレージやログ基盤へ継続的に配送する機能",
+          "wrongFeedback": "ログを外部の保存先へ継続的に配送するのはWorkers Logpushです。Workers LogsはログをCloudflareアカウント内に書き込み、Workerごとにダッシュボードから照会する機能で、外部へ送りたい場合はLogpushやTail Workersを併用します。"
         },
         {
           "text": "Workerから出力されるログ(リクエスト情報や`console.log`、例外)を自動収集し、ダッシュボードでフィルタ・分析できる機能"
         },
         {
-          "text": "KVやD1に保存されたデータを自動的に別リージョンへバックアップする機能",
-          "wrongFeedback": "データのバックアップ/レプリケーションはWorkers Logsの役割ではありません。ログの収集・分析が目的です。"
+          "text": "Workerのコードから `writeDataPoint()` で書き込んだ独自のデータポイントを蓄積し、SQL APIで集計できるようにする機能",
+          "wrongFeedback": "`writeDataPoint()` とSQL APIの組み合わせはWorkers Analytics Engineのものです。Workers Logsが集めるのは、リクエストのメタデータや `console.log` の出力、例外といったログで、自分で設計したデータポイントではありません。"
         }
       ],
       "correctIndex": 2,
       "explanation": "Workers Logsは、Cloudflare WorkerのHTTPリクエスト情報や`console.log`の出力、例外情報などを自動的に収集し、ダッシュボード上でフィルタ・分析できるようにする観測性(observability)機能です。\n{{diagram:0}}\n新規に作成したWorkerにはデフォルトでこの設定が有効になっています。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/",
-      "hint": "この機能が扱う対象はログです。そのログがどの時点(ローカルでの開発中か、デプロイ後の稼働中か)のもので、どこで見るものなのかという2つの軸で4肢を見比べましょう。",
+      "hint": "4肢はどれもWorkerが出したものを後から見るための仕組みですが、行き先が違います。Cloudflareの中に貯めて自分で照会するのか、別のWorkerや外部のサービスへ渡すのかという軸で見比べましょう。",
       "tags": [
         "observability",
         "practical",
@@ -13952,16 +13952,16 @@
       "question": "Workers Analytics Engineが解決する課題として最も適切なものはどれですか？",
       "options": [
         {
-          "text": "`env.KV`の結果整合性による読み取り遅延を完全になくす",
-          "wrongFeedback": "KVの結果整合性の問題はAnalytics Engineの対象ではありません。Analytics Engineはカスタム分析データの記録・集計のための仕組みです。"
+          "text": "Workerが出力した `console.log` や例外を自動的に集め、ダッシュボードから条件を指定して調べられるようにする",
+          "wrongFeedback": "`console.log` や例外を自動で集めてダッシュボードから調べるのはWorkers Logsです。Analytics Engineが扱うのはログではなく、自分で設計したデータポイントを書き込んでSQLで集計する仕組みです。"
         },
         {
-          "text": "`wrangler d1 migrations apply`のように、Workerからの書き込みに合わせてD1データベースのスキーマを自動的にマイグレーションし、変更履歴を保持する",
-          "wrongFeedback": "スキーママイグレーションはD1の役割であり、Analytics Engineとは別の仕組みです。"
+          "text": "リクエストとレスポンスのメタデータやログを、対応する外部のストレージやログ基盤へ継続的に配送する",
+          "wrongFeedback": "ログを外部の保存先へ配送するのはWorkers Logpushです。Analytics EngineはデータをCloudflare側のデータセットに貯め、SQL APIで直接集計します。"
         },
         {
-          "text": "`tsc`を使ってWorkerのソースコードを静的解析し、型エラーを検出する",
-          "wrongFeedback": "型チェックはTypeScriptコンパイラなどの役割であり、Analytics Engineの機能ではありません。"
+          "text": "SQLでスキーマを定義したテーブルに行を書き込み、`prepare()` と `bind()` を組み合わせた問い合わせを、WorkerからもHTTP APIからも実行できるようにする",
+          "wrongFeedback": "`prepare()` と `bind()` でスキーマのあるテーブルを読み書きするのはD1です。D1が行単位の読み書きを前提にしたデータベースなのに対し、Analytics Engineは値の種類が非常に多いデータポイントを大量に書き込んで集計することに向いています。"
         },
         {
           "text": "顧客ごと・エンドポイントごとの値の種類が非常に多い(高カーディナリティな)分析データを`writeDataPoint()`で記録しSQLで集計できるようにする"
@@ -13970,7 +13970,7 @@
       "correctIndex": 3,
       "explanation": "Workers Analytics Engineは、Workerから`writeDataPoint()`でデータポイントを書き込み、SQL APIで集計・分析できる仕組みです。ユーザーIDやエンドポイントなど値の種類が非常に多い指標でも、性能を落とさず記録・分析できます。\n{{diagram:0}}\n従量課金ベースの利用状況分析やSaaSの顧客別ダッシュボード構築などに使われます。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/",
-      "hint": "4肢はそれぞれ別の領域(整合性・スキーマ管理・コード品質・計測)の課題を述べています。`Analytics` という名前が指す領域はどれかを考えましょう。",
+      "hint": "4肢はどれもWorkerから出たデータを後で見るための仕組みです。誰がデータを書き込み、どこに貯まり、どうやって取り出すのかという流れの違いに注目しましょう。",
       "tags": [
         "observability",
         "practical"
@@ -14003,25 +14003,25 @@
       "question": "Workers Logsで`console.log({ user_id: 123 })`のように構造化されたオブジェクトをログ出力する利点として正しいものはどれですか？",
       "options": [
         {
-          "text": "文字列を連結してログを出力するより実行速度が常に速くなる",
-          "wrongFeedback": "構造化ログの主な利点は速度ではなく、フィールド単位でのフィルタ・検索のしやすさです。"
+          "text": "1つのログが `256 KB` を超えたときに切り詰められる代わりに、超過分が自動的に別のログへ分割して記録されるようになる",
+          "wrongFeedback": "1つのログの上限は `256 KB` で、超えたログは切り詰められ `$cloudflare.truncated` が `true` になります。分割して記録されるわけではなく、この上限は出力の書き方によって変わりません。"
         },
         {
-          "text": "1リクエストあたりの`console.log`の呼び出し回数の上限が撤廃され、文字列で出力するより多くのログを記録できるようになる",
-          "wrongFeedback": "呼び出し回数の上限が撤廃されるわけではありません。構造化ログの利点はフィールド単位の検索性向上です。"
+          "text": "`head_sampling_rate` による間引きの対象から外れ、サンプリングを設定していてもすべての呼び出しが記録されるようになる",
+          "wrongFeedback": "`head_sampling_rate` は、記録するリクエストの割合を決める設定です。記録するかどうかはリクエスト単位で決まるため、ログをオブジェクトで出力しても間引きの対象は変わりません。"
         },
         {
           "text": "`user_id`などのキーがフィールドとして自動的に抽出・インデックスされ、絞り込み検索がしやすくなる"
         },
         {
-          "text": "ログのサイズ上限(256KB)が自動的に拡張される",
-          "wrongFeedback": "ログサイズの上限は出力形式に関わらず一定です。構造化しても上限が拡張されるわけではありません。"
+          "text": "Workers LogpushやTail Workerを設定しなくても、ログが外部の監視ツールへ自動的に転送されるようになる",
+          "wrongFeedback": "外部の監視ツールへ送るには、OpenTelemetryのエクスポートやWorkers Logpush、Tail Workersを別途設定します。オブジェクトで出力しても転送先が自動で増えることはありません。"
         }
       ],
       "correctIndex": 2,
       "explanation": "Workers Logsに`console.log(\"user_id: \" + 123)`のような文字列ではなく`console.log({ user_id: 123 })`のようなオブジェクトを渡すと、`user_id`などのキーがフィールドとして自動的に抽出・インデックスされます。これにより、そのキーに対する絞り込み検索が容易になります。\n{{diagram:0}}\n文字列に埋め込んだ場合はテキスト一致検索しかできません。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#logging-structured-json-objects",
-      "hint": "4肢は「速さ」「回数の上限」「サイズの上限」「後からの扱いやすさ」という別々の観点を述べています。出力の書き方を変えたときに実際に変わるのはどの観点かを考えましょう。",
+      "hint": "4肢は、ログの大きさの上限・記録される割合・ログの届け先・記録されたあとの扱いという別々の観点を述べています。出力の書き方を変えたときに実際に変わるのはどの観点かを考えましょう。",
       "tags": [
         "observability",
         "practical"
@@ -14757,25 +14757,25 @@
       "question": "Cloudflare Containersの役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "Workerのコードとその依存関係を事前にコンパイルして常駐させることでコールドスタートを完全になくすための専用キャッシュ機構であり、実行するコードやランタイムそのものには一切関与しない",
-          "wrongFeedback": "コールドスタート対策の仕組みではありません。Containersは任意の言語・ランタイムで書かれたコードをWorkerと組み合わせて実行するための仕組みです。"
+          "text": "JavaScriptやWebAssemblyで書いたコードを、V8の軽量な分離環境で仮想マシンを作らずに起動して実行できるようにする",
+          "wrongFeedback": "V8の分離環境でJavaScriptやWebAssemblyを動かすのはWorkers本体の仕組みです。Containersが引き受けるのは、Workerでは動かせない言語やランタイム、フルのファイルシステム、並列するCPUコアを必要とする処理で、Workerから起動して連携させます。"
         },
         {
-          "text": "静的アセットをCDNキャッシュするための`Docker`専用ストレージ",
-          "wrongFeedback": "静的アセット配信はWorkers Static Assetsなどの役割であり、Containersはコンテナプロセスの実行が目的です。"
+          "text": "顧客が書いたコードを、顧客ごとに分離されたスクリプトとして受け取り、名前空間にまとめて安全に実行できるようにし、Workerごとの上限設定やタグ付けも行えるようにする",
+          "wrongFeedback": "顧客ごとに分離したスクリプトを名前空間で扱うのはWorkers for Platformsです。Containersが分けるのは「誰のコードか」ではなく「どの言語・ランタイムか」で、Workerでは動かせないアプリケーションを動かすための仕組みです。"
         },
         {
           "text": "任意の言語・ランタイムで書かれたコードやDockerイメージのアプリケーションを、Workerと連携させてCloudflareのネットワーク上で実行できるようにする"
         },
         {
-          "text": "KVやD1に保存済みのデータを丸ごとコンテナ化して、別リージョンへ定期的に複製するためのバックアップ専用の仕組み",
-          "wrongFeedback": "データのレプリケーションの仕組みではありません。Containersはコードの実行環境を提供するものです。"
+          "text": "Cloudflareのネットワーク上でヘッドレスのChromeを動かし、ページを読み込んだうえでスクリーンショットやPDFの生成、スクレイピングやテストをプログラムから行えるようにする",
+          "wrongFeedback": "ヘッドレスのChromeを動かすのはBrowser Runです。Containersは特定のアプリケーションに限らず、コンテナイメージとして配布された任意のアプリケーションを実行できます。"
         }
       ],
       "correctIndex": 2,
       "explanation": "Containersは、任意のプログラミング言語・ランタイムで書かれたコードや、既存のDockerイメージとして配布されているアプリケーションを、Workerと連携させてCloudflareのネットワーク上で実行できるようにする仕組みです。CPUコアの並列利用や大きなメモリ・ディスクを必要とする処理、フルのファイルシステムやLinux的な環境が必要な処理に向いています。\n{{diagram:0}}\nWorkers Paidプランで利用できます。",
       "referenceUrl": "https://developers.cloudflare.com/containers/",
-      "hint": "4肢は「起動の速さ」「配信用の保管」「コードを動かす場」「データの複製」という別々の役割を述べています。`Containers` という名前が指すのはどの役割かを考えましょう。",
+      "hint": "4肢はどれもCloudflare上で何かを実行する仕組みの話です。実行されるのが誰の書いた、どんな形で持ち込まれたプログラムなのかという軸で見比べましょう。",
       "tags": [
         "containers",
         "practical"
@@ -14984,22 +14984,22 @@
           "text": "`defaultPort`はコンテナと通信するポート番号、`sleepAfter`はアクティビティがない状態が続いた場合にコンテナを停止するまでの時間"
         },
         {
-          "text": "`defaultPort`はコンテナ起動時に実行する初期ヘルスチェックの回数、`sleepAfter`はコンテナが出力したログを保持しておく期間をそれぞれ指定する",
-          "wrongFeedback": "ヘルスチェック回数やログ保持期間の設定ではありません。通信ポートとアイドルタイムアウトの設定です。"
+          "text": "`defaultPort`はコンテナと通信するポート番号、`sleepAfter`はコンテナを停止せずに休止させ、内部の状態を保ったまま次のリクエストで再開させるまでの保持時間",
+          "wrongFeedback": "`sleepAfter` に達したコンテナは、休止ではなく停止します。コンテナのディスクは既定で揮発性なので内部の状態は引き継がれません。再起動をまたいで残したい値は、`Container` が継承している Durable Object のストレージに置きます。"
         },
         {
-          "text": "`defaultPort`はコンテナに割り当てるCPUコア数、`sleepAfter`はディスク容量を指定するため、これらを大きくするほど処理性能や保存量が増え課金額も高くなる",
-          "wrongFeedback": "どちらもリソース量の指定ではありません。`defaultPort`は通信ポート、`sleepAfter`はアイドル時間の指定です。"
+          "text": "`defaultPort`はコンテナが外向きのHTTPリクエストを出すときに使うポート番号、`sleepAfter`はアクティビティが途絶えてからコンテナを停止するまでの時間",
+          "wrongFeedback": "`defaultPort` は、`fetch()` や `containerFetch()` がコンテナへリクエストを転送する先、つまりコンテナ内のプロセスが待ち受けるポートです。外向きのHTTP通信を許すかどうかは `enableInternet` で決めます。"
         },
         {
-          "text": "`defaultPort`はDockerイメージのタグ名、`sleepAfter`は次回起動までの待機時間",
-          "wrongFeedback": "イメージタグ名は`image`プロパティで指定します。`defaultPort`は通信用のポート番号です。"
+          "text": "`defaultPort`はコンテナと通信するポート番号、`sleepAfter`は起動したコンテナがポートで待ち受けを始めるのを待つ最大時間",
+          "wrongFeedback": "起動完了の判定に使うのは `requiredPorts` で、`startAndWaitForPorts()` がそこに挙げたポートが接続を受け付けるまで待ちます。`sleepAfter` は起動待ちではなく、アクティビティがない状態が続いたときに停止するまでの時間です。"
         }
       ],
       "correctIndex": 0,
       "explanation": "`defaultPort`は、`fetch()`や`containerFetch()`がコンテナプロセスと通信する際に使うポート番号です。コンテナがこのポートで待ち受けを始めるまでリクエストはブロックされます。`sleepAfter`は、アクティビティがない状態が一定時間続いた場合にコンテナを停止するまでの時間(デフォルト`\"10m\"`)です。\n{{diagram:0}}\nリクエストのたびにこのタイマーはリセットされます。",
       "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#properties",
-      "hint": "2つのプロパティ名(`defaultPort` と `sleepAfter`)が、それぞれ何を表す名前として自然かを考えましょう。4肢は同じ2つのプロパティに別々の意味を割り当てています。",
+      "hint": "4肢は、`defaultPort` と `sleepAfter` の意味を少しずつずらして組み合わせています。ポートが向いているのは内と外のどちらか、そして時間が尽きたあとコンテナがどうなるかを、1つずつ確かめましょう。",
       "tags": [
         "containers",
         "practical"
@@ -15015,7 +15015,7 @@
             },
             {
               "text": "sleepAfter",
-              "sub": "アイドル時のスリープまでの時間"
+              "sub": "アイドル時に停止するまでの時間"
             }
           ]
         }
@@ -15743,25 +15743,25 @@
       "question": "Workers for Platformsの目的として正しいものはどれですか？",
       "options": [
         {
-          "text": "1つのWorkerスクリプトを世界中の複数リージョンに複製して配置し、いずれかのリージョンが停止しても処理を継続できるようにする可用性向上の仕組み",
-          "wrongFeedback": "リージョン間の複製機能ではありません。テナントごとに独立したWorker実行環境を提供する仕組みです。"
+          "text": "顧客が持ち込んだ独自ドメインを自分のゾーンにカスタムホスト名として登録し、証明書の発行までを引き受けて自分のサービスへ向ける仕組み",
+          "wrongFeedback": "顧客の独自ドメインをカスタムホスト名として受け入れ、証明書を発行して自分のサービスへ向けるのはCloudflare for SaaSです。Workers for Platformsが顧客から受け取るのはドメインではなく、顧客が書いたコードそのものです。両者は組み合わせて使えます。"
         },
         {
           "text": "顧客やAIが書いたコードを、テナントごとに隔離されたサンドボックス(Worker)で実行できるようにするマルチテナント基盤"
         },
         {
-          "text": "単一のWorkerのコールドスタート時間を短縮するための高速化機能",
-          "wrongFeedback": "コールドスタート高速化の機能ではありません。複数テナントのコードを安全に分離実行する仕組みです。"
+          "text": "顧客ごとのホスト名に別々のカスタムルールやレート制限を結び付け、ホスト名の単位で異なるセキュリティ設定を適用できるようにする仕組み",
+          "wrongFeedback": "カスタムホスト名ごとにWAFのルールやレート制限を結び付けるのはWAF for SaaSです。Workers for Platformsの目的は、顧客のコードをテナントごとに分離したWorkerとして実行することです。"
         },
         {
-          "text": "Workersのデプロイをすべて自動化し、CI/CDパイプラインを不要にする仕組み。デプロイのたびに既存のWorkerをすべて削除してから再作成する基盤である",
-          "wrongFeedback": "CI/CD代替ではありません。Workers for Platformsは顧客コードを安全に実行するためのマルチテナント基盤です。"
+          "text": "任意の言語やランタイムで作られたコンテナイメージのアプリケーションを、Workerから起動して制御できるようにする仕組み",
+          "wrongFeedback": "コンテナイメージをWorkerから起動して動かすのはContainersです。Workers for Platformsが実行するのは顧客がアップロードしたWorkerのスクリプトで、各Workerはdispatch namespaceの中で分離された状態で動きます。"
         }
       ],
       "correctIndex": 1,
       "explanation": "Workers for Platformsは、顧客が書いたコードやAIが生成したコードを、テナントごとに隔離された安全なサンドボックス(Worker)で実行できるようにする仕組みです。各顧客は自分専用のWorkerを持ち、完全に分離された環境でコードが実行されます。\n{{diagram:0}}\nSaaSプラットフォーム上で顧客ごとのカスタムロジックを安全に動かしたい場合に使われます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/",
-      "hint": "4つの肢は、可用性・高速化・デプロイ運用・誰のWorkerを動かすのか、という別々の話をしています。`for Platforms` という名前がどれを指すかを手がかりにしましょう。",
+      "hint": "4肢はどれも、SaaS事業者が自分の顧客のために使う仕組みです。顧客ごとに用意されるのがドメインなのか、セキュリティ設定なのか、実行環境そのものなのかという軸で見比べましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -15843,19 +15843,19 @@
       "question": "dynamic dispatch Workerの役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "namespace内のWorkerを定期的にすべて再デプロイするスケジューラ",
-          "wrongFeedback": "再デプロイのスケジューラではありません。リクエストが来るたびにルーティングを判断する役割です。"
+          "text": "同じWorkerの新しいバージョンと古いバージョンの間で、指定した割合にしたがって受信リクエストを振り分け、問題があれば前のバージョンへ戻せるようにする",
+          "wrongFeedback": "バージョン間で割合を決めてトラフィックを分けるのはWorkersの段階的デプロイ(gradual deployments)です。dynamic dispatch Workerが振り分ける相手は、同じWorkerの別バージョンではなく、dispatch namespaceに置かれた別々のuser Workerです。"
         },
         {
           "text": "全リクエストの入り口となり、どのuser Workerが処理すべきかを判断してルーティングし、認証やレート制限などのロジックも実行する"
         },
         {
-          "text": "顧客がアップロードしたコードの構文エラーを事前にチェックする静的解析専用のWorker",
-          "wrongFeedback": "静的解析専用の仕組みではありません。リクエストのルーティングとプラットフォームロジックの実行が役割です。"
+          "text": "user Workerが外部へ送る `fetch()` リクエストを間で受け取り、宛先ホストの記録や許可・拒否の判断を行う",
+          "wrongFeedback": "user Workerの外向き `fetch()` を受け取るのはOutbound Workerです。dynamic dispatch Workerが扱うのは、プラットフォームに入ってくる側のリクエストです。"
         },
         {
-          "text": "顧客が書いたコードを直接実行するWorkerそのものでuser Workerと同一のものを指し、namespaceにアップロードされた各スクリプトがこれにあたる",
-          "wrongFeedback": "dynamic dispatch Workerとuser Workerは別物です。dynamic dispatch Workerはリクエストの入り口となり、適切なuser Workerへ振り分ける役割を持ちます。"
+          "text": "顧客が書いたコードそのものを収めたWorkerで、dispatch namespaceにアップロードされて呼び出される側になる",
+          "wrongFeedback": "顧客のコードを収めたWorkerはuser Workerで、dynamic dispatch Workerとは別のものです。dynamic dispatch Workerは `env.DISPATCHER.get(name)` でそのuser Workerを呼び出す側にあたります。"
         }
       ],
       "correctIndex": 1,
@@ -15950,19 +15950,19 @@
       "question": "Workers for PlatformsとService Bindingsの使い分けとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Service Bindingsは廃止予定の機能であり、今後はWorkers for Platformsのみを使うべきとされているため、既存のWorker間通信実装は早期にWorkers for Platformsへ移行する必要がある",
-          "wrongFeedback": "Service Bindingsは廃止予定ではなく、呼び出し先が既知の内部サービス間通信に引き続き使われる現役の機能です。"
+          "text": "同じアカウントの中にあるWorkerを呼ぶときはService Bindingsを使い、別のアカウントで管理されているWorkerを呼ぶときはWorkers for Platformsを使う",
+          "wrongFeedback": "アカウントの違いで選ぶわけではありません。Service Bindingsが呼べるのは自分のアカウント上のWorkerですが、Workers for Platformsのnamespaceに置かれるuser Workerも、顧客の代わりにあなたのアカウントへデプロイされたものです。分かれ目は、呼び出す相手が事前に決まっているかどうかです。"
         },
         {
-          "text": "Service BindingsはWorker間通信をサポートしないため、HTTPリクエストの中継にしか使えない",
-          "wrongFeedback": "Service BindingsもWorker間通信をサポートする仕組みです。両者ともWorker-to-Worker通信を可能にします。"
+          "text": "呼び出し先のWorkerをインターネットから隠しておきたい場合はService Bindingsを使い、顧客のWorkerを公開URLで直接受け付けさせたい場合はWorkers for Platformsを使う",
+          "wrongFeedback": "公開URLの有無で選ぶわけではありません。Workers for Platformsでも入口になるのはdynamic dispatch Workerで、user Workerはそこから呼び出されます。Service Bindingsは呼び出し先をインターネットから隔離する用途にも使えますが、それは使い分けの理由ではありません。"
         },
         {
           "text": "呼び出す相手が事前に決まっている場合はService Bindingsを使い、顧客が動的にアップロードするWorkerを呼び出す場合はWorkers for Platformsを使う"
         },
         {
-          "text": "Workers for PlatformsとService Bindingsは同時に使うことができず、どちらか一方しか選べないため、内部サービスを呼び出す場合もnamespaceへ登録し直す必要がある",
-          "wrongFeedback": "両方を同時に使うことができます。dynamic dispatch WorkerがService Bindingsで内部サービスを呼びつつ、namespace内のuser Workerへもディスパッチできます。"
+          "text": "メソッドを直接呼び出すRPCの形で書きたい場合はService Bindingsを使い、HTTPのリクエストとして転送したい場合はWorkers for Platformsを使う",
+          "wrongFeedback": "Service BindingsはRPCとHTTPの両方に対応しており、`env.BINDING_NAME.myMethod(arg1)` のようなメソッド呼び出しも `env.BINDING_NAME.fetch(request)` も使えます。書き方の違いではなく、呼び出す相手が事前に決まっているかどうかで選びます。"
         }
       ],
       "correctIndex": 2,
@@ -16006,16 +16006,16 @@
           "text": "user Workerが行う外向きのfetch()リクエストを横取りし、ログ記録やアクセス制御を行えるようにする"
         },
         {
-          "text": "user Workerへの受信リクエストを最初に受け取り、認証してから転送する役割を持つため、認証失敗時はuser Workerに到達する前に遮断される",
-          "wrongFeedback": "受信リクエストを最初に受け取るのはdynamic dispatch Workerの役割です。Outbound Workerはuser Workerが行う外向きのfetch()を横取りします。"
+          "text": "プラットフォームに届いたリクエストを最初に受け取り、どのuser Workerが処理すべきかを判断して振り分ける",
+          "wrongFeedback": "入ってきたリクエストを最初に受け取って振り分けるのはdynamic dispatch Workerです。Outbound Workerが扱うのは、user Workerからインターネットへ出ていく側の通信です。"
         },
         {
-          "text": "複数のuser Worker間でデータを直接共有するための、dispatch namespace単位の共有ストレージを提供する",
-          "wrongFeedback": "Worker間のデータ共有ストレージではありません。外向き通信を中継・制御する仕組みです。"
+          "text": "user Workerの実行が終わるたびに呼び出され、HTTPステータスや `console.log()` の内容を受け取って任意のHTTPエンドポイントへ送り出す",
+          "wrongFeedback": "実行後に呼び出されてログを外部へ送り出すのはTail Workerです。Tail Workerは実行の記録を受け取るだけで通信を止められませんが、Outbound Workerは user Worker の `fetch()` そのものを受け取るため、宛先を許可・拒否できます。"
         },
         {
-          "text": "user Workerのソースコードを暗号化してストレージに保存する役割を持ち、プラットフォーム運営者であっても復号鍵なしにはコード内容を閲覧できない",
-          "wrongFeedback": "コードの暗号化保存はOutbound Workerの役割ではありません。外向き通信の可視化・制御が目的です。"
+          "text": "user Workerごとに、1回の呼び出しで使えるCPU時間とサブリクエスト数の上限を決め、超えた時点で例外を発生させる",
+          "wrongFeedback": "1回の呼び出しで使えるCPU時間やサブリクエスト数の上限を決めるのはカスタム上限(custom limits)で、dynamic dispatch Workerが `env.DISPATCHER.get()` の引数として指定します。Outbound Workerは外向きのリクエストを中継する役割です。"
         }
       ],
       "correctIndex": 0,
@@ -16793,19 +16793,19 @@
       "question": "AI Gatewayの「Rate limiting」機能の基本的な役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "モデルごとの応答内容(トークン数)を制限し、超過した分の文章を自動的に要約する",
-          "wrongFeedback": "応答内容の要約機能ではありません。リクエストの「件数」を時間枠内で制限する仕組みです。"
+          "text": "モデルの料金とトークン使用量からリクエストごとの金額を計算し、時間枠内の累計支出が予算に達したら `429` を返してブロックする",
+          "wrongFeedback": "それはSpend limitsです。Spend limitsも上限に達すると `429` を返しますが、比べているのは金額です。Rate limitingが数えるのはリクエストの件数で、1件あたりいくらかかったかは見ません。"
         },
         {
           "text": "特定の時間枠内に送信できるリクエスト数を制限し、超過した場合は`429 Too Many Requests`を返して処理をブロックする"
         },
         {
-          "text": "`metadata.cost`のようなカスタムディメンションでリクエストにかかった金額を追跡し、予算を超えたら安いモデルに自動的に切り替える",
-          "wrongFeedback": "それはRate limitingではなくSpend limitsの説明です(安いモデルへのフォールバックはDynamic Routingと組み合わせて実現します)。Rate limitingはリクエストの件数を制限し、超過分を`429`でブロックする機能です。"
+          "text": "同一のリクエストに対する応答をCloudflare側のキャッシュから返し、`cf-aig-cache-status` が `HIT` のときはプロバイダーへ送らずに済ませる",
+          "wrongFeedback": "それはキャッシュの働きです。キャッシュはプロバイダーへの呼び出しを減らしますが、リクエストの件数に上限を設けるわけではなく、超過をブロックもしません。Rate limitingは時間枠内の件数が上限を超えた時点でブロックします。"
         },
         {
-          "text": "リクエストの内容を検査し、有害なコンテンツを含む場合にブロックする",
-          "wrongFeedback": "それはGuardrailsの説明です。Rate limitingはリクエストの件数を制限する機能です。"
+          "text": "プロバイダーの応答が `cf-aig-request-timeout` で指定した時間内に返らない場合に、エラーを返すか再試行へ切り替える",
+          "wrongFeedback": "それはリクエストのタイムアウト設定です。見ているのは1件の応答にかかる時間で、時間枠内に何件送られたかではありません。Rate limitingは件数を数え、上限を超えた分をブロックします。"
         }
       ],
       "correctIndex": 1,
@@ -16844,22 +16844,22 @@
           "text": "モデルの料金に基づいてリクエストごとの実際のコストを追跡し、一定期間の累計支出が予算を超えたらリクエストをブロックする"
         },
         {
-          "text": "プロンプトや応答の文字数を制限し、それを超えると自動的に切り詰める",
-          "wrongFeedback": "文字数の切り詰め機能ではありません。トークン使用量とモデル料金をもとにしたコストの累計を追跡する機能です。"
+          "text": "各AIプロバイダーへの支払いを、Cloudflareにあらかじめ用意したクレジットにまとめ、プロバイダーごとの契約なしに1つの請求として精算できるようにする",
+          "wrongFeedback": "それはUnified Billingです。支払い先をまとめる仕組みで、使いすぎを止める働きはありません。Spend limitsはUnified BillingのリクエストにもBYOKのリクエストにも適用され、予算に達した時点でブロックします。"
         },
         {
-          "text": "AI Gatewayのダッシュボードにログインするたびに発生する追加料金を制限する機能であり、ログイン回数の上限超過でダッシュボードへのアクセス自体がロックされる",
-          "wrongFeedback": "ダッシュボードのログイン料金を制限する機能ではありません。モデルの利用コストの累計に対する予算管理の機能です。"
+          "text": "経由したリクエストの数、使われたトークン数、かかったコストを集計し、ダッシュボードの指標として見られるようにする",
+          "wrongFeedback": "それはAnalyticsとLoggingが見せている情報です。コストを表示するところまでは同じですが、表示するだけでは使いすぎは止まりません。Spend limitsは累計支出を上限と突き合わせ、超えたリクエストをブロックします。"
         },
         {
-          "text": "リクエストの件数を固定の時間枠で制限する機能で、名前が違うだけで内部的にはRate limitingと全く同じ仕組みで動作している",
-          "wrongFeedback": "Rate limitingはリクエストの「件数」、Spend limitsはリクエストの「実際の金額(コスト)」を基準にする点が異なります。"
+          "text": "同一のリクエストに対する応答をCloudflare側のキャッシュから返し、プロバイダーへの有料の呼び出しを減らして費用を抑える",
+          "wrongFeedback": "それはキャッシュの働きです。有料の呼び出しが減って結果的に費用は下がりますが、キャッシュは予算という上限を持ちません。Spend limitsは金額の上限に達した時点でリクエストをブロックします。"
         }
       ],
       "correctIndex": 0,
       "explanation": "Spend limitsは、リクエストごとのコストをモデルの料金とトークン使用量から計算し、一定期間の累計支出が設定した予算を超えるとリクエストをブロックする機能です。Rate limitingがリクエストの「件数」を基準にするのに対し、Spend limitsは実際の「金額」を基準にします。予算超過時にブロックする代わりに、安いモデルへフォールバックさせることもできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/spend-limits/",
-      "hint": "AI Gatewayの制限機能は、それぞれ見ている量が違います。名前にある `Spend` がどの量を指すのかを考えましょう。",
+      "hint": "4肢はどれもお金に関わる機能です。費用を見せるだけのものと、費用に応じて実際に動きが変わるものを見分けたうえで、この機能が何を上限にしているのかを考えましょう。",
       "tags": [
         "ai-gateway",
         "practical",
@@ -17929,25 +17929,25 @@
       "question": "TURN(Traversal Using Relays around NAT)の役割として正しいものはどれですか？",
       "options": [
         {
-          "text": "複数のSFUサーバー間で負荷分散を行うためのロードバランサーであり、各サーバーの負荷状況を監視して新規セッションを振り分ける",
-          "wrongFeedback": "SFU間の負荷分散の仕組みではありません。TURNはクライアント間の通信を中継するリレーサーバーです。"
+          "text": "NATの外側から見た自分のアドレスとポートを問い合わせて把握し、相手へ伝えて直接つながる経路を探せるようにするプロトコル",
+          "wrongFeedback": "自分の公開側のアドレスを知るためのプロトコルはSTUNです。TURNはそのSTUNを拡張したもので、直接つながれないときに中継用のアドレス(Relayed Transport Address)を払い出し、データをサーバーが転送します。"
         },
         {
-          "text": "WebRTCの映像コーデックを自動的に変換し、送信側と受信側で異なるコーデックを使えるようにするトランスコード機能",
-          "wrongFeedback": "コーデック変換の機能ではありません。TURNはNATやファイアウォールを越えた通信を可能にするリレーの仕組みです。"
+          "text": "参加者が送ってきた音声・映像のトラックを受け取り、それを購読している相手にだけ選んで転送するサーバーの仕組み",
+          "wrongFeedback": "購読している相手にだけ音声・映像を転送するのはSFU(Selective Forwarding Unit)で、Cloudflare RealtimeのSFUがこれにあたります。TURNはメディアの中身を見ず、NATやファイアウォールに阻まれたピア間の通信をそのまま中継します。"
         },
         {
           "text": "NATやファイアウォールを越えてピア間の通信を可能にするため、通信を中継(リレー)するプロトコル"
         },
         {
-          "text": "WebRTCの映像品質を自動的に最適化し、帯域に応じて解像度を調整する機能で、この調整はTURNが中継処理の一部として行っている",
-          "wrongFeedback": "映像品質の最適化はSimulcastなど別の仕組みの役割です。TURNはNAT越えのための通信の中継が目的です。"
+          "text": "端末から出ていくインターネット通信をまとめて暗号化し、専用のサーバーを経由させて送信元を隠す汎用的な仕組み",
+          "wrongFeedback": "端末の通信をまとめて暗号化して経由させるのはVPNです。ドキュメントもTURNとVPNを比べていますが、VPNがネットワーク層で通信全体に効くのに対し、TURNはアプリケーション層で、それを使うアプリの通信だけを中継します。"
         }
       ],
       "correctIndex": 2,
       "explanation": "TURN(Traversal Using Relays around NAT)は、NAT(ルーターが内側のプライベートIPと外側のグローバルIPを変換する仕組み)やファイアウォールに阻まれて相手と直接つながれないときに、間に立つサーバーが通信を中継(リレー)することでピア間のリアルタイム通信を成立させるプロトコルです。\n{{diagram:0}}\n※ STUNというプロトコルの拡張として、RFC 8656で定義されています。",
       "referenceUrl": "https://developers.cloudflare.com/realtime/turn/what-is-turn/",
-      "hint": "設問文に書かれた正式名称の各語が、この仕組みの働きをそのまま表しています。どの語が何を指すのかを読み解きましょう。",
+      "hint": "直接つながれない相手との通信を成立させる方法はいくつもあります。4肢がそれぞれ、経路を見つける話なのか、データを運ぶ話なのか、運ぶ中身を選ぶ話なのかを見分けましょう。",
       "tags": [
         "realtime",
         "practical"

@@ -275,7 +275,8 @@ export function parseMarkArgs(argv) {
     )
   }
   if (baseline && !bulk) throw new Error('--baseline は --bulk と一緒にしか使えない（基準点は層全体に置くもの）')
-  if (deferred && bulk) throw new Error('--deferred は ID を明示したときだけ使える（保留は設問ごとの判断なので層全体には置けない）')
+  if (deferred && bulk)
+    throw new Error('--deferred は ID を明示したときだけ使える（保留は設問ごとの判断なので層全体には置けない）')
   if (deferred && !note) throw new Error('--deferred には --note が必須（なぜ検証を保留したのかを残す）')
   if (bulk && ids.length) throw new Error('--bulk と ID は同時に指定できない（--bulk は ID を省くためのもの）')
   if (bulk && !note) throw new Error('--bulk には --note が必須（層の全数検証か基準点か、何をしたかを記録する）')

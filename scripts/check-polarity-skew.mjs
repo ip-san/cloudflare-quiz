@@ -48,7 +48,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
   console.error(`⚠️  誤答3つすべてが制限を述べ、正解肢は述べていない設問: ${flagged.length} 問\n`)
   const byTier = {}
-  for (const f of flagged) (byTier[f.difficulty] ??= []).push(f.id)
+  for (const f of flagged) {
+    if (!byTier[f.difficulty]) byTier[f.difficulty] = []
+    byTier[f.difficulty].push(f.id)
+  }
   for (const [tier, ids] of Object.entries(byTier)) {
     console.error(`  ${tier}: ${ids.length} 問`)
     if (process.argv.includes('--list')) console.error(`    ${ids.join(' ')}`)
