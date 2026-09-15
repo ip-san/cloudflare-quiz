@@ -39752,7 +39752,7 @@
       "correctIndex": 3,
       "explanation": "CloudflareはクライアントとTCP/UDPコネクションを終端してからオリジンへ接続するため、そのままではオリジンにはCloudflareのIPアドレスが見えます。真のクライアントIPをオリジンへ伝えるため、TCPアプリケーションではPROXY Protocol v1(人間可読なテキスト形式、Amazon ELBやNGINXも対応)またはv2(バイナリ形式)を利用できます。\n{{diagram:0}}\nUDPアプリケーションではv2、またはUDP向けにCloudflareが開発したSimple Proxy Protocolを利用します。仮想ネットワークオリジンを使う構成ではPROXY Protocolはサポートされていません。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/how-to/enable-proxy-protocol/",
-      "hint": "「テキスト形式」と「バイナリ形式」、そしてTCP/UDPそれぞれで使えるバージョンの違いに注目しましょう。",
+      "hint": "PROXY Protocolを使わない場合、オリジンから見える送信元IPアドレスが誰のものになるかから考えましょう。",
       "tags": [
         "spectrum",
         "practical"
@@ -41064,7 +41064,7 @@
       "correctIndex": 3,
       "explanation": "Waiting Roomを機能させるには、対象のhostnameに対してプロキシ状態(オレンジクラウド)のDNSレコード、またはプロキシモードのロードバランサーを設定しておく必要があります。これらはWaiting Room作成時に自動設定されないため、事前に用意しておく必要があります。また、Waiting RoomはCloudflareのCDNを前提とし、グローバルなCloudflareのデータセンターで稼働するWorkers上に構築されています。リクエストは最寄りのデータセンターのWaiting Room Workerに到達し、そこでキューイングするかどうかが判定されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waiting-room/about/",
-      "hint": "「DNSレコードは自動設定されるか」「何の上に構築されているか」を確認しましょう。",
+      "hint": "対象のホスト名のDNS設定は、待機室を作成した時点で自動的に整うのかどうかを考えましょう。",
       "tags": [
         "waiting-room",
         "topic-dns"
@@ -41668,7 +41668,7 @@
       "correctIndex": 2,
       "explanation": "Scroll depthルールは、固定のピクセル数(例: `100px`)またはページの表示割合(例: `45%`)のいずれかを指定して、その位置までスクロールされたときにトリガーを発火させることができます。なお、Match ruleは変数名・一致条件・一致文字列の組み合わせで条件を作る仕組みであり、Click listenerはCSSセレクタとXPathの両方に対応し、TimerにはLimitで発火回数の上限を設定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
-      "hint": "各ルールタイプが「何を単位に」条件を判定するかを比較してみましょう。",
+      "hint": "各ルールタイプで、条件の指定の仕方が1通りに絞られているのか、複数の書き方を受け付けるのかを比べてみましょう。",
       "tags": [
         "zaraz",
         "topic-triggers"
@@ -42253,7 +42253,7 @@
       "correctIndex": 3,
       "explanation": "Zarazのツールカタログにネイティブ対応がない場合でも、Custom HTML・Custom Image・HTTP Requestといったカスタム統合を使うことで、任意のサードパーティツールをZaraz経由で組み込むことができます。\n{{diagram:0}}\nこれらの利用にサポートへの事前申請は不要です。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/supported-tools/",
-      "hint": "ネイティブ対応がない場合の「受け皿」となる統合の種類を思い出しましょう。",
+      "hint": "カタログにないツールを入れるとき、Cloudflareへの申請と承認を待つ必要があるのか、自分の設定だけで完結するのかを考えましょう。",
       "tags": [
         "zaraz",
         "topic-tools"
@@ -42526,7 +42526,7 @@
       "correctIndex": 3,
       "explanation": "「Auto-inject script」はデフォルトで有効になっており、Zarazの動作に必要なスクリプトを自動的にページへ挿入します。この設定を無効化すると自動挿入が停止するため、Zarazの機能を使い続けるにはスクリプトを手動で追加する必要があります。なお、iframe要素への挿入は別設定の「Iframe injection」で制御され、これを有効にするとiframe内にもスクリプトが挿入されるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/settings/",
-      "hint": "デフォルトの状態(有効/無効)と、オフにしたときに開発者が追加で行う必要がある作業を考えましょう。",
+      "hint": "この項目は、Zarazを使い始めた時点ですでにオンなのか、自分でオンにするものなのかを考えましょう。",
       "tags": [
         "zaraz",
         "practical"
