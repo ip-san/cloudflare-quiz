@@ -34596,7 +34596,7 @@
       "correctIndex": 2,
       "explanation": "検出エントリとDLPプロファイルは「検出してすぐポリシーで止める」ための道具です。特定の正規表現やデータセットを検出して、そのままポリシーに使うだけなら、これで足ります。\n\n一方Data Classificationは「同じ判定を使い回す」ための仕組みです。複数の検出に共通の機密度ラベルを付ける、関連する検出をひとつのデータクラスにまとめる、複数のシグナルを1つの分類ルールに束ねる、同じ分類ロジックを複数のDLPプロファイルで再利用する——こうした構造化が必要になったときに効いてきます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/data-classification/#when-to-use-data-classification-vs-dlp-profiles",
-      "hint": "「実際に止める・許可する」役割と、「分類して整理する」役割の違いを考えましょう。",
+      "hint": "作ったデータクラスを他の仕組みの部品として組み込めるのか、それとも単独で完結する機能なのかを考えましょう。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -35936,7 +35936,7 @@
       "correctIndex": 2,
       "explanation": "CASBは、インテグレーション内で公開アクセス可能(publicly accessible)なファイルのみをDLPプロファイルと照合してスキャンします。非公開のファイルはスキャン対象に含まれません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/casb-dlp/",
-      "hint": "「誰でもアクセスできてしまう状態のファイル」を優先的にチェックする理由を考えましょう。",
+      "hint": "インテグレーション内のファイルを全部照合するのか、それとも一定の条件に当てはまるものだけに絞るのかを考えましょう。",
       "tags": [
         "casb",
         "practical"
@@ -35987,7 +35987,7 @@
       "correctIndex": 3,
       "explanation": "Posture findingsは設定不備・不正なユーザー活動などのセキュリティ問題を指し、severity(重要度)・件数・関連インテグレーション・ステータス・検知日といった情報が表示されます。一方Content findingsはDLPによって検知されたデータ露出のインスタンスを指し、ファイル名・ファイルへのリンク・一致したDLPプロファイル・関連インテグレーション・検知日といった情報が表示されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#posture-findings",
-      "hint": "「設定やアクティビティの問題」と「データそのものの露出」という、2つの異なる種類の問題を考えましょう。",
+      "hint": "2つのfindingは表示される項目が違います。severity(重要度)が付くのはどちらの側かを考えましょう。",
       "tags": [
         "casb",
         "practical"
@@ -36040,7 +36040,7 @@
       "correctIndex": 3,
       "explanation": "severityレベルはCritical(今日中に対応すべき)・High(今週中に対応すべき)・Medium(今月中にレビューされるべき)・Low(情報提供的、または定期レビューの一環)の4段階に分かれています。severityの変更は、そのインテグレーション内の該当findingにのみ適用され、同じアプリケーションの他のインテグレーションには影響しません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#severity-levels",
-      "hint": "重要度によって、対応までに許される猶予期間が段階的に変わることを考えましょう。",
+      "hint": "severityが何段階に分かれているのか、そして1つのfindingのseverityを変えたとき、その変更がどこまで及ぶのかを考えましょう。",
       "tags": [
         "casb",
         "practical"
@@ -36156,7 +36156,7 @@
       "correctIndex": 3,
       "explanation": "CASBはアプリケーション内のfindingを直接修復する機能を持っています。この機能を利用するには、インテグレーションをRead-Writeモードに設定しておく必要があります(デフォルトは読み取り専用)。権限が不足している場合、修復はRejectedステータスになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#remediate-findings",
-      "hint": "「見つけるだけ」ではなく「見つけて直す」ためには、書き込み権限が必要になることを考えましょう。",
+      "hint": "CASBの役割が問題を見つけるところで終わるのか、その先の操作まで含むのかを考えましょう。",
       "tags": [
         "casb",
         "practical"
@@ -36362,7 +36362,7 @@
       "correctIndex": 2,
       "explanation": "認証方式にはNone(なし)・Basic Auth・Bearer Auth・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類が用意されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/integrations/cloud-and-saas/webhooks/#authentication-methods",
-      "hint": "送信先が求める認証の仕組みに合わせて選べるよう、複数の選択肢が用意されていることを考えましょう。",
+      "hint": "送信先のシステムが求める認証に合わせて、どこまで方式を選べるようになっているのかを考えましょう。",
       "tags": [
         "casb",
         "practical"
@@ -36461,7 +36461,7 @@
         },
         {
           "text": "テスト配信の機能はEnterpriseプランのユーザーのみが利用でき、無料プランのユーザーは一切利用できないため、下位プランではcurlなど別の手段で疎通確認を代替する必要がある",
-          "wrongFeedback": "そのようなプラン制限は文書化されていません。Test delivery機能はプランを問わず利用できます。"
+          "wrongFeedback": "Test delivery をプランで制限する記述はありません。ただしライブの finding インスタンスを Webhook へ送るには finding の詳細を閲覧できる必要があり、その閲覧には Enterprise プランが要ります。"
         }
       ],
       "correctIndex": 2,
@@ -36624,7 +36624,7 @@
       "correctIndex": 1,
       "explanation": "誤検知が疑われる場合は、まずfindingに添えられた証拠(evidence)を精査します。このとき、SaaSプラットフォーム側に表示されているオブジェクトの状態は正確とは限らないため、そちらを根拠にしないよう注意が必要です。そのうえで、finding IDを添えてCloudflareサポートへ報告し、対応を待つ間はIgnore/Hideの仕組みを使ってそのfindingを一時的に非表示にすることが推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/troubleshoot-casb/#casb-is-generating-false-positives",
-      "hint": "「確認する」→「報告する」→「一時的にしのぐ」という3段階の流れを考えましょう。",
+      "hint": "誤検知が疑われるfindingを自分の判断で片付けてしまうのか、それともCloudflare側へ引き継ぐのかを考えましょう。",
       "tags": [
         "casb",
         "practical"
@@ -36724,7 +36724,7 @@
       "correctIndex": 1,
       "explanation": "fleetとは、Cloudflare One Clientがインストールされ、Zero Trust組織に接続されているユーザーデバイスの集合を指します。接続ステータスにはConnected(接続中)・Disconnected(切断)・Paused(管理者オーバーライドコードによる一時停止、タイムアウト後に自動再接続)・Connecting(接続試行中)があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/monitoring/#available-metrics",
-      "hint": "「一時的に止めているだけ」の状態と、「意図的に切断された」状態の違いを考えましょう。",
+      "hint": "fleetという言葉が、組織内のどの端末までを含むのかを考えましょう。",
       "tags": [
         "dex",
         "practical"
@@ -36775,7 +36775,7 @@
       "correctIndex": 3,
       "explanation": "テストにルールを追加しなかった場合、そのテストはデバイスfleet全体に対して実行されます。ルールのセレクタにはUser `email`・Operating systems・Managed network(オフィスからのアクセスかどうか)・SAML attributes・Colosなどが用意されており、ルールは複数のテストで再利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/rules/#add-a-rule-to-a-test",
-      "hint": "ルールを「絞り込みの条件」だと考えると、条件を指定しなかった場合にどうなるか考えましょう。",
+      "hint": "ルールの条件に使えるのがユーザー個人を指す情報だけなのか、端末やネットワークの状況まで含むのかを考えましょう。",
       "tags": [
         "dex",
         "practical"
@@ -36874,7 +36874,7 @@
       "correctIndex": 3,
       "explanation": "HTTPテストのターゲットにはパブリック・プライベート両方のホスト名を指定できます。プライベートホスト名をテストする場合は、そのドメインをlocal domain fallbackリストに含めておく必要があります。テストの実行頻度は5〜60分の範囲で分単位で指定します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/tests/http/#create-a-test",
-      "hint": "社内限定のアプリをテストする場合、そのホスト名をどう解決できるようにしておくかを考えましょう。",
+      "hint": "テストの対象にできるホスト名が、外部から引けるものに限られるのかどうかを考えましょう。",
       "tags": [
         "dex",
         "practical"
@@ -36927,7 +36927,7 @@
       "correctIndex": 3,
       "explanation": "Tracerouteテストは、エンドユーザーデバイスからサーバーまでのIPパケットのネットワーク経路を計測するテストです。パケットが経由する中継ルーター(ホップ)ごとに応答時間とパケットロスを記録します。ターゲットにはIPアドレスを指定し、実行頻度は5〜60分の範囲で指定します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/tests/traceroute/",
-      "hint": "「宛先までの一直線の道のり」ではなく、「その途中にある中継地点1つ1つ」に注目する計測方法だと考えましょう。",
+      "hint": "このテストが何を記録するのか、そして実行間隔を管理者がどこまで決められるのかを考えましょう。",
       "tags": [
         "dex",
         "practical"
@@ -37053,7 +37053,7 @@
       "correctIndex": 1,
       "explanation": "DEXはログ保持ポリシーに従い、すべてのプランでテスト結果を7日間保存します。テスト結果を閲覧するには、少なくともCloudflare Zero Trust Reportingロールが必要です。全デバイスを横断した結果、個別デバイスの結果のどちらも閲覧できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/tests/view-results/#prerequisites",
-      "hint": "「見られる期間」と「見るために必要な資格」の2つの制約を考えましょう。",
+      "hint": "テスト結果は、いつまで・誰が・どの範囲まで見られるのかを考えましょう。",
       "tags": [
         "dex",
         "practical"
