@@ -4054,7 +4054,7 @@
       "correctIndex": 2,
       "explanation": "R2はS3互換APIを提供しており、R2ダッシュボードの「R2 API トークンの管理」からアクセスキーID/シークレットアクセスキーを発行できます。既存のAWS SDKやCLIのエンドポイントを https://<ACCOUNT_ID>.r2.cloudflarestorage.com に向けることでそのまま利用可能です。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/tokens/",
-      "hint": "AWSの認証情報をそのまま使い回せるのか、Cloudflare専用の認証情報を別途発行する必要があるのか考えましょう。",
+      "hint": "Cloudflareの鍵には、アカウント全体に効くものと、用途を限って発行するものがあります。S3互換クライアントに渡す認証情報がどちらにあたるかを考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4123,7 +4123,7 @@
       "correctIndex": 2,
       "explanation": "R2はS3互換APIのpresigned URL（署名付きURL）機能をサポートしています。アクセスキーで署名し、有効期限を指定したURLを生成することで、バケットをプライベートに保ったまま特定オブジェクトへの一時的なアクセスを許可できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/s3/presigned-urls/",
-      "hint": "期限付きの一時アクセス権を、URLに埋め込んで発行する仕組みがあるかどうか考えましょう。",
+      "hint": "バケットを公開したままにせず、渡した相手だけが一定時間使える経路をどう作るか。自前で仕組みを組む必要があるのか、既存の仕組みで足りるのかを考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -4208,7 +4208,7 @@
       "correctIndex": 2,
       "explanation": "R2はS3互換のマルチパートアップロードAPIをサポートしています。createMultipartUpload でアップロードを開始し、複数のパートを uploadPart で並列アップロードした後、completeMultipartUpload で結合を要求します。\n{{diagram:0}}\nこれにより大容量ファイルの転送を高速化・耐障害化でき、途中失敗時も失敗したパートのみ再送できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/objects/upload-objects/#multipart-upload",
-      "hint": "大きなファイルを1回で送り切るのと、いくつかに分けて並行して送るのと、どちらが信頼性が高いか考えましょう。",
+      "hint": "転送が途中で切れたとき、どこからやり直すことになるのかを考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -5010,7 +5010,7 @@
       "correctIndex": 2,
       "explanation": "新規のDurable Object NamespaceにはSQLiteストレージバックエンドの使用が推奨されています。SQLiteバックエンドではSQL API・Point-In-Time Recovery(PITR)・同期的なKV API（get/put/delete/list）が利用できます。各メソッド呼び出しは暗黙的にトランザクション内にラップされ、その結果はアトミックで他のすべてのストレージ操作から隔離されます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/",
-      "hint": "1回のstorage呼び出しの途中で失敗したら、中途半端な状態が残ってしまわないか考えましょう。",
+      "hint": "新規のDurable Objectで勧められている保存方式はどれか。そしてその方式を選んだとき、従来どおりの操作や書き込みの扱いがどうなるのかを考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -5086,7 +5086,7 @@
       "correctIndex": 3,
       "explanation": "setAlarm(scheduledTimeMs) で将来の実行時刻を1つだけ設定でき、既存のアラームがあれば上書きされます。alarm() ハンドラは「at-least-once execution」が保証されており、例外がスローされるなどして失敗した場合は2秒から始まる指数バックオフで最大6回まで自動的にリトライされます。ハンドラには retryCount と isRetry を含む alarmInfo が渡されます。無限にリトライしたい場合は、ハンドラ内で例外を捕捉し自身で新しいアラームを再設定する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/alarms/",
-      "hint": "失敗時に何回まで、どんな間隔でリトライされるか思い出しましょう。",
+      "hint": "setAlarm() を2回呼んだらどうなるか、alarm() の中で例外が出たらどうなるか。この2点を分けて確かめましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -5139,7 +5139,7 @@
       "correctIndex": 0,
       "explanation": "WebSocket Hibernation API（acceptWebSocket()）は標準のWebSocket APIを拡張したもので、メッセージが来ない非アクティブな期間はDOインスタンスをスリープ（ハイバネート）させられます。この間もクライアントとの接続自体は維持されますが、Billable Duration（GB-s）の課金は発生しません。状態はコンストラクタではなくserializeAttachment()で保存し、webSocketMessage()などのハンドラメソッドで再開時に処理します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/best-practices/websockets/",
-      "hint": "接続だけ保ったまま、実際に何もしていない時間はお金がかからないようにする仕組みを考えましょう。",
+      "hint": "WebSocketを開いている間、Durable Objectのインスタンスはずっとメモリ上に居続ける必要があるのかを考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -5825,7 +5825,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflareは Workers に静的アセット配信機能を統合し、1つの Workers プロジェクトで静的ファイルとサーバーサイドロジックの両方を扱えるようにしました。\n{{diagram:0}}\nこれに伴い、新規プロジェクトでは Workers(静的アセット機能付き)の利用が推奨される方向にあり、Pages は既存プロジェクトの継続的なサポートが中心の位置づけとなっています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/static-assets/",
-      "hint": "機能が重なってきた2つのサービスがある場合、Cloudflareは新規と既存でどう案内を分けるか考えましょう。",
+      "hint": "静的配信がWorkers側にも入ったことで、2つの製品の守備範囲は重なりました。公式がこれから作る人に何を勧めているかを考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -5965,7 +5965,7 @@
       "correctIndex": 0,
       "explanation": "Pages プロジェクトの「カスタムドメイン」タブからドメインを追加すると、必要なDNSレコード(CNAMEなど)の案内が表示され、検証が完了すると独自ドメインでアクセスできるようになります。\n{{diagram:0}}\nSSL証明書は自動的に発行・更新されるため、手動での証明書管理は不要です。既定の `*.pages.dev` URLも引き続き利用できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/custom-domains/",
-      "hint": "SSL証明書の発行やDNS検証は誰が行うか考えてみましょう。",
+      "hint": "独自ドメインで公開できるようになるまでに、利用者が自分でやることと Pages 側が自動でやることの境目を考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -6038,7 +6038,7 @@
       "correctIndex": 3,
       "explanation": "Pages のプロジェクト設定では、Production(本番)とPreview(プレビュー)それぞれに個別の環境変数やバインディング(KV Namespace, D1 Database, R2 Bucket など)を設定できます。\n{{diagram:0}}\nこれにより、本番用のデータベースとプレビュー用のテスト用データベースを切り替えて安全に検証できます。設定した値は Pages Functions 内で `env` オブジェクトから参照します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/functions/bindings/#environment-variables",
-      "hint": "本番とプレビューで、別々のAPIキーやデータベースを使い分けたい場合を考えてみましょう。",
+      "hint": "Pages には Production と Preview という2つの環境があります。この区別が、環境変数やバインディングの設定にまでおよぶのかを考えましょう。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -8108,7 +8108,7 @@
       "correctIndex": 0,
       "explanation": "Streams APIを使うと、リクエストやレスポンスのボディをメモリに全部読み込んでから処理するのではなく、届いたチャンクから順次処理できます。\n{{diagram:0}}\nこれにより、巨大なファイルや動画などのペイロードでも、全体を一度にバッファすることなくWorkerのメモリ制限内で扱えます。`TransformStream`を使えば、読み込んだチャンクを変換しながらそのまま次の処理へ流すパイプライン的な処理も可能です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/streams/",
-      "hint": "「全部読み込んでから処理する」のと「届いた分から処理する」の違いを考えましょう。",
+      "hint": "「ストリーム」という語が、データのどの側面についての話かを考えましょう。届き方か、形式か、それとも経路か。",
       "tags": [
         "workers",
         "practical"
@@ -8252,7 +8252,7 @@
       "correctIndex": 2,
       "explanation": "Workers Static Assetsでは、Wrangler設定でディレクトリと(任意で)`assets`バインディングを指定することで、静的ファイル一式をWorkerと同じプロジェクトにデプロイできます。\n{{diagram:0}}\nリクエストに一致する静的アセットがあれば、デフォルトではWorkerスクリプトを経由せず直接配信されます。動的な処理を挟みたい場合は、`env.ASSETS.fetch(request)`のようにWorkerスクリプトから明示的に静的アセットへリクエストを転送できます。実行順序は`run_worker_first`設定で変更可能です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/static-assets/binding/",
-      "hint": "「一致する静的ファイルがある場合、Workerスクリプトは必ず呼ばれるのか」を考えましょう。",
+      "hint": "静的ファイルはどこにアップロードされ、Workerのプロジェクトとどういう関係でデプロイされるのかを考えましょう。その上で、1つのリクエストに対してアセットとWorkerスクリプトのどちらが先に関わるのかも整理しましょう。",
       "tags": [
         "workers",
         "practical"
@@ -8620,7 +8620,7 @@
       "correctIndex": 1,
       "explanation": "KVやD1、R2などのリソースは、`wrangler.toml` にバインディングを書くだけでは作成されません。まず `wrangler kv namespace create <名前>` のようなCLIサブコマンド（D1なら`wrangler d1 create`、R2なら`wrangler r2 bucket create`）を実行して実際のリソースをCloudflare上に作成し、\n{{diagram:0}}\n返却された `id`（やバケット名）を `wrangler.toml` の該当セクションに記述することで、初めてWorkerからバインディング経由でアクセスできるようになります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/",
-      "hint": "設定ファイルにIDを書く前に、まず実体となるリソースそのものを作る必要があります。",
+      "hint": "KVネームスペースという実体は、いつ、何によって作られるのでしょうか。設定ファイルを書いた時点なのか、CLIコマンドを実行した時点なのか、開発サーバーを起動した時点なのかを考えましょう。",
       "tags": [
         "wrangler",
         "practical"
