@@ -48,7 +48,8 @@
     "prepare": "husky",
     "quiz:status": "node scripts/quiz-status.mjs",
     "quiz:ledger": "node scripts/quiz-audit-ledger.mjs",
-    "quiz:acronyms": "node scripts/find-unresolved-acronyms.mjs"
+    "quiz:acronyms": "node scripts/find-unresolved-acronyms.mjs",
+    "quiz:polarity": "node scripts/check-polarity-skew.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,mjs}": "biome check --write --no-errors-on-unmatched"
