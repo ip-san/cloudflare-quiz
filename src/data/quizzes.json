@@ -4260,28 +4260,28 @@
       "id": "r2-009",
       "category": "r2",
       "difficulty": "intermediate",
-      "question": "Workers バインディングでR2バケット内のオブジェクト一覧を取得したい場合に使用するメソッドはどれですか？",
+      "question": "Workers バインディングで`env.MY_BUCKET.list()`を使ってR2バケット内のオブジェクト一覧を取得するときの挙動として、正しい説明はどれですか？",
       "options": [
         {
-          "text": "`env.MY_BUCKET.get()`。指定したキーに対応する単一のオブジェクトを取得するメソッドで、バケット内のオブジェクト一覧を取得することはできない",
-          "wrongFeedback": "キーが分かっている1件を取り出す用途のメソッドなので、どんなキーがあるかを知りたい今回の場面では使えません。"
+          "text": "返り値の`R2Objects`には各`R2Object`のキーに加えサイズやアップロード日時も含まれるが、続きがあるかどうかは返ってきた件数を`limit`と比べて判断する",
+          "wrongFeedback": "前半は正しいのですが後半が誤りです。1回のlistが返せるデータ量には上限があり、メタデータの分だけ`limit`より少ない件数しか返らないことがあります。件数の比較ではなく`truncated`プロパティで判断してください。"
         },
         {
-          "text": "`env.MY_BUCKET.list()`。ただし返されるのはオブジェクトのキー(名前)のみで、サイズや最終更新日時などのメタデータは含まれない",
-          "wrongFeedback": "list()というメソッド名自体は正しいのですが、返り値の説明が誤りです。list()が返す`R2Object`には、キーだけでなくサイズ・アップロード日時(`uploaded`)・`etag`・`httpMetadata`・`customMetadata`なども含まれます。"
+          "text": "返り値に含まれるのは各オブジェクトのキーのみでサイズやアップロード日時は含まれず、続きがあるかどうかは`truncated`プロパティで判断する",
+          "wrongFeedback": "後半は正しいのですが前半が誤りです。`R2Object`には`key`だけでなく`size`・`uploaded`・`etag`などのメタデータが含まれます。キーだけが返るわけではありません。"
         },
         {
-          "text": "`env.MY_BUCKET.put()`。指定したキーでオブジェクトを書き込む(アップロードする)メソッドで、バケット内のオブジェクト一覧を取得することはできない",
-          "wrongFeedback": "put()はオブジェクトを書き込む(アップロードする)メソッドです。一覧取得にはlist()を使います。"
+          "text": "返り値に含まれるのは各オブジェクトのキーのみで、続きがあるかどうかは返ってきた件数を`limit`と比べて判断する",
+          "wrongFeedback": "両方とも誤りです。`R2Object`にはサイズやアップロード日時も含まれます。また続きの有無は件数の比較ではなく`truncated`プロパティで判断します。"
         },
         {
-          "text": "`env.MY_BUCKET.list()`。返り値の`R2Objects`にはキーだけでなく、サイズやアップロード日時を含む`R2Object`の配列が含まれる"
+          "text": "返り値の`R2Objects`にはキーに加えサイズやアップロード日時も含まれ、続きがあるかどうかは`truncated`プロパティで判断する"
         }
       ],
       "correctIndex": 3,
-      "explanation": "R2 Workers バインディングAPIには get/put/delete/head/list などのメソッドがあります。list()はプレフィックスによるフィルタやページネーション(cursor)をサポートし、バケット内のオブジェクト一覧を取得できます。返り値の`R2Objects`に含まれる各`R2Object`には、キーだけでなくサイズ・アップロード日時(`uploaded`)・`etag`・`httpMetadata`・`customMetadata`などのメタデータも含まれます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "R2 Workers バインディングAPIには get/put/delete/head/list などのメソッドがあります。list()はプレフィックスによるフィルタやページネーション(cursor)をサポートし、バケット内のオブジェクト一覧を取得できます。返り値の`R2Objects`に含まれる各`R2Object`には、キーだけでなくサイズ(`size`)・アップロード日時(`uploaded`)・`etag`・`httpMetadata`・`customMetadata`などのメタデータも含まれます。\n{{diagram:0}}\n注意点として、1回のlist操作が返せるデータ量には上限があり、メタデータを収めるために`limit`より少ない件数しか返らないことがあります。そのため返ってきた件数を`limit`と比較して続きの有無を判断してはいけません。代わりに`truncated`プロパティを見て、続きがあれば`cursor`を次のlistに渡します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
-      "hint": "`get()`は特定の1件を取得するメソッド、`put()`は書き込み(アップロード)のためのメソッドです。",
+      "hint": "返ってきた件数を`limit`と比べて続きの有無を判断してはいけない、と公式に注意書きがあります。",
       "tags": [
         "r2",
         "practical"
