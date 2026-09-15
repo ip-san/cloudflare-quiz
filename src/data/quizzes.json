@@ -26032,7 +26032,7 @@
       "correctIndex": 1,
       "explanation": "Zero-Downtime Failoverには3つのモードがあります。Noneはフェイルオーバーを行わず、問題発生時にユーザーへエラーが表示される可能性があります。Temporaryは、元々割り当てられていたエンドポイントが利用可能になるまで、一時的に他のエンドポイントへトラフィックを送ります。Stickyは、Session Affinity Cookie自体を更新し、以降のリクエストを新しいエンドポイントへ送り続けます。ただし、StickyモードはHTTPヘッダーによるSession Affinityとの組み合わせはサポートされていません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/session-affinity/#zero-downtime-failover",
-      "hint": "「一時しのぎ」と「もっと踏み込んだ切り替え」という2つの積極度の違いを考えましょう。",
+      "hint": "TemporaryとStickyは、内部の処理が違います。",
       "tags": [
         "load-balancing",
         "practical"
@@ -38763,7 +38763,7 @@
       "correctIndex": 0,
       "explanation": "IKEv2は、まずIKE_SA_INITでIKE SAのパラメータをネゴシエートし共有シークレットを導出します。両ピアがRFC 9370(post-quantum鍵交換)に対応していれば、IKE_INTERMEDIATEでML-KEMを使った鍵交換を追加します。最後にIKE_AUTHで相互認証を行い、IKE SAを確立したうえでIPsecトンネルであるChild SAを確立します。IKE SAとChild SAはそれぞれ独自のパラメータを持つ別個のエンティティです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/gre-ipsec-tunnels/#how-ikev2-establishes-an-ipsec-tunnel",
-      "hint": "「まず土台となる安全な通信路を作り、次に量子耐性を追加できるか確認し、最後に認証する」という順序を考えましょう。",
+      "hint": "IKE SAとChild SAは、別のセキュリティアソシエーションです。",
       "tags": [
         "magic-wan",
         "practical"

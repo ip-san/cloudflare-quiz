@@ -3644,7 +3644,7 @@
     "em-014": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
         "fp": "0b082f4c6692",
         "gt": "da39a3ee"
@@ -3698,7 +3698,7 @@
     "gw-007": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
         "fp": "8a15289c593b",
         "gt": "c3098aa4"
@@ -3707,7 +3707,7 @@
     "gw-010": [
       {
         "persona": "reviewer",
-        "outcome": "friction",
+        "outcome": "clean",
         "at": "unstamped",
         "fp": "a384bd7448a7",
         "gt": "da39a3ee"
@@ -3959,7 +3959,7 @@
     "lb-006": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "523536587cee",
         "gt": "da39a3ee"
@@ -3995,7 +3995,7 @@
     "lb-016": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "cf3c0fe8dbf7",
         "gt": "da39a3ee"
@@ -4022,7 +4022,7 @@
     "mw-005": [
       {
         "persona": "reviewer",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "8bfce92a2519",
         "gt": "7b6db741"
