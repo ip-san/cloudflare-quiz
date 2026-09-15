@@ -7610,7 +7610,7 @@
       "correctIndex": 0,
       "explanation": "Workers Logsは、Workerから出力されるログをCloudflareダッシュボード上で自動的に取り込み、フィルタリング・分析できる機能です。さらにTail Workers(ベータ)を使うと、テレメトリデータに対してカスタムのフィルタリング・サンプリング・変換ロジックを組み込むことができます。\n{{diagram:0}}\nアプリケーションのconsole.log出力からダッシュボードでの分析、カスタム処理までの流れを押さえておきましょう。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/",
-      "hint": "そのまま見るだけの仕組みと、ログを加工・転送する仕組みは別物として用意されているか考えましょう。",
+      "hint": "Tail Workersでは、送られてきたログに加工を加えられます。",
       "tags": [
         "architecture",
         "practical"
@@ -7681,7 +7681,7 @@
       "correctIndex": 2,
       "explanation": "Durable Objectsは、セッションやドキュメントなどの単位ごとに単一のインスタンスを持ち、単一スレッド実行によって強い整合性を保証します。複数のクライアントが同じDurable Objectインスタンス(例えばWebSocket経由)に接続することで、状態の食い違いなくリアルタイムに同期できます。通常のWorkersはステートレスな実行モデルが前提であり、KVは結果整合性のため、こうした用途には向きません。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/",
-      "hint": "複数人が同時に書き込んでも矛盾が起きない、1つの場所に処理を集約する仕組みを考えましょう。",
+      "hint": "Workers KVは、読み取りの速さを優先した設計です。",
       "tags": [
         "architecture",
         "practical"
@@ -11028,7 +11028,7 @@
       "correctIndex": 3,
       "explanation": "namespaceは、1つのVectorizeインデックス内でベクトルを論理的に分割するためのオプションのパーティションキー。例えば顧客IDやテナントIDごとにnamespaceを分けて、マルチテナントなデータを1つのインデックスにまとめて管理できる。insert/upsert時に `namespace: \"customer-123\"` のように指定し、query時にも同じnamespaceを指定すると、その区分内のベクトルのみが検索対象になる（namespaceによる絞り込みはベクトル検索より前に適用される）。1インデックスあたり作成できるnamespace数には上限があり、プランによって異なる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/best-practices/insert-vectors/",
-      "hint": "複数の顧客のデータを1つのインデックスにまとめつつ、検索時には区別したい場合を考えましょう。",
+      "hint": "namespaceを使うのに、事前登録の手続きは要りません。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -11080,7 +11080,7 @@
       "correctIndex": 3,
       "explanation": "Vectorizeのfilterパラメータは、`{ streaming_platform: \"netflix\" }` のような省略記法（暗黙的に$eq）に加えて、`$eq`（等しい）、`$ne`（等しくない）、`$in`/`$nin`（配列に含まれる/含まれない）、`$lt`/`$lte`/`$gt`/`$gte`（範囲比較）といった演算子を明示的に指定できる。『指定した値以外』を条件にしたい場合は `filter: { someKey: { \"$ne\": \"hbo\" } }` のように$ne演算子を使う。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/metadata-filtering/",
-      "hint": "指定した値と一致しないものだけを条件にしたい場合の演算子を考えましょう。",
+      "hint": "配列や大小関係を扱う演算子ではありません。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -24451,7 +24451,7 @@
       "correctIndex": 3,
       "explanation": "エンドポイントはSchema validationによる保護を受けるために、事前にEndpoint Management(ダッシュボードでは Web Assets > Operations)へ登録されている必要があります。Cloudflareダッシュボード経由でスキーマをアップロードした場合はエンドポイントが自動的に追加されますが、APIやTerraform経由でアップロードする場合は、スキーマを自分で解析し、含まれるエンドポイントを手動で追加する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/schema-validation/#configure-an-uploaded-schema",
-      "hint": "「ダッシュボードがやってくれる自動処理」を、API経由の場合は自分で肩代わりする必要があると考えましょう。",
+      "hint": "ダッシュボード経由とAPI/Terraform経由で、Cloudflareが自動でやってくれる範囲は違います。",
       "tags": [
         "api-shield",
         "practical"
