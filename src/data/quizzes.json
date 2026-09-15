@@ -17783,7 +17783,7 @@
       "options": [
         {
           "text": "1つのroomにつき同時に接続できる参加者数は自動的に無制限になるよう保証されており、開発者側でスケーリングや上限に関する設計を考慮する必要は一切ない",
-          "wrongFeedback": "そもそもRealtimeにroomという概念がないため、そのような保証も存在しません。"
+          "wrongFeedback": "そのような保証はありません。Realtime SFUには1セッションあたり毎秒50 APIコール、1コールあたり64トラックといった明示の上限があり、セッションあたりのトラック数も帯域による実務上の上限を受けます。またSFUはroomという抽象を持たないため、誰が同席しているかの管理もスケーリングの設計もアプリケーション側の責任です(room相当のMeetingや参加者管理が必要なら、同じRealtime製品群のRealtimeKitを使います)。"
         },
         {
           "text": "Realtime SFUはSessionとTrackという概念のみを扱い、「room」のような参加者管理の抽象化は提供しない"
@@ -17798,7 +17798,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Realtimeは「room」という概念を持たず、Session(参加者ごとの接続)とTrack(その接続で送受信する音声・映像などの流れ)という、より粒度の細かい概念だけを扱います。Realtimeが管理するのは各SessionがどのTrackを公開・購読しているかまでで、「今この部屋に誰がいるか」を覚えておくroom相当の仕組みを実装するのはアプリケーション側の責任です。\n{{diagram:0}}",
+      "explanation": "Cloudflare Realtime SFUは「room」という概念を持たず、Session(参加者ごとの接続)とTrack(その接続で送受信する音声・映像などの流れ)という、より粒度の細かい概念だけを扱います。Realtime SFUが管理するのは各SessionがどのTrackを公開・購読しているかまでで、「今この部屋に誰がいるか」を覚えておくroom相当の仕組みを実装するのはアプリケーション側の責任です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/introduction/",
       "hint": "「誰が今この会話に参加しているか」を覚えておくのは、サービス側なのかアプリ側なのか考えましょう。",
       "tags": [
@@ -26038,7 +26038,7 @@
       "options": [
         {
           "text": "Noneは常に自動的に別のエンドポイントへ切り替わる最も積極的なモードであり、Stickyはフェイルオーバーを一切行わない最も消極的なモードであるため、Stickyを選ぶとフェイルオーバー発生時に自動で管理者へメール通知が送信される",
-          "wrongFeedback": "説明が逆です。Noneはフェイルオーバーを行わない最も消極的なモードで、Stickyは積極的にセッションを新しいエンドポイントへ切り替えるモードです。また、いずれのモードを選んでも、フェイルオーバー時に管理者へ自動でメール通知が送られる仕組みはありません。"
+          "wrongFeedback": "説明が逆です。Noneはフェイルオーバーを行わない最も消極的なモードで、Stickyはセッションアフィニティ Cookieを更新して新しいエンドポイントへ切り替えるモードです。またZero-Downtime Failoverはヘルスモニターの間に起きる一時的な障害を吸収する仕組みで、モードを選んだこと自体が通知を発生させることはありません(プールやオリジンの健全性の変化を知りたい場合は、Load Balancing Health Alertを別途設定します)。"
         },
         {
           "text": "Noneはフェイルオーバーを行わない、Temporaryは元のエンドポイントの復旧まで一時的に他へ送る、StickyはSession Affinity Cookieを更新して新しいエンドポイントへ送る"
