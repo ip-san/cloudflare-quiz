@@ -18721,8 +18721,8 @@
           "wrongFeedback": "ソースコードの暗号化機能ではありません。プライベートネットワークへの接続を提供する仕組みです。"
         },
         {
-          "text": "複数のWorker間でグローバルな共有状態を提供し、Durable Objectsの代替として使う仕組みであり、状態の同期はデプロイのたびに1回だけ行われ実行中の更新は反映されない",
-          "wrongFeedback": "共有状態管理の仕組みではありません。Workers VPCはプライベートネットワークへの接続を可能にするものです。"
+          "text": "複数のWorker間でグローバルな共有状態を提供し、Durable Objectsの代替として使う仕組み",
+          "wrongFeedback": "Workers VPCはプライベートネットワークへの接続経路を用意するもので、複数のWorker間で状態を共有する仕組みではありません。共有状態が要る場面では引き続きDurable Objectsを使います。両者は代替関係にありません。"
         },
         {
           "text": "AWS・Azure・GCPなど外部クラウド上の、パブリックインターネットからアクセスできないプライベートなAPI・サービス・DBに安全に接続する"
@@ -18731,7 +18731,7 @@
       "correctIndex": 3,
       "explanation": "Workers VPCは、AWS・Azure・GCP・オンプレミスなど外部クラウド上にあり、パブリックインターネットからは到達できないプライベートなAPI・サービス・データベースに、Workerから安全に接続できるようにする仕組みです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/",
-      "hint": "「外には出せないけど、Workerからはアクセスしたい」システムをどう繋ぐか考えましょう。",
+      "hint": "4つの肢は、実行する場所・コードの秘匿・状態の共有・ネットワークのつなぎ先という、別々の話をしています。製品名の `VPC` がこのうちどれに関わる語かを手がかりにしましょう。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -18782,7 +18782,7 @@
       "correctIndex": 1,
       "explanation": "バインディングとは、Workerからどこへ接続してよいかを設定であらかじめ宣言しておく仕組みです。VPC Servicesでは、特定のホストとポートの組み合わせごとにこのバインディングを1つずつ事前登録するため、接続先は登録したものに限られます。一方VPC Networksは、Cloudflare Tunnel全体やCloudflare Meshといったネットワーク単位でバインドし、実行時に`fetch()`や`connect()`へ渡すURL・アドレスによって接続先が決まります。\n{{diagram:0}}\n※ Cloudflare TunnelとCloudflare Meshは、いずれも自社のプライベートネットワークをCloudflareにつなぐための仕組みです。",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-networks/#vpc-networks-vs-vpc-services",
-      "hint": "「あらかじめ決まった行き先だけに絞る」のか「行き先を実行時に自由に選べるようにする」のか、という違いを考えましょう。",
+      "hint": "「あらかじめ決まった行き先だけに絞る」のか「つなぐ時点で行き先を自由に決められる」のか、という違いを考えましょう。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -18835,7 +18835,7 @@
       "correctIndex": 0,
       "explanation": "Workers VPCでは、Cloudflare Tunnelを使ってプライベートネットワーク側からCloudflareへの永続的な接続を確立します。これにより、インバウンドのファイアウォールルールの開放やパブリックIPアドレスの割り当てなしに、Workerからプライベートネットワーク内のリソースへ安全に接続できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/",
-      "hint": "接続を「外から中へ開ける」のではなく、「中から外へつなぎに行く」方式のメリットを考えましょう。",
+      "hint": "接続を始めるのがCloudflare側か、プライベートネットワーク側か。4つの肢がそれぞれどちら向きの接続を前提にしているかを整理して比べましょう。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -18942,7 +18942,7 @@
       "correctIndex": 0,
       "explanation": "Workers VPCでは、既存のVPC Serviceにバインドする(Workerから利用する)だけなら「Connectivity Directory Bind」ロールで十分です。新しくVPC Serviceを作成したり、VPC Networkバインディングで直接トンネルにバインドしたりするには「Connectivity Directory Admin」ロールが必要です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#required-roles",
-      "hint": "「使うだけの人」と「作る・管理する人」とで、必要な権限のレベルが違うことを意識しましょう。",
+      "hint": "既に用意されている設定をWorkerから使う操作と、その設定そのものを作る操作。この2つに同じ権限が要るのか、別の権限が要るのかを考えましょう。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -19678,7 +19678,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare for SaaSは、SaaS事業者の顧客が自分の独自ドメイン(例: `app.customer.com`)を、SaaS事業者のCloudflareゾーン(例: `service.saas.com`)上のサービスに向けられるようにする仕組みです。これにより、顧客の独自ドメインにもCloudflareの暗号化・パフォーマンス・可用性・トラフィック分析といった機能を拡張できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/",
-      "hint": "SaaSサービスを使う「顧客側」が、自分のブランドのドメインをそのまま使い続けたい場面を想像しましょう。",
+      "hint": "4つの肢は、アカウントの分け方・インフラの移行・ドメインの扱い・コードのビルドという、別々の話をしています。`for SaaS` という名前がSaaS事業者の何を助けるものかを手がかりにしましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -19732,7 +19732,7 @@
       "correctIndex": 0,
       "explanation": "標準的なCloudflare for SaaS構成では、カスタムホスト名は「fallback origin」と呼ばれるデフォルトのオリジンサーバーにルーティングされます。fallback originのホスト名を変更しても、既存のカスタムホスト名のトラフィックは中断されず、変更は数秒でCloudflareのエッジ全体に伝播します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/",
-      "hint": "個別の設定がない場合の「行き先」として、あらかじめ用意しておくべきものは何か考えましょう。",
+      "hint": "このオリジンが使われるのは「いつ」かに注目しましょう。例外的な場面に限られるのか、通常のリクエストでも使われるのかで、答えが変わります。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -19780,7 +19780,7 @@
       "correctIndex": 2,
       "explanation": "カスタムホスト名の状態は、API(プログラムから設定や状態を読み書きするための窓口)のレスポンスで確認します。そこには、ホスト名のアクティベーション(`result.status`)と証明書の発行(`result.ssl.status`)という2つの独立した検証フローの状態が入っています。本番トラフィックを受け付ける準備ができたと判断するには、両方のフィールドが`active`であり、かつ顧客のDNSレコードがSaaS事業者のターゲットを指していることを確認する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/#check-when-a-custom-hostname-is-ready",
-      "hint": "「ホスト名として認識されたか」と「証明書が発行されたか」は、別々に進む2つの手続きだと考えましょう。",
+      "hint": "本番トラフィックを受けられるまでに確認すべきことは複数あります。そのうちどれが自動的に満たされ、どれを個別に確かめる必要があるかを考えましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -19867,7 +19867,7 @@
       "options": [
         {
           "text": "どちらの検証方法を使っても、顧客への負担やダウンタイムの発生に一切違いはないため、どちらを選んでも運用上のトレードオフを考える必要がない",
-          "wrongFeedback": "違いがあります。リアルタイム検証は顧客の追加作業が不要な分ダウンタイムが生じうり、事前検証はダウンタイムを避けられます。"
+          "wrongFeedback": "違いがあります。リアルタイム検証は顧客の追加作業が不要な分ダウンタイムが生じうる、事前検証はダウンタイムを避けられます。"
         },
         {
           "text": "事前検証は必ず顧客に追加のDNS作業を求めるため、リアルタイム検証よりも常に顧客の負担が大きく、技術力の低い顧客には案内しにくい",
@@ -20622,7 +20622,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Pipelinesは、サーバーログ・モバイルアプリのイベント・IoTテレメトリ・クリックストリームといったストリーミングデータを取り込み、SQLで変換したうえで、Apache IcebergテーブルやParquet/JSONファイルとしてR2に配信する仕組みです。ストリーミング基盤を自前で管理することなく、分析に使えるデータウェアハウス・レイクハウスを構築できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/",
-      "hint": "大量に流れてくるイベントデータを、後で分析しやすい形にしてどこかに「溜めておく」仕組みを考えましょう。",
+      "hint": "4つの肢は、コードのまとめ方・トラフィックの可視化・保存済みファイルの整理・取り込んだデータの行き先という、別々の話をしています。`Pipelines` という名前がどれを指すかを手がかりにしましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -20654,15 +20654,15 @@
       "question": "Cloudflare Pipelinesを構成する3つの主要コンポーネントの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "サーバーレス実行環境であるWorkers・キーバリューストアであるKV・リレーショナルデータベースであるD1の組み合わせで、いずれも単体では動作せず互いに依存し合う構成になっている",
-          "wrongFeedback": "これらはPipelinesの構成要素ではありません。Pipelinesの構成要素はStreams・Pipelines(SQL変換)・Sinksです。またWorkers・KV・D1はそれぞれ単体でも利用でき、互いに依存し合う関係にはありません。"
+          "text": "サーバーレス実行環境であるWorkers・キーバリューストアであるKV・リレーショナルデータベースであるD1の組み合わせ",
+          "wrongFeedback": "これらはPipelinesの構成要素ではありません。Pipelinesの構成要素はStreams・Pipelines(SQL変換)・Sinksです。"
         },
         {
           "text": "データを受け取り一時的に蓄えるStreams、SQLでデータを変換する構成要素であるPipelines、変換後のデータの配信先を定義するSinks"
         },
         {
-          "text": "メッセージングを担うQueues・状態保持を担うDurable Objects・キャッシュを担うCache APIの組み合わせで、いずれも単一のエンドポイントに統合されて提供されている",
-          "wrongFeedback": "これらはPipelinesの構成要素ではありません。"
+          "text": "メッセージングを担うQueues・状態保持を担うDurable Objects・キャッシュを担うCache APIの組み合わせ",
+          "wrongFeedback": "いずれも実在するCloudflareの製品ですが、Pipelinesの構成要素ではありません。Pipelinesは、データを受け取って一時的に蓄えるStreams、SQLで変換するPipelines、配信先を定義するSinksの3つで構成されます。"
         },
         {
           "text": "オンプレミス接続用のTunnel・プライベートリソースを定義するVPC Service・それらを束ねる仮想ネットワークであるVPC Networkの組み合わせ",
@@ -20672,7 +20672,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflare Pipelinesは、データを受け取り一時的に蓄えるStreams、StreamsとSinksをSQL変換でつなぐPipelines、変換後のデータの配信先(R2など)を定義するSinksという3つの主要コンポーネントで構成されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/",
-      "hint": "「データを受け取る場所」「加工する場所」「届け先」という3段階の役割分担を考えましょう。",
+      "hint": "3つの名前は、処理が通る順番に並んでいます。入口から出口までを1本の線として思い描き、その線の上に載る組み合わせを選びましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -20723,7 +20723,7 @@
       "correctIndex": 1,
       "explanation": "Streamsは、HTTPエンドポイントやWorkerバインディング経由でイベントを受け取る、耐久性のあるバッファ済みキューです。下流の処理に遅延や失敗があってもデータが失われないように設計されています。1つのStreamを複数のPipelineから読み取ることができるため、同じデータをリアルタイム分析用と長期保存用など、異なる宛先に振り分けることができます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/",
-      "hint": "1つの「データの流れ」を、複数の異なる目的に使い回せるかどうかを考えましょう。",
+      "hint": "Streamは「入口」にあたるものです。受け取れるデータの形式・届いたデータが失われないかどうか・下流をいくつ持てるか、の3点で4つの肢を比べましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -20768,8 +20768,8 @@
       "question": "Cloudflare PipelinesのSinksに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "ファイルを書き出す頻度や粒度はあらかじめ固定されており、利用者側で低レイテンシ寄りかクエリ性能寄りかを調整することはできない。全ユーザー共通の単一のバッチ間隔で内部処理されるため、決められた間隔をそのまま受け入れるしかない",
-          "wrongFeedback": "低レイテンシ向けに頻繁に小さいファイルを書き出すことも、クエリ性能向け大きなファイルを書き出すことも設定で調整できます。"
+          "text": "ファイルを書き出す頻度や粒度はあらかじめ固定されており、利用者側で低レイテンシ寄りかクエリ性能寄りかを調整することはできない",
+          "wrongFeedback": "低レイテンシ向けに頻繁に小さいファイルを書き出すことも、クエリ性能向けに大きなファイルを書き出すことも設定で調整できます。"
         },
         {
           "text": "配信の際にデータが重複したり欠落したりすることが仕様上許容されており、下流のシステム側でその重複排除・補完を行う設計になっている。利用者はクエリ時にタイムスタンプやIDをもとに重複行を除去し、欠落分は別経路で再取得する必要がある",
@@ -20786,7 +20786,7 @@
       "correctIndex": 3,
       "explanation": "Sinksは、R2 Data CatalogへApache Icebergテーブルとして、またはR2へ生のJSON・Parquetファイルとして書き込む、Pipelinesのデータ配信先です。データが重複・欠落しないexactly-onceの配信を保証し、低レイテンシ向けに頻繁にファイルを書き出す設定や、クエリ性能向けに大きなファイルをまとめて書き出す設定を選べます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/sinks/",
-      "hint": "「届いたはずなのに消えていた」「2回届いてしまった」という事故を防ぐには、どんな配信保証が必要か考えましょう。",
+      "hint": "どこへ書けるか・重複や欠落が起きうるのか・書き出しの粒度を変えられるか。この3点で4つの肢を比べましょう。",
       "tags": [
         "pipelines",
         "practical"
