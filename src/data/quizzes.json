@@ -1722,7 +1722,7 @@
         },
         {
           "text": "`wrangler types` が生成する`vars`バインディングの型は、既定では常に`string`のような汎用的な型になり、値ごとのリテラル型を得るには明示的にオプションを指定する必要がある",
-          "wrongFeedback": "逆です。既定(`--strict-vars`が`true`)ではvarsの値ごとのリテラル型・ユニオン型が生成されます。汎用的な`string`型にしたい場合は`--strict-vars=false`を指定します。"
+          "wrongFeedback": "逆です。既定(`--strict-vars`が`true`)では`vars`の値ごとのリテラル型・ユニオン型が生成されます。汎用的な`string`型にしたい場合は`--strict-vars=false`を指定します。"
         }
       ],
       "correctIndex": 0,
@@ -14379,7 +14379,7 @@
       "correctIndex": 3,
       "explanation": "wrangler設定ファイルに`analytics_engine_datasets`バインディングを追加してWorkerをデプロイし、`writeDataPoint()`で最初にデータを書き込むと、そのタイミングでデータセットが自動的に作成されます。事前にダッシュボードでデータセットを作る必要はありません。\n{{diagram:0}}\nデータセットはSQLのテーブルのようにふるまい、行・列の意味は一貫させておく必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/get-started/",
-      "hint": "データセットは、wrangler設定のバインディングで指定します。",
+      "hint": "Analytics Engineのデータセットは、D1やKVといった別の製品のリソースを流用したり、その手順を借りたりして用意するものではありません。",
       "tags": [
         "observability",
         "practical"
@@ -21286,7 +21286,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "2025年9月25日より前にレガシーAPIで作成された「レガシーパイプライン」は廃止の方向にあります。新しいPipelinesアーキテクチャでは、SQLによる変換、複数の出力フォーマット(JSON・Parquet・Apache Iceberg)への対応、Streams・Pipelines・Sinksという別々のリソースへの分離、構造化スキーマの検証などが追加されています。 {{diagram:0}} レガシーパイプラインはPipelinesが正式リリースされるまで動作を継続しますが、**新機能や改善は新しいアーキテクチャにのみ提供され、レガシーパイプラインには提供されません。**",
+      "explanation": "2025年9月25日より前にレガシーAPIで作成された「レガシーパイプライン」は廃止の方向にあります。新しいPipelinesアーキテクチャでは、SQLによる変換、複数の出力フォーマット(JSON・Parquet・Apache Iceberg)への対応、Streams・Pipelines・Sinksという別々のリソースへの分離、構造化スキーマの検証などが追加されています。 {{diagram:0}} レガシーパイプラインはPipelinesが正式リリースされるまで動作を継続しますが、「新機能や改善は新しいアーキテクチャにのみ提供され、レガシーパイプラインには提供されません」という点が要点です。",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/reference/legacy-pipelines/",
       "hint": "新機能や改善が提供されるのは、新しいPipelinesだけです。",
       "tags": [
@@ -24328,25 +24328,25 @@
       "question": "Cloudflare API Shieldの提供形態に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "API Shieldのフルセキュリティスイートは、Enterpriseプラン向けの有料アドオンだが、Endpoint ManagementやSchema validationは全プランで利用できる"
+          "text": "フルセキュリティスイートはEnterpriseプラン向けの有料アドオンであり、Endpoint ManagementとSchema validationもEnterpriseプランでしか利用できない",
+          "wrongFeedback": "前半は正しいのですが後半が誤りです。Free・Pro・Businessプランにも保存できるエンドポイント数(100〜500)とアップロードできるスキーマ数(5〜10)が割り当てられており、入口部分の機能は全プランで使えます。"
         },
         {
-          "text": "API Shieldは機能がFreeプランを含む各プランで無料のまま制限なく利用できる",
-          "wrongFeedback": "フルセキュリティスイートはEnterprise向けの有料アドオンです。どのプランでも無料で使えるわけではありません。"
+          "text": "フルセキュリティスイートを含む全機能が全プランに無料で含まれており、Endpoint ManagementとSchema validationも全プランで利用できる",
+          "wrongFeedback": "後半は正しいのですが前半が誤りです。フルセキュリティスイートはEnterpriseプラン向けの有料アドオンとして提供されます。全機能が無料で開放されているわけではありません。"
         },
         {
-          "text": "API ShieldはJDCloudを含むクラウド事業者環境でも同様に動作することが保証されている",
-          "wrongFeedback": "API ShieldはJDCloudの顧客には現在対応していません。"
+          "text": "フルセキュリティスイートは全プランに無料で含まれる一方、Endpoint ManagementとSchema validationはEnterprise限定の機能である",
+          "wrongFeedback": "提供範囲が逆になっています。有料アドオンなのはフルセキュリティスイートのほうで、Endpoint ManagementとSchema validationは全プランで利用できる入口部分の機能です。"
         },
         {
-          "text": "API Shieldの機能はEnterpriseプランの顧客専用であり、Free・Pro・Businessプランでは利用できない",
-          "wrongFeedback": "Endpoint ManagementやSchema validation、Cloudflare管理CAによるmTLSは全プランで利用できます。Enterprise専用というのは誤りです。"
+          "text": "フルセキュリティスイートはEnterpriseプラン向けの有料アドオンだが、Endpoint ManagementとSchema validationは全プランで利用できる"
         }
       ],
-      "correctIndex": 0,
-      "explanation": "API Shieldのフルセキュリティスイート(APIの自動検出や不正利用の検知といった高度な機能群)は、Enterpriseプラン向けの有料アドオンです。一方、エンドポイントを一覧管理するEndpoint Managementと、リクエストが決められた形式に沿っているかを検査するSchema validation、そしてCloudflareが管理するCA証明書を使ったmTLS(クライアント側も証明書で身元を示す通信)は、全プランの顧客が利用できます。\n{{diagram:0}}\n※ 有料スイートに含まれるのはAPI Discovery・JWT検証・Sequence Analytics・Sequence Mitigation・Volumetric Abuse Detectionなどです。またAPI ShieldはJDCloudの顧客には現在対応していません。",
+      "correctIndex": 3,
+      "explanation": "API Shieldのフルセキュリティスイート(APIの自動検出や不正利用の検知といった高度な機能群)は、Enterpriseプラン向けの有料アドオンです。一方、エンドポイントを一覧管理するEndpoint Managementと、リクエストが決められた形式に沿っているかを検査するSchema validation、そしてCloudflareが管理するCA証明書を使ったmTLS(クライアント側も証明書で身元を示す通信)は、全プランの顧客が利用できます。\n{{diagram:0}}\n※ Free・Pro・Businessプランにも保存できるエンドポイント数(それぞれ100・250・500)とアップロードできるスキーマ数が割り当てられています。有料スイートに含まれるのはAPI Discovery・JWT検証・Sequence Analytics・Sequence Mitigation・Volumetric Abuse Detectionなどです。",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/",
-      "hint": "「全プランに開放されている入口部分の機能」と「Enterprise限定の高度な機能群」の2段階があると考えましょう。",
+      "hint": "エンドポイントの一覧管理とスキーマ検査は、Enterpriseでなくても使える入口部分の機能です。",
       "tags": [
         "api-shield",
         "practical"
