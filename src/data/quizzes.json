@@ -16745,7 +16745,7 @@
       "correctIndex": 3,
       "explanation": "Authenticated Gatewayを有効にすると、各リクエストに有効なCloudflare APIトークンが必須になります。REST API(`api.cloudflare.com`)を使う場合は標準の`Authorization`ヘッダー、provider-native endpoints(`gateway.ai.cloudflare.com`)を使う場合は`cf-aig-authorization`ヘッダーでトークンを渡します。Workerのバインディング経由のリクエストは、アカウント内で事前に認証済みとして扱われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/authentication/",
-      "hint": "呼び出し方(REST APIか、provider-native endpointsか)によって、認証情報を渡す「場所」が変わることを意識しましょう。",
+      "hint": "Authenticated GatewayはEnterpriseプラン限定の機能ではありません。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -22431,7 +22431,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Oneでは、ユーザーが認証イベント(App LauncherやアプリへのログインなどAccessの認証、またはGatewayへのデバイス接続)を起こすとシートを1つ消費します。その後は、いくつのアプリにアクセスしようと、何度ログインしようと消費するシートは1つのままです。サービストークンによる認証はシートを消費しないため、シートを気にせず自動化システムをAccessで保護できます。ユーザーを「Revoke」してもシートは解放されず、解放するには「Remove」する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/users/seat-management/",
-      "hint": "「アプリの数だけ課金される」のか「人単位で1つだけ」なのか、そして機械の認証がその数に含まれるかを考えましょう。",
+      "hint": "サービストークンによる認証は、シートを消費しません。",
       "tags": [
         "zero-trust-access",
         "practical"

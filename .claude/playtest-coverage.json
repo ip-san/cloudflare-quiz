@@ -23,96 +23,106 @@
         "outcome": "clean",
         "at": "unstamped",
         "fp": "d91a7471fafe",
-        "fpFrom": "1ae2bf5^"
+        "gt": "95acb322"
       }
     ],
     "ac-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "329530a84f72"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "329530a84f72",
+        "gt": "da39a3ee"
       }
     ],
     "ac-010": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "1c646186bff0"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "1c646186bff0",
+        "gt": "9f4262a8"
       }
     ],
     "ac-014": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
+        "outcome": "friction",
         "at": "unstamped",
         "fp": "8921a10e62f5",
-        "fpFrom": "1ae2bf5^"
+        "gt": "da39a3ee"
       }
     ],
     "ac-015": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "12ef267df155"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "12ef267df155",
+        "gt": "2da0632a"
       }
     ],
     "ac-018": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-27",
-        "fp": "aa0315ebc4e7"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "aa0315ebc4e7",
+        "gt": "da39a3ee"
       }
     ],
     "ag-007": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-27",
-        "fp": "a8c8ccee77ee"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "a8c8ccee77ee",
+        "gt": "da39a3ee"
       }
     ],
     "ag-008": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "df1c9278cc2b"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "df1c9278cc2b",
+        "gt": "da39a3ee"
       }
     ],
     "ag-009": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-15",
-        "fp": "21727eb75218"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "21727eb75218",
+        "gt": "da39a3ee"
       }
     ],
     "ag-010": [
       {
         "persona": "busy-intermediate",
         "outcome": "friction",
-        "at": "2026-08-15",
-        "fp": "16407778b1d6"
+        "at": "unstamped",
+        "fp": "16407778b1d6",
+        "gt": "da39a3ee"
       }
     ],
     "ag-011": [
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "d8e1c6b4094d"
+        "at": "unstamped",
+        "fp": "d8e1c6b4094d",
+        "gt": "da39a3ee"
       }
     ],
     "ag-012": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "8f378c9fc9f9"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "8f378c9fc9f9",
+        "gt": "da39a3ee"
       }
     ],
     "ag-013": [
@@ -128,16 +138,18 @@
       {
         "persona": "busy-intermediate",
         "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "521d63faa772"
+        "at": "unstamped",
+        "fp": "521d63faa772",
+        "gt": "da39a3ee"
       }
     ],
     "ag-015": [
       {
         "persona": "busy-intermediate",
         "outcome": "friction",
-        "at": "2026-08-27",
-        "fp": "8d93cc26e156"
+        "at": "unstamped",
+        "fp": "8d93cc26e156",
+        "gt": "da39a3ee"
       }
     ],
     "ag-018": [
@@ -152,9 +164,10 @@
     "ai-006": [
       {
         "persona": "busy-intermediate",
-        "outcome": "clean",
-        "at": "2026-08-29",
-        "fp": "6d9cf87c62ce"
+        "outcome": "friction",
+        "at": "unstamped",
+        "fp": "6d9cf87c62ce",
+        "gt": "da39a3ee"
       }
     ],
     "ai-007": [
@@ -379,14 +392,14 @@
     ],
     "ag-001": [
       {
-        "persona": "busy-intermediate",
+        "persona": "beginner",
         "outcome": "friction",
         "at": "unstamped",
         "fp": "fd5b7ff32d2b",
         "gt": "f0ae533f"
       },
       {
-        "persona": "beginner",
+        "persona": "busy-intermediate",
         "outcome": "friction",
         "at": "unstamped",
         "fp": "fd5b7ff32d2b",
