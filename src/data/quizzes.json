@@ -31839,7 +31839,7 @@
       "correctIndex": 1,
       "explanation": "Client-side securityは、ページに監視用のJavaScriptを注入するのではなく、ブラウザネイティブの仕組みであるCSP(Content Security Policy)のreport-onlyヘッダーをHTMLレスポンスのサンプルに付与します。ブラウザはこのポリシーに基づいて検知したスクリプトや接続の違反レポートをCloudflareへ送信し、Cloudflareはそのレポートをもとにスクリプトや接続の一覧を構築します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/#header-used-for-resource-monitoring",
-      "hint": "「ブラウザに何かを注入する」のではなく「ブラウザの標準機能に報告させる」仕組みだと考えましょう。",
+      "hint": "検知のもとになる情報は、オリジン側の通信からではなく、実際にページを開いた利用者のブラウザ側で集まります。その情報をどうやって集め、Cloudflareまで届けているのかを選択肢ごとに比べましょう。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32427,7 +32427,7 @@
       "correctIndex": 3,
       "explanation": "新しいコンテンツセキュリティルールを導入する際は、まずLogアクションでルールを作成します。Logは違反(rule violations)を記録するだけでブロックはしないアクションなので、一定期間ようすを見て、意図しないリソースが引っかかっていないかを確認できます。検証が済んだらAllowアクションへ切り替えます。Allowはルールで許可したリソースだけを通し、それ以外をブロックするアクションで、ここで初めて実際のブロックが有効になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/#rule-actions",
-      "hint": "いきなり本番でブロックを始めるのではなく、まず「様子見」の段階を挟むことを考えましょう。",
+      "hint": "ルールのアクションにはLogとAllowの2つがあります。それぞれが違反にどう対応するのか、そしてアクションを後から変えられるのかを整理しましょう。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32809,7 +32809,7 @@
       "correctIndex": 2,
       "explanation": "DNSポリシーはドメインへの接続確立前にブロックするDNSレイヤーのフィルタリング、NetworkポリシーはIPアドレス・ポート・プロトコルで制御するLayer 4のステートフルファイアウォール(FWaaS)、HTTPポリシーはTLS復号とディープパケットインスペクションを行うLayer 7のアプリケーションファイアウォールにそれぞれ相当します。\n言い換えると、DNSポリシーは「その名前のサイトに接続する前に止める」、Networkポリシーは「どのIP・ポートと通信してよいかで止める」、HTTPポリシーは「暗号を解いて通信の中身まで見て止める」という違いです。\n{{diagram:0}}\n※ Layer 4はIPアドレスとポートを扱う層、Layer 7はHTTPなどアプリケーションを扱う層を指します。ステートフルは、パケットを1つずつ単独で見るのではなく通信のつながりを覚えたうえで判定する方式、FWaaSはFirewall as a Serviceの略でクラウド側で提供されるファイアウォールのことです。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/#how-gateway-relates-to-traditional-firewalls",
-      "hint": "「接続前にブロック」「パケット単位で制御」「アプリケーションの中身を検査」という粒度の違いを考えましょう。",
+      "hint": "どのポリシーも通信を止められますが、止めるかどうかを判断するために何を見ているかが違います。通信の中身まで読むには暗号を解く必要がある、という点も手がかりになります。",
       "tags": [
         "gateway",
         "practical"
@@ -33859,7 +33859,7 @@
       "correctIndex": 0,
       "explanation": "DLPプロファイルは検知パターンを定義するだけの設定であり、それ自体ではスキャンは開始されません。実際にスキャンを動かすには、そのプロファイルを「DLP Profile」セレクタとして使うDLPポリシー(GatewayのHTTPポリシー)を別途作成する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-policies/#2-create-a-dlp-policy",
-      "hint": "「何を検知するか定義するもの」と「実際に動かすためのスイッチ」は別物だと考えましょう。",
+      "hint": "プロファイルを作った直後に、Gatewayを通る通信に何が起きるのかを考えましょう。そのプロファイルがどこで使われる設定なのかも合わせて確かめてください。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34752,7 +34752,7 @@
       "correctIndex": 2,
       "explanation": "Browser IsolationはNetwork Vector Rendering(NVR)という技術を使い、ページの映像や画素(ピクセル)をストリーミングするのではなく、軽量な描画命令をユーザーのブラウザへ送信します。これによりアクティブコンテンツ(JavaScriptなど)はリモート側でのみ実行され、動画ストリームのような帯域幅の制約なくセキュアなリモート計算体験を提供します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#website-compatibility",
-      "hint": "「動画を送る」のでも「画面を複製する」のでもなく、「描き方の指示だけを送る」という方式を考えましょう。",
+      "hint": "どの方式でもページはCloudflare側のブラウザで開かれます。違うのは、その結果を利用者の端末へ届けるときにネットワークへ何を流すかです。帯域の効率という観点で比べましょう。",
       "tags": [
         "browser-isolation",
         "practical"
@@ -35469,7 +35469,7 @@
       "correctIndex": 0,
       "explanation": "Browser Isolationは、Webページを利用者の端末のブラウザで直接開くのではなく、Cloudflare側のブラウザで開かせる(＝分離する)仕組みです。ただしデフォルトでは何も分離されず、Isolateポリシーを追加して初めて対象のトラフィックが分離されます。\n接続方式は2種類あります。普段どおりのURLでブラウジングするインライン方式(Cloudflare One Clientなどを使う)と、Cloudflareがホストするプレフィックス付きURLを経由することで専用クライアントを入れずに使えるクライアントレス方式(Clientless Web Isolation)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/setup/#1-connect-devices-to-cloudflare",
-      "hint": "「何もしなければ分離されない」という初期状態と、2つの接続方式を考えましょう。",
+      "hint": "「分離を始める」ための操作が、どの製品のどの設定画面に当たるのかを考えましょう。そのうえで、利用者の端末側に何を用意する必要があるのかも確かめてください。",
       "tags": [
         "browser-isolation",
         "practical"
@@ -35727,7 +35727,7 @@
       "correctIndex": 2,
       "explanation": "CASBはSaaSアプリケーションやクラウド環境のAPIへ接続し、ユーザーが正常にログインした後に発生しうるセキュリティ上の問題(設定不備・不正なユーザー活動・シャドーITなど)をスキャンする仕組みです。インライントラフィックを検査するDLPや、ブラウザセッションを隔離するBrowser Isolationとは異なるアプローチです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/",
-      "hint": "「通信の途中を覗く」のでも「ブラウザを隔離する」のでもなく、別の切り口でログイン後の状態を確認する仕組みだと考えましょう。",
+      "hint": "CASBが調べに行く相手がどこにあるのかを考えましょう。利用者の通信経路の上に立たなければ分からないことなのか、それとも別の道筋で確かめられることなのかが分かれ目です。",
       "tags": [
         "casb",
         "practical"
@@ -37617,7 +37617,7 @@
         },
         {
           "text": "配信後(post-delivery)デプロイでは、Microsoft 365・Google Workspaceを問わずすべてのプロバイダで同一のAPI統合方式が使われる",
-          "wrongFeedback": "プロバイダによって統合方式が異なります。Microsoft 365はMicrosoft Graph API、Google WorkspaceはBCCが使われます。"
+          "wrongFeedback": "プロバイダによって統合方式が異なります。Microsoft 365はMicrosoft Graph APIまたはジャーナリング、Google WorkspaceやMicrosoft ExchangeはBCCが使われます。"
         },
         {
           "text": "配信前(pre-delivery)はメールが受信箱に届いた後にスキャンし、配信後(post-delivery)はメールが受信箱に届く前にスキャンする",
@@ -38566,7 +38566,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflare WAN(旧Magic WAN)は、拠点・オフィス・クラウドリソースをつなぐ社内ネットワークの回線を、Cloudflareのグローバルネットワークで置き換えるサイト間接続サービス(WAN-as-a-Service)です。従来はMPLSのような専用回線を引き、通信をいったん中央の拠点に集める(ハブアンドスポーク型)構成が一般的でしたが、Cloudflare WANでは中央データセンターを経由せず、最寄りのCloudflareデータセンターでセキュリティポリシーが適用されます。\n{{diagram:0}}\n※ 拠点の接続にはIPsec/GREトンネル、Cloudflare Network Interconnect(CNI)、Cloudflare One Applianceを使えます。Cloudflare WANはこれ単体で提供される独立した製品で、Cloudflare Oneは「誰がアクセスしているか」を条件に加えられるようCloudflare WANを拡張したプラットフォーム(SASEと呼ばれる分類の製品)です。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/",
-      "hint": "MPLSのような専用回線・中央集約型の経路を、何に置き換えると説明されているかを考えましょう。",
+      "hint": "つなぐ対象が社員1人ひとりの端末なのか、オフィスやデータセンターといった拠点なのかを見分けましょう。扱うのがHTTPの通信だけかどうかも手がかりになります。",
       "tags": [
         "magic-wan",
         "practical"
@@ -38992,7 +38992,7 @@
       "correctIndex": 0,
       "explanation": "トンネルヘルスチェックは、Cloudflareからあなたのネットワークへトラフィックをルーティングするトンネルそのものの状態を監視し、トラフィックステアリング(どのトンネルにトラフィックを流すかの選択)に使われます。一方エンドポイントヘルスチェックは、Cloudflareの分散データセンターからあなたのオリジンネットワークまでの疎通性を評価するもので、トンネル上を流れますがトンネル選択やステアリングロジックには関与しません。経路を選ぶために見るのが前者、疎通の全体像を知るために見るのが後者です。\n{{diagram:0}}\n※ エンドポイントヘルスチェックは、その顧客専用に区切られたネットワーク空間の外側から、Cloudflareグローバルネットワークのサーバーによって発行されます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/tunnel-health-checks/#types-of-health-checks",
-      "hint": "「経路選択に直接関わるチェック」と「疎通性の全体像を把握するためのチェック」という役割の違いを考えましょう。",
+      "hint": "2つのチェックは、何を測っているかと、その結果が何に使われるかの2点で違います。トンネルを選び直す判断に使われるのはどちらかを考えましょう。",
       "tags": [
         "magic-wan",
         "practical"
