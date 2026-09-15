@@ -23866,7 +23866,7 @@
       "correctIndex": 1,
       "explanation": "ボットスコアが0(「Not computed」)であることは、そのリクエストがBot Managementによって評価されなかったことを意味します。内部的なCloudflareサービスへのリクエストや、Redirect Rulesなど他の機能によってBot Managementの評価前に処理されたリクエストなどでスコア0になります。スコア0はリクエストが安全である、あるいは人間からのものであることを保証するものではありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/concepts/bot-score/#not-computed",
-      "hint": "「評価されなかった」ことと「安全だと判定された」ことは同じ意味ではない、という点を考えましょう。",
+      "hint": "0が1〜99というスコアの延長線上にある値なのか、それとも尺度の外にある別枠の印なのかを、分けて考えましょう。",
       "tags": [
         "bots",
         "practical"
@@ -23968,7 +23968,7 @@
       "correctIndex": 1,
       "explanation": "Workers内では、WAFカスタムルールの`cf.bot_management.score`フィールドに対応する値を、リクエストオブジェクトの`request.cf.botManagement.score`として参照できます。これにより、ログインページでは低スコアのリクエストにチャレンジを課し、公開ブログでは許可するといった、アプリケーションコード内でのカスタム制御が可能になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/reference/bot-management-variables/#workers-variables",
-      "hint": "WAFカスタムルールの`cf.bot_management.score`が、Workers側の`request.cf`オブジェクトではどんな名前に対応するか考えましょう。",
+      "hint": "スコアを得るのに追加の呼び出しやヘッダーの受け渡しが必要なのか、それともリクエストを処理している時点ですでに手元にある情報として読めるのかを考えましょう。",
       "tags": [
         "bots",
         "practical"
@@ -24216,7 +24216,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflareは、Web Bot Auth・安定したUser-Agentと組み合わせた公開IPリスト・逆引きDNSのいずれかの方法で決定論的に身元を自己申告する「正直な自己識別」と、`robots.txt`やクロール指示を守り、妥当なリクエストレートを維持するといった「非悪用的な振る舞い」の2つの条件を満たすボット・エージェントをVerified botとして認定します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/concepts/bot/verified-bots/",
-      "hint": "「自分が何者か嘘をつかないこと」と「サイト運営者の意向を尊重した振る舞いをすること」という2つの軸を考えましょう。",
+      "hint": "運営者が誰と契約していくら払っているかではなく、そのボットが何を守っていれば認定されるのかを考えましょう。",
       "tags": [
         "bots",
         "practical"
@@ -25794,7 +25794,7 @@
       "correctIndex": 1,
       "explanation": "ヘルスモニターリクエストのHostヘッダーは、Monitor自体とEndpointの両方に指定できます。両方に指定がある場合はEndpoint側の設定がMonitor側の設定より優先されます。どちらにも指定がない場合は、Endpointに設定されたEndpoint Addressがそのままヘルスモニターリクエストのホストヘッダーとして使われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/#host-header-prioritization",
-      "hint": "「より具体的な設定(個々のEndpoint)」と「より広い設定(Monitor全体)」のどちらが勝つかを考えましょう。",
+      "hint": "MonitorとEndpointのどちらの指定が勝つのか、そしてどちらにも指定がないときにどうなるのかを、それぞれ考えましょう。",
       "tags": [
         "load-balancing",
         "practical"
@@ -26320,7 +26320,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflareがキャッシュできるファイルサイズの上限は、Free・Pro・Businessプランで512MB、Enterpriseプランではデフォルトで5GBです。Enterpriseプランでこの上限をさらに引き上げたい場合は、account teamに問い合わせる必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/concepts/default-cache-behavior/#cacheable-size-limits",
-      "hint": "有料プランが上がるほど、キャッシュに許容されるファイルの大きさも段階的に大きくなると考えましょう。",
+      "hint": "上限がプラン共通の一つの値なのか、それともプランごとに違う値なのかを、まず切り分けましょう。",
       "tags": [
         "cache",
         "practical"
@@ -26537,7 +26537,7 @@
       "correctIndex": 1,
       "explanation": "Cache Rulesはスタック可能で、同じリクエストに複数のルールがマッチした場合、それぞれのルールで設定された機能がすべて組み合わさって適用されます。ただし、同じ設定項目(例えばBypass cacheかEligible for cacheか)について複数のルールが競合する値を設定していた場合は、最後にマッチしたルールの値が優先されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/order/",
-      "hint": "「1つだけ選ばれる」のではなく「複数が積み重なる、ただし矛盾する部分は最後の指示が勝つ」という仕組みを考えましょう。",
+      "hint": "同じ設定項目に違う値を指定した2つのルールが両方マッチしたとき、どちらの値が効くのかを考えましょう。",
       "tags": [
         "cache",
         "practical"
@@ -26585,7 +26585,7 @@
       "correctIndex": 1,
       "explanation": "同じパスに対してキャッシュ用のPage Rulesが実装されている場合でも、設計上Cache Rulesが優先されます。また、Cache Ruleはゾーン全体のキャッシュ設定タブよりも具体的な設定であるため、マッチするリクエストに対してはCache Ruleの設定がゾーン全体の設定を上書きします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/order/",
-      "hint": "「より具体的な設定」が「より広い範囲の設定」より優先される、という一般的な原則を考えましょう。",
+      "hint": "同じパスにキャッシュ用のPage Rulesがあるとき効くのはどちらか、そしてゾーン全体のキャッシュ設定とCache Ruleが食い違うとき効くのはどちらかを、それぞれ考えましょう。",
       "tags": [
         "cache",
         "practical"
@@ -26895,7 +26895,7 @@
       "correctIndex": 3,
       "explanation": "クラウドリージョンヒントは、オリジンがAWS・GCP・Azure・Oracle Cloudといったパブリッククラウド上にホストされている場合に、Smart Tiered Cacheが最適な上位層を選択できるよう手助けする機能です。Free・Pro・Business・Enterpriseのすべてのプランで追加費用なしに利用できます。ただし、Custom Tiered Cacheの設定がある場合はそちらが優先され、クラウドリージョンヒントによるマッピングでは上書きされません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/#set-a-cloud-region-hint",
-      "hint": "「特定の高額プラン限定の機能」ではなく、「全プランに無料で開放されている」機能だと考えましょう。",
+      "hint": "対応しているクラウド事業者の範囲と、使えるプランの範囲を、それぞれ確かめましょう。",
       "tags": [
         "cache",
         "practical"
