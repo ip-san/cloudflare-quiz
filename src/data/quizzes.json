@@ -21580,7 +21580,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflare Accessは、社内向けアプリの手前にIDベースのアクセス制御レイヤーを挟み、設定したポリシーに一致したユーザーだけを通す仕組みです。Accessはデフォルトで拒否(deny by default)であり、明示的にAllowポリシーに一致しない限りアクセスは許可されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
-      "hint": "「知らない人は全員シャットアウトし、許可された人だけを通す」受付のような役割を考えましょう。",
+      "hint": "アプリの手前に一枚挟まる仕組みの話です。何を確かめてから先へ通すのかを考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical",
@@ -21993,7 +21993,7 @@
       "correctIndex": 2,
       "explanation": "自己ホスト型アプリ(自分のサーバーやラズパイなどで動かしているアプリ)をAccessの背後で公開する基本の流れは3ステップです。(1)Accessにアプリケーションとポリシー(誰を通すか)を追加し、(2)Cloudflare Tunnelでオリジン(実際にアプリが動いているサーバー)をCloudflareに接続し、(3)アプリ側でAccessトークンを検証します。\n\n順序が重要です。Accessアプリケーションを先に作っておかないと、Tunnelで公開した瞬間に誰でもアクセスできる状態が生まれてしまいます。固定IPもポート開放も要らずに自宅のサーバーを安全に公開できるのが、この組み合わせの利点です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/",
-      "hint": "「先に鍵を用意してから」「配管をつなぎ」「届いた鍵が本物か確認する」という順番を考えましょう。",
+      "hint": "Tunnelが担うのは経路の確保です。通す相手を決める役目はどこにあるかを考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -22092,7 +22092,7 @@
       "correctIndex": 2,
       "explanation": "サービストークンはClient IDとClient Secretのペアで構成され、自動化されたシステムがこれらを`CF-Access-Client-Id`・`CF-Access-Client-Secret`ヘッダーとしてリクエストに含めることで、人によるログイン(IdP＝Google WorkspaceやOktaなどの認証サービス経由のログイン)を挟まずにAccess保護下のアプリへ到達できます。CIやcronのように、ブラウザでログインできない相手のための仕組みです。サービストークンを利用するポリシーのアクションは、Allowではなく「Service Auth」に設定する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/",
-      "hint": "「人間のログイン」ではなく「機械同士の認証」に使う、2つの値の組み合わせを考えましょう。",
+      "hint": "相手がブラウザを操作できない自動処理のとき、Accessは何をもって身元を確かめるのかを考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -22611,7 +22611,7 @@
       "correctIndex": 0,
       "explanation": "終端アクション(Block・Managed Challengeなど)にリクエストが一致すると、そのリクエストに対する以降のルールおよびフェーズの評価は行われず、そこで処理が停止します。この概念はカスタムルールに限らず、レート制限ルールやマネージドルールなど、Ruleset Engineを使う複数の機能に共通します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/feature-interoperability/",
-      "hint": "「一致した時点で、それ以降の審査を打ち切る」アクションかどうかを考えましょう。",
+      "hint": "アクション名の「終端」が、何に対しての終わりを指しているのかを考えましょう。どの機能の話として書かれているかも見ましょう。",
       "tags": [
         "waf",
         "practical"
@@ -22916,7 +22916,7 @@
       "correctIndex": 1,
       "explanation": "マネージドルールセットは、Cloudflareがあらかじめ用意して更新し続けるルールの集まりです。リクエストを検査するものとして、Cloudflareのセキュリティチームが作成したCloudflare Managed Ruleset、OWASPのModSecurity Core Rule Setを実装したOWASP Core Ruleset、全プランで利用できるFree Managed Rulesetがあります。これに加えて、レスポンス(オリジンから返る中身)のフェーズで動作するSensitive Data Detectionがあり、機密データのダウンロードを監視します。\n{{diagram:0}}\n※ 旧来のExposed Credentials Check(漏洩した認証情報のチェック)は非推奨で、現在はLeaked credentials detectionの利用が推奨されています。",
       "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/",
-      "hint": "「リクエストを検査するもの」と「レスポンスの中身を監視するもの」の両方があることを考えましょう。",
+      "hint": "Cloudflareがあらかじめ用意するルールセットは1種類ではありません。それぞれが何を検査する役目なのか、一つずつ思い出しましょう。",
       "tags": [
         "waf",
         "practical"
@@ -23448,7 +23448,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflareは、全ドメインに単純なオン/オフで適用するBot Fight Mode(Free)、カテゴリごとに個別のアクションを設定できるSuper Bot Fight Mode(Pro・Business・Enterprise)、リクエスト単位のボットスコアで細かく制御できるBot Management(Enterpriseの有料アドオン)という3段階のBot対策製品を提供しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/",
-      "hint": "「単純なオン/オフ」「カテゴリ別に選べる」「1リクエストごとに数値でスコアリング」という3段階の粒度を考えましょう。",
+      "hint": "問われているのはボットを見分けて対処する製品そのものです。それぞれの制御の細かさがどう違うのかを思い出しましょう。",
       "tags": [
         "bots",
         "practical"
@@ -23552,7 +23552,7 @@
       "correctIndex": 3,
       "explanation": "Bot Fight ModeもSuper Bot Fight Mode(SBFM)も、サイトに来る自動化されたアクセス(ボット)を検出して対処する機能です。Bot Fight Modeが一律のオン/オフしか持たないのに対し、SBFMはカテゴリ(Definitely automated＝ほぼ確実に自動化・Likely automated＝自動化の可能性が高い・Verified bots＝身元が確認されたボット)ごとに個別のアクションを設定でき、加えてBot Analytics(ボット判定の状況を確認する分析画面)と、WAFカスタムルールのSkipアクションによる例外設定(特定の条件に当てはまるリクエストだけボット対策の対象から外す指定)を追加します。\n{{diagram:0}}\n※ リクエスト単位のボットスコアを使った細かい制御はSBFMには含まれません。それはBot Managementという別製品の領域です。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/",
-      "hint": "「一律オン/オフ」から「カテゴリ別に選べる」ようになった点と、例外を作れるようになった点を考えましょう。",
+      "hint": "上位版で増えるのは、運用者が手を加えられる範囲です。どこまで自分で選べるようになるのかを考えましょう。",
       "tags": [
         "bots",
         "practical"
@@ -23650,7 +23650,7 @@
       "correctIndex": 1,
       "explanation": "Super Bot Fight Modeは、届いたトラフィックがどれくらい自動化されたものかでカテゴリ分けし、カテゴリごとに個別のアクションを設定できる機能です。カテゴリはDefinitely automated traffic(明らかに自動化されたトラフィック)・Likely automated traffic(自動化されている可能性が高いトラフィック)・Verified bots(Cloudflareが身元を確認したボット)の3つです。\n{{diagram:0}}\n※ カテゴリ以外にも、Static resource protection・JavaScript detections・Optimize for WordPressといった追加設定があります。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/",
-      "hint": "「確実に自動」「おそらく自動」「Cloudflareが身元を保証した自動」という3段階の確信度を考えましょう。",
+      "hint": "SBFMが何を基準にトラフィックを分けているのかを考えましょう。ボットの用途か、危険度の高低か、自動化の度合いか。",
       "tags": [
         "bots",
         "practical"
@@ -24421,7 +24421,7 @@
       "correctIndex": 0,
       "explanation": "API Shieldのドキュメントは、APIならではの課題を4つ挙げています。(1)多くの企業が、自社でも把握していないエンドポイント(通称ゾンビエンドポイント)を含む大量のAPIを抱えている。(2)多くのAPIが「負のセキュリティモデル」(既知の攻撃だけをブロックし、それ以外は通す方式)で守られているため、クレデンシャルスタッフィング攻撃(どこかで漏れたIDとパスワードを大量に試す攻撃)や自動スキャンに弱い。(3)エンドポイントもユーザーも数が多いため、ブルートフォース攻撃が紛れて気づきにくい。(4)開発チーム自身が一般的でない使われ方を把握しきれていないため、高度な多段階攻撃はさらに気づきにくい。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/",
-      "hint": "「自分たちでも全容を把握しきれていない」規模のAPI群が抱える、発見しづらい種類のリスクを考えましょう。",
+      "hint": "ドキュメントが課題として挙げるのは、APIを作る側の不便さでしょうか、それとも守る側が見落としがちな点でしょうか。",
       "tags": [
         "api-shield",
         "practical"
