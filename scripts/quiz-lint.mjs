@@ -1103,6 +1103,26 @@ const REVIEWED_DIFFICULTY = [
   { id: 'dq-012', labeled: 'advanced', why: 'バッチ内 ack の再配信セマンティクスは Queues の上級論点' },
   { id: 'kv-017', labeled: 'advanced', why: 'Tiered Cache は階層構成を理解していないと答えられない' },
   { id: 'kv-018', labeled: 'advanced', why: 'Cache Reserve は R2 上の永続層という実装まで問うている' },
+  // 2026-09-15 一件ずつ読んで確かめた17件。score=-1 はいずれも「設問文が50字未満」というだけで、
+  // 内容はすべて Cloudflare 固有の細部であり一般知識では選べない。スコアラは形しか見ていない
+  //（否定的結果12件目 / known-issues.md 参照）。
+  { id: 'wf-011', labeled: 'advanced', why: 'ボディ検査の上限値と http.request.body.truncated は固有の細部' },
+  { id: 'ru-012', labeled: 'advanced', why: 'Bulk Redirects と WAF の実行順序は製品間の順序を知らないと解けない' },
+  { id: 'ru-013', labeled: 'advanced', why: 'Host オーバーライドが SNI を連動更新する挙動は固有' },
+  { id: 'dn-009', labeled: 'advanced', why: 'ネームサーバー TTL が他の NS レコードと独立である点は固有' },
+  { id: 'sl-006', labeled: 'advanced', why: 'Flexible が 443 以外で Full にフォールバックする挙動は固有' },
+  { id: 'sl-011', labeled: 'advanced', why: 'Origin CA が期限切れ通知を送らないという既知の制限は固有' },
+  { id: 'sl-017', labeled: 'advanced', why: '書き換え判断が EFF と Chrome のリストに基づく点は固有' },
+  { id: 'sp-006', labeled: 'advanced', why: 'Rocket Loader が非標準タグを使うため検証エラーになる点は固有' },
+  { id: 'sp-010', labeled: 'advanced', why: 'Early Hints の生成条件（拡張子・ステータス・Link ヘッダー）は固有' },
+  { id: 'tn-016', labeled: 'advanced', why: '--protocol の既定 auto と quic→http2 フォールバックは固有' },
+  { id: 'tn-018', labeled: 'advanced', why: 'ゼロダウンタイム更新の手順は運用上の固有知識' },
+  { id: 'cx-013', labeled: 'advanced', why: 'monitored が script-src と connect-src に限られる点は固有' },
+  { id: 'cx-016', labeled: 'advanced', why: 'アラート種別ごとに必要なプランが異なる点は固有' },
+  { id: 'dl-008', labeled: 'advanced', why: 'SSN に組み込みチェックサムが無く区切り文字形式のみ検証する点は固有' },
+  { id: 'em-008', labeled: 'advanced', why: 'Attribute が disposition と独立で複数付与される点は固有' },
+  { id: 'em-012', labeled: 'advanced', why: 'Outbound DLP の M365 E3/E5 要件と add-in の挿入段階は固有' },
+  { id: 'em-013', labeled: 'advanced', why: 'クライアント種別ごとの安定性の違いは固有' },
 ]
 
 function lintDifficulty(quizzes) {
