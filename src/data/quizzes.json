@@ -28293,8 +28293,8 @@
           "wrongFeedback": "そのゾーン内だけで完結するわけではありません。CNAMEチェーンの先がプロキシ済みであれば、`example.com`宛てのトラフィックもプロキシされたものとして扱われます。"
         },
         {
-          "text": "CNAMEチェーンをまたいだプロキシの伝播は発生せず、`example.com`側のCNAMEを個別にプロキシ済みに設定しない限りDNS-onlyのままである",
-          "wrongFeedback": "CNAMEチェーンの先がプロキシ済みであれば、伝播してトラフィックがプロキシされたものとして扱われます。"
+          "text": "`example.com`宛てのトラフィックはプロキシされたものとして扱われるが、プロキシ済みのCNAMEレコードはフラット化されないため、DNSの応答にはCNAMEがそのまま返る",
+          "wrongFeedback": "プロキシ済みのCNAMEレコードは既定でフラット化され、DNSの応答にはCloudflareのanycast IPが返ります。CNAMEがそのまま返ることはありません。"
         }
       ],
       "correctIndex": 0,
