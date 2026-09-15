@@ -9084,22 +9084,22 @@
           "text": "2つのリクエストをキャッシュ上で同一とみなす基準をカスタマイズする"
         },
         {
-          "text": "エッジのキャッシュに保存したレスポンスを暗号化・復号するための鍵を指定する",
-          "wrongFeedback": "暗号化に関するオプションではありません。キャッシュの同一性判定に使う識別子を指定するものです。"
+          "text": "通常はキャッシュされないファイル種別まで含めて、エッジのキャッシュ対象そのものを広げる",
+          "wrongFeedback": "これはキャッシュの対象範囲を広げるオプションの説明です。`cacheKey`が決めるのは何をキャッシュするかではなく、2つのリクエストをキャッシュ上で同一とみなすかどうかの判定基準です。"
         },
         {
-          "text": "Workers KVに保存するときのキー名を上書きするオプションであり、指定した文字列がKVのキー名として扱われる",
-          "wrongFeedback": "cacheKeyはHTTPキャッシュ(Cache API/エッジキャッシュ)のキーを指す概念であり、Workers KVのキー名とは無関係です。"
+          "text": "レスポンスにCache-Tagヘッダーを付け、タグ単位でまとめてパージできるようにする",
+          "wrongFeedback": "これはキャッシュタグを付けるオプションの説明です。タグはパージの単位を作るためのもので、`cacheKey`が決めるのはリクエスト同士を同一とみなす基準のほうです。"
         },
         {
-          "text": "オリジンへの認証トークンを指定するオプションであり、その値がAuthorizationヘッダーとして送信される",
-          "wrongFeedback": "認証とは無関係です。cacheKeyはキャッシュの識別に使われる文字列です。"
+          "text": "レスポンスのステータスコードごとに保持時間を選び、オリジンの指示を上書きする",
+          "wrongFeedback": "これはステータスコード別に保持時間を決めるオプションの説明です。`cacheKey`が指定するのは保持時間ではなく、キャッシュ上での同一性の判定に使われる識別子です。"
         }
       ],
       "correctIndex": 0,
       "explanation": "「A request's cache key is what determines if two requests are the same for caching purposes」と公式ドキュメントにある通り、cacheKeyは2つのリクエストをキャッシュ上で同一とみなすかどうかの判定基準です。cf.cacheKeyで独自の文字列を指定すると、通常はURLなどから自動生成されるキーを上書きし、異なるURLでも同じキーなら同一のキャッシュエントリとして扱われます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
-      "hint": "`cf` に書けるのは、そのfetch()をCloudflareのネットワークとキャッシュがどう扱うかの指示です。別のストレージサービスの設定やオリジンへの認証とは層が違う、という点から絞り込みましょう。",
+      "hint": "4つの肢は、どれも`cf`に書けるキャッシュ関連の指示です。その中で、オプション名にある`key`という語が担う役割はどれかを考えましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -9431,22 +9431,22 @@
           "text": "`drizzle-orm/d1` ドライバを使い、`drizzle(env.DB)` のようにD1のバインディングを渡してDrizzleのクライアントを初期化する"
         },
         {
-          "text": "D1にはORM機能が組み込まれており、追加のライブラリなしに`env.DB.orm()`を呼び出すだけで、スキーマ定義からマイグレーション生成、型安全なクエリビルダまで一通り使える",
-          "wrongFeedback": "D1自体にORM機能は組み込まれていません。Drizzleなど外部のORMライブラリと組み合わせて使う必要があります。"
+          "text": "Prismaが提供する`@prisma/adapter-d1`のアダプタを`PrismaD1(env.DB)`で作り、そのアダプタをDrizzleのクライアントに渡して初期化する",
+          "wrongFeedback": "`@prisma/adapter-d1`はPrisma ClientをD1につなぐためのドライバアダプタで、Prisma ORM側の仕組みです。DrizzleはD1向けに`drizzle-orm/d1`という自前のドライバを持っており、`drizzle(env.DB)`のようにD1のバインディングを直接受け取ります。CloudflareのコミュニティプロジェクトのページもPrisma ORMとDrizzle ORMを別々の項目として案内しています。"
         },
         {
-          "text": "D1をDrizzleで使うには、まずMySQL互換モードを`wrangler.toml`で有効にする設定が必要",
-          "wrongFeedback": "そのような互換モード設定は存在しません。D1はSQLite方言のため、Drizzleのsqlite用アダプタ(`drizzle-orm/d1`)をそのまま使います。"
+          "text": "`wrangler d1 migrations create`で作ったマイグレーションからD1がTypeScriptのスキーマ定義を生成し、それをDrizzleが読み込んでクライアントを初期化する",
+          "wrongFeedback": "生成の向きが逆です。D1のマイグレーションは`migrations`フォルダに置く`.sql`ファイルで、`wrangler d1 migrations create`が作るのは空のマイグレーションファイルです。TypeScriptで定義した型からD1のスキーマを起こすのはDrizzle側の役割で、Wranglerはその出力を適用する側にあたります。"
         },
         {
-          "text": "DrizzleはNode.jsのファイルシステムAPIに依存しているため、Workers環境(D1)では動作しない",
-          "wrongFeedback": "Drizzleは`drizzle-orm/d1`という専用アダプタを提供しており、Workers環境でD1と組み合わせて利用できます。"
+          "text": "KyselyのD1アダプタ(`kysely-d1`)でD1との接続を先に作り、その接続の上にDrizzleを重ねてスキーマ定義と型安全なクエリビルダを使う",
+          "wrongFeedback": "重ね方が違います。KyselyのD1アダプタとDrizzleは、どちらもD1のバインディングを直接受け取る独立した選択肢として並んでいます。KyselyのD1アダプタの上に作られているのは`feathers-kysely`であり、Drizzleではありません。"
         }
       ],
       "correctIndex": 0,
       "explanation": "Drizzle ORMは`drizzle-orm/d1`という専用アダプタを提供しており、`drizzle(env.DB)`のようにD1のバインディングをそのまま渡すことでDrizzleのクライアントを初期化できます。これによりスキーマ定義・マイグレーション生成・型安全なクエリビルダをD1上で利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/reference/community-projects/#drizzle-orm",
-      "hint": "この組み合わせで新しく用意するものが、どちら側にあるかを考えましょう。D1側に設定やモードを足すのか、ORM側が用意しているものを使うのか、そもそも何も足さずに済むのか。",
+      "hint": "スキーマの型定義とSQLのどちらを先に書くのか、そしてD1のバインディングを受け取る役はどのライブラリが担うのか。4つの肢はこの2点で分かれています。",
       "tags": [
         "d1",
         "practical"
@@ -9832,16 +9832,16 @@
       "question": "Workers バインディングでR2オブジェクトを取得する際、オブジェクトが前回取得時から変更されていない場合は処理をスキップしたい（不要な転送や上書きを防ぎたい）というケースで使える仕組みはどれですか？",
       "options": [
         {
-          "text": "delete()メソッドを呼び出してから再度put()する",
-          "wrongFeedback": "削除して再作成するのは非効率かつ目的に合いません。変更有無の判定にはETagを使った条件付きリクエストを使います。"
+          "text": "前回取得時のETag(httpEtag)をput()のmd5オプションに渡しておくと、中身が同じときはアップロードが省かれる",
+          "wrongFeedback": "md5に渡すのは、アップロードしたオブジェクトが壊れていないかを確かめるための整合性チェック用のハッシュです。ハッシュが合わなければアップロードが失敗するだけで、一致したときに書き込みを省く仕組みではありません。変更の有無で処理を分けるのは onlyIf の役割です。"
         },
         {
-          "text": "put()メソッドのhttpMetadataオプションでCache-Controlとmax-ageを設定し、期限内は再取得をスキップさせる",
-          "wrongFeedback": "Cache-Controlはキャッシュ挙動のヒントであり、R2バインディング自体が変更有無を判定して処理をスキップする仕組みではありません。"
+          "text": "前回取得時のETag(httpEtag)をput()のhttpMetadataにCache-Controlとして書き戻すと、期限内のget()では本文が転送されない",
+          "wrongFeedback": "httpMetadataに入るのは、contentTypeやcacheControlなどオブジェクトに紐づくHTTPヘッダーの値です。保存され、取得時に返されるだけで、R2のバインディングがこの値を見て本文の転送を省くわけではありません。条件付きの判定は onlyIf に渡します。"
         },
         {
-          "text": "list()メソッドのprefixオプションでキーを絞り込む",
-          "wrongFeedback": "prefixはキーのフィルタリング機能であり、変更有無の判定とは関係ありません。"
+          "text": "前回取得時のETag(httpEtag)をcustomMetadataに保存しておくと、次のput()でR2が突き合わせ、一致すれば書き込みを省く",
+          "wrongFeedback": "customMetadataは利用者が自由に付けられるメタデータで、オブジェクトと一緒に保存されるだけです。R2が保存済みの値と自動で突き合わせることはありません。ETagによる判定は onlyIf に渡す条件で行います。"
         },
         {
           "text": "get()やput()メソッドの onlyIf オプションにETag（httpEtag）を指定し、条件付きリクエストを行う"
@@ -10317,19 +10317,19 @@
       "question": "Durable Object内で、接続中の全WebSocketクライアントにメッセージをブロードキャストする際の一般的な実装として適切なものはどれですか？",
       "options": [
         {
-          "text": "ブロードキャストする際は、ハイバネートしたDurable Objectをいったん再起動してすべてのWebSocket接続を再確立してから、それぞれにsend()する必要がある",
-          "wrongFeedback": "再起動や再接続は不要です。ハイバネート状態から復帰したDOでも、getWebSockets()で保持中の接続を取得してそのまま送信できます。"
+          "text": "ctx.getWebSockets()で取得した接続のうちreadyStateがOPENのものを1つの封筒にまとめ、代表の接続1本にsend()すると、ランタイムが残りの接続へ配信を広げる",
+          "wrongFeedback": "バッチ化の目的が違います。ドキュメントが勧めるバッチ化は、1本の接続へ送る小さなメッセージを1つのフレームにまとめてコンテキストスイッチを減らすためのもので、宛先を広げる仕組みではありません。ブロードキャストはctx.getWebSockets()で取得した接続を1本ずつ回し、それぞれにsend()します。"
         },
         {
-          "text": "ctx.storageに保存しておいた接続一覧をfetch()で毎回問い合わせてから送信する",
-          "wrongFeedback": "接続情報をストレージに保存して`fetch`で問い合わせるような仕組みはありません。ctx.getWebSockets()で現在保持しているWebSocketを直接取得します。"
+          "text": "各接続のserializeAttachment()に接続の一覧を保存しておき、ブロードキャストのたびにdeserializeAttachment()で読み戻した一覧に対してsend()する",
+          "wrongFeedback": "serializeAttachment()とdeserializeAttachment()は、その接続自身の状態をハイバネーションをまたいで持ち越すためのものです。ほかの接続の一覧を手に入れるためのものではなく、接続そのものはctx.getWebSockets()から取得します。"
         },
         {
           "text": "ctx.getWebSockets()で保持中の全WebSocketを取得し、readyStateがOPENであることを確認してからそれぞれにsend()する"
         },
         {
-          "text": "全クライアントへの一括送信はサポートされておらず、必ず1対1のメッセージ送信のみ可能である",
-          "wrongFeedback": "getWebSockets()を使えば、1つのDurable Objectに接続している全クライアントへブロードキャストできます。"
+          "text": "コンストラクタで初期化した配列にctx.acceptWebSocket()した接続を溜めておき、ハイバネートから復帰しても配列の中身は保持されるので、その配列を回してsend()する",
+          "wrongFeedback": "ハイバネート中はメモリ上の状態が初期化され、復帰時にコンストラクタが走り直すため、配列は空に戻ります。接続の一覧は自前で持つのではなく、ctx.getWebSockets()から取得します。"
         }
       ],
       "correctIndex": 2,
@@ -10818,25 +10818,25 @@
       "question": "Cloudflare Pages のビルドキャッシュに関する説明として正しいものはどれか。",
       "options": [
         {
-          "text": "ビルドキャッシュはCDNのキャッシュ(配信済みコンテンツのキャッシュ)と同一であり、パージ操作も共通であるため、CDNをパージするとビルド時のキャッシュも消える",
-          "wrongFeedback": "ビルドキャッシュはビルド時の依存関係キャッシュであり、配信コンテンツのCDNキャッシュとは別の仕組みです。"
+          "text": "ビルドキャッシュは既定で有効になっており、依存関係の不整合が疑われるときに設定画面から無効化(Disable)する",
+          "wrongFeedback": "初期状態が逆です。Pagesのビルドキャッシュは、Settings > Build > Build cache で Enable を選んで有効化してはじめて働きます。有効化したあとの最初のビルドがキャッシュを保存し、以降のビルドがそこから復元します。クリーンな状態に戻したいときは同じ画面の Clear Cache を使います。"
         },
         {
           "text": "依存関係のキャッシュをビルド間で再利用する機能で、プロジェクト設定で明示的に有効化(Enable)する必要がある"
         },
         {
-          "text": "ビルドキャッシュを利用するには、プロジェクトごとに専用のR2バケットを事前に手動作成し明示的に紐付ける必要があり、用意しない限り機能自体を使えない",
-          "wrongFeedback": "ビルドキャッシュはPages側で自動的に管理される仕組みであり、R2バケットを手動作成して紐付ける必要はありません。"
+          "text": "キャッシュはデプロイごとに独立して作られ、同じプロジェクトでも前のデプロイのキャッシュは参照されない",
+          "wrongFeedback": "共有の単位が違います。ビルドキャッシュはプロジェクト全体で共有されるキャッシュで、有効化後の最初のビルドが保存し、以降のビルドがそこから復元します。デプロイごとに作り直されるものではありません。"
         },
         {
-          "text": "ビルドキャッシュは常に無効化されており、Pagesのビルドは毎回必ずゼロから依存関係をインストールするため、有効化する設定項目自体が存在しない",
-          "wrongFeedback": "Pagesはビルドキャッシュを有効化(Enable)すればビルド間で依存関係キャッシュを再利用できる仕組みを持っており、機能自体が常に無効というわけではありません。"
+          "text": "V1ビルドシステムのプロジェクトでのみ利用でき、V2以降のビルドイメージでは毎回クリーンな状態から依存関係をインストールする",
+          "wrongFeedback": "世代が逆です。ビルドキャッシュにはV2ビルドシステム以降が必要で、V1のプロジェクトはV2へ更新してから利用します。"
         }
       ],
       "correctIndex": 1,
       "explanation": "Pages のビルドキャッシュは、プロジェクト設定(Settings > Build > Build cache)で有効化(Enable)することで、`node_modules` 等の依存関係キャッシュをビルド間で再利用できる機能です。デフォルトで有効になっているわけではありません。依存関係の不整合などでクリーンな状態からビルドし直したい場合は、同じ設定画面からキャッシュをクリア(Clear Cache)します。\n{{diagram:0}}\nこれは配信コンテンツを対象とするCDNキャッシュとは異なる、ビルドプロセス専用のキャッシュです。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-caching/",
-      "hint": "この機能が溜めているのは何で、それがいつ使われるのかを考えましょう。使い始めるために自分で用意したり操作したりする必要があるものがあるかどうかも、合わせて確かめてください。",
+      "hint": "このキャッシュがいつから効き始めるのか、どの単位で共有されるのか、どの世代のビルドシステムで使えるのか。4つの肢はこの3点のどこかが違います。",
       "tags": [
         "pages-deploy",
         "trivia"
@@ -13673,25 +13673,25 @@
       "question": "Browser Run を Worker から使ってスクリーンショットを撮る際の基本的な構成として正しいものはどれですか？",
       "options": [
         {
-          "text": "ブラウザ操作は `fetch` でHTMLを取得するのと完全に同じ処理であり、返るのはサーバーが返した初期HTMLのみで、JavaScript実行後の状態やスクリーンショットは扱えない",
-          "wrongFeedback": "単なる`fetch`と違い、ヘッドレスChromeが実際にページを描画するため、JavaScript実行後の状態やスクリーンショットを扱えます。"
+          "text": "`@cloudflare/puppeteer`を読み込んで`puppeteer.launch()`を引数なしで呼ぶとヘッドレスChromeへ自動で接続されるため、`wrangler`側は`nodejs_compat`フラグだけでよい",
+          "wrongFeedback": "バインディングを引数として渡す必要があります。Wranglerの設定に`\"browser\": { \"binding\": \"MYBROWSER\" }`を追加したうえで、コードでは`puppeteer.launch(env.MYBROWSER)`のようにそのバインディングを渡してブラウザを起動します。"
         },
         {
-          "text": "Worker から任意のOSコマンドで `chrome` を直接起動する",
-          "wrongFeedback": "WorkerからOSコマンドは実行できません。Browser バインディングと Puppeteer/Playwright を介してヘッドレスChromeを操作します。"
+          "text": "Browserのバインディングを設定し、`env.MYBROWSER.fetch()`にページのURLを渡して画像を受け取る。Quick Actionsの`/screenshot`は外部から叩くとき専用の窓口になる",
+          "wrongFeedback": "バインディングはPuppeteerやPlaywrightに渡して使うもので、URLを渡すと画像が返るエンドポイントではありません。Worker内では`puppeteer.launch(env.MYBROWSER)`でブラウザを起動し、`page.goto()`と`page.screenshot()`で撮影します。Quick Actionsのエンドポイントは、コードを配置せずに単発のHTTPリクエストで済ませたいときの選択肢です。"
         },
         {
           "text": "Browser のバインディングを設定し、`@cloudflare/puppeteer` などで Puppeteer/Playwright を使って操作やスクリーンショット取得を行う"
         },
         {
-          "text": "画面描画は Turnstile のトークン経由で取得する",
-          "wrongFeedback": "Turnstile はボット判定の機能で、画面描画とは無関係です。Browser Run のバインディングを使います。"
+          "text": "Browserのバインディングを設定したうえで、標準の`playwright`パッケージを`nodejs_compat`を有効にして読み込み、`chromium.launch()`でCloudflare側のヘッドレスChromeを起動する",
+          "wrongFeedback": "Cloudflareが用意しているのはPuppeteerとPlaywrightのフォークです。ドキュメントは`@cloudflare/puppeteer`をインストールする手順を示しており、Playwrightについても同様にCloudflareのフォークを使うよう案内しています。`chromium.launch()`のような起動の呼び出しでも、Browserのバインディングを引数として渡します。"
         }
       ],
       "correctIndex": 2,
       "explanation": "Browser Run は Worker に Browser のバインディングを設定し、`@cloudflare/puppeteer` などのライブラリで Puppeteer/Playwright のAPIを使って操作します。\n{{diagram:0}}\n実際にヘッドレスChromeがページを描画するため、単なる `fetch` では得られない「JavaScript実行後の見た目」をスクリーンショットやPDFとして取得できます。",
       "referenceUrl": "https://developers.cloudflare.com/browser-run/how-to/deploy-worker/",
-      "hint": "単なるHTML取得(fetch)ではなく、実際にページを「描画」する必要があります。何のライブラリで操作するでしょう。",
+      "hint": "Workerの中から使うときは、どのパッケージを読み込み、ヘッドレスChromeへの入り口をどうやってコードに渡すのかを考えましょう。",
       "tags": [
         "platform-services",
         "practical"
@@ -14156,25 +14156,25 @@
       "question": "Workers Logsの制限に関する説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "ログの保存期間は無期限で、過去すべてのログをダッシュボードから遡って確認できる",
-          "wrongFeedback": "保存期間は無期限ではなく、最大7日間です。"
+          "text": "保存期間は最大7日間で、1日あたり50億件を超えて記録されたログは切り詰められ、`$cloudflare.truncated`フラグが立つ",
+          "wrongFeedback": "上限と結果の組み合わせが入れ替わっています。切り詰められて`$cloudflare.truncated`が立つのは、1件あたり256KBを超えたログです。1アカウント1日50億件を超えた場合は、その日の残りに1%のhead-basedサンプリングが適用されます。"
         },
         {
-          "text": "1アカウントあたりの記録可能なログ件数に上限はなく、`head_sampling_rate`を`1`にしておけばトラフィックがどれだけ増えても課金額以外の制約はない",
-          "wrongFeedback": "1日あたり50億件という上限があり、超過分には自動的に1%のサンプリングが適用されます。"
+          "text": "1件あたりのログサイズの上限は256KBで、超えたログはその1件が丸ごと破棄される。保存期間はWorkers Freeで7日間、Workers Paidで30日間",
+          "wrongFeedback": "超えたログは破棄ではなく切り詰められ、`$cloudflare.truncated`フィールドが`true`になります。保存期間も30日ではなく、Workers Freeが3日間、Workers Paidが7日間で、ドキュメントが上限として挙げるのは最大7日間です。"
         },
         {
           "text": "ログの保存期間は最大7日間で、1件あたりのログサイズは256KBまで、超過分は切り詰められて`$cloudflare.truncated`フラグが立つ"
         },
         {
-          "text": "1件のログのサイズに上限はなく、どれだけ大きなオブジェクトでもそのまま記録される",
-          "wrongFeedback": "1件のログサイズには256KBの上限があり、それを超えると切り詰められます。"
+          "text": "1日あたり50億件を超えるとその日の残りはログの記録が止まる。`head_sampling_rate`の既定値は`0.01`で、`1`を明示しない限り1%しか記録されない",
+          "wrongFeedback": "50億件を超えても記録そのものが止まるわけではなく、その日の残りに1%のhead-basedサンプリングが適用されます。また`head_sampling_rate`の既定値は`1`(100%)で、指定しなければ全リクエストが記録されます。"
         }
       ],
       "correctIndex": 2,
       "explanation": "Workers Logsの保存期間は最大7日間、1件あたりのログサイズ上限は256KBです。上限を超えたログは切り詰められ、`$cloudflare.truncated`フィールドが`true`になります。また1アカウントあたり1日50億件の上限があり、超過後は1%のhead-based samplingが自動適用されます。\n{{diagram:0}}\n本番運用では、この制限を踏まえてサンプリング率を調整する必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#limits",
-      "hint": "ログは「ずっと残る」わけではなく、期間にもサイズにも上限があることを思い出しましょう。",
+      "hint": "上限の数値そのものよりも、上限を超えたときに何が起きるかで4つの肢は分かれています。どの上限にどの結果が結びつくのかを確かめましょう。",
       "tags": [
         "observability",
         "practical"
@@ -14426,16 +14426,16 @@
       "question": "Workers Analytics EngineのSQL APIにクエリを送信する方法として正しいものはどれですか？",
       "options": [
         {
-          "text": "GraphQL Analytics APIのエンドポイントに対して、SQL構文をそのまま送信する",
-          "wrongFeedback": "SQL構文を受け付けるのはSQL APIの専用エンドポイントであり、GraphQL Analytics APIとは別のAPIです。"
+          "text": "`analytics_engine_datasets`バインディングの`writeDataPoint()`に`SELECT`文を渡し、`Account Analytics Read`権限のトークンはシークレットから読んで認証する",
+          "wrongFeedback": "`writeDataPoint()`はその名のとおりデータ点を**書き込む**ためのメソッドで、呼び出すとすぐに返り、書き込みはランタイムが裏で行います。結果を受け取るメソッドではありません。書き込んだデータを読むときは、SQL APIのエンドポイントへHTTPリクエストを送ります。"
         },
         {
-          "text": "`Account Analytics Read`権限を持つAPIトークンではなく、Workerのデプロイに使うAPIトークンをそのまま流用する",
-          "wrongFeedback": "SQL API用には`Account Analytics Read`権限を持つ専用のAPIトークンを作成して使う必要があります。"
+          "text": "`Account Analytics Read`権限のAPIトークンで`Authorization: Bearer <token>`ヘッダーを付け、GraphQL Analytics APIのエンドポイントへクエリ本文をPOSTする",
+          "wrongFeedback": "宛先が違います。SQL文の本文を受け取るのは`https://api.cloudflare.com/client/v4/accounts/<account_id>/analytics_engine/sql`というSQL API専用のアドレスです。GraphQL Analytics APIは同じデータを別のクエリ言語で取得するための、もう一つの経路です。"
         },
         {
-          "text": "Workerのシークレットに直接SQLクエリ文字列を保存し、`env`経由でダッシュボードへ自動転送する",
-          "wrongFeedback": "SQL APIはHTTPエンドポイントへの直接リクエストで利用します。シークレット経由の自動転送という仕組みはありません。"
+          "text": "Workerのデプロイに使う`Workers Scripts Edit`権限のAPIトークンで`Authorization: Bearer <token>`を付け、SQL APIのエンドポイントへクエリ本文をPOSTする",
+          "wrongFeedback": "権限が違います。ドキュメントはカスタムトークンの作成手順として、Permissions に Account / Account Analytics / Read を選ぶよう案内しています。`Workers Scripts Edit`のようなデプロイ用の権限では、SQL APIのデータを読めません。"
         },
         {
           "text": "`Account Analytics Read`権限のAPIトークンで`Authorization: Bearer <token>`ヘッダーを付け、SQL APIのエンドポイントへクエリ本文をPOSTする"
@@ -14444,7 +14444,7 @@
       "correctIndex": 3,
       "explanation": "SQL APIは`https://api.cloudflare.com/client/v4/accounts/<account_id>/analytics_engine/sql`というエンドポイントに対し、`Account Analytics Read`権限を持つAPIトークンで`Authorization: Bearer <token>`ヘッダーを付けてクエリ本文をPOSTすることで利用できます。\n{{diagram:0}}\nダッシュボードと同じデータを、GraphQL Analytics APIを介さず直接SQLで取得できます。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/sql-api/#authentication",
-      "hint": "APIを叩くときにいつも必要な、「誰がアクセスしていいかを証明するもの」が何かを考えましょう。",
+      "hint": "クエリを実行する窓口はWorkerのバインディングなのか、それともHTTPのエンドポイントなのか。エンドポイントなら、どの権限のトークンでどこへ送るのかを考えましょう。",
       "tags": [
         "observability",
         "practical"
@@ -16069,22 +16069,22 @@
           "text": "`dispatch_namespaces`バインディングに`binding`名と`namespace`名を設定し、`env.DISPATCHER.get(workerName)`で対象のuser Workerを取得する"
         },
         {
-          "text": "`durable_objects`バインディングでnamespaceを指定し、`env.NAMESPACE.idFromName(workerName)`でIDを求めてから`get()`でuser Workerのスタブを取得する",
-          "wrongFeedback": "Durable Objectsのバインディングではなく、専用の`dispatch_namespaces`バインディングを使います。"
+          "text": "`dispatch_namespaces`バインディングに`binding`名と`namespace`名を設定し、`env.DISPATCHER.fetch(request)`を呼べば、ホスト名と同じ名前のuser Workerへ振り分けられる",
+          "wrongFeedback": "バインディングを設定しただけでは振り分けは起きません。どのuser Workerを呼ぶかはコード側で決めます。ホスト名やパスから名前を取り出し、`env.DISPATCHER.get(userWorkerName)`でuser Workerを取得してから、そのオブジェクトの`fetch(request)`を呼びます。"
         },
         {
-          "text": "`vars`にnamespace名を文字列で設定し、`fetch(vars.NAMESPACE + workerName)`のようにURLを組み立てて呼び出す",
-          "wrongFeedback": "`vars`ではなく`dispatch_namespaces`バインディングを使い、`env.DISPATCHER.get()`でWorkerのスタブを取得します。"
+          "text": "`dispatch_namespaces`バインディングの`namespace`の下に呼び出したいuser Workerの名前を1つずつ列挙し、列挙したものだけが`env.DISPATCHER.get(workerName)`で取得できる",
+          "wrongFeedback": "個々のuser Workerを設定に書き出す必要はありません。バインディングに書くのは`binding`名と`namespace`名だけで、これだけでnamespace内の任意のuser Workerを`env.DISPATCHER.get()`から呼び出せます。"
         },
         {
-          "text": "`kv_namespaces`にnamespace名を指定し、`env.KV.get(workerName)`でWorkerを取得する",
-          "wrongFeedback": "KVバインディングではなく`dispatch_namespaces`という専用のバインディングを使います。"
+          "text": "`dispatch_namespaces`バインディングを設定し、`env.DISPATCHER.get(workerName, {}, { limits })`の`limits`にホスト名とuser Workerの対応表を書いて、振り分け先を決める",
+          "wrongFeedback": "第3引数の`limits`は、そのuser Workerに与えるCPU時間やサブリクエスト数の上限を指定するものです。呼び出す相手を決めるのは第1引数に渡すWorkerの名前のほうです。"
         }
       ],
       "correctIndex": 0,
       "explanation": "wrangler設定に`dispatch_namespaces`バインディング(`binding`名と`namespace`名を指定)を追加すると、dynamic dispatch Workerは`env.DISPATCHER.get(workerName)`のようにしてnamespace内の任意のuser Workerを取得・呼び出せます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/dynamic-dispatch/#configure-the-dispatch-namespace-binding",
-      "hint": "namespace内のWorkerを「名前で取り出す」ために、どんな専用の入り口が用意されているか考えましょう。",
+      "hint": "バインディングの設定に書くのは何か、そしてnamespaceの中のどれを呼ぶかを決めるのは設定側か、コード側か。この2点で4つの肢を比べましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -18713,16 +18713,16 @@
       "question": "Cloudflare Workers VPCの目的として正しいものはどれですか？",
       "options": [
         {
-          "text": "Workerのデプロイ先リージョンをあらかじめ固定しておき、特定の国・地域のデータセンターだけで必ず実行されるように制約するためだけの専用の仕組み",
-          "wrongFeedback": "リージョン固定の機能ではありません。プライベートネットワーク内のリソースへの接続を可能にする仕組みです。"
+          "text": "CloudflareのD1・R2・KVといった自社のサービスへのアクセスを、パブリックインターネットを経由しない専用の経路に切り替え、Workerからの通信を同じアカウントの内側に閉じる",
+          "wrongFeedback": "つなぐ先が違います。D1・R2・KVといったCloudflare自身のサービスは、Workerのバインディングから直接利用します。Workers VPCが対象にするのは、AWS・Azure・GCPやオンプレミスなど、Cloudflareの外にあってパブリックインターネットからは到達できないプライベートなリソースです。"
         },
         {
-          "text": "Workerのソースコードを暗号化し、デプロイ後は誰にも読み取れないようにする",
-          "wrongFeedback": "ソースコードの暗号化機能ではありません。プライベートネットワークへの接続を提供する仕組みです。"
+          "text": "Workerのコードを外部クラウドのVPC内のインスタンスへ配置して実行し、そのVPCと同じネットワークの内側からプライベートなサービスを呼べるようにする",
+          "wrongFeedback": "Workerが動く場所は変わりません。WorkerはこれまでどおりCloudflareのネットワーク上で動き、リクエストがCloudflare Tunnelを通ってプライベートネットワーク内の対象サービスへ届き、応答が返ってきます。"
         },
         {
-          "text": "複数のWorker間でグローバルな共有状態を提供し、Durable Objectsの代替として使う仕組み",
-          "wrongFeedback": "Workers VPCはプライベートネットワークへの接続経路を用意するもので、複数のWorker間で状態を共有する仕組みではありません。共有状態が要る場面では引き続きDurable Objectsを使います。両者は代替関係にありません。"
+          "text": "社内向けのアプリケーションを、Cloudflare Accessのポリシーとホスト名で従業員だけに安全に公開する",
+          "wrongFeedback": "通信の向きが逆です。社内アプリケーションをCloudflare Accessとホスト名で従業員に公開する使い方は、Cloudflare Zero TrustでのTunnelの用途としてドキュメントが別に案内しているものです。Workers VPCは、Workerの側からプライベートなAPI・データベース・内部サービスへアクセスするための仕組みです。"
         },
         {
           "text": "AWS・Azure・GCPなど外部クラウド上の、パブリックインターネットからアクセスできないプライベートなAPI・サービス・DBに安全に接続する"
@@ -18731,7 +18731,7 @@
       "correctIndex": 3,
       "explanation": "Workers VPCは、AWS・Azure・GCP・オンプレミスなど外部クラウド上にあり、パブリックインターネットからは到達できないプライベートなAPI・サービス・データベースに、Workerから安全に接続できるようにする仕組みです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/",
-      "hint": "4つの肢は、実行する場所・コードの秘匿・状態の共有・ネットワークのつなぎ先という、別々の話をしています。製品名の `VPC` がこのうちどれに関わる語かを手がかりにしましょう。",
+      "hint": "Worker自身はどこで動き、つなぎたい相手はどこにいるのでしょうか。そして通信は、外から社内へ入ってくる向きでしょうか、Workerから相手へ出ていく向きでしょうか。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -20768,16 +20768,16 @@
       "question": "Cloudflare PipelinesのSinksに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "ファイルを書き出す頻度や粒度はあらかじめ固定されており、利用者側で低レイテンシ寄りかクエリ性能寄りかを調整することはできない",
-          "wrongFeedback": "低レイテンシ向けに頻繁に小さいファイルを書き出すことも、クエリ性能向けに大きなファイルを書き出すことも設定で調整できます。"
+          "text": "HTTPエンドポイントやWorkerバインディングからイベントを受け取り、スキーマを検証しながら順序を保って貯めておく入り口で、書き出し先はR2 Data CatalogのIcebergテーブルに固定されている",
+          "wrongFeedback": "役割が入れ替わっています。HTTPエンドポイントやWorkerバインディングでイベントを受け取り、スキーマを検証しながら貯めておくのはStreamsです。Sinksは書き出し先のほうで、R2 Data CatalogのIcebergテーブルにも、R2の生のJSON・Parquetファイルにも書けます。"
         },
         {
-          "text": "配信の際にデータが重複したり欠落したりすることが仕様上許容されており、下流のシステム側でその重複排除・補完を行う設計になっている。利用者はクエリ時にタイムスタンプやIDをもとに重複行を除去し、欠落分は別経路で再取得する必要がある",
-          "wrongFeedback": "Sinksはexactly-once(正確に1回)の配信保証を提供し、データの重複や欠落が起きないよう設計されています。"
+          "text": "Streamsから読んだイベントにSQL変換をかけてR2へJSONまたはParquetとして書き出す役割で、Icebergテーブルへの書き込みはR2 Data Catalog側で別に設定する",
+          "wrongFeedback": "SQL変換はStreamsとSinksをつなぐPipelinesの役割です。SinksはR2 Data CatalogへApache Icebergテーブルとして直接書き込めるので、Iceberg出力のためにR2 Data Catalog側で別の設定を組む必要はありません。"
         },
         {
-          "text": "Sinksが配信できる先はWorkers KVのみに限定されており、R2バケットへ直接書き込むことには対応していない",
-          "wrongFeedback": "SinksはR2への書き込みに対応しています(Iceberg形式のR2 Data Catalog、またはJSON/Parquet形式のR2)。KV専用ではありません。"
+          "text": "R2 Data CatalogへApache Icebergテーブルとして、またはR2へJSON/Parquetとして書き込むことができ、配信はat-least-onceの保証なので下流での重複排除が要る",
+          "wrongFeedback": "配信保証が逆です。Sinksはexactly-once(正確に1回)の配信を保証し、イベントが重複することも落ちることもないよう設計されています。下流での重複排除は前提になっていません。"
         },
         {
           "text": "R2 Data CatalogへApache Icebergテーブルとして、またはR2へJSON/Parquetとして書き込むことができ、exactly-onceの配信を保証する"
@@ -20786,7 +20786,7 @@
       "correctIndex": 3,
       "explanation": "Sinksは、R2 Data CatalogへApache Icebergテーブルとして、またはR2へ生のJSON・Parquetファイルとして書き込む、Pipelinesのデータ配信先です。データが重複・欠落しないexactly-onceの配信を保証し、低レイテンシ向けに頻繁にファイルを書き出す設定や、クエリ性能向けに大きなファイルをまとめて書き出す設定を選べます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/sinks/",
-      "hint": "どこへ書けるか・重複や欠落が起きうるのか・書き出しの粒度を変えられるか。この3点で4つの肢を比べましょう。",
+      "hint": "どこへ書けるか、イベントを受け取る役とSQLで変換する役はどこにあるか、配信で重複や欠落が起きうるか。この3点で4つの肢を比べましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -29883,19 +29883,19 @@
       "question": "Cloudflare Observatoryが提供する2種類のデータソースの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Cloudflareのサーバーログのみを分析するログベースの計測と、外部SaaSベンダーが提供するサードパーティ計測の2種類",
-          "wrongFeedback": "ログベースの計測やサードパーティ計測ではありません。Observatoryは合成テストとリアルユーザーモニタリング(RUM)の2種類のデータソースを組み合わせます。"
+          "text": "実際のユーザーのブラウザから集めるリアルユーザーモニタリング(RUM)と、Google Lighthouseのスコアを外部のPageSpeed Insightsから取り込んで並べる連携という2種類",
+          "wrongFeedback": "LighthouseはPageSpeed Insightsのような外部サービスから取り込むのではなく、ObservatoryのBrowser testがヘッドレスブラウザでページを読み込んで実行します。Observatoryが組み合わせる2種類のデータソースは、この合成テストと、実際のユーザーから集めるリアルユーザーモニタリング(RUM)です。"
         },
         {
           "text": "Google Lighthouseを使うBrowser testやNetwork testといった合成テストと、実際のユーザーから計測するリアルユーザーモニタリング(RUM)"
         },
         {
-          "text": "WorkersのCPU時間を計測するプロファイリングツールと、KVの読み書きレイテンシを計測するツールの2種類",
-          "wrongFeedback": "WorkersのCPUプロファイリングやKVレイテンシ計測は、Observatoryの提供するデータソースではありません。"
+          "text": "ヘッドレスブラウザでページを読み込むBrowser testと、ネットワークとバックエンドの内訳を詳しく出すNetwork testという、2種類の合成テスト",
+          "wrongFeedback": "Browser testとNetwork testは、どちらも合成テストという1つのデータソースの中の2種類です。Observatoryが組み合わせているデータソースは、合成テストと、実際のユーザーのブラウザから集めるリアルユーザーモニタリング(RUM)の2つです。"
         },
         {
-          "text": "デスクトップ版のみを計測するテストと、モバイル版のみを計測するテストという、デバイス種別で分かれた2種類",
-          "wrongFeedback": "デバイス種別による分類ではありません。Observatoryのデータソースは合成テストとリアルユーザーモニタリング(RUM)です。"
+          "text": "Cloudflareのエッジが記録したリクエストログからTTFBなどを集計する計測と、Google Lighthouseを使うBrowser testやNetwork testといった合成テスト",
+          "wrongFeedback": "もう一方のデータソースはCloudflare側のログではなく、実際のユーザーのブラウザから集めるリアルユーザーモニタリング(RUM)です。RUMには、合成テストでは捉えられないInteraction to Next Paint(INP)のような操作の指標も含まれます。"
         }
       ],
       "correctIndex": 1,
