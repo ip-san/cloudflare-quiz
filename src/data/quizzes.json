@@ -12076,7 +12076,7 @@
       "correctIndex": 3,
       "explanation": "まず `npx wrangler hyperdrive create <設定名> --connection-string=\"postgres://user:password@host:5432/dbname\"` を実行すると、接続情報がCloudflareに登録され、設定IDが発行されます。\n{{diagram:0}}\n次に設定ファイルの `hyperdrive` バインディングに `binding`(コードから参照する名前)とこのIDを記述すれば、Workerから `env.HYPERDRIVE.connectionString` で接続できるようになります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/get-started/",
-      "hint": "接続文字列にはパスワードが含まれます。これを設定ファイルに平文で書かずに済ませるにはどうすればよいでしょうか？",
+      "hint": "Hyperdriveに渡すのはデータそのものではなく、データベースへ到達するための情報です。その情報をどこに置き、Workerからどう参照するのかを考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12153,7 +12153,7 @@
       "correctIndex": 1,
       "explanation": "`wrangler dev` はデフォルトでWorkerをローカルマシン上で実行します。このときHyperdriveバインディングは、設定した `localConnectionString`(ローカルまたはリモートのDB接続文字列)を使ってデータベースへ直接接続します。\n{{diagram:0}}\n注意点として、このモードではHyperdriveのクエリキャッシュは効きません。キャッシュを含めた挙動の検証は、デプロイ後の環境で行う必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/configuration/local-development/",
-      "hint": "ローカルでは「DBへの直接接続」になります。すると本番との差分は何でしょうか。",
+      "hint": "ローカル実行のとき、Workerからのクエリがどの経路をたどるのかをまず考えましょう。経路が変わるなら、その途中で働いていた機能の扱いも合わせて確かめる必要があります。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12493,7 +12493,7 @@
       "correctIndex": 3,
       "explanation": "リトライ設定を省略したステップには、`limit: 5`(最大5回)、`delay: 10000`(10秒)、`backoff: \"exponential\"`(指数バックオフ)というデフォルト設定が適用されます。\n{{diagram:0}}\n外部APIの一時的な障害はこのデフォルトでも十分吸収できますが、レート制限が厳しいAPIを呼ぶステップなどでは、`step.do` の第2引数に `StepConfig` を渡して回数や遅延を調整します。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/sleeping-and-retrying/",
-      "hint": "「回数の上限」「初回の間隔」「間隔の増え方」の3点セットで覚えましょう。",
+      "hint": "デフォルトでも黙って諦める設計ではありません。何回まで試すのか、次の試行までの待ち時間をどう決めるのかという2点から考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12557,7 +12557,7 @@
       "correctIndex": 3,
       "explanation": "`step.sleep` はスリープを1つのステップとして宣言するAPIで、`\"3 days\"` のような人間が読める表記かミリ秒数で期間を指定できます(最長365日)。特定日時まで待つ場合は `step.sleepUntil` にDateやUNIXタイムスタンプを渡します。\n{{diagram:0}}\nスリープ中の状態はWorkflowsが管理するので、実行環境を占有し続けることなく、数日単位の待機を含むフローを安全に書けます。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/sleeping-and-retrying/",
-      "hint": "待機も「ステップの一種」として宣言するのがWorkflows流です。",
+      "hint": "3日のあいだ、待っている状態を誰が保持するのかを考えましょう。Workflows自身が数日規模の待機を引き受けられるのか、外部の仕組みに頼る必要があるのかが分かれ目です。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12606,7 +12606,7 @@
       "correctIndex": 0,
       "explanation": "設定ファイルの `workflows` 配列に、Workflow名・コードから参照する `binding` 名・対応するクラス名(`class_name`)を宣言します。するとWorkerのハンドラから `await env.MY_WORKFLOW.create({ id, params })` でインスタンスを起動でき、`instance.status()` で状態を確認できます。\n{{diagram:0}}\n`schedules` にcron式を書けば定期起動も可能で、wrangler CLIからのトリガーにも対応しています。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/trigger-workflows/",
-      "hint": "KVやD1と同じく「バインディング経由でenvから使う」のがWorkersの流儀です。",
+      "hint": "Workerから別に定義したWorkflowを動かすとき、その2つをどこで結びつけるのかを考えましょう。そもそも結びつける手続きが要るのかどうかも含めて検討してください。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12669,7 +12669,7 @@
       "correctIndex": 1,
       "explanation": "パラメータは、①Workerから `create({ params })`、②wrangler CLIの `--params` フラグ、③実行中に外部イベントを待つ `step.waitForEvent` の3つの方法で渡せ、JSONシリアライズ可能な任意のオブジェクトが使えます。\n{{diagram:0}}\n受け取った `WorkflowEvent` とその `payload` は実質イミュータブルで、書き換えてもステップをまたいで保持されません。実行中に変化する状態は `step.do` のコールバックから返して永続化します。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/events-and-parameters/",
-      "hint": "「最初に受け取る不変の入力」と「実行中に変化する状態」の置き場所は別です。",
+      "hint": "Workflowは途中で止まっても再開できる仕組みです。再開した後のステップから見て、最初に受け取った入力と、途中で書き換えた内容がそれぞれどう見えるのかを考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12881,7 +12881,7 @@
       "correctIndex": 3,
       "explanation": "Turnstileには3つのウィジェットモードがあります。Managed(推奨)は訪問者のリスクレベルに応じて、非対話で済ませるかチェックボックス課題を出すかをCloudflareが自動判断します。\n{{diagram:0}}\nNon-Interactive はスピナー付きのウィジェットを見せつつ操作は不要、Invisible はウィジェット自体を表示せず背景で判定します。",
       "referenceUrl": "https://developers.cloudflare.com/turnstile/concepts/widget/",
-      "hint": "「見た目」と「操作の要否」が3モードで異なります。推奨はどれで、何を自動化してくれるでしょうか。",
+      "hint": "3つのモードは訪問者への見せ方と操作の要否で分かれます。では、本番でまず選ぶべきモードはどれか、モードによってサーバー側で行う確認まで変わるのかを考えましょう。",
       "tags": [
         "platform-services",
         "practical"
@@ -13539,7 +13539,7 @@
       "correctIndex": 2,
       "explanation": "受信メールを既存のメールボックスへ転送するには、まず転送先(destination)アドレスを追加して検証する必要があります。これは所有者以外のアドレスへ勝手に転送させないための仕組みです。\n{{diagram:0}}\n転送先アドレスはアカウントレベルで管理され複数ドメインで再利用でき、検証済みアドレスへの転送は全プランで無料です。",
       "referenceUrl": "https://developers.cloudflare.com/email-service/get-started/route-emails/",
-      "hint": "見知らぬアドレスに勝手にメールを転送できてしまうと危険です。だから何が必要でしょうか。",
+      "hint": "転送先アドレスの登録が、ドメインごとに効くのかアカウント全体に効くのかを考えましょう。そのうえで、登録のときに何を求められるのかも確かめてください。",
       "tags": [
         "platform-services",
         "practical"
@@ -14343,7 +14343,7 @@
       "correctIndex": 0,
       "explanation": "`writeDataPoint()`に渡すデータポイントは、グルーピング・フィルタ用の文字列である`blobs`、記録したい数値である`doubles`、サンプリングのキーとなる文字列`indexes`(配列で渡すが実質1件のみ有効)から構成されます。`await`は不要で、書き込みはランタイムがバックグラウンドで処理します。\n{{diagram:0}}\n例えば都市・国・センサー種別を`blobs`、気温・湿度を`doubles`、顧客IDを`indexes`に入れる、といった使い方をします。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/get-started/",
-      "hint": "「分類のための文字列」「測定した数値」「サンプリングの単位」という3つの役割を整理してみましょう。",
+      "hint": "`indexes` に実際いくつまで渡すと意味があるのか。そこがこの設問の分かれ目です。",
       "tags": [
         "observability",
         "practical"
@@ -14504,7 +14504,7 @@
       "correctIndex": 0,
       "explanation": "Analytics Engineのサンプリングは`indexes`の値ごとに行われるため、特定のインデックス値(例: 顧客ID)のイベント数が多い場合、その値のデータがサンプリングされやすくなります。サンプリング倍率は`_sample_interval`列に記録され、`SUM(_sample_interval * double1)`のように集計時に考慮する必要があります。\n{{diagram:0}}\n顧客IDをインデックスにしておけば、他の顧客のデータは非サンプリングのまま保たれます。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/sql-api/#sampling",
-      "hint": "大量アクセスのある「特定の値」だけが間引かれる仕組みだと考えると、何を基準に間引かれるか見えてきます。",
+      "hint": "書き込み量が偏っているとき、間引かれ方も同じように偏るのかどうかを考えましょう。",
       "tags": [
         "observability",
         "practical"
