@@ -378,7 +378,7 @@
       "correctIndex": 0,
       "explanation": "`env`は、設定ファイル(`wrangler.jsonc`/`wrangler.toml`)で定義したバインディングにアクセスするためのオブジェクトです。\n{{diagram:0}}\nKVネームスペース、D1データベース、R2バケット、シークレット、環境変数などは、すべてこの`env`引数を通じて参照します。ESM形式ではグローバル変数としてバインディングにアクセスすることはなく、必ず各ハンドラに渡される`env`経由でアクセスします。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/bindings/",
-      "hint": "wrangler設定ファイルで定義したリソースに、コードからどうやってアクセスするかを考えましょう。",
+      "hint": "ESM形式のWorkerでは、外側にあるものをグローバルなスコープからではなく、ハンドラの引数として受け取ります。第2引数が運んでくるのは何かを考えましょう。",
       "tags": [
         "workers",
         "practical",
@@ -2844,7 +2844,7 @@
       "correctIndex": 3,
       "explanation": "D1はSQLiteをクエリエンジンとして採用した、CloudflareのネイティブなサーバーレスSQLデータベースです。Workersからバインディングを介して直接アクセスでき、標準的なSQL(JOIN・集計関数など)をそのまま使えます。\n{{diagram:0}}\n他のストレージ製品と比べると、リレーショナルなデータモデルとSQLクエリが必要な場面で真価を発揮します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/",
-      "hint": "テーブル同士をJOINしたり、SQL文で集計したりできる点に注目しましょう。",
+      "hint": "並んでいる4つは、それぞれ別のCloudflare製品の説明です。知っている製品から順に「これは何の説明か」を消していきましょう。",
       "tags": [
         "d1",
         "practical",
@@ -2919,7 +2919,7 @@
         },
         {
           "text": "Durable Objects Storage API",
-          "wrongFeedback": "Durable Objectsは個々のオブジェクトごとの強整合な状態管理に向きますが、複数行・複数テーブルを横断するSQL的な集計には不向きです。"
+          "wrongFeedback": "Durable Objectsのストレージはそのオブジェクト1つに閉じており、他のオブジェクトからは参照できません。1オブジェクト内でテーブルを作ってSQLを実行することはできますが、サイト全体の注文履歴のようにデータセット全体を横断して集計する用途には向きません。"
         },
         {
           "text": "Workers KV",
@@ -2992,7 +2992,7 @@
       "correctIndex": 1,
       "explanation": "`wrangler d1 create <name>` を実行するとD1データベースが作成され、`database_id` などのバインディング情報が出力されます。これを `wrangler.toml` の `[[d1_databases]]` セクションに追記することで、Worker内から `env.DB` のようにアクセスできるようになります(作成時に「Would you like Wrangler to add it on your behalf?」と聞かれるので、Yesを選べば追記まで自動で行われます)。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/get-started/",
-      "hint": "作成コマンドの出力結果を設定ファイルに反映する、という2段階の作業が必要です。",
+      "hint": "Workerからデータベースを使うには、どのデータベースを指すのかがWorker側に伝わっている必要があります。その情報が誰から出て、どう伝わるのかを考えましょう。",
       "tags": [
         "d1",
         "practical",
@@ -3158,7 +3158,7 @@
       "correctIndex": 2,
       "explanation": "`wrangler d1 migrations create` で連番付きのマイグレーションファイルを生成し、そこにSQLを記述します。その後 `wrangler d1 migrations apply <DB> --local`(ローカル)や `--remote`(本番)で未適用のマイグレーションをまとめて適用します。適用状況はD1内部のテーブルで管理されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/reference/migrations/",
-      "hint": "「作成」と「適用」で2つの別々のコマンドがあります。",
+      "hint": "マイグレーションは「どのファイルをすでに当てたか」を記録できて初めて機能します。その記録を誰がいつ作るのかを考えましょう。",
       "tags": [
         "d1",
         "practical"
@@ -3671,7 +3671,7 @@
       "correctIndex": 3,
       "explanation": "R2はAmazon S3と互換性のあるAPIを持つオブジェクトストレージです。バケットに画像、動画、ログ、バックアップなどの非構造化データを保存できます。\n{{diagram:0}}\nR2はWorkers KV（小さな値・超低レイテンシ読み取り向け）やD1（SQLデータベース）とは役割が異なります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/",
-      "hint": "他社の有名なオブジェクトストレージサービスと互換性を持たせている点を考えましょう。",
+      "hint": "4つの説明はいずれも実在する製品のものです。R2以外の3つがそれぞれ何を指しているかを先に見分けてから選びましょう。",
       "tags": [
         "r2",
         "practical",
@@ -3761,7 +3761,7 @@
       "correctIndex": 3,
       "explanation": "多くのクラウドストレージではデータを外部に転送する際の「エグレス（データ送信）料金」が高額になりがちですが、R2はこのエグレス料金を一切課金しません。\n{{diagram:0}}\nこれによりCDN配信や他クラウドとのマルチクラウド構成でのコストを大幅に削減できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/pricing/",
-      "hint": "R2から外部にデータを送り出すときの料金体系が、他社と何が違うか考えましょう。",
+      "hint": "オブジェクトストレージの費用は「どれだけ保存したか」「何回操作したか」「どれだけ外へ送り出したか」に分けて考えられます。他社との差が最も大きく出るのはどれでしょう。",
       "tags": [
         "r2",
         "practical",
@@ -3905,7 +3905,7 @@
       "correctIndex": 1,
       "explanation": "R2バケットは開発用の r2.dev サブドメイン、または独自のカスタムドメイン（Cloudflareゾーン経由）を接続することで、パブリックにHTTP配信できます。\n{{diagram:0}}\n本番運用ではr2.devではなくカスタムドメインの使用が推奨されます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/public-buckets/",
-      "hint": "バケットの「公開設定」に関する機能です。",
+      "hint": "R2の配信の設定は、オブジェクトを1つずつ扱うのではなく、バケット全体に対して行います。",
       "tags": [
         "r2",
         "practical"
@@ -4625,7 +4625,7 @@
       "correctIndex": 3,
       "explanation": "Durable Objects は「計算(compute)とストレージを組み合わせた特別な種類の Worker」です。各インスタンスはグローバルに一意な名前（ID）を持ち、1つのインスタンスは一度に1つの処理しか進めない(single-threaded)ため、同じ ID へのリクエストは常に同じインスタンスへ順序立てて届きます。これにより、複数の処理が同じデータを同時に書き換えて壊してしまう事故（レースコンディション）を避けられます。\n{{diagram:0}}\nストレージはオブジェクトと同じ場所に配置され、トランザクショナル（一連の操作が中途半端な状態で終わらない）かつ強整合（書き込んだ直後の読み取りでも必ず最新が返る）です。これは、書き込みが行き渡るまで少し古い値が返りうる結果整合性を前提とする Workers KV とは対照的な設計です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/",
-      "hint": "「1つの名前につき1つのインスタンス」という特徴を思い出しましょう。",
+      "hint": "書き込んだ直後に必ず最新の値を読めるようにするには、処理を一か所に集めてしまうか、複製どうしを絶えず同期させるか、という二通りの道が考えられます。Durable Objectsが選んだのはどちらでしょう。",
       "tags": [
         "do-queues",
         "practical",
@@ -7474,7 +7474,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Workersは数百のロケーションに分散した数千台のマシン上で動作し、開発者がリージョンを選ばなくても自動的にユーザーに近い場所で実行される「リージョンレス」モデルを採用しています。実行単位にはV8 isolateという軽量なコンテキストを使い、仮想マシンモデルより約100倍高速に起動できます。この起動の速さが効くのは、しばらく呼ばれていない関数を動かすときに待たされる「コールドスタート」を小さくできるためです。\n{{diagram:0}}\n※ なお、2つのリクエストが同じisolateで処理される保証はありません。前のリクエストで書き換えた変数の値が次のリクエストにも残っている前提でコードを書かないようにしてください。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/how-workers-works/",
-      "hint": "「デプロイ先リージョンを選ぶ必要があるか」という観点で従来型FaaSとの違いを考えてみましょう。",
+      "hint": "Workersが速いと言われる理由には、「どこで動くか」と「どう起動するか」の2つの面があります。従来型FaaSと最も大きく違うのはどちらでしょう。",
       "tags": [
         "architecture",
         "overview",
@@ -18894,7 +18894,7 @@
       "correctIndex": 2,
       "explanation": "TCPのVPC Serviceは、インターネットに公開していないプライベートネットワーク内のPostgreSQLやMySQLなどのデータベースへ、Workerから届くための経路を用意する仕組みです。その経路にHyperdrive(データベースへの接続を使い回し、クエリ結果をキャッシュして接続を効率化するサービス)を組み合わせます。VPC Serviceの`app_protocol`にpostgresqlやmysqlを指定しておくと、Hyperdriveがそのデータベースとの通信形式(ワイヤープロトコル)を認識できるようになり、接続プーリングやクエリキャッシュ付きでWorkerからプライベートデータベースに接続できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/#tcp-services",
-      "hint": "「プライベート網への経路」を用意する仕組みと、「接続を効率化する」仕組みは別の役割分担だと考えましょう。",
+      "hint": "社内だけで使っているデータベースにWorkerからつなぐには、「通信が届くこと」と「接続を効率よく使い回すこと」の両方が要ります。この2つを1つの製品でまかなうのか、分担するのかを考えましょう。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -21613,16 +21613,16 @@
       "question": "Cloudflare Accessのポリシーを構成する4つの要素の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "アプリ名・ドメイン・ポート・プロトコルという、アプリケーション登録時に指定する4つの識別情報であり、これらの組み合わせによってどのユーザーにアクセスを許可するかの条件が決まる",
-          "wrongFeedback": "アプリケーションの識別情報ではありません。ポリシーの構成要素であるAction・Rule type・Selector・Valuesとは異なります。"
+          "text": "判定に使う属性のSelector、その具体的な値のValues、何が起きるかを決めるAction、そして認証に使うIDプロバイダ(IdP)",
+          "wrongFeedback": "IdP(IDプロバイダ)はポリシーの構成要素ではなく、Login MethodsやIdentity provider groupという「Selector」の形でポリシーに現れます。4つ目の構成要素は、条件の組み合わせ方を決めるRule type(Include / Require / Exclude)です。"
         },
         {
-          "text": "リクエストのメソッド・ヘッダー・ボディ・クエリパラメータという、HTTPリクエストの4要素であり、これらの値を組み合わせて評価することでポリシーの許可・拒否が決定される",
-          "wrongFeedback": "HTTPリクエストの構成要素ではありません。Accessポリシーの構成要素はAction・Rule type・Selector・Valuesです。"
+          "text": "利用者が条件に一致したときの動作を表す、Allow・Block・Bypass・Service Authの4つ",
+          "wrongFeedback": "Allow・Block・Bypass・Service Authは、4つの構成要素のうちActionに指定できる値です。1つのポリシーに設定できるActionは1つだけなので、これら4つが構成要素として並ぶことはありません。"
         },
         {
-          "text": "オリジン・キャッシュ・WAF・ロードバランサという、Accessがポリシー評価の際に順に通過するリクエスト処理経路上の4つのコンポーネント",
-          "wrongFeedback": "リクエスト処理経路のコンポーネントではありません。Accessポリシーを構成する4要素とは異なります。"
+          "text": "条件の組み合わせ方を表すInclude・Require・Exclude、および認証を有効に保つ期間を決めるセッション期間",
+          "wrongFeedback": "Include・Require・Excludeは、Rule typeという1つの構成要素が取る値です。またセッション期間はアプリケーション側で設定する項目で、ポリシーの構成要素ではありません。"
         },
         {
           "text": "何が起きるかを決めるAction、条件の組み合わせ方のRule type、判定に使う属性のSelector、その値のValues"
@@ -21631,7 +21631,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Accessのポリシーは4つの要素で構成されます。何が起きるかを決めるAction、判定に使う属性であるSelector(メールアドレス、アクセス元の国、端末の状態など)、その具体的な値であるValues、そして条件をどう組み合わせるかを決めるRule typeです。Rule typeは、Includeが「どれか1つでも当てはまれば通す」、Requireが「必ず満たしていなければ通さない」、Excludeが「当てはまったら通さない」を表します。\n{{diagram:0}}\n※ Actionには4種類あります。Allowは条件を満たしたら通し、Blockは拒否します。BypassはAccessの制御そのものを外すもので、ログも残りません。Service Authは人がログイン画面で認証する代わりに、プログラムが持つ合言葉や証明書で確認する方式で、Bypassと違って制御とログを維持できます。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
-      "hint": "「何をするか」「どう組み合わせるか」「何を見るか」「どんな値か」という4つの問いに答える形を考えましょう。",
+      "hint": "ポリシーは表の形で書き表せます。その表にどんな列が並ぶかを考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -22483,28 +22483,28 @@
       "id": "wf-001",
       "category": "waf",
       "difficulty": "beginner",
-      "question": "Cloudflare WAF(Webアプリケーションファイアウォール)が提供する3つの主要機能の組み合わせとして正しいものはどれですか？",
+      "question": "Cloudflare WAF(Webアプリケーションファイアウォール)が提供する、リクエストを評価して通すか止めるかを決める3種類のルール機能の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "DNSレコードの管理・ゾーン設定・SSL証明書の発行という、ドメインの登録から公開までの運用を担う3つの機能で、攻撃の検知やブロックは扱わない",
-          "wrongFeedback": "ドメイン運用機能ではありません。WAFの主要機能はカスタムルール・レート制限ルール・マネージドルールです。"
+          "text": "自分でルールを定義するカスタムルール、Cloudflareが事前設定したマネージドルール、緩和されたリクエストを後から確認するSecurity Events",
+          "wrongFeedback": "Security EventsもWAFの機能ですが、これはルールに一致して緩和されたリクエストを後から確認・分析するための画面です。リクエストを通すか止めるかをその場で決めるルール機能は、カスタムルール・レート制限ルール・マネージドルールの3種類です。"
         },
         {
-          "text": "ロードバランシング・オリジン選択・ヘルスチェックという、トラフィック分散に関する3つの機能で構成されており、オリジンへの通信を常に暗号化する仕組みになっている",
-          "wrongFeedback": "トラフィック分散機能ではありません。WAFの主要機能はカスタムルール・レート制限ルール・マネージドルールです。またオリジンへの通信が常に暗号化されるわけでもなく、そこはSSL/TLS暗号化モードの設定で決まります。"
+          "text": "自分でルールを定義するカスタムルール、リクエスト頻度を制限するレート制限ルール、大量のトラフィックによる攻撃を自動で緩和するDDoS保護のマネージドルールセット",
+          "wrongFeedback": "DDoS保護はWAFの機能ではなく、WAFのドキュメントでも「関連製品(Related products)」として別に紹介されている製品です。WAFのルール機能の3つ目はマネージドルールです。"
         },
         {
-          "text": "自分でルールを定義するカスタムルール、リクエスト頻度を制限するレート制限ルール、Cloudflareが事前設定したマネージドルール"
+          "text": "自分でルールを定義するカスタムルール、リクエスト頻度に応じて制限をかけるレート制限ルール、Cloudflareが事前設定・継続更新しているマネージドルール"
         },
         {
-          "text": "静的アセットのキャッシュ・画像最適化・圧縮設定という、配信パフォーマンスに関する3つの機能で構成されており、画像のメタデータをすべて手動で入力する仕組みになっている",
-          "wrongFeedback": "配信パフォーマンスの機能ではありません。WAFの主要機能はカスタムルール・レート制限ルール・マネージドルールです。"
+          "text": "Cloudflareが事前設定したマネージドルール、リクエスト頻度を制限するレート制限ルール、ブラウザ上のスクリプトを監視するPage Shield",
+          "wrongFeedback": "Page Shield(クライアントサイドセキュリティ)もWAFとは別の関連製品で、ブラウザ側で読み込まれるスクリプトを監視するものです。WAFのルール機能の3つ目は、自分でルールを定義するカスタムルールです。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cloudflare WAFは、自分でルールを定義するカスタムルール、リクエスト頻度に応じて制限をかけるレート制限ルール、Cloudflareが事前設定・継続更新しているマネージドルールという3つの主要機能で構成されます。すべてのプランでカスタムルールとマネージドルール(Free Managed Rulesetのみ)が利用でき、レート制限ルールはFreeプランでも1ルールまで利用できます。\n{{diagram:0}}",
+      "explanation": "Cloudflare WAFは、自分でルールを定義するカスタムルール、リクエスト頻度に応じて制限をかけるレート制限ルール、Cloudflareが事前設定・継続更新しているマネージドルールという3種類のルール機能で構成されます。すべてのプランでカスタムルールとマネージドルール(Free Managed Rulesetのみ)が利用でき、レート制限ルールはFreeプランでも1ルールまで利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/",
-      "hint": "「自分で決める」「頻度で制限する」「Cloudflareにお任せする」という3つの守り方を考えましょう。",
+      "hint": "WAFはルールセットの集まりとして動きます。そのルールを誰が書くのか(自分か、Cloudflareか)という軸で、並んでいる3つ組を眺めてみましょう。",
       "tags": [
         "waf",
         "practical",
@@ -31002,7 +31002,7 @@
       "correctIndex": 0,
       "explanation": "ローカル管理トンネルの基本的な作成手順は、(1) `cloudflared tunnel login` でアカウント証明書(cert.pem)を取得、(2) `cloudflared tunnel create <NAME>` でトンネルを作成しトンネル固有の認証情報ファイル(<UUID>.json)を生成、(3) config.ymlを作成してルーティング先を定義、(4) `cloudflared tunnel run` でトンネルを実行、という流れになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/create-local-tunnel/",
-      "hint": "「アカウント全体の認証」→「トンネル固有の作成」→「設定」→「実行」という積み上げの順序を考えましょう。",
+      "hint": "cloudflaredが扱う認証情報には、アカウント全体を代表するものと、個々のトンネルを代表するものの2種類があります。どちらを先に手に入れる必要があるかを考えましょう。",
       "tags": [
         "tunnel",
         "practical"
