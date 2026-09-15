@@ -7071,8 +7071,8 @@
       "question": "セッションデータのように、大量の読み取りアクセスが発生し、同じキーに対して繰り返しアクセスされるデータを保存したい。強い整合性よりも低レイテンシでのグローバル読み取りを優先する場合、どのCloudflareストレージ製品が最も適していますか？",
       "options": [
         {
-          "text": "R2",
-          "wrongFeedback": "R2はオブジェクト/ブロブストレージで、画像やファイルなどの非構造化データ向けです。key-valueの高頻度読み取りには不向きです。"
+          "text": "Hyperdrive",
+          "wrongFeedback": "Hyperdriveは既存のPostgresやMySQLへの接続を束ね、読み取りクエリをキャッシュして高速化する製品です。繰り返しの読み取りは速くなりますが、データそのものを預かる保存先ではないため、セッションデータの置き場としては選べません。"
         },
         {
           "text": "Durable Objects",
@@ -7080,16 +7080,16 @@
         },
         {
           "text": "D1",
-          "wrongFeedback": "D1はSQLiteベースのリレーショナルDBで、関連データを構造化して扱うのに向いていますが、高頻度・同一キーの読み取りに最適化された設計ではありません。"
+          "wrongFeedback": "D1は読み取りレプリケーションでグローバルな読み取りを速くできますが、テーブルとSQLを前提としたリレーショナルデータベースです。同一キーを繰り返し読むセッションデータの保存先としては、Workers KVが推奨されています。"
         },
         {
           "text": "Workers KV"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Workers KVは「高ボリュームの読み取りと同一キーへの繰り返し読み取り」に最適化された結果整合性(eventual consistency)のキー・バリューストアです。セッションデータ、設定情報、A/Bテスト用のパーソナライゼーションなど、書き込み頻度が低く読み取りが圧倒的に多いユースケースに向いています。\n{{diagram:0}}\n一方、D1はリレーショナルなデータ、R2は大容量の非構造化データ、Durable Objectsは強い整合性が必要な状態管理と、それぞれ得意分野が異なります。\n{{diagram:1}}",
+      "explanation": "Workers KVは「高ボリュームの読み取りと同一キーへの繰り返し読み取り」に最適化された結果整合性(eventual consistency)のキー・バリューストアです。セッションデータ、設定情報、A/Bテスト用のパーソナライゼーションなど、書き込み頻度が低く読み取りが圧倒的に多いユースケースに向いています。\n{{diagram:0}}\n一方、D1はリレーショナルなデータ、R2は大容量の非構造化データ、Durable Objectsは強い整合性が必要な状態管理と、それぞれ得意分野が異なります。Hyperdriveはこれらとは層が違い、既にあるPostgresやMySQLへの接続を束ねて読み取りクエリをキャッシュする製品で、データの置き場そのものではありません。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/storage-options/",
-      "hint": "「高頻度の読み取り」「同一キー」「強い整合性より速度」というキーワードに注目しましょう。",
+      "hint": "読み取りが利用者に一番近い拠点で折り返せるのか、データの持ち主がいる1か所まで行くのかで分かれます。その前に、データを預かる製品なのか、既にあるデータベースを速くするための層なのかも見分けましょう。",
       "tags": [
         "architecture",
         "practical",
@@ -17121,25 +17121,25 @@
       "question": "Spend limitsのルールにおける「Split by value」と「Filter by value」の違いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Filter by valueは値ごとに個別の予算バケットを作成し、それぞれ独立して管理する",
-          "wrongFeedback": "値ごとに個別の予算バケットを作るのはSplit by valueの説明です。Filter by valueは特定の値に一致する場合だけルールを適用します。"
+          "text": "Split by valueはディメンションの値ごとに予算バケットを分けるが、分かれた各バケットは合計で1つの上限を共有し、Filter by valueは値が一致したリクエストだけをそのルールの対象にする",
+          "wrongFeedback": "Split by valueで分かれたバケットは値ごとに独立しており、合計で1つの上限を共有するわけではありません。すべての値が1つの予算を共有するのは、そのディメンションをルールに設定しなかった場合です。"
         },
         {
           "text": "Split by valueはディメンションの値ごとに個別の予算バケットを作成し、Filter by valueは特定の値に一致するリクエストにのみルールを適用する"
         },
         {
-          "text": "どちらのモードも、`provider`ディメンションを何も設定しない場合と全く同じ挙動になる",
-          "wrongFeedback": "ディメンションを設定しない場合はすべての値が1つの予算バケットを共有しますが、Split/Filterはそれぞれ異なる挙動をします。"
+          "text": "Split by valueは複数のディメンションに指定しても組み合わせごとには分かれず、先に評価された1つのディメンションの値だけでバケットが決まり、Filter by valueは指定した値に一致するリクエストにルールを適用する",
+          "wrongFeedback": "複数のディメンションをSplit by valueにすると、バケットは組み合わせごとに分かれます。例えばメタデータとプロバイダーの両方をSplitすれば、エージェントとプロバイダーの組み合わせごとに別々の予算になります。"
         },
         {
-          "text": "Split by valueは`metadata.user_id`のようなディメンションの指定した1つの値に一致するリクエストにだけルールを適用し、それ以外の値のリクエストには予算を消費させず一切適用しない",
-          "wrongFeedback": "1つの値だけに適用してそれ以外を対象外にするのはFilter by valueの説明です。"
+          "text": "Split by valueはディメンションの値ごとに独立した予算バケットを作成し、Filter by valueは指定した値に一致しないリクエストの費用も同じ予算から差し引く",
+          "wrongFeedback": "Filter by valueは、ディメンションが指定した値と一致するリクエストにだけルールを適用します。一致しないリクエストの費用は、そのルールの予算には計上されません。"
         }
       ],
       "correctIndex": 1,
       "explanation": "Split by valueは、指定したディメンション(例: `metadata.user_id`)の値ごとに独立した予算バケットを作成します。例えばユーザーIDでSplitすれば、ユーザーごとに別々の予算になります。一方Filter by valueは、指定した値(例: `metadata.team`が`engineering`)に一致するリクエストにのみそのルールを適用します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/spend-limits/#scoping-with-dimensions",
-      "hint": "「値ごとに財布を分ける」のか「特定の値のときだけこの財布を使う」のか、という違いを考えましょう。",
+      "hint": "ディメンションを何も設定しないルールでは、値にかかわらず1つの予算を共有します。2つのモードが、その「1つの共有」をそれぞれどう崩すのかを基準に読み比べましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -18449,16 +18449,16 @@
       "question": "Cloudflare Realtime SFUがサポートするコーデックの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "映像・音声ともにOpusコーデックのみをサポートしており、それ以外のコーデックで送出されたトラックは受け付けられず一切利用できない",
-          "wrongFeedback": "Opusは音声コーデックの1つに過ぎません。映像にはH264・H265・VP8・VP9・AV1など複数のコーデックがサポートされています。"
+          "text": "映像はH264・VP8・VP9・AV1、音声はOpus・G.711 PCM(A-law/µ-law)をサポートする",
+          "wrongFeedback": "映像コーデックにはH265も含まれます。公式の対応表は映像がH264・H265・VP8・VP9・AV1の5つで、H265を除いた一覧は不足しています。"
         },
         {
-          "text": "音声コーデックはG.711のみをサポートし、Opusはサポートされていない",
-          "wrongFeedback": "Opusも音声コーデックとしてサポートされています。G.711だけではありません。"
+          "text": "映像はH264・H265・VP8・VP9・AV1、音声はOpus・G.711 PCM(A-law)をサポートする",
+          "wrongFeedback": "G.711 PCMはA-lawとµ-lawの両方が対応しています。音声はOpusと合わせて3種類が挙げられており、A-lawだけに限定されてはいません。"
         },
         {
-          "text": "映像はAV1のみをサポートし、H264やVP8などの古いコーデックは非対応であるため、それらのコーデックで送出された映像トラックは接続時に拒否される",
-          "wrongFeedback": "AV1だけでなく、H264・H265・VP8・VP9もサポートされています。"
+          "text": "映像はH264・H265・VP8・VP9・AV1、音声はOpus・G.722・G.711 PCM(A-law/µ-law)をサポートする",
+          "wrongFeedback": "音声の対応表に挙がっているのはOpus・G.711 PCM(A-law)・G.711 PCM(µ-law)の3つで、G.722は含まれていません。ブラウザが扱えるコーデックと、SFUが中継できるコーデックは別物です。"
         },
         {
           "text": "映像はH264・H265・VP8・VP9・AV1、音声はOpus・G.711 PCM(A-law/µ-law)をサポートする"
@@ -18467,7 +18467,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Realtime SFUは、映像コーデックとしてH264・H265・VP8・VP9・AV1を、音声コーデックとしてOpus・G.711 PCM(A-law)・G.711 PCM(µ-law)をサポートしています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/#supported-codecs",
-      "hint": "映像用と音声用、それぞれ複数の選択肢が用意されていることを意識しましょう。",
+      "hint": "映像側は、WebRTCで定番のものに加えて、ライセンス面で敬遠されがちなものや最新世代のものまで一覧に載っています。音声側は、電話網由来の系統がどこまで含まれるかを確かめましょう。",
       "tags": [
         "realtime",
         "practical"
@@ -20298,25 +20298,25 @@
       "question": "顧客が自分自身のCloudflareゾーンを持たず、ドメインをSaaS事業者のCloudflare for SaaSにのみオンボードしている場合の挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "顧客が自分のゾーンを持たない場合、そもそもカスタムホスト名を有効化すること自体ができないため、事業者側が個別に案内する必要が生じる",
-          "wrongFeedback": "顧客自身のゾーンがなくてもカスタムホスト名は有効化できます。ただしO2Oにはならないというだけです。"
+          "text": "O2Oは有効にならずSaaS事業者のゾーンのルールが適用されるが、O2Oが有効かどうかはゾーンの設定項目やAPIのフィールドで確認できるため、事業者は顧客ごとに状態を照会できる",
+          "wrongFeedback": "O2Oが有効かどうかを示すAPIフィールドやゾーン設定は存在しません。O2Oは顧客側のDNS設定によってリクエストごとに決まる挙動で、事業者はSaaS側ゾーンに入るリクエストの`cf-connecting-o2o`ヘッダーで判別します。"
         },
         {
-          "text": "存在しないはずの顧客自身のゾーン設定までもがO2Oとして仮想的に生成され、SaaS事業者側の設定と合わせて二重に適用されてしまう",
-          "wrongFeedback": "顧客自身のゾーンが存在しない場合、O2Oは有効になりません。SaaS事業者のゾーン設定のみが適用されます。"
+          "text": "O2Oは有効にならないが、顧客が後から自分のゾーンを作り、事業者のIPアドレスをAレコードでプロキシして指した場合にはO2Oが有効になる",
+          "wrongFeedback": "O2OはCNAMEを前提とした構成のため、Aレコードで事業者を指す構成(apex proxying)には適用されません。顧客がゾーンを持っても、プロキシされたCNAMEで事業者のターゲットを指していなければO2Oにはなりません。"
         },
         {
           "text": "O2Oは有効にならず、トラフィックにはSaaS事業者のゾーンで設定されたルールのみが適用される"
         },
         {
-          "text": "SaaS事業者のゾーン設定は適用されず、顧客のオリジンサーバーの設定のみがそのまま適用されるため、SaaS事業者側のWAF設定は機能しなくなる",
-          "wrongFeedback": "SaaS事業者のゾーンの設定が適用されないというのは誤りです。O2Oが無効な場合、SaaS事業者側のゾーン設定がトラフィックに適用されます。"
+          "text": "O2Oは有効にならずSaaS事業者のゾーン設定が適用され、顧客が自分のゾーンを持つ場合でもCNAMEをDNSのみ(グレークラウド)にしていれば顧客ゾーンの設定だけが適用される",
+          "wrongFeedback": "プロキシされていない(グレークラウドの)レコードでは、そのゾーンの設定は適用されず、接続先オリジン側の設定が適用されます。顧客ゾーンの設定だけが効くという説明は向きが逆です。"
         }
       ],
       "correctIndex": 2,
       "explanation": "顧客が自分自身のCloudflareゾーンを持たず、ドメインをSaaS事業者のCloudflare for SaaSにのみオンボードしている場合、O2Oは有効になりません。この場合、トラフィックにはSaaS事業者のゾーンで設定されたルールのみが適用されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/saas-customers/how-it-works/#without-o2o",
-      "hint": "通過するオレンジ雲が「1つだけ」の場合、誰の設定が適用されるか考えましょう。",
+      "hint": "O2Oは事業者側で切り替えるスイッチではなく、顧客側のDNSがどこをどう向いているかでリクエストごとに決まります。向ける先の顧客ゾーンが無いとき、設定はどこに残るのかを考えましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
