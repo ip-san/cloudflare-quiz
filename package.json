@@ -22,6 +22,7 @@
     "quiz:stats": "node scripts/quiz-utils.mjs stats",
     "quiz:check": "node scripts/quiz-utils.mjs check && node scripts/quiz-utils.mjs check-ellipsis && node scripts/quiz-utils.mjs check-diagram-text",
     "quiz:wf-sync": "node scripts/check-wrongfeedback-sync.mjs",
+    "quiz:abs-skew": "node scripts/check-absolute-skew.mjs --list",
     "quiz:lint": "node scripts/quiz-lint.mjs all",
     "quiz:lint:dry": "node scripts/quiz-lint.mjs all --dry-run",
     "quiz:lint:backtick": "node scripts/quiz-lint.mjs backtick",
