@@ -6534,7 +6534,7 @@
       "correctIndex": 0,
       "explanation": "AI Gatewayは、Workers AIだけでなくOpenAIやAnthropicなど外部のAIプロバイダーへのリクエストも一元的に中継するプロキシ。キャッシュによるコスト削減・高速化、レート制限、詳細なログ・分析（トークン使用量やコストの可視化）、エラー時のリトライやフォールバック（別プロバイダーへの自動切り替え）といった機能を提供する。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/",
-      "hint": "『ゲートウェイ』という名前が示す通り、リクエストの通り道で何ができるかを考えましょう。",
+      "hint": "AI Gatewayは、アプリとモデルの呼び出し先との間に立つ位置に置きます。その位置から手を出せる範囲はどこまでかを軸に、4つを見比べましょう。",
       "tags": [
         "ai-vectorize",
         "practical",
@@ -6591,7 +6591,7 @@
       "correctIndex": 0,
       "explanation": "Vectorizeは、embeddingベクトルを大量に保存し、検索したいベクトルに意味の近いものを高速に探し出せるデータベースです。embedding(埋め込み)ベクトルとは、文章や画像などの内容を数値の並びとして表したもので、内容が近いものほどベクトル同士も近い位置になります。そのためVectorizeでは、キーワードの一致ではなく「意味が近いかどうか」でデータを探せます。\n{{diagram:0}}\n※ 保存するベクトルはWorkers AIなどのモデルで生成します。意味で探す検索(semantic search)、レコメンデーション、RAG(検索した情報を生成AIに渡して答えさせる手法)などが代表的な用途です。",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/",
-      "hint": "『ベクトル』という名前がヒントです。何のデータを保存・検索するデータベースでしょうか。",
+      "hint": "Vectorizeは、AI関連の機能群の1つです。AIモデルが作り出したデータを受け止め、あとから探し出すための置き場としてどれが自然か考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical",
@@ -7283,7 +7283,7 @@
       "correctIndex": 0,
       "explanation": "サブリクエストとは「Workerが`fetch` APIを使って行うリクエスト、またはR2・KV・D1などのCloudflareサービスへ行うリクエスト」のことです。1つの受信リクエストの処理中に何回サブリクエストを発生させられるかにはプランごとの上限があり、リダイレクトチェーンの各ホップも個別にカウントされる点に注意が必要です。\n{{diagram:0}}\n設計時は「1リクエスト処理の中でいくつの外部アクセスが発生するか」を意識することが重要です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/limits/",
-      "hint": "Worker「が」発生させる、内部からの追加のリクエストは何と呼ばれるか考えてみましょう。",
+      "hint": "プランごとに上限が決まっていて、1回の処理の中で何回起きたかを数えられる対象です。何を数えているのかを考えましょう。",
       "tags": [
         "architecture",
         "overview",
@@ -7397,7 +7397,7 @@
       "correctIndex": 0,
       "explanation": "`nodejs_compat` フラグは、Workersのランタイム上でBuffer・Crypto・Streamなど30以上のNode.js組み込みAPIをそのまま使えるようにし、未対応のAPIについてはWranglerがポリフィル(代替実装)を自動的に追加します。これにより、Node.js APIに依存するnpmパッケージをWorkers上でも動かしやすくなります。\n{{diagram:0}}\n※ 設定ファイルには `compatibility_date` という項目があり、「いつ時点のランタイムの挙動に合わせるか」を日付で指定します。いま新しくプロジェクトを作るなら、この日付が新しいので`nodejs_compat`を書く必要はありません(2026-08-04以降は既定で有効)。古い日付を指定しているプロジェクトでだけ明示が必要です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/nodejs/",
-      "hint": "ランタイムそのものを丸ごと変えるのか、一部の機能だけ後から追加するのか考えましょう。",
+      "hint": "`nodejs_compat` の `compat` は互換性の意味です。この互換性が効いてくるのは、コードを書く/ビルドする時点でしょうか、それとも動かしている最中でしょうか。",
       "tags": [
         "architecture",
         "practical",
@@ -8020,8 +8020,8 @@
           "wrongFeedback": "静的解析やビルド時のリンターではなく、実行時にレスポンスのHTMLをストリーミングしながら書き換えるランタイムAPIです。"
         },
         {
-          "text": "ブラウザ側でDOMを操作するためのクライアントサイドAPIであり、動作にはブラウザのJSエンジンが必須でWorker側では利用できない",
-          "wrongFeedback": "HTMLRewriterはブラウザではなくWorkers(エッジ)側で動作するサーバーサイドのAPIです。"
+          "text": "ブラウザ側でDOMを操作するためのクライアントサイドAPI",
+          "wrongFeedback": "HTMLRewriterはブラウザではなくWorkers(エッジ)側で動作するサーバーサイドのAPIです。ブラウザのDOM APIのように描画済みの文書を操作するのではなく、オリジンから返ってきたレスポンスが利用者に届く前に、その場で書き換えます。"
         },
         {
           "text": "HTMLファイルをMarkdownに自動変換するAPIであり、`<h1>`や`<a>`のタグをMarkdown記法に置き換えて出力する",
@@ -8034,7 +8034,7 @@
       "correctIndex": 3,
       "explanation": "HTMLRewriterは、Worker内でHTMLドキュメントをjQueryのような感覚でパース・書き換えできるAPIです。\n{{diagram:0}}\n`.on(selector, handler)`や`.onDocument(handler)`で要素/ドキュメント全体に対するハンドラを登録し、`transform(response)`でレスポンスに適用します。ドキュメント全体をメモリにバッファせずストリーミング処理するため、大きなHTMLでも効率的に扱えます。オリジンのHTMLにリンク書き換えやパーソナライズ、A/Bテスト用のコンテンツ差し替えなどを、エッジで動的に行う用途によく使われます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/html-rewriter/",
-      "hint": "HTMLを最後まで読み込んでから直すのか、流れてくる途中から直せるのか考えましょう。",
+      "hint": "このAPIは、オリジンから返ってきたレスポンスを、そのままクライアントへ返す前に加工するために使います。その場面でHTMLに対して何ができると嬉しいかを考えましょう。",
       "tags": [
         "workers",
         "practical"
@@ -8500,7 +8500,7 @@
       "correctIndex": 0,
       "explanation": "`wrangler login` を実行するとブラウザが開き、Cloudflareアカウントへのアクセスを許可するOAuth認証フローが始まります。\n{{diagram:0}}\n認証が完了すると、ローカルにOAuthトークンが保存され、以降の `wrangler dev --remote` や `wrangler deploy` などのコマンドでそのアカウントの権限が使われます。現在ログイン中のアカウントを確認したい場合は `wrangler whoami` を使います。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/general/#login",
-      "hint": "ブラウザでの認可フローを開始するコマンドです。",
+      "hint": "認証は、デプロイや初期化のついでに行うものではなく、最初に一度だけ実行する独立したコマンドで行います。",
       "tags": [
         "wrangler",
         "practical",
@@ -8886,7 +8886,7 @@
       "correctIndex": 2,
       "explanation": "Workers KV namespaceをWorkerで使うには、`wrangler.toml`に`[[kv_namespaces]]`ブロックを追加し、`binding`(Worker内での参照名)と`id`(namespaceのID)を指定します。\n{{diagram:0}}\nこの設定により、Worker内では`env.<binding名>`としてKVNamespaceオブジェクトにアクセスでき、get/put/list/deleteが呼び出せるようになります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/get-started/",
-      "hint": "設定ファイルの名前と、Worker内での参照方法(env.xxx)を思い出してみましょう。",
+      "hint": "Workerは、使ってよい外部資源をあらかじめ宣言してから受け取ります。その宣言をどこで行うのが標準の方法か考えましょう。",
       "tags": [
         "kv-cache",
         "practical",
@@ -9692,8 +9692,8 @@
           "wrongFeedback": "ダッシュボードでの操作に加え、wrangler CLIからバケット作成やオブジェクトのアップロードが可能です。"
         },
         {
-          "text": "`curl`コマンドでR2の内部管理APIに直接アクセスする（公式には非公開の手段）",
-          "wrongFeedback": "R2にcurlで直接アクセスするにはS3互換APIの署名処理を自分で実装する必要があり手軽ではありません。公式CLIツールのwranglerを使うのが最も手軽です。"
+          "text": "`curl`コマンドでR2のS3互換APIに直接リクエストを送り、バケット作成やオブジェクトのアップロードを行う",
+          "wrongFeedback": "S3互換APIを`curl`から直接呼ぶには、AWS Signature Version 4の署名処理を自分で実装する必要があります。経路としては使えますが、コマンドラインから手早く操作したい場面では公式CLIのwranglerのほうが手数が少なくて済みます。"
         },
         {
           "text": "wrangler CLIの r2 サブコマンド（`wrangler r2 bucket create` や `wrangler r2 object put` など）を使う"
@@ -9702,7 +9702,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflareの公式CLIツールwranglerには r2 サブコマンドが用意されており、`wrangler r2 bucket create` でバケット作成、`wrangler r2 object put <bucket>/<key> --file=<path>` でファイルアップロードなど、Workersのコードを書かずにターミナルからR2を直接操作できます。\n{{diagram:0}}\nダッシュボードやS3互換API経由のアクセスと合わせて、用途に応じたアクセス経路を選べます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/reference/wrangler-commands/",
-      "hint": "Cloudflareの公式CLIツールの名前を思い出してみましょう。",
+      "hint": "R2を操作する経路は1つではありません。どの経路なら、自分で用意する手順がいちばん少なく済むかを考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -10135,7 +10135,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare Queues の Pull-based Consumer は、消費する側から Queues の REST API に HTTP POST リクエストを送ってメッセージのバッチを取得し、処理が終わったら受信時に発行された `lease_id` を使って確認応答（ack＝処理済み / retry＝もう一度配信して欲しい）を返す方式です。Cloudflare Workers 以外の任意のインフラや言語からも利用できるため、GPU処理のような長時間実行タスクや、上流システムの処理速度に制限がある場合に適しています。\n{{diagram:0}}\n{{diagram:1}}\n※ 1回に取得できる件数(batch_size)や、応答がないと再配信されるまでの時間(visibility_timeout)の既定値は、上の図のとおりです。",
       "referenceUrl": "https://developers.cloudflare.com/queues/configuration/pull-consumers/",
-      "hint": "「Worker の queue ハンドラが自動で呼ばれる」のとは逆に、こちらは誰が能動的に取りに行くか考えましょう。",
+      "hint": "Push型とPull型の違いは、メッセージを受け取る主導権がどちらにあるかです。主導権を持つ側がどこで動き、何を実装するのかを切り分けて考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -10538,7 +10538,7 @@
       "correctIndex": 1,
       "explanation": "モノレポ構成のリポジトリでは、Pages のビルド設定にある「ルートディレクトリ」に対象アプリが置かれたサブディレクトリのパス(例: `apps/web`)を指定することで、そのディレクトリを基準にビルドコマンドやビルド出力ディレクトリが解決されます。\n{{diagram:0}}\n同一リポジトリ内の複数アプリを、それぞれ別のPagesプロジェクトとして異なるルートディレクトリで指定してデプロイすることも可能です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/monorepos/",
-      "hint": "サブディレクトリを基準にビルドを走らせる設定項目を探しましょう。",
+      "hint": "同じリポジトリから、サブディレクトリごとに別々のPagesアプリをデプロイすることもできます。アプリごとに何を変えれば、ビルドの対象を切り替えられるか考えましょう。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -11299,8 +11299,8 @@
           "wrongFeedback": "DNSをプライベートIPに向けるだけでは、誰がアクセスできるかを判定する認証・認可の仕組みにはなりません。"
         },
         {
-          "text": "Workerのコードで管理画面用のBasic認証を自前実装し、社内メンバーのIDとパスワードをコード内の配列にハードコードしておき、リクエストごとに`Authorization`ヘッダーと照合する",
-          "wrongFeedback": "認証情報をコードにハードコードするのは安全な方法ではありません。Cloudflareが提供する認証基盤(Access)を使う方が安全です。"
+          "text": "Workerのコードで管理画面用のBasic認証を自前実装し、社内で共有する1組のIDとパスワードをリクエストごとに`Authorization`ヘッダーと照合する",
+          "wrongFeedback": "共有の合言葉では「社内の誰が」アクセスしたのかが分からず、退職者の締め出しや漏えい時の入れ替えも手作業になります。Accessならメールドメインやアイデンティティプロバイダ(IdP)での認証といった利用者ごとの条件で通す/通さないを判定でき、記録も残ります。"
         },
         {
           "text": "WAFのRate Limiting Rulesだけで社内メンバー以外のアクセスを防ぐ",
@@ -11773,7 +11773,7 @@
       "correctIndex": 0,
       "explanation": "Hyperdriveは、既存のリージョナルなデータベースを「グローバルに分散しているかのように」使えるようにするサービスです。データベース自体はAWS・Google Cloud・Azure・Neon・PlanetScaleなどにそのまま置いたまま、世界中のWorkersからのアクセスを高速化します。\n{{diagram:0}}\n接続のセットアップをWorkerの近くで行い、データベース近傍で接続をプールし、読み取りクエリをキャッシュすることで、地理的な距離による遅延を最小化します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/",
-      "hint": "「既存の」データベースをどうするか、がポイントです。新しいDBを作るサービスではありません。",
+      "hint": "Workersから遠いところにあるデータベースへ毎回つなぎに行くと、何が遅くなるでしょうか。その遅さをどう減らすかが、Hyperdriveの狙いです。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -11857,7 +11857,7 @@
       "correctIndex": 2,
       "explanation": "Hyperdriveは、Workerと既存のデータベースの間に入り、データベースへの接続をCloudflare側でまとめて維持しておく仕組みです。既存のコードとツールをそのまま活かせる設計で、`pg` などのドライバやORM(コードからデータベースを扱うためのライブラリ)のインスタンス生成時に、接続文字列としてバインディングの `env.HYPERDRIVE.connectionString` を渡すだけで、以降のクエリはHyperdrive経由になります。\n{{diagram:0}}\n※ リクエストごとに新しいクライアントを作っても、実際のデータベース接続(接続プール)はHyperdrive側が維持しているため、クライアント生成は高速です。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/get-started/",
-      "hint": "既存のドライバやORMをそのまま使えるのがHyperdriveの利点です。では、コードのどこを変えることになるでしょうか？",
+      "hint": "Hyperdriveは、Workerとデータベースの間に入る中継役です。中継役を挟んだとき、アプリから見て何が変わり、何が変わらないのかを切り分けて考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12272,7 +12272,7 @@
       "correctIndex": 3,
       "explanation": "HyperdriveはPostgreSQLとMySQLの両方をサポートし、AWS・Google Cloud・AzureのマネージドDBや、Neon・PlanetScaleのようなDBaaSにも接続できます。さらにCockroachDBやTimescaleといったPostgres互換データベースにも対応しています。\n{{diagram:0}}\n「今使っているデータベースをそのまま」Workersから高速に使えるようにするのが狙いなので、対応範囲は広く取られています。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/reference/supported-databases-and-features/",
-      "hint": "Hyperdriveは「既存のDBをそのまま使う」ためのサービスです。対応範囲は狭いでしょうか、広いでしょうか。",
+      "hint": "対応するデータベースの「種類」と、「どこで動かしているか」は別の話です。まず種類のほうから絞り込みましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
