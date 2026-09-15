@@ -6519,16 +6519,16 @@
           "text": "AIプロバイダーへのリクエストをキャッシュ・レート制限・ログ記録し、統一的に管理・可視化すること"
         },
         {
-          "text": "Vectorizeのインデックスを自動的に再構築すること。キャッシュヒット率が下がると裏側でインデックスを自動的に再構築する仕組みを主目的としている",
-          "wrongFeedback": "インデックスの管理はVectorize側の役割であり、AI Gatewayの役割ではありません。AI Gatewayが担うのはリクエストのキャッシュ・レート制限・ログ記録です。"
+          "text": "取り込んだドキュメントを自動でインデックス化し、質問に対して根拠付きの回答を返すマネージドな検索基盤として使うこと",
+          "wrongFeedback": "取り込み・インデックス作成・回答生成をまとめて担うのはAI Searchです。AI Searchは内部でVectorizeを構成し、継続的なインデックス更新まで行います。AI Gatewayはリクエストを中継してキャッシュ・レート制限・ログを担当する層で、データの取り込みやインデックスは扱いません。"
         },
         {
-          "text": "D1データベースのクエリ結果をキャッシュすること",
-          "wrongFeedback": "D1自体にクエリ結果をキャッシュする機能はなく、必要ならCache APIなどで自前に行います。AI GatewayはAIモデルへのリクエストを対象としたゲートウェイです。"
+          "text": "オープンソースのモデルをCloudflareのサーバーレスGPU上で実行し、Workersから推論を呼び出せるようにすること",
+          "wrongFeedback": "サーバーレスGPUでモデルを動かすのはWorkers AIです。AI GatewayはWorkers AIや外部プロバイダーへのリクエストを中継する側で、モデルの実行そのものは行いません（AI Gatewayのドキュメントでも Workers AI は related product として別立てで紹介されています）。"
         },
         {
-          "text": "Workers AIのモデルを独自のデータセットでファインチューニングし、専用モデルとして配信すること",
-          "wrongFeedback": "AI Gatewayはリクエストを中継・管理するプロキシ的な機能であり、モデルのファインチューニング機能ではありません。"
+          "text": "アプリが書き込んだ独自のデータポイントを蓄積し、SQL APIで集計して利用状況を分析できるようにすること",
+          "wrongFeedback": "アプリが任意のデータポイントを書き込み、SQL APIで集計するのはWorkers Analytics Engineです。AI Gatewayの分析は、経由したAIリクエストのリクエスト数・トークン数・コストが自動で集計されるもので、任意イベントの保存先ではありません。"
         }
       ],
       "correctIndex": 0,
@@ -6576,22 +6576,22 @@
           "text": "embeddingベクトルを保存し類似度検索を行うグローバル分散型ベクトルデータベース"
         },
         {
-          "text": "KVストアの読み書きを高速化するキャッシュレイヤーであり、頻繁にアクセスされるキーと値のペアを一時的に保持して応答速度を上げる役割を持つ",
-          "wrongFeedback": "それはCache APIやAI Gatewayのキャッシュ機能に近い説明です。Vectorizeはキャッシュ層ではありません。"
+          "text": "テキストや画像をembeddingベクトルへ変換する埋め込みモデルを、サーバーレスGPU上で動かす推論サービス",
+          "wrongFeedback": "ベクトルを作るのはWorkers AIなどの埋め込みモデル側で、Vectorizeは作られたベクトルを受け取って保存し、近いものを探す側です。ドキュメントでも『機械学習モデルが生成したembeddingを保存することで』検索や推薦が作れる、と役割が書き分けられています。"
         },
         {
-          "text": "画像・動画などのファイルをオブジェクトとして保存し、S3互換APIで読み書きできるグローバル分散ストレージ",
-          "wrongFeedback": "オブジェクトストレージはR2の役割です。Vectorizeはembeddingベクトルを保存・検索するデータベースです。"
+          "text": "データソースを継続的に取り込み、インデックス作成から回答生成までを1つのAPIで担うマネージドなRAGパイプライン",
+          "wrongFeedback": "取り込み・インデックス作成・回答生成をまとめて担うのはAI Searchです。AI Searchは内部でVectorizeを自動的に構成し、継続的にインデックスを更新します。Vectorizeはその土台になるベクトルの保存と検索そのものを担います。"
         },
         {
-          "text": "Workers上で動くリレーショナルSQLデータベースであり、テーブル同士をJOINしながら構造化データをクエリする用途に使われる",
-          "wrongFeedback": "リレーショナルSQLデータベースはD1です。Vectorizeはベクトルデータに特化したデータベースです。"
+          "text": "エージェントごとの状態をSQLiteに永続化し、接続中のクライアントへリアルタイムに同期する仕組み",
+          "wrongFeedback": "エージェントの状態を各インスタンス内蔵のSQLiteへ保存し、接続中のクライアントへ同期するのはAgentsのstateの仕組みです。Vectorizeが扱うのは状態ではなく、意味の近さで探すためのembeddingベクトルです。"
         }
       ],
       "correctIndex": 0,
       "explanation": "Vectorizeは、embeddingベクトルを大量に保存し、検索したいベクトルに意味の近いものを高速に探し出せるデータベースです。embedding(埋め込み)ベクトルとは、文章や画像などの内容を数値の並びとして表したもので、内容が近いものほどベクトル同士も近い位置になります。そのためVectorizeでは、キーワードの一致ではなく「意味が近いかどうか」でデータを探せます。\n{{diagram:0}}\n※ 保存するベクトルはWorkers AIなどのモデルで生成します。意味で探す検索(semantic search)、レコメンデーション、RAG(検索した情報を生成AIに渡して答えさせる手法)などが代表的な用途です。",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/",
-      "hint": "Vectorizeは、AI関連の機能群の1つです。AIモデルが作り出したデータを受け止め、あとから探し出すための置き場としてどれが自然か考えましょう。",
+      "hint": "Vectorizeは、AI関連の機能群の1つです。同じAIの流れの中でも「データを作る役」「まとめて面倒を見る役」「置いて後から探せるようにする役」は別々に用意されています。Vectorizeがどの役かを考えましょう。",
       "tags": [
         "ai-vectorize",
         "practical",
@@ -7268,16 +7268,16 @@
           "text": "Worker内でFetch APIを使った外部リクエストや、R2・KV・D1などCloudflareサービスへのアクセス"
         },
         {
-          "text": "ユーザーのブラウザからWorkerに送られてくる元のHTTPリクエスト",
-          "wrongFeedback": "それは「受信リクエスト」であり、サブリクエストはWorkerの内部から発生する別のリクエストを指します。"
+          "text": "応答ヘッダーの到着を同時に待っている通信のこと。`fetch()`やKV・R2の呼び出しが対象で、1回の呼び出しにつき6本までに制限される",
+          "wrongFeedback": "6本という制限は「同時に開ける接続数(simultaneous open connections)」という別の項目で、応答ヘッダーが返るまでの同時実行数を抑えるものです。サブリクエストは同時数ではなく、1回の呼び出しの中で発生した延べ回数として数えられます(Freeで50、Paidで10,000)。"
         },
         {
-          "text": "cronトリガーによって定期実行されるScheduled Workerの起動イベントで、1回の起動ごとに1サブリクエストとしてカウントされる",
-          "wrongFeedback": "これはScheduled Workersの仕組みであり、サブリクエストとは別の概念です。"
+          "text": "Service Bindingsを使って同じアカウント内の別のWorkerを呼び出す内部通信を指す用語で、外部URLへの`fetch()`やKV・R2の読み書きは通常のリクエストとして扱われる",
+          "wrongFeedback": "Service Bindings経由の呼び出しもサブリクエストですが、それは一種です(内部サービス向けには別枠の上限があります)。インターネットに出ていく`fetch()`も、KV・R2・D1へのアクセスも同じくサブリクエストとして数えられます。通常のリクエストとして別扱いされるわけではありません。"
         },
         {
-          "text": "Cloudflareのエッジネットワーク間でキャッシュを同期する内部通信。複数のデータセンターが保持するキャッシュの整合性を保つため、エッジサーバー同士が通信する処理を指す",
-          "wrongFeedback": "これはCloudflareの内部インフラの話であり、Workersのサブリクエストの定義ではありません。"
+          "text": "コードに書いた`fetch()`は受信リクエストの延長として扱われ、そこから派生したリダイレクトの各ホップなどだけが個別に数えられる通信",
+          "wrongFeedback": "リダイレクトの各ホップが個別に数えられるのは事実です。ただしそれは『サブリクエストの総数はコードに書いた`fetch()`の回数より多くなることがある』という話で、コードに書いた`fetch()`呼び出しそのものも1回ごとに数えられています。派生した通信だけが対象なのではありません。"
         }
       ],
       "correctIndex": 0,
@@ -7382,16 +7382,16 @@
           "text": "Buffer・Crypto・Streamなど30以上のNode.js組み込みAPIを、Workersのランタイム上で使えるようにする"
         },
         {
-          "text": "npmパッケージのインストール先をCloudflareのレジストリに変更する設定であり、`npm install`時の参照先が自動的に切り替わる",
-          "wrongFeedback": "パッケージのインストール元とは無関係です。nodejs_compatは実行時のAPI互換性に関する設定です。"
+          "text": "Node.jsの`AsyncLocalStorage`だけを有効にし、非同期処理をまたいでリクエスト単位のコンテキストを保持できるようにする",
+          "wrongFeedback": "`AsyncLocalStorage`だけを有効にしたいときに使うのは`nodejs_als`という別のフラグです。`nodejs_compat`は非同期コンテキスト追跡を含む、もっと広い範囲のNode.js APIを有効にします。"
         },
         {
-          "text": "Workerのコード全体をNode.jsランタイム上で実行するように切り替える設定であり、workerd自体がNode.jsプロセスに置き換わる",
-          "wrongFeedback": "WorkersはCloudflare独自のランタイム(workerd)上で動作し続けます。Node.js自体に実行環境が切り替わるわけではありません。"
+          "text": "Wranglerがビルド時に`unenv`製のポリフィルを注入し、npmパッケージが`import`するNode.jsモジュールの解決を通すだけの設定",
+          "wrongFeedback": "ポリフィルの注入は`nodejs_compat`が持つ2つの提供形態のうちの片方です。ドキュメントは『ランタイムが組み込みで提供するAPI』と『Wranglerが注入するポリフィル』の2形態を挙げており、Buffer・Crypto・Streamなどはポリフィルではなくランタイム側にネイティブ実装されています。"
         },
         {
-          "text": "TypeScriptのコンパイル時に、Node.js組み込みモジュールの型定義を`node_modules`配下へ自動生成する",
-          "wrongFeedback": "型定義生成の話ではなく、実行時のNode.js API互換性に関するフラグです。"
+          "text": "`node:child_process`や`node:worker_threads`を実装付きで使えるようにし、Worker内から別プロセスやスレッドを起動できるようにする",
+          "wrongFeedback": "`node:child_process`や`node:worker_threads`は、`import`できるだけで中身が動かないスタブとして提供されます。パッケージがモジュールの有無を確認して読み込めるようにするためのもので、Worker内で別プロセスやスレッドが起動できるようになるわけではありません。"
         }
       ],
       "correctIndex": 0,
@@ -8485,22 +8485,22 @@
           "text": "`wrangler login`"
         },
         {
-          "text": "`wrangler auth --token`",
-          "wrongFeedback": "ログインに使うのは`wrangler auth --token`ではなく、ブラウザ経由のOAuthフローを開始する`wrangler login`です。"
+          "text": "`wrangler auth token`",
+          "wrongFeedback": "`wrangler auth token`は実在しますが、これは『いま設定されている認証情報を取り出して他のツールやスクリプトに渡す』ためのコマンドです。認証がまだ無い状態で実行するとエラーになります。連携そのものを始めるのは`wrangler login`です。"
         },
         {
-          "text": "`wrangler deploy --login`",
-          "wrongFeedback": "`wrangler deploy`にそのようなフラグはありません。認証は事前に`wrangler login`で行います。"
+          "text": "`wrangler auth list`",
+          "wrongFeedback": "`wrangler auth`配下には、複数アカウントを使い分けるための名前付き認証プロファイルを操作するコマンドが揃っており、`list`はその一覧を表示します。一覧の対象になるプロファイルを最初に用意する操作ではありません。"
         },
         {
-          "text": "`wrangler init --auth`",
-          "wrongFeedback": "`wrangler init`にそのようなフラグはありません。認証は別の専用コマンドで行います。"
+          "text": "`wrangler whoami`",
+          "wrongFeedback": "`wrangler whoami`は、いまどのアカウントでログインしているか、認証情報がどこに保存されているかを確認するコマンドです。確認は認証が済んだ後に行うものです。"
         }
       ],
       "correctIndex": 0,
       "explanation": "`wrangler login` を実行するとブラウザが開き、Cloudflareアカウントへのアクセスを許可するOAuth認証フローが始まります。\n{{diagram:0}}\n認証が完了すると、ローカルにOAuthトークンが保存され、以降の `wrangler dev --remote` や `wrangler deploy` などのコマンドでそのアカウントの権限が使われます。現在ログイン中のアカウントを確認したい場合は `wrangler whoami` を使います。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/general/#login",
-      "hint": "認証は、デプロイや初期化のついでに行うものではなく、最初に一度だけ実行する独立したコマンドで行います。",
+      "hint": "4つとも実在するコマンドです。まだ何も設定されていない初回の状態で、それ単体で成立するのはどれかを考えましょう。",
       "tags": [
         "wrangler",
         "practical",
@@ -8868,19 +8868,19 @@
       "question": "Workerの中でWorkers KV namespaceにアクセスできるようにするための正しい設定方法はどれですか？",
       "options": [
         {
-          "text": "Workers KVは自動的にすべてのWorkerからグローバルにアクセス可能なため、事前設定は不要である",
-          "wrongFeedback": "アクセスには事前のバインディング設定が必要です。設定していないnamespaceには envからアクセスできません。"
+          "text": "`wrangler kv namespace create <BINDING_NAME>`を実行すると、その binding 名の定義が設定ファイルへ書き込まれ、`env.<binding名>`から参照できるようになる",
+          "wrongFeedback": "`wrangler kv namespace create`が行うのはnamespaceの作成とIDの発行までで、実行後に表示されるのは『次の内容を設定ファイルの`kv_namespaces`配列に追記してください』という案内です。追記は自分で行う必要があります。"
         },
         {
-          "text": "Cloudflareダッシュボードのバインディング設定画面でのみ登録でき、プロジェクトの設定ファイルにバインディング定義を書いてもデプロイ時に無視されるため、コードからは参照できない",
-          "wrongFeedback": "`wrangler.toml`(または`wrangler.jsonc`)の[[`kv_namespaces`]]セクションにbindingとidを記述する方法がサポートされています。ダッシュボードのみに限定されません。"
+          "text": "`kv_namespaces`に`binding`と`preview_id`を書いておけば、`id`は`wrangler deploy`のときにアカウント内の namespace 名から自動で解決される",
+          "wrongFeedback": "`id`は必須のフィールドで、`preview_id`は省略可能です。`preview_id`は`wrangler dev --remote`でリモートのリソースに対して開発するときに指定するもので、`id`の代わりにはなりません。namespace 名から自動で解決される仕組みもありません。"
         },
         {
-          "text": "`wrangler.toml`に[[`kv_namespaces`]]でbindingとidを指定し、Worker内ではenv.<binding名>としてアクセスする"
+          "text": "`wrangler.toml`の`[[kv_namespaces]]`でbindingとidを指定し、Worker内では`env.<binding名>`としてアクセスする"
         },
         {
-          "text": "`package.json`のdependenciesにKV用パッケージを追加し、コード内でimportする",
-          "wrongFeedback": "Workers KVはnpmパッケージのimportではなく、`wrangler.toml`(または`wrangler.jsonc`)でのバインディング設定によってenv経由で利用します。"
+          "text": "`wrangler kv key put --binding=<binding名>`でキーを書き込むと、その binding 名がWorkerに登録され、コードから`env.<binding名>`で読み書きできる",
+          "wrongFeedback": "`wrangler kv key put`はCLIからキーと値を書き込むためのコマンドです。`--binding`は設定ファイルに既に書かれているバインディング名を指して、どのnamespaceに書くかを決めるためのもので、このコマンドがWorkerにバインディングを登録するわけではありません。"
         }
       ],
       "correctIndex": 2,
@@ -10117,19 +10117,19 @@
       "question": "Cloudflare Queues の Pull-based Consumer について正しい説明はどれですか？",
       "options": [
         {
-          "text": "Cloudflare Workers 上でのみ動作し、queue() ハンドラで自動的にメッセージを受け取る",
-          "wrongFeedback": "それは Push 型（Worker Consumer）の説明です。Pull 型は HTTP 経由で Cloudflare Workers 以外の環境からもメッセージを取得できます。"
+          "text": "キューの Wrangler 設定に `type = \"http_pull\"` を指定して `wrangler deploy` を実行すると、そのキューが Pull 型に切り替わり、HTTP からメッセージを取得できるようになる",
+          "wrongFeedback": "Wrangler設定ファイルからのHTTP pull有効化は、現在はサポートされていません。設定に`type = \"http_pull\"`が残っている場合は削除して再デプロイするよう案内されています。有効化は`wrangler queues consumer http add <QUEUE-NAME>`かダッシュボードで行います。"
         },
         {
-          "text": "メッセージの取得は完全に自動で行われ、消費側が取得タイミングを制御することはできない",
-          "wrongFeedback": "Pull 型はまさに消費側が能動的に HTTP リクエストを送って取得タイミングを制御できる点が特徴です。"
+          "text": "メッセージが無いときは接続を保持したまま待ち、到着した時点でそのバッチを返すロングポーリング方式で受け取る",
+          "wrongFeedback": "Pull consumerはshort polling方式です。メッセージがあれば即座に返し、無ければ空の応答を返します。接続を保持して到着を待つ（long polling）動作はしないと明記されています。取得の間隔は消費側が自分で決めます。"
         },
         {
           "text": "クライアントが Queues REST API に HTTP POST でメッセージを取得し、lease_id で確認応答する方式で、Workers 以外のインフラからも利用できる"
         },
         {
-          "text": "Pull 型を使う場合も、Consumer Worker の wrangler 設定で `queue` ハンドラを実装する必要がある",
-          "wrongFeedback": "Pull 型は Worker の `queue` ハンドラを使わず、HTTP 経由で外部から直接メッセージを取得・確認応答する仕組みです。"
+          "text": "同じキューに Worker Consumer を残したまま追加でき、Push と Pull の両方から同じキューのメッセージを受け取れる",
+          "wrongFeedback": "既にpush型（Worker Consumer）が設定されているキューに`wrangler queues consumer http add`を実行すると、wranglerはエラーを返します。先に`wrangler queues consumer worker remove`で外す必要があります。なお、pull consumer同士であれば複数を同時に走らせることができます。"
         }
       ],
       "correctIndex": 2,
@@ -10520,19 +10520,19 @@
       "question": "モノレポ(1つのリポジトリに複数のアプリ/パッケージが含まれる構成)で、特定のサブディレクトリにあるアプリだけを Cloudflare Pages でビルド・デプロイしたい場合、どう設定すればよいか。",
       "options": [
         {
-          "text": "リポジトリを複数のGitリポジトリに分割するか、サブディレクトリごとに別ブランチを切らない限り、モノレポ内の特定ディレクトリだけをビルド対象にすることはできない",
-          "wrongFeedback": "「ルートディレクトリ」設定を使えば、リポジトリを分割しなくても特定のサブディレクトリだけをビルド対象にできます。"
+          "text": "「ビルド監視パス(build watch paths)」のincludeに対象アプリのディレクトリを指定し、そのパスを基準にビルドコマンドを実行させる",
+          "wrongFeedback": "ビルド監視パスは実在しますが、役割は『そのプロジェクトのビルドをスキップするかどうか』を決めることです。モノレポで無関係なアプリのビルドが走るのを防ぐ用途で、ビルドコマンドの実行基準となるディレクトリは変わりません。基準を変えるのはルートディレクトリです。"
         },
         {
           "text": "プロジェクトのビルド設定で「ルートディレクトリ(Root directory)」に対象アプリのサブディレクトリパスを指定する"
         },
         {
-          "text": "Pages Functions の `functions/` ディレクトリ名を対象アプリのディレクトリ名に変更することで、そのディレクトリだけがビルド時にルートとして認識される",
-          "wrongFeedback": "`functions/` は Pages Functions のルーティング用の固定ディレクトリ名であり、変更してもビルド対象アプリの切り替えにはなりません。"
+          "text": "「ビルド出力ディレクトリ(Build output directory)」に`apps/web/dist`のようなパスを指定し、そのパスの外にあるアプリのビルドを省略させる",
+          "wrongFeedback": "ビルド出力ディレクトリは、ビルドコマンドが成果物を出力した場所をPagesに伝えるための設定です。出力先を指定しても、他のアプリのビルドが省略されるわけではありません。どのディレクトリを基準にビルドコマンドを走らせるかは、ルートディレクトリで決めます。"
         },
         {
-          "text": "`_headers` ファイルにビルド対象のディレクトリを記述することで、ビルドコマンドがそのパスを読み取り対象アプリのディレクトリだけをビルドするようになる",
-          "wrongFeedback": "`_headers` はHTTPレスポンスヘッダーの設定ファイルであり、ビルド対象ディレクトリの指定には使用しません。"
+          "text": "対象アプリごとにプロダクションブランチを分け、ブランチ制御でどのアプリをビルドするかを切り替える",
+          "wrongFeedback": "ブランチ制御は、そのブランチでビルドを行うかどうかを決める仕組みです（監視パスと並んで重複ビルドを避ける手段として案内されています）。ディレクトリ単位でビルド対象を切り替えるものではなく、同じブランチから複数アプリをデプロイしたい場合には使えません。"
         }
       ],
       "correctIndex": 1,
@@ -11758,16 +11758,16 @@
           "text": "既存のPostgres/MySQLデータベースへのWorkersからのアクセスを、接続プーリングとクエリキャッシュで高速化するサービス"
         },
         {
-          "text": "データベースを自動的にCloudflareのエッジへ移行(マイグレーション)するツール",
-          "wrongFeedback": "データベース自体は元の場所に残ります。Hyperdriveは移行ツールではなく、既存データベースへのアクセスを速くする仕組みです。"
+          "text": "Workerの実行場所をデータベースに近いリージョンへ寄せ、往復の多いクエリの遅延を減らす配置の仕組み",
+          "wrongFeedback": "Workerの実行場所をDBの近くへ寄せるのはPlacementという別の機能です。Hyperdriveのドキュメントでも、1リクエストで複数のクエリを順番に投げる場合の追加策としてPlacementが別枠で案内されています。Hyperdrive自体はWorkerの場所を動かさず、接続のセットアップをWorkerの近くで済ませ、接続プールはDBの近くに置きます。"
         },
         {
-          "text": "Cloudflareが提供する新しい分散SQLデータベースで、D1の上位版としてデータそのものを各エッジロケーションに複製して保存し、Workersから直接クエリできる",
-          "wrongFeedback": "Hyperdrive自体はデータベースではありません。既存のPostgres/MySQLデータベースへの接続を高速化するサービスです。"
+          "text": "Workersから`node-postgres`や`mysql2`の代わりに`import`して使う、Workers向けのデータベースドライバ実装",
+          "wrongFeedback": "Hyperdriveはドライバではありません。`node-postgres`や`mysql2`といった既存のドライバやORMはそのまま使い、接続文字列をHyperdriveのもの(`env.HYPERDRIVE.connectionString`)に差し替えて使います。コードやツールを置き換えずに済むことがHyperdriveの売りの一つです。"
         },
         {
-          "text": "R2バケットの前段に置くオブジェクトキャッシュ層",
-          "wrongFeedback": "R2とは無関係です。Hyperdriveが対象とするのはPostgres/MySQLなどのリレーショナルデータベースへの接続です。"
+          "text": "読み取り専用のレプリカを複数のリージョンに配置し、読み取りクエリを最も近いレプリカへ振り分ける仕組み",
+          "wrongFeedback": "読み取りレプリカを各リージョンに置いて最寄りへ振り分けるのは、D1のグローバル読み取りレプリケーションの仕組みです。Hyperdriveはデータベースの複製を作らず、元のデータベースはそのままの場所に置いたまま、接続とクエリ結果のキャッシュで速くします。"
         }
       ],
       "correctIndex": 0,
@@ -25482,8 +25482,8 @@
           "text": "Randomステアリングを選択すると健全なPoolの中からランダムに1つが選ばれ、`random_steering`オブジェクトでPoolごとにWeightを設定すればトラフィックの割合を調整できる"
         },
         {
-          "text": "Randomステアリングでは各Poolが選ばれる確率は均等に固定されており、比率を変えたい場合はDynamic steeringへ切り替えることになる",
-          "wrongFeedback": "確率は固定ではありません。`random_steering`オブジェクトでPoolごとのWeightを設定すれば、Randomステアリングのままで各Poolへ送る割合を変えられます。"
+          "text": "Randomステアリングでは各Poolが選ばれる確率は均等に固定されており、比率を変えたい場合は`steering_policy`をDynamic steeringへ切り替えることになる",
+          "wrongFeedback": "確率は固定ではありません。`random_steering`オブジェクトでPoolごとのWeightを設定すれば、Randomステアリングのままで各Poolへ送る割合を変えられます。`steering_policy`を切り替える必要はありません。"
         }
       ],
       "correctIndex": 2,
