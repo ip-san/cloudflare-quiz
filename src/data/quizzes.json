@@ -7691,7 +7691,7 @@
       "correctIndex": 2,
       "explanation": "Durable Objectsは、セッションやドキュメントなどの単位ごとに単一のインスタンスを持ち、単一スレッド実行によって強い整合性を保証します。複数のクライアントが同じDurable Objectインスタンス(例えばWebSocket経由)に接続することで、状態の食い違いなくリアルタイムに同期できます。通常のWorkersはステートレスな実行モデルが前提であり、KVは結果整合性のため、こうした用途には向きません。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/",
-      "hint": "Workers KVは、読み取りの速さを優先した設計です。",
+      "hint": "複数のクライアントが同じ状態を同時に書き換えます。順番を決める場所が1か所に定まっている必要があるかどうかを考えましょう。",
       "tags": [
         "architecture",
         "practical"
@@ -25471,8 +25471,8 @@
       "question": "Randomステアリングを使ってアクティブ-アクティブ構成(いわゆるラウンドロビン)を実現する方法として正しいものはどれですか？",
       "options": [
         {
-          "text": "Weightの設定は`endpoint_steering`という別のオブジェクトを使い、Pool内の個々のエンドポイント単位でのみ可能で、Pool間の比率は管理画面に並べたPoolの順番と各Poolが持つエンドポイント数の合計から自動的に決まる",
-          "wrongFeedback": "Poolレベルでも重みを設定できます。APIの`random_steering`オブジェクトでPoolごとにWeightを設定し、各Poolへ送るトラフィックの割合を決められます。Poolの並び順やエンドポイント数から自動的に決まるわけではありません。"
+          "text": "Weightの設定はPool内の個々のエンドポイント単位でのみ可能で、Pool間の比率は管理画面に並べたPoolの順番と各Poolが持つエンドポイント数の合計から自動的に決まるため、Pool間の比率を変えたい場合はエンドポイントの数を増減させるしかない",
+          "wrongFeedback": "Poolレベルでも重みを設定できます。APIの`random_steering`オブジェクトでPoolごとにWeightを設定し、各Poolへ送るトラフィックの割合を直接決められます。Poolの並び順やエンドポイント数から自動的に決まるわけではなく、エンドポイントを増減させる必要もありません。"
         },
         {
           "text": "Randomステアリングでは、1つのリクエストが複数のPoolへ同時に複製されて送信され、最初に応答したPoolの結果が利用者に返される",
