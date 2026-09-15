@@ -32207,7 +32207,7 @@
       "correctIndex": 0,
       "explanation": "悪性と判定されたスクリプトや接続には、Security threats・Command-and-Control(C2)・Botnet・Crypto mining・Spyware・Phishing・Malware・DGAドメイン・タイポスクワッティング/なりすましなど複数のカテゴリが定義されており、これらは脅威インテリジェンスフィードのデータに基づいて分類されます。1つのスクリプトや接続が複数のカテゴリに同時に該当することもあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/#malicious-script-and-connection-categories",
-      "hint": "1つの悪性スクリプトが「複数の顔」を持つ可能性を考えましょう。",
+      "hint": "1つのスクリプトや接続に付く分類が1つだけなのか、それともいくつも付きうるのかを考えましょう。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32371,7 +32371,7 @@
       "correctIndex": 0,
       "explanation": "Logアクションは許可リストに含まれないリソースをブロックせず、違反として報告するだけです(`content-security-policy-report-only`を使用)。Allowアクションは許可リストに含まれないリソースを実際にブロックし、違反として記録します(`content-security-policy`を使用)。新しいルールはまずLogアクションで検証し、その後Allowアクションへ切り替えるのが推奨される運用です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/rules/#rule-actions",
-      "hint": "「観察するだけ」のアクションと「実際に締め出す」アクションの違いを考えましょう。",
+      "hint": "2つのアクションのうち、対象外のリソースを止める側はどちらなのかを考えましょう。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32868,7 +32868,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflare One Client(WARP)で接続した場合はDNS・Network・HTTPのすべてのポリシーが適用されます。一方、DNSリゾルバの設定のみを変更した場合はDNSポリシーのみが、PACファイル経由のプロキシエンドポイントの場合はブラウザのHTTPトラフィックのみが対象となります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/#choose-a-connection-method",
-      "hint": "端末全体を経由させる接続方式と、DNSやブラウザだけを経由させる接続方式の違いを考えましょう。",
+      "hint": "その接続方式でCloudflareが実際に受け取る通信の種類によって、適用できるポリシーが決まると考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -32940,7 +32940,7 @@
       "correctIndex": 2,
       "explanation": "DNSポリシーとResolverポリシーは単独(standalone)で機能します。対応するHTTPポリシーを作成していない場合、宛先のIPアドレスを直接知っているユーザーはDNSポリシーによるブロックを回避してそのサイトへアクセスできてしまいます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/order-of-enforcement/#priority-between-policy-builders",
-      "hint": "「名前を引けなくする」ことと「実際に接続できなくする」ことは同じではありません。",
+      "hint": "DNSポリシーで止めたドメインが、HTTPやNetworkのポリシーでも止まるのかどうかを考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -33198,7 +33198,7 @@
       "correctIndex": 3,
       "explanation": "AVスキャンの対象外となるファイルサイズの上限はプランによって異なり、Freeプランは15MB、Pay-as-you-goプランは25MB、Enterpriseプランは100MBを超えるファイルはスキャンされません。また、Do Not Scanポリシーに一致した通信は、サイズやファイルタイプに関わらず一切スキャンされません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/antivirus-scanning/#non-scannable-files",
-      "hint": "上位プランほどスキャンできる範囲が広い(上限が大きい)、という関係を考えましょう。",
+      "hint": "スキャン対象から外れるファイルサイズの境目が、プランをまたいで共通なのかどうかを考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -33700,7 +33700,7 @@
       "correctIndex": 3,
       "explanation": "カテゴリがまだ付与されていないサブドメインは親ドメインのカテゴリを継承しますが、Cloudflareが実際にそのサブドメインを分類した場合は、そのサブドメイン自身のカテゴリのみが適用されます。コンテンツカテゴリ・セキュリティリスク・セキュリティ脅威はそれぞれ異なる手法で決定される独立した分類軸です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/domain-categories/#content-categories",
-      "hint": "「分類が未確定な間の暫定的な扱い」と「実際に分類が確定した後の扱い」を分けて考えましょう。",
+      "hint": "サブドメインの分類が、親ドメインの分類とどういう関係になるのかを考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -33804,7 +33804,7 @@
       "correctIndex": 3,
       "explanation": "転送中のデータはSecure Web Gatewayと連携し、GatewayのHTTPポリシーとTLS復号を通じて検知されるため、Do Not InspectポリシーやSplit Tunnelの設定に影響を受けます。一方、保存中のデータはCloudflare CASBがSaaSアプリケーションのAPIへ直接接続してファイルを取得・スキャンするため、Gatewayやクライアント側の設定には影響を受けません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/#data-at-rest",
-      "hint": "「通信経路上でのぞき見る」方式と「アプリのAPIに直接問い合わせる」方式の違いを考えましょう。",
+      "hint": "転送中のデータと保存中のデータで、Cloudflareが中身を手に入れる経路は同じなのかどうかを考えましょう。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34071,7 +34071,7 @@
       "correctIndex": 0,
       "explanation": "AIプロンプトトピックは、プロンプトに含まれる内容(Content、たとえば貼り付けられたソースコード)と、ユーザーの意図(Intent、たとえば悪意のあるコード生成やPIIの抽出をAIに依頼しようとする意図)の両方を分析します。対応するAIアプリケーションにはChatGPT・Google Gemini・Perplexity・Claudeが含まれます。なお、AI Gateway経由のDLPはGatewayのHTTPフィルタリングやTLS復号を必要としません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/detection-entries/configure-detection-entries/#ai-prompt-topics",
-      "hint": "「何が書かれているか」と「何をさせようとしているか」という2つの異なる観点で分析している点を考えましょう。",
+      "hint": "プロンプトに書かれた内容そのものだけが対象なのか、その先にある目的まで対象なのかを考えましょう。",
       "tags": [
         "data-loss-prevention",
         "practical"
@@ -34331,7 +34331,7 @@
       "correctIndex": 2,
       "explanation": "マッチ数(match count)は、アクションを発動させるために必要な検知の最小しきい値を設定するものです。たとえばしきい値を10に設定すると、1つのファイルやHTTPボディの中で10件以上の検知が必要になります。この検知はユニークである必要はなく、同じクレジットカード番号が10回出現すれば10件のマッチとしてカウントされます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-profiles/advanced-settings/#match-count",
-      "hint": "「同じ値が繰り返し出てきた場合」も、それぞれ独立したマッチとして数えられるかどうかを考えましょう。",
+      "hint": "同じ内容の検知が何度も見つかったとき、それを何件として数えるのかを考えましょう。",
       "tags": [
         "data-loss-prevention",
         "practical"
