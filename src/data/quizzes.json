@@ -25290,7 +25290,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Load Balancingは、ホスト名に紐づくLoad Balancerを最上位とし、その配下にエンドポイントの集まりであるPoolを、さらにPoolの配下に実際のオリジンサーバーを表すEndpointを持つ、3段の入れ子構造になっています。\n{{diagram:0}}\n※ インターネットに公開するLoad Balancerを作成すると、指定したホスト名に対応するDNSレコードはCloudflareが自動的に作成します。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/load-balancing-components/",
-      "hint": "「ホスト名」「オリジンのグループ」「個々のオリジン」という3段階の入れ子構造を考えましょう。",
+      "hint": "3つの用語のうち1つだけが、複数のものを束ねる意味を持っています。それが何を束ね、逆に何に束ねられる側なのかを組み立てましょう。",
       "tags": [
         "load-balancing",
         "practical"
@@ -25341,7 +25341,7 @@
       "correctIndex": 1,
       "explanation": "Monitorは、エンドポイントに対して定期的にヘルスチェックリクエストを送信し、その応答結果からエンドポイントの健全性を判定する仕組みです。これにより、Load Balancerは実際に利用可能なエンドポイントを考慮したうえでインテリジェントにトラフィックを振り分けられます。Load Balancingに付随するMonitorは、独立した製品であるスタンドアロンのHealth Checksとは別物です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/monitors/",
-      "hint": "「定期的に様子を見に行って、元気かどうかを確認する」役割の機能だと考えましょう。",
+      "hint": "この機能が見ているのは、Cloudflareのエッジ側で起きていることか、それともオリジン側の各エンドポイントの状態か。どちらを対象にした仕組みかを切り分けましょう。",
       "tags": [
         "load-balancing",
         "practical"
@@ -25441,7 +25441,7 @@
       "correctIndex": 1,
       "explanation": "Off - Failoverステアリングは、Pool順序をフェイルオーバーの優先順位として使います。Pool 1(プライマリ)が健全な間は常にPool 1へトラフィックが送られ、Pool 1が不健全になるとPool 2(スタンバイ)へ切り替わります。その後Pool 1が健全な状態に復帰すると、トラフィックは自動的にPool 1へ戻ります。この「元へ戻る」挙動をフェイルバックと呼びます。\n{{diagram:0}}\n※ ただし、セッションアフィニティ(同じ利用者を同じPoolに固定し続ける設定)など他の設定が個別のリクエストをPool 2に留める場合、そのリクエストはPool 1へ戻りません。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/standard-options/#failback-behavior",
-      "hint": "「壊れたら避難する」だけでなく、「直ったら元に戻る」という双方向の挙動を考えましょう。",
+      "hint": "このステアリングでは、Poolの並び順がそのまま優先順位です。障害が起きている間と、復旧したあととで、その順序がどう働くのかを考えましょう。",
       "tags": [
         "load-balancing",
         "practical"
@@ -26272,7 +26272,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflareは、`Cache-Control`ヘッダーが`private`・`no-store`・`no-cache`・`max-age=0`のいずれかに設定されている場合、`Set-Cookie`ヘッダーが存在する場合、またはHTTPリクエストメソッドが`GET`以外の場合、レスポンスをキャッシュしません。逆に`Cache-Control`ヘッダーがなくても、ステータスコードに基づいてデフォルトでキャッシュされることがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/concepts/default-cache-behavior/",
-      "hint": "「明示的にキャッシュ禁止と言われた場合」「個人情報が含まれそうな場合」「安全に繰り返せない操作の場合」という3つの観点を考えましょう。",
+      "hint": "キャッシュとは、同じ応答を別の人のリクエストにも使い回すことです。使い回してはいけない応答や操作にはどんな特徴があるかを考えましょう。",
       "tags": [
         "cache",
         "practical"
@@ -26371,7 +26371,7 @@
       "correctIndex": 3,
       "explanation": "Cache Rulesの「Cache Eligibility」には`Bypass cache`と`Eligible for cache`の2つの選択肢があります。`Bypass cache`はマッチしたリクエストをキャッシュしない設定、`Eligible for cache`はマッチしたリクエストをCloudflareがキャッシュしようと試みる設定で、これを選ぶとEdge TTL・Browser TTL・Cache Keyなどの詳細設定が可能になります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#cache-eligibility",
-      "hint": "「キャッシュしない」と「キャッシュを試みる(そして詳細設定できる)」の2択だと考えましょう。",
+      "hint": "この設定の選択肢は2つで、片方を選んだときだけ保持期間やキャッシュキーの細かい調整に進めます。どちらがどちらなのかを考えましょう。",
       "tags": [
         "cache",
         "practical"
@@ -26480,7 +26480,7 @@
       "correctIndex": 2,
       "explanation": "Browser TTLは、訪問者のブラウザがコンテンツをどれだけの期間キャッシュとして利用可能とみなすかを制御する設定です。選択肢は`Bypass cache`(キャッシュしない)・`Respect origin`(オリジンの値に従う)・`Override origin`(オリジンの値を上書きして指定した期間を使う)の3つです。Cloudflare側のキャッシュをパージしても、訪問者のブラウザキャッシュは消去されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-rules/settings/#browser-ttl",
-      "hint": "「Cloudflareのエッジ」ではなく「訪問者のブラウザ自身」が保持する期間を指す設定だと考えましょう。",
+      "hint": "この設定が指しているのは、どこが持つキャッシュの期間なのかを、まず設定名から確かめましょう。そのうえで、その持ち主に対してCloudflare側からどこまで手を出せるのかを考えましょう。",
       "tags": [
         "cache",
         "practical"
@@ -26840,7 +26840,7 @@
       "correctIndex": 1,
       "explanation": "Tiered Cacheは、ユーザーに最も近い下位層のデータセンターがキャッシュを持っていないとき、すぐオリジンに問い合わせず「上位層」のデータセンターに聞きに行く仕組みです。Tiered Cache Topologyは、その上位層をどう決めるかの設定で、Cloudflareが最適な上位層を自動選択するSmart Tiered Cache、全世界のCloudflareデータセンターを上位層として使えるGeneric Global Tiered Cache、上位層が1〜2リージョンに集中している場合に有効なRegional Tiered Cache、独自のトポロジーを組めるCustom Tiered Cacheの4種類があります。\n{{diagram:0}}\n※ Custom Tiered Cacheは、Enterprise顧客がaccount team(担当のCloudflare側チーム)と連携して構成します。",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/tiered-cache/",
-      "hint": "「自動で最適化」「世界中すべて」「一部リージョンに絞る」「完全にオーダーメイド」という4つの異なるアプローチを考えましょう。",
+      "hint": "トポロジーが決めているのは、下位層が問い合わせに行く上位層を「どの範囲から選ぶか」です。その範囲の決め方にどんな違いがありうるかを考えましょう。",
       "tags": [
         "cache",
         "practical"
@@ -27258,7 +27258,7 @@
       "correctIndex": 0,
       "explanation": "URL Rewrite Rulesはリクエストのパスとクエリ文字列のみを書き換えることができ、ホスト名を書き換えることはできません。ホスト名(実際にリクエストが送られる解決先)を制御したい場合は、Origin RulesのDNSレコードオーバーライド機能を使う必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/transform/url-rewrite/",
-      "hint": "URL Rewrite Rulesが書き換えられる範囲は「パスとクエリ文字列」までで、それ以上は別の製品の担当だと考えましょう。",
+      "hint": "Rulesには、URLの見た目を整えるものと、リクエストの届け先そのものを変えるものがあります。ホスト名を変えたいというのは、このうちどちらの話かを考えましょう。",
       "tags": [
         "rules",
         "practical"
@@ -27661,7 +27661,7 @@
       "correctIndex": 2,
       "explanation": "Single Redirectsはゾーンレベルの機能で、ワイルドカードベースのパターンに加え、文字列置換操作や(プランによって)正規表現を使った動的なリダイレクトを構成できます。Bulk Redirectsはアカウントレベルの機能で、複数のドメイン(ゾーン)にまたがる大量のURLリダイレクトを、基本的に静的な形で定義するのに向いています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/url-forwarding/",
-      "hint": "「1つのゾーン内で柔軟に」なのか「アカウント全体で大量に、シンプルに」なのか、それぞれの得意分野を考えましょう。",
+      "hint": "この2つは、効く範囲(ゾーン単位かアカウント単位か)と、リダイレクト先をどれだけ柔軟に組み立てられるかという2点で比べられます。それぞれがどちら向きかを考えましょう。",
       "tags": [
         "rules",
         "practical"
@@ -28075,7 +28075,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare DNSは、そのドメインのDNSレコードについて正式な回答を返す側、つまり権威DNSとして動くサービスです。問い合わせを他所へ取り次ぐキャッシュDNS(フルリゾルバ)とは役割が違います。世界中の拠点が同じIPアドレスで応答するAnycastネットワークの上で動くため、DDoS攻撃やBGP経路のハイジャック・リーク(誤った経路情報の広告)からドメインを保護できます。すべてのCloudflareプランで利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/",
-      "hint": "「世界中に分散した拠点から同じIPアドレスで応答する」仕組みがもたらす耐障害性を考えましょう。",
+      "hint": "DNSが攻撃や妨害で止まると、その先のサービスも丸ごと届かなくなります。Cloudflareがこの土台をどこまで守っているのかを考えましょう。",
       "tags": [
         "dns",
         "practical"
@@ -28126,7 +28126,7 @@
       "correctIndex": 0,
       "explanation": "プロキシ(オレンジクラウド)は、そのレコードが指す宛先へのHTTP/HTTPSトラフィックをCloudflare経由で処理する設定です。そのため対象になるのは、通信の宛先となるIPアドレスの解決に使われるA・AAAA・CNAMEレコードのみで、MXやTXTなどそれ以外の種類のレコードは常にDNS-only(グレークラウド)として扱われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/",
-      "hint": "「実際にHTTP/HTTPSトラフィックの宛先を指すレコード」だけがプロキシの対象になると考えましょう。",
+      "hint": "プロキシは、そのレコードが指す宛先へのWeb通信をCloudflare経由に通す設定です。レコードの種類ごとに、そもそもその宛先がWeb通信の相手になりうるかを考えましょう。",
       "tags": [
         "dns",
         "practical"
