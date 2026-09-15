@@ -23896,25 +23896,25 @@
       "question": "Bot Managementがボットスコアを算出するために使う検出エンジンの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "SQLインジェクション検出・クロスサイトスクリプティング検出・パストラバーサル検出のみで判定される、脆弱性スキャンに特化した3つの検出エンジンの組み合わせ",
-          "wrongFeedback": "これらは脆弱性の種類を指す用語であり、Bot Managementの検出エンジンではありません。ボットスコアの算出にはHeuristics・機械学習・異常検知などが使われます。"
+          "text": "Heuristicsが数十億件規模の日次リクエストの特徴から人間とボットを見分け、機械学習が既知の悪性フィンガープリントのデータベースとの照合を担い、JavaScript detectionsとCloudflare Serviceがこれを補う組み合わせ",
+          "wrongFeedback": "担当が逆です。既知の悪性フィンガープリントのデータベースと照合するのはHeuristicsで、数十億件規模の日次リクエストの特徴を分析して人間とボットを見分けるのが機械学習です。Heuristicsは全リクエストを処理し、機械学習が判定の大半を担います。"
         },
         {
-          "text": "Turnstileのチャレンジ結果のみに基づいてスコアを算出する仕組みであり、他のシグナルは考慮されない",
-          "wrongFeedback": "Turnstileのチャレンジ結果のみに基づく仕組みではありません。複数の検出エンジンからの情報を組み合わせてスコアが算出されます。"
+          "text": "全リクエストを処理するのは異常検知エンジンで、Heuristicsはサイトごとのベースラインを学習して外れ値を見つける任意のエンジンであり、そこに機械学習とJavaScript detectionsが加わる組み合わせ",
+          "wrongFeedback": "役割が入れ替わっています。全リクエストを処理するのはHeuristicsで、サイトごとのベースラインを学習して外れ値を見つける任意のエンジンが異常検知です。その異常検知は現在は非推奨で、新規の受け入れは終了しています。"
         },
         {
-          "text": "IPレピュテーションチェックのみを行う単一のエンジンであり、複数のエンジンを組み合わせる仕組みではない",
-          "wrongFeedback": "単一のエンジンではありません。Bot ManagementはHeuristics・機械学習・異常検知など複数の検出エンジンを組み合わせてスコアを算出します。"
+          "text": "JavaScript detectionsは非推奨となり新規の受け入れを終了しているため、Heuristics・機械学習・異常検知・Cloudflare Serviceの4つでスコアを算出する組み合わせ",
+          "wrongFeedback": "非推奨の札が付く先が違います。非推奨となり新規の受け入れを終了したのは異常検知エンジンで、JavaScript detectionsは既定で有効な現行のエンジンです。"
         },
         {
-          "text": "Heuristics(既知の悪性フィンガープリントとの照合)・機械学習・異常検知・JavaScript detections・Cloudflare Service"
+          "text": "Heuristics(既知の悪性フィンガープリントとの照合)・機械学習・JavaScript detections・Cloudflare Serviceが現行で、異常検知は非推奨となり新規の受け入れを終了している"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Bot Managementは、既知の悪性フィンガープリントと照合するHeuristics、数十億件規模のリクエストの特徴を分析する機械学習、サイト固有のベースラインと比較する異常検知、ヘッドレスブラウザなどを検出するJavaScript detections、Enterprise Zero Trust向けの誤検知回避に使われるCloudflare Serviceという複数の検出エンジンを組み合わせてボットスコアを算出します。これらの検出エンジンはEnterprise Bot Managementでのみ利用できます。\n{{diagram:0}}",
+      "explanation": "Bot Managementは複数の検出エンジンを組み合わせてボットスコアを算出します。全リクエストを処理するHeuristicsは既知の悪性フィンガープリントのデータベースと照合し、機械学習は数十億件規模の日次リクエストの特徴から人間とボットを見分けて大半の判定を担います。JavaScript detectionsはヘッドレスブラウザなどを検出する既定で有効なエンジンで、Cloudflare ServiceはEnterprise Zero Trustでの誤検知を避けるための特別なスコア源です。サイト固有のベースラインと比較する異常検知は任意のエンジンでしたが、Cloudflareはこれを非推奨とし、新規の受け入れを終了しています。これらの検出エンジンはEnterprise Bot Managementでのみ利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/concepts/bot-score/#how-cloudflare-generates-bot-scores",
-      "hint": "「既知のパターンとの照合」「大量データからの機械学習」「サイト固有の異常検知」など、複数の異なるアプローチが組み合わさっていることを考えましょう。",
+      "hint": "どのエンジンが何を根拠に判定するのか、そして今も新規に使えるのはどれなのかを考えましょう。",
       "tags": [
         "bots",
         "practical"
@@ -23931,7 +23931,8 @@
               "text": "機械学習"
             },
             {
-              "text": "異常検知"
+              "text": "異常検知",
+              "sub": "非推奨。新規の受け入れを終了"
             },
             {
               "text": "JavaScript detections"
@@ -26405,16 +26406,16 @@
       "question": "Cache RulesのEdge TTL設定における3つのモードの組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "TTLを秒単位で指定するモード、分単位で指定するモード、時間単位で指定するモードという、単位の違いだけの3つ",
-          "wrongFeedback": "単位の違いではありません。Cache-Controlヘッダーの扱い方(従う・バイパス・無視)によって区別される3つのモードです。"
+          "text": "ブラウザにキャッシュを保持させないモード、ブラウザ側でオリジンのCache-Controlに従わせるモード、ブラウザが保持する期間を指定値で上書きするモードの3つ",
+          "wrongFeedback": "それはBrowser TTLの3モードです。Edge TTLが決めるのはCloudflare側のキャッシュにアセットを保持する期間で、ブラウザ側の保持期間はBrowser TTLが別に指定します。どちらもBypass・Respect origin・Override originという同じ3つ組を持つため取り違えやすい設定です。"
         },
         {
-          "text": "常にCache-Controlヘッダーを完全に無視するモード、常にCache-Controlヘッダーに絶対服従するモード、両者を50%ずつランダムに切り替えるモードの3つ",
-          "wrongFeedback": "そのようなモードはありません。実際の3モードはCache-Controlヘッダーの有無で挙動を分岐させる仕組みになっています。"
+          "text": "Cache-Controlヘッダーがあれば従い、なければ指定したTTLを使うモード、ヘッダーの有無に関わらずキャッシュをバイパスするモード、ヘッダーを無視してCloudflareのデフォルトのキャッシュ挙動を使うモードという、3つのモードに分かれている",
+          "wrongFeedback": "それぞれの振る舞いが入れ替わっています。バイパスするモード(`bypass_by_default`)はCache-Controlヘッダーがあればそれに従い、無いときだけバイパスします。ヘッダーを無視するモード(`override_origin`)が使うのは指定したTTLで、ヘッダーが無いときにCloudflareのデフォルト挙動へ落ちるのは`respect_origin`です。"
         },
         {
-          "text": "オリジンが応答するまで待つモード、応答を待たずにキャッシュ済みコンテンツを返すモード、両方を同時に返すモードの3つ",
-          "wrongFeedback": "そのようなモードはありません。Edge TTLの3モードはCache-Controlヘッダーの扱い方によって区別されます。"
+          "text": "2xxのレスポンスを指定したTTLでキャッシュするモード、3xxから4xxは保存せず毎回再検証するモード、5xxは保存しないモードという、ステータスコードごとの3つ",
+          "wrongFeedback": "ステータスコードごとのTTLは、3つのモードとは別に追加で指定できる「Status Code TTL」の設定です。APIの設定例でも`status_code_ttl`と`\"mode\"`は同じ`edge_ttl`オブジェクトに並んで指定されており、モードの代わりではありません。"
         },
         {
           "text": "Cache-Controlヘッダーがあれば従い、なければキャッシュをバイパスするモード、あれば従い、なければCloudflareのデフォルト挙動を使うモード、Cache-Controlを無視して指定したTTLを使うモードの3つ"
@@ -27034,25 +27035,25 @@
       "question": "`cf-cache-status`レスポンスヘッダーの値`BYPASS`が示す意味として正しいものはどれですか？",
       "options": [
         {
-          "text": "リクエストされたコンテンツが`HIT`のようにキャッシュにヒットし、そのままキャッシュから配信されたことを示すため、オリジンへのリクエストはこの場合一切発生していない",
-          "wrongFeedback": "これは`HIT`が示す意味です。`BYPASS`はキャッシュがバイパスされたことを示します。"
+          "text": "Cache Ruleの`Bypass cache`設定にマッチしたリクエストが、キャッシュを参照することなくオリジンへ送られたことを示す",
+          "wrongFeedback": "Cache Ruleの`Bypass cache`設定にマッチしたリクエストは、リクエスト時点でキャッシュ対象外と判断されるため`DYNAMIC`が返ります。名前にbypassを含みますが`BYPASS`ではありません。`BYPASS`はオリジンの応答を見たあとに下される判断です。"
         },
         {
-          "text": "キャッシュされたコンテンツの有効期限が切れており、`REVALIDATED`のようにオリジンへの条件付きリクエストで再検証が行われ、内容に変更がなかったことを示す",
-          "wrongFeedback": "これは`REVALIDATED`が示す意味です。`BYPASS`はキャッシュがバイパスされたことを示します。"
+          "text": "オリジンが`no-cache`や`max-age=0`を返したためキャッシュに保存されたうえで、以降は条件付きリクエストで再検証しながらキャッシュから配信されることを示す",
+          "wrongFeedback": "キャッシュに保存されたうえで再検証しながら配信されるなら、それは`BYPASS`ではありません。`BYPASS`は応答自体がキャッシュされなかったことを示す値で、キャッシュから配信されることはありません。保存したうえで再検証しながら配信する状態を表すのは`REVALIDATED`や`EXPIRED`です。"
         },
         {
           "text": "レスポンスがキャッシュ可能であったにも関わらず、オリジンが`no-store`や`Set-Cookie`を送信していたなどの理由でバイパスされたことを示す"
         },
         {
-          "text": "リクエストされたコンテンツがキャッシュに存在せず、`MISS`と同様にオリジンから新規に取得されたことを示す",
-          "wrongFeedback": "これは`MISS`が示す意味です。`BYPASS`は、キャッシュ可能だったはずが何らかの理由でバイパスされたことを示します。"
+          "text": "オリジンが`Cache-Control: public`を返していてキャッシュ可能だったが、リクエスト時点でキャッシュに存在しなかったため、オリジンから取得して配信されたことを示す",
+          "wrongFeedback": "キャッシュ可能だがキャッシュに存在しなかっただけなら`MISS`です。ドキュメントは「Cloudflareがキャッシュしないと決めた応答は`MISS`ではなく`BYPASS`を返す」と両者を区別しています。`BYPASS`にはオリジンの応答がキャッシュ不可だったという要素が加わります。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "`cf-cache-status`ヘッダーの値`BYPASS`は、レスポンス自体はキャッシュ可能であったにも関わらず、オリジンが`no-store`ディレクティブや`Set-Cookie`ヘッダーを送信していたなどの理由で、実際にはキャッシュがバイパスされたことを示します。これは`HIT`(キャッシュから配信)、`MISS`(キャッシュに存在せず新規取得)、`REVALIDATED`(再検証の結果、変更なし)とは異なる状態です。\n{{diagram:0}}",
+      "explanation": "`cf-cache-status`ヘッダーの値`BYPASS`は、レスポンス自体はキャッシュ可能であったにも関わらず、オリジンが`no-store`ディレクティブや`Set-Cookie`ヘッダーを送信していたなどの理由で、実際にはキャッシュがバイパスされたことを示します。判断が下されるのはオリジンの応答を見た後です。リクエストを受けた時点でキャッシュ対象外と判断された場合や、Cache Ruleの`Bypass cache`設定にマッチした場合は`DYNAMIC`になります。キャッシュ可能でキャッシュに無かっただけなら`MISS`、再検証の結果変更がなければ`REVALIDATED`です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/concepts/cache-responses/",
-      "hint": "「本来ならキャッシュできたはずなのに、何らかの理由で今回は迂回された」という状態を表す値だと考えましょう。",
+      "hint": "キャッシュするかどうかの判断が、リクエストを受けた時点で下されたのか、オリジンの応答を見てから下されたのか。4つの肢はその違いで分かれています。",
       "tags": [
         "cache",
         "practical",
@@ -33237,25 +33238,25 @@
       "question": "ファイルサンドボックス(file sandboxing)の挙動に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "ファイルサンドボックスはすべてのプランで標準搭載されており、Zero Trust Enterpriseプランのアドオンを購入しなくても、Free・Pay-as-you-goプランを含め追加費用なしで誰でも利用できる",
-          "wrongFeedback": "ファイルサンドボックスはZero Trust Enterpriseプランのアドオンとして提供される機能です。"
+          "text": "ダウンロードされたファイルはまずサンドボックスで実行されて挙動を監視され、悪意のある挙動が見つからなかったものだけがAVスキャンに回される。監視の間、利用者のブラウザにはインタースティシャルページが表示される",
+          "wrongFeedback": "順序が逆です。ファイルはまずAVスキャンに送られ、そこでマルウェアが検出されなかったものがサンドボックスへ隔離されます。インタースティシャルページが表示されるのはサンドボックスでの監視中で、この点は正しい記述です。"
         },
         {
-          "text": "ファイルサンドボックスは、ファイルの拡張子だけを見て安全性を判定し、実際にファイルを実行して挙動を監視することはない",
-          "wrongFeedback": "実際にサンドボックス環境でファイルを実行し、その挙動(ネットワーク活動やカーネルレベルのアクション)を監視して判定します。拡張子だけを見て判定するものではありません。"
+          "text": "サンドボックスでスキャンできるファイルは実行ファイルとZIPアーカイブの2種類で、100 MBを超えるファイルやPGPで暗号化されたファイルはスキャンできない",
+          "wrongFeedback": "サンドボックスが扱えるファイル種別は13種類あります。実行ファイルとZIPのほか、PDF・Word・Excel・PowerPoint・RTF・RARも対象です。100 MBを超えるファイルとPGPで暗号化されたファイルがスキャンできない点は正しい記述です。"
         },
         {
-          "text": "サンドボックスは常にLinux環境でファイルを実行するよう設計されており、ネットワーク活動を監視する仕組みは持ち合わせていない",
-          "wrongFeedback": "サンドボックスはWindows OS環境でファイルを実行し、ネットワーク活動の監視(データ持ち出しの検知など)も行います。"
+          "text": "同じファイルが再びダウンロードされるたびにサンドボックスで実行し直し、そのときの挙動をリアルタイムのマルウェアデータベースと照合して判定をやり直す",
+          "wrongFeedback": "同じファイルの2回目以降は、Gatewayが前回の許可/ブロック判定を記憶してそのまま適用します。サンドボックスで挙動を監視するのは、過去にダウンロードされたことのないファイルです。"
         },
         {
           "text": "AVスキャンでマルウェアが検出されなかったファイルのうち、過去にダウンロードされたことのないものはサンドボックス内で挙動を監視され、同じファイルの再ダウンロード時はその判定結果がそのまま適用される"
         }
       ],
       "correctIndex": 3,
-      "explanation": "AVスキャンでマルウェアが検出されなかったダウンロードファイルのうち、過去にダウンロードされたことのないファイルはサンドボックス(Windows OS環境)内で挙動を監視されます。悪意のある挙動が検出されなければファイルは解放され、以降同じファイルの再ダウンロード時には過去の許可/ブロック判定がそのまま適用されます。ファイルサンドボックスはZero Trust Enterpriseプランのアドオンです。\n{{diagram:0}}",
+      "explanation": "AVスキャンでマルウェアが検出されなかったダウンロードファイルのうち、過去にダウンロードされたことのないファイルはサンドボックス(Windows OS環境)内で挙動を監視されます。監視の間、利用者のブラウザにはインタースティシャルページが表示されます。悪意のある挙動が検出されなければファイルは解放され、以降同じファイルの再ダウンロード時には過去の許可/ブロック判定がそのまま適用されます。サンドボックスで扱えるのは実行ファイル・PDF・Officeファイル・RTF・ZIP・RARなど13種類で、100 MBを超えるファイルやPGPで暗号化されたファイルはスキャンできません。ファイルサンドボックスはZero Trust Enterpriseプランのアドオンです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/file-sandboxing/#sandbox-environment",
-      "hint": "初回は「実際に動かして確認」、2回目以降は「前回の結果を再利用」という流れを考えましょう。",
+      "hint": "ファイルがAVスキャンとサンドボックスをどの順で通るのか、そして同じファイルが2度目に来たときにどう扱われるのかを考えましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -36344,25 +36345,25 @@
       "question": "CASB Webhookで設定できる認証方式に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "HMAC-Signingを選択した場合でも、署名用シークレットの設定は不要で、鍵の生成から署名までCloudflareが自動的にすべて処理する",
-          "wrongFeedback": "HMAC-Signingを選択した場合、署名用シークレットの設定が必要です。"
+          "text": "認証方式はNone・Basic Auth・Bearer Auth・Static Headers・HMAC-Signingの5種類で、Static Headersでは署名用シークレットを、HMAC-Signingでは宛先ごとに固有のヘッダー名を登録する",
+          "wrongFeedback": "要求する値が入れ替わっています。固有のヘッダー名が必要なのはStatic Headersで、ヘッダー名は一意である必要があります。署名用シークレットの提供が必要なのはHMAC-Signingです。"
         },
         {
-          "text": "認証方式はBearer認証の1種類のみがサポートされている",
-          "wrongFeedback": "None・Basic Auth・Bearer Auth・Static Headers・HMAC-Signingの5種類がサポートされています。1種類のみではありません。"
+          "text": "認証方式はNone・Basic Auth・Bearer Auth・Static Headers・HMAC-Signingの5種類で、Noneを選んだ場合は資格情報を付けないため、社内のプライベートアドレスに解決される宛先URLも指定できる",
+          "wrongFeedback": "宛先URLの条件は認証方式とは無関係に課されます。Cloudflareが受け付けるのはhttpsで公開到達可能なURLだけで、localhostやループバック、プライベートアドレスなどに解決されるURLはNoneを選んでも拒否されます。"
         },
         {
           "text": "認証方式にはNone・Basic Auth・Bearer Auth・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類がある"
         },
         {
-          "text": "Static Headersを使う場合、同じヘッダー名を複数回指定して重複させることが推奨されている",
-          "wrongFeedback": "Static Headersのヘッダー名は一意である必要があり、重複は推奨されていません。"
+          "text": "認証方式はNone・Basic Auth・Bearer Auth・Static Headers・HMAC-Signingの5種類で、Bearer Authを選ぶ場合はトークンに加えて署名用シークレットの登録も必要になる",
+          "wrongFeedback": "Bearer Authが求めるのはベアラートークンだけです。署名用シークレットを求めるのはHMAC-Signingで、前提条件の一覧でも両者は別々の認証値として並んでいます。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "認証方式にはNone(なし)・Basic Auth・Bearer Auth・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類が用意されています。\n{{diagram:0}}",
+      "explanation": "認証方式にはNone(なし)・Basic Auth・Bearer Auth(ベアラートークンが必要)・Static Headers(固有のヘッダー名が必要)・HMAC-Signing(署名用シークレットが必要)の5種類が用意されています。認証方式とは別に、宛先URLはhttpsで公開到達可能である必要があり、localhostやループバック、プライベートアドレスに解決されるURLはどの方式を選んでも拒否されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/integrations/cloud-and-saas/webhooks/#authentication-methods",
-      "hint": "送信先のシステムが求める認証に合わせて、どこまで方式を選べるようになっているのかを考えましょう。",
+      "hint": "どの方式がどの値を求めるのか——トークン、固有のヘッダー名、署名用シークレット——を対応づけて読み比べましょう。",
       "tags": [
         "casb",
         "practical"
@@ -36909,25 +36910,25 @@
       "question": "Tracerouteテストの基本的な仕組みに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "TracerouteテストのターゲットにはURLのみを指定でき、IPアドレスを直接指定することはできないため、IPアドレスしか持たない内部エンドポイントは事前にホスト名を割り当てておく必要がある",
-          "wrongFeedback": "Tracerouteテストのターゲットには、CloudflareへつながるパブリックまたはプライベートのエンドポイントのIPアドレスを指定します。"
+          "text": "各ホップのIPアドレスと応答時間に加えて、DNSの名前解決にかかった往復時間と、リクエスト開始から応答完了までのリソース取得時間も測定結果に含まれる",
+          "wrongFeedback": "DNSの名前解決にかかる往復時間とリソース取得時間はHTTPテストの測定項目です。Tracerouteテストが記録するのは、ホップごとのIPアドレス・応答時間・パケットロスに加えて、ラウンドトリップタイム、ホップ数、Availability、Last seen ISPです。"
         },
         {
-          "text": "TracerouteテストはHTTPテストと異なり、実行頻度を5〜60分の範囲で管理者が指定することはできず、デバイスごとに常に1分間隔で固定して実行される",
-          "wrongFeedback": "Tracerouteテストの実行頻度も5〜60分の範囲で管理者が指定できます。1分固定ではありません。"
+          "text": "各ホップの応答時間とあわせてAvailabilityを記録し、これは1つでもパケットが落ちたテストを除いた、全パケットが宛先に到達したテストの割合を指す",
+          "wrongFeedback": "Availabilityの数え方が逆です。Availabilityは「少なくとも1つのパケットが宛先に到達したテストの割合」で、1つでも届けばそのテストは到達側に数えます。100%を下回るのは、一部のテストで宛先にまったく到達できなかった場合です。"
         },
         {
-          "text": "TracerouteテストはHTTPステータスコードを主な計測対象としており、ネットワーク経路そのものは計測しないため、結果には各ホップの応答時間ではなくステータスコードの推移が記録される",
-          "wrongFeedback": "HTTPステータスコードを計測するのはHTTPテストの方です。Tracerouteテストはネットワーク経路(ホップごとの応答時間・パケットロス)を計測します。"
+          "text": "Windows・macOS・Androidに加えてLinuxやiOSでも実行でき、対応するクライアントを入れた端末であればプラットフォームを問わず経路を計測できる",
+          "wrongFeedback": "LinuxとiOSではTracerouteテストを実行できません。対応するのはWindows・macOS・Android・ChromeOSで、WindowsとmacOSには最小クライアントバージョンの条件もあります。"
         },
         {
           "text": "エンドユーザーデバイスからサーバーまでのIPパケットのネットワーク経路を計測し、経由する中継ルーター(ホップ)ごとに応答時間とパケットロスを記録する"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Tracerouteテストは、エンドユーザーデバイスからサーバーまでのIPパケットのネットワーク経路を計測するテストです。パケットが経由する中継ルーター(ホップ)ごとに応答時間とパケットロスを記録します。ターゲットにはIPアドレスを指定し、実行頻度は5〜60分の範囲で指定します。\n{{diagram:0}}",
+      "explanation": "Tracerouteテストは、エンドユーザーデバイスからサーバーまでのIPパケットのネットワーク経路を計測するテストです。パケットが経由する中継ルーター(ホップ)ごとにIPアドレス・平均応答時間・パケットロスを記録し、あわせてラウンドトリップタイム、ホップ数、Availability(少なくとも1つのパケットが宛先に到達したテストの割合)、Last seen ISP(macOSとWindowsのみ)も測定します。ターゲットにはIPアドレスを指定し、実行頻度は5〜60分の範囲で指定します。対応するのはWindows・macOS・Android・ChromeOSで、LinuxとiOSでは利用できません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/tests/traceroute/",
-      "hint": "このテストが何を記録するのか、そして実行間隔を管理者がどこまで決められるのかを考えましょう。",
+      "hint": "経路上の各ホップについて何が記録されるのか、そしてこのテストがどの端末で実行できるのかを考えましょう。",
       "tags": [
         "dex",
         "practical"
@@ -37563,22 +37564,22 @@
           "text": "Cloudflare One ClientのバージョンがDEXに対応しているか、デバイスプロファイルでDEXが有効になっているか、オーケストレーションAPIへの通信がファイアウォールやSSLインスペクションにブロックされていないか、の3点である"
         },
         {
-          "text": "Fleet statusダッシュボードは常に即座に最新の状態を反映するため、デバイスの接続状態が古いまま表示されるという事象は起こりえない",
-          "wrongFeedback": "Fleet statusダッシュボードは変更が反映されるまで数分かかることがあります。即座に反映されるとは限りません。"
+          "text": "Cloudflare One ClientのバージョンがDEXに対応しているか、デバイスプロファイルでDEXが有効になっているか、デバイスに十分なディスク空き容量が残っているか、の3点である",
+          "wrongFeedback": "3点目が別の症状の項目です。キャプチャファイルを保存するディスク空き容量は、リモートキャプチャが開始できない場合の確認項目です。データが表示されない場合の3点目は、オーケストレーションAPIへの通信がローカルのファイアウォールやSSLインスペクションプロキシに遮られていないかです。"
         },
         {
-          "text": "確認すべき項目はデバイスのディスク空き容量のみであり、Cloudflare One Clientのバージョンやデバイスプロファイルの設定は関係ない",
-          "wrongFeedback": "ディスク空き容量はリモートキャプチャの文脈での確認項目です。データが表示されない場合はクライアントのバージョン・DEXの有効化設定・トラフィックのルーティングを確認すべきとされています。"
+          "text": "Zero Trustダッシュボードで対象デバイスの状態を確認したか、アップロードまでキャプチャファイルを保存できるだけのディスク空き容量がデバイスに残っているか、キャプチャの実行コマンドを遮るローカルのファイアウォールルールが無いか、の3点である",
+          "wrongFeedback": "それはリモートキャプチャが開始できない場合の確認リストです。データが表示されない場合は、Cloudflare One ClientのバージョンがDEXに対応しているか、デバイスプロファイルでDEXが有効になっているか、オーケストレーションAPIへの通信が遮られていないかを確認します。"
         },
         {
-          "text": "確認すべき項目は、ローカルのファイアウォールやSSLインスペクションを行うプロキシの設定のみであり、Cloudflare One Clientのバージョンやデバイスプロファイルの設定は無関係である",
-          "wrongFeedback": "クライアントのバージョンがDEXに対応しているかや、デバイスプロファイルでDEXが有効になっているかも確認項目に含まれます。"
+          "text": "デバイスプロファイルでDEXが有効になっているか、Cloudflare One Clientをいったん切断して再接続したか、Fleet statusの表示に反映されるまでの数分を待ったか、の3点である",
+          "wrongFeedback": "それはFleet statusの表示が更新されない場合の対処です。表示の反映には数分かかることがあり、状態が正しくないままなら切断と再接続で更新を促します。データそのものが表示されない場合の確認項目とは別のリストです。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "推奨される確認項目は、対象ユーザーが使用しているCloudflare One ClientのバージョンがDEXに対応しているか、そのユーザーに割り当てられたデバイスプロファイルでDEXが有効になっているか、CloudflareのオーケストレーションAPIへの通信がローカルのファイアウォールやSSLインスペクションプロキシによってブロックされていないか、の3点です。\n{{diagram:0}}",
+      "explanation": "推奨される確認項目は、対象ユーザーが使用しているCloudflare One ClientのバージョンがDEXに対応しているか、そのユーザーに割り当てられたデバイスプロファイルでDEXが有効になっているか、CloudflareのオーケストレーションAPIへの通信がローカルのファイアウォールやSSLインスペクションプロキシによってブロックされていないか、の3点です。ドキュメントは症状ごとに別の確認リストを設けており、ディスク空き容量やキャプチャ実行コマンドを遮るファイアウォールルールはリモートキャプチャが開始できない場合の項目、クライアントの切断と再接続はFleet statusの表示が更新されない場合の対処です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/troubleshooting/#no-data-displayed-for-certain-users",
-      "hint": "「設定そのものが入っていないのか」「設定は入っているのに通信が途中で遮られているのか」を分けて考えましょう。",
+      "hint": "ドキュメントは症状ごとに別々の確認リストを持っています。並んでいる3点の中に、この症状のリストには載っていない項目が混ざっていないかを確かめましょう。",
       "tags": [
         "dex",
         "practical"
@@ -38600,25 +38601,25 @@
       "question": "Cloudflare WANへのオンランプ(接続経路)に関する説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "Cloudflare Network Interconnect(CNI)は、Cloudflare One Client(WARP)をインストールした個々の端末をオンランプとして扱うための仕組みである",
-          "wrongFeedback": "CNIはネットワークインフラ同士を直接接続するオンランプであり、個々の端末向けのWARPクライアントとは別の仕組みです。"
+          "text": "拠点のネットワークに導入してあらゆるIPトラフィックを自動で接続・振り分けするのがCloudflare Network Interconnect(CNI)で、公衆インターネットを経由しない専用線での接続を提供するのがCloudflare One Applianceであり、どちらもオンランプとして並んでいる",
+          "wrongFeedback": "2つの役割が入れ替わっています。拠点のネットワークに導入してIPトラフィックを自動で接続・振り分けするソフトウェアパッケージがCloudflare One Applianceで、公衆インターネットを経由しない直接接続を提供するのがCloudflare Network Interconnect(CNI)です。"
         },
         {
-          "text": "Multi-Cloud Networkingは、オンプレミスのルーターにエージェントを常駐させてBGPピアリングを自動化する機能である",
-          "wrongFeedback": "Multi-Cloud Networkingはクラウドネットワークからのオンランプ作成を自動化する機能であり、オンプレミスルーターへのエージェント常駐が前提ではありません。"
+          "text": "クラウドネットワークからのオンランプ作成を自動化するのがCloudflare Tunnelで、Multi-Cloud Networkingは拠点に導入してIPトラフィックを振り分けるソフトウェアパッケージである",
+          "wrongFeedback": "クラウドネットワークからのオンランプ作成を自動化するのはMulti-Cloud Networkingです。Cloudflare Tunnelはネットワークとアプリケーションの間のアクセスを容易にするために併用する経路で、拠点に導入するソフトウェアパッケージはCloudflare One Applianceです。"
         },
         {
           "text": "Cloudflare One Applianceによる自動接続、GRE/IPsecトンネルに対応したサードパーティ機器、専用線で接続するCloudflare Network Interconnect(CNI)、Cloudflare Tunnel、WARPなど複数のオンランプが用意されている"
         },
         {
-          "text": "オンランプとして利用できるのはCloudflare One Applianceのみであり、既存のルーターやファイアウォールを使ってGRE/IPsecトンネルを構成する方法は提供されていない",
-          "wrongFeedback": "GRE/IPsecトンネルに対応するサードパーティ機器を使ったオンランプも提供されています。Applianceが唯一の方法ではありません。"
+          "text": "企業デバイスのトラフィックを安全にCloudflareへ送るオンランプがCloudflare Tunnelで、WARPはネットワークとアプリケーションの間のアクセスを容易にするために併用される",
+          "wrongFeedback": "説明が入れ替わっています。企業デバイスのトラフィックを安全にCloudflareのグローバルネットワークへ送るのがWARPで、ネットワークとアプリケーションの間のアクセスを容易にするのがCloudflare Tunnelです。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cloudflare WANへのオンランプには、IPトラフィックを自動接続・振り分けするCloudflare One Applianceのほか、GRE/IPsecトンネルに対応するサードパーティ機器、公衆インターネットを経由しない専用接続を提供するCloudflare Network Interconnect(CNI)、Cloudflare Tunnel、WARPなど複数の選択肢があります。クラウドリソースについてはMulti-Cloud Networkingでオンランプ作成を自動化できます。\n{{diagram:0}}",
+      "explanation": "Cloudflare WANへのオンランプには、拠点のネットワークに導入してIPトラフィックを自動で接続・振り分けするCloudflare One Applianceのほか、GRE/IPsecトンネルに対応するサードパーティ機器、公衆インターネットを経由しない直接接続を提供するCloudflare Network Interconnect(CNI)、ネットワークとアプリケーションの間のアクセスを容易にするCloudflare Tunnel、企業デバイスのトラフィックを安全にCloudflareへ送るWARPなど複数の選択肢があります。クラウドリソースについてはMulti-Cloud Networkingでオンランプ作成を自動化できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/on-ramps/",
-      "hint": "オンランプが1つの方式に限られるのか、複数の方式から選べるのかを考えましょう。",
+      "hint": "拠点のネットワーク、専用線、クラウド、企業デバイス——それぞれの層をどの名前が担当するのかを対応づけてみましょう。",
       "tags": [
         "magic-wan",
         "practical"
@@ -38642,7 +38643,7 @@
             },
             {
               "text": "Cloudflare Tunnel / WARP",
-              "sub": "アウトバウンド接続・端末単位の接続"
+              "sub": "Tunnelはアプリケーションへのアクセス、WARPは企業デバイスのトラフィック"
             }
           ]
         }
