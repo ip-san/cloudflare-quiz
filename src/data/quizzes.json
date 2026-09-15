@@ -1516,7 +1516,7 @@
       "correctIndex": 2,
       "explanation": "`wrangler secret put <NAME>` を実行すると対話的に値の入力を求められ、その値は暗号化されてCloudflare側に保存されます。\n{{diagram:0}}\n一度登録したシークレットは値を再表示できないため、変更したい場合は再度 `wrangler secret put` で上書きします。なお、ローカル開発時にシークレットを使いたい場合は `.dev.vars` ファイルに記述する方法が使われます（Gitにはコミットしないよう `.gitignore` に追加します）。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/configuration/secrets/",
-      "hint": "平文の`vars`と暗号化される`secret`、コマンド名の違いに注目しましょう。",
+      "hint": "設定ファイルの値を扱うサブコマンドと、Cloudflare側に値を預けるサブコマンドは別系統です。どちらの系統に属するかで見分けましょう。",
       "tags": [
         "wrangler",
         "practical"
@@ -2303,7 +2303,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflareの公式ドキュメントでは「write-heavyなRedis的ワークロードで同一キーを1秒間に数十〜数百回更新するような場合、KVは理想的な選択ではない」と明記されています。KVはhigh-read/low-latencyな読み取りに最適化されており、書き込みは中央データストアに直接送信される設計です。代替として、書き込みを複数キーに分散する、またはDurable Objectsを利用するアプローチが推奨されています。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/concepts/how-kv-works/",
-      "hint": "KVは「読み取り」と「書き込み」のどちらに最適化された設計か考えてみましょう。",
+      "hint": "KVは世界中のどこからでも速く読めるようにするために、書き込みをどう処理する設計になっているかを思い出しましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -2384,7 +2384,7 @@
       "correctIndex": 2,
       "explanation": "fetch()のRequestInitに渡す`cf`オブジェクトのcacheTtlは、そのサブリクエストのレスポンスをCloudflareのエッジに何秒間キャッシュするかを、オリジンが返すCache-Controlヘッダーの指示より優先して制御するオプションです。似た機能に、通常キャッシュされないファイル種別も含めて全てキャッシュするcacheEverythingオプションもあります。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
-      "hint": "オリジン側の指示より優先して、エッジ側で保持時間を決めたい場面を考えましょう。",
+      "hint": "`fetch()`に渡す`cf`オブジェクトは、そのサブリクエストが途中でどう扱われるかの指定です。`cacheTtl`がどの保存場所の寿命を指しているのかを考えましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -3217,7 +3217,7 @@
       "correctIndex": 2,
       "explanation": "`batch()`は複数のprepared statementを1回のネットワークラウンドトリップでD1に送信し、暗黙のトランザクションとして順番に実行します。途中で失敗した文があれば、それまでの変更を含めて全体がロールバックされ、すべて成功するかすべて失敗するかのどちらかになります。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/worker-api/d1-database/",
-      "hint": "「1回のリクエストでまとめて送る」専用のメソッドがあります。",
+      "hint": "原子性(全部成功か全部失敗か)がD1でどの単位まで保証されるかを考えましょう。1回の呼び出しの中か、複数回の呼び出しをまたいでか。",
       "tags": [
         "d1",
         "practical"
@@ -3365,7 +3365,7 @@
       "correctIndex": 3,
       "explanation": "`exec()`は改行区切りで複数のSQL文をまとめて実行できますが、バインドパラメータには対応しておらず、主にCREATE TABLEなどのスキーマ定義や管理系の処理に向いています。一方`prepare()`はプレースホルダと`bind()`による安全な値渡しをサポートし、ユーザー入力を伴う通常のアプリケーションクエリに適しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/worker-api/d1-database/",
-      "hint": "どちらが「ユーザー入力を安全に扱えるか」を考えてみましょう。",
+      "hint": "2つのメソッドは、SQL文そのものを送るだけなのか、文と値を分けて渡せるのかという作りが違います。そこから向く用途を考えましょう。",
       "tags": [
         "d1",
         "practical"
