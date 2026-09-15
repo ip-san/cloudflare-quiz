@@ -3272,28 +3272,28 @@
       "id": "d1-007",
       "category": "d1",
       "difficulty": "intermediate",
-      "question": "ユーザーが入力した検索キーワードを使ってD1にクエリを実行するWorkerのコードとして、SQLインジェクションを防ぐために適切な実装はどれですか？",
+      "question": "ユーザーが入力した検索キーワードを使ってD1にクエリを実行するWorkerを書いています。D1のWorker APIの仕様として正しい説明はどれですか？",
       "options": [
         {
-          "text": "`env.DB.exec()` にユーザー入力を含むSQL文字列をそのまま渡す",
-          "wrongFeedback": "`exec()`はバインドパラメータに対応しておらず、ユーザー入力を直接連結するのはさらに危険です。"
+          "text": "`env.DB.exec()`の第2引数に値の配列を渡すと、SQL内のプレースホルダに束縛されて実行される",
+          "wrongFeedback": "`exec()`はプレースホルダも値の引数も受け取らず、渡されたSQL文字列をそのまま実行します。値を渡すときは`prepare()`と`bind()`を使います。"
         },
         {
-          "text": "`env.DB.prepare('SELECT * FROM products WHERE name = ?').bind(keyword).all()` のように `?` プレースホルダと `bind()` を使う"
+          "text": "`env.DB.prepare()`のSQLに`?`を置き、値は`bind()`で渡す。`exec()`はパラメータバインドを伴わない"
         },
         {
-          "text": "`env.DB.prepare(`SELECT * FROM products WHERE name LIKE '%${keyword}%'`).all()` のようにテンプレートリテラルでSQL文字列に直接値を埋め込む",
-          "wrongFeedback": "ユーザー入力をSQL文字列に直接埋め込むと、SQLインジェクションの脆弱性が生まれます。"
+          "text": "`bind()`は`:keyword`のような名前付きプレースホルダに対応しており、名前を指定して値を渡せる",
+          "wrongFeedback": "D1が現在サポートするのは順序付き(`?NNN`)と無名(`?`)のプレースホルダです。名前付きは将来対応予定とされています。"
         },
         {
-          "text": "受け取った`keyword`から手動でシングルクォートをエスケープしてからSQL文字列に連結する",
-          "wrongFeedback": "手動エスケープは実装ミスによる漏れのリスクが高く、D1が提供するプレースホルダ+`bind()`の方が安全で推奨されます。"
+          "text": "`exec()`で実行した`SELECT`の結果行は戻り値の`results`から取得でき、`prepare().all()`と同じ形で返る",
+          "wrongFeedback": "`exec()`の戻り値は実行したクエリ数を示す`count`と所要時間の`duration`です。結果行が必要なときは`prepare()`と`all()`を使います。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "D1のprepared statementでは`?`プレースホルダを使い、実際の値は`bind()`で渡します。これによりD1側が値を安全に扱い、SQLインジェクションを防げます。ユーザー入力を文字列連結でSQLに埋め込むことは避けるべきです。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "D1のprepared statementでは、SQLに`?`(無名)または`?NNN`(順序付き)のプレースホルダを置き、値は`bind()`で渡します。これがユーザー入力をSQL文として解釈させない方法です。`exec()`はプレースホルダもパラメータも扱わずSQL文字列をそのまま実行するメソッドで、ドキュメントでも安全性が低く、移行などの一度きりの作業向けとされています。戻り値も実行したクエリ数と所要時間だけで、結果行は返りません。名前付きプレースホルダ(`:name`)は現時点では使えません。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/worker-api/prepared-statements/",
-      "hint": "「値をSQL文字列に直接埋め込まない」のが安全な実装の基本です。",
+      "hint": "D1が受け付けるプレースホルダの書き方と、値を渡せるメソッドはどれかを分けて考えましょう。",
       "tags": [
         "d1",
         "practical"
@@ -9007,28 +9007,28 @@
       "category": "kv-cache",
       "difficulty": "intermediate",
       "type": "single",
-      "question": "Cache APIのmatch()メソッドで、POSTなどGET以外のメソッドのリクエストであっても、キャッシュされたレスポンスと照合したい場合に指定するオプションはどれですか？",
+      "question": "Workerで`POST`リクエストを受け取り、`caches.default`に入っているレスポンスを使いたいと考えています。Cache APIの仕様として正しい説明はどれですか？",
       "options": [
         {
-          "text": "{ ignoreSearch: true }",
-          "wrongFeedback": "Cloudflare WorkersのCache APIのmatch()は`ignoreSearch`オプションをサポートしていません。クエリ文字列を無視したい場合はput()時にクエリ文字列を除去して対応する必要があります。"
+          "text": "`match()`に`{ ignoreSearch: true }`を渡すとメソッドの違いを無視して照合でき、`put()`でも同じオプションが同じように効く",
+          "wrongFeedback": "`match()`が受け取れるプロパティは`ignoreMethod`だけです。クエリ文字列を無視したい場合は`put()`の時点でクエリ文字列を取り除きます。"
         },
         {
-          "text": "{ ignoreVary: true }",
-          "wrongFeedback": "`ignoreVary`オプションもCloudflare WorkersのCache APIのmatch()ではサポートされていません。"
+          "text": "`put()`は`GET`以外のメソッドでも保存でき、`match()`も既定では実際のメソッドを見ないのでオプションの指定は要らない",
+          "wrongFeedback": "`put()`は`GET`以外のメソッドのリクエストを渡すとエラーを投げます。照合側も既定では実際のメソッドを見るため、オプションの指定が要ります。"
         },
         {
-          "text": "{ ignoreMethod: true }"
+          "text": "`match()`に`{ ignoreMethod: true }`を渡せば照合できるが、`put()`は`GET`以外だとエラーになる"
         },
         {
-          "text": "{ forceMethod: \"GET\" }",
-          "wrongFeedback": "`forceMethod`というオプションはCache APIには存在しません。"
+          "text": "`match()`はキャッシュに無ければオリジンへ取りに行くため、`POST`でもそのまま結果を返せる",
+          "wrongFeedback": "`match()`はオリジンへサブリクエストを送りません。一致するレスポンスが無ければ`undefined`が返ります。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cache APIの`match(request, options)`は`ignoreMethod`(Boolean)のみをオプションとしてサポートしています。`true`を指定すると、実際のリクエストメソッドに関わらずGETリクエストとして扱われ、キャッシュとの照合が行われます。なお、Web標準のCache APIにある`ignoreSearch`や`ignoreVary`は、Cloudflare WorkersのCache APIではサポートされていません。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "Cloudflare WorkersのCache APIでは、`match(request, options)`が受け取るオプションは`ignoreMethod`(Boolean)だけです。`true`を指定すると実際のリクエストメソッドに関わらず`GET`として扱われ、キャッシュとの照合が行われます。一方`put()`は`GET`以外のメソッドのリクエストを渡すとエラーを投げるため、`POST`のレスポンスをそのまま保存することはできません。また`match()`はオリジンへサブリクエストを送らず、見つからなければ`undefined`を返します。Web標準にある`ignoreSearch`や`ignoreVary`はサポートされておらず、クエリ文字列やヘッダーの違いは`put()`の時点で調整します。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
-      "hint": "match()がサポートするオプションは1つだけです。",
+      "hint": "キャッシュから探す操作と、キャッシュへ入れる操作それぞれで、`GET`以外のメソッドがどう扱われるかを考えましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -9758,28 +9758,28 @@
       "id": "r2-014",
       "category": "r2",
       "difficulty": "intermediate",
-      "question": "ブラウザ上のJavaScriptから、presigned URLを使ってR2バケットに直接ファイルをアップロードしようとしたところ、ブラウザのコンソールにクロスオリジンエラーが出てアップロードできません。何を設定する必要がありますか？",
+      "question": "`https://app.example.com/upload`というページのブラウザ上のJavaScriptから、presigned URLを使ってR2バケットへ直接`PUT`でアップロードする機能を実装します。R2側の設定について正しい説明はどれですか？",
       "options": [
         {
-          "text": "R2バケットにCORSポリシーを設定し、アップロード元のオリジンやPUTメソッドを許可する"
+          "text": "バケットのCORSルールで`AllowedOrigins`に`https://app.example.com`を、`AllowedMethods`に`PUT`を指定する"
         },
         {
-          "text": "R2バケットをパブリックバケットに変更してアクセス制限自体をなくすことで、誰でも認証なしにファイルをアップロードできるようにする",
-          "wrongFeedback": "パブリック化はアクセス制御の話であり、ブラウザのクロスオリジン制約（CORS）の解決にはなりません。バケットにCORSポリシーを設定する必要があります。"
+          "text": "バケットのCORSルールの`AllowedOrigins`には、アップロードを行うページのURLを`https://app.example.com/upload`のようにパスまで含めて指定する",
+          "wrongFeedback": "`AllowedOrigins`に指定するのは`scheme://host[:port]`の形の値です。パスを含めた値は無効になるため、`https://app.example.com`と書きます。"
         },
         {
-          "text": "アクセスキーIDをブラウザのlocalStorageに保存し、presigned URLを使わず直接認証情報を付与してアップロードする",
-          "wrongFeedback": "アクセスキーをクライアント側で保持するのはセキュリティ上望ましくなく、そもそもクロスオリジンエラーの解決にはなりません。CORSポリシーの設定が必要です。"
+          "text": "presigned URLが認証を担うため、ブラウザからの`PUT`でもバケット側にCORSルールを設定する必要はない",
+          "wrongFeedback": "presigned URLは認証を担いますが、ブラウザから別オリジンへ送るリクエストにはバケットのCORSルールが別途必要です。設定が無ければ、presigned URL自体が有効でもアップロードは失敗します。"
         },
         {
-          "text": "presigned URLの有効期限をより長く設定し直すことで、ブラウザがそのURLへアクセスできる時間を延ばしてアップロードを完了させる",
-          "wrongFeedback": "有効期限はアクセス可能な時間の長さを制御するものであり、クロスオリジンエラーとは無関係です。原因はCORS設定の不足です。"
+          "text": "`AllowedOrigins`さえ一致していれば`AllowedMethods`の指定は省略でき、ブラウザからの`PUT`はそのまま許可される",
+          "wrongFeedback": "`AllowedMethods`にはpresigned URLで行う操作(`GET`・`PUT`・`HEAD`・`DELETE`など)を並べる必要があります。ブロックされたリクエストのメソッドが含まれているか確認します。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "ブラウザから異なるオリジンのリソース（この場合R2のエンドポイント）へPUT/GETなどのリクエストを送る際は、対象のバケットにCORS（Cross-Origin Resource Sharing）ポリシーが設定されている必要があります。R2バケットにはオリジン（AllowedOrigins）、許可するHTTPメソッド、許可するヘッダーなどを含むCORSルールを設定できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "presigned URLは認証を担いますが、ブラウザから別オリジンへ送るリクエストにはバケット側のCORSルールが必要です。設定が無ければ、presigned URL自体が有効でもブラウザからのアップロードやダウンロードは失敗します。`AllowedOrigins`には`scheme://host[:port]`の形(ここでは`https://app.example.com`)を指定し、パスを含めた値は無効です。`AllowedMethods`にはpresigned URLで行う操作(ここでは`PUT`)を、`AllowedHeaders`にはクライアントが送るヘッダーを指定します。JavaScriptから`ETag`などのレスポンスヘッダーを読みたい場合は`ExposeHeaders`を足します。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/cors/",
-      "hint": "presigned URL を発行してもブラウザがリクエストを止めることがあります。止めているのは誰で、通してよいと言えるのは誰か(送る側のページか、受け取るバケット側か)を考えましょう。",
+      "hint": "署名付きURLが担う範囲と、バケット側の設定が担う範囲を分けて考えましょう。設定する場合は値の書き方にも決まりがあります。",
       "tags": [
         "r2",
         "practical"
@@ -11898,28 +11898,28 @@
       "id": "hw-003",
       "category": "hyperdrive-workflows",
       "difficulty": "intermediate",
-      "question": "Hyperdriveがデータベースアクセスを高速化する仕組みの組み合わせとして正しいものはどれですか？",
+      "question": "ある`SELECT`をHyperdrive経由で実行した数秒後、その結果に影響する`UPDATE`を実行し、直後に同じ`SELECT`をもう一度投げました。既定の設定での挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "書き込みクエリをバッファリングして夜間にまとめて実行する",
-          "wrongFeedback": "書き込みの遅延実行は行いません。書き込みクエリは即座にオリジンのデータベースへ送られます。"
+          "text": "`UPDATE`が対象にしたテーブルに関わるキャッシュが破棄されるため、2回目の`SELECT`は最新の行を返す",
+          "wrongFeedback": "Hyperdriveは書き込みが起きてもキャッシュ済みの読み取り結果を破棄しません。`max_age`が切れるまでは1回目の結果が返ることがあります。"
         },
         {
-          "text": "データベースの全データをCloudflareの各エッジロケーションに複製(レプリケーション)し、ユーザーに最も近い拠点で読み書きを完結させることで高速化する",
-          "wrongFeedback": "Hyperdriveはデータの複製を行いません。データはオリジンのデータベースにあり、接続とクエリ結果の扱いを最適化します。"
+          "text": "`UPDATE`もキャッシュの対象になるため、同じ`UPDATE`を続けて送るとデータベースには届かなくなる",
+          "wrongFeedback": "Hyperdriveはデータベースのプロトコルを見て書き込みクエリと読み取りクエリを区別し、キャッシュするのは読み取りだけです。書き込みはデータベースへ送られます。"
         },
         {
-          "text": "接続セットアップをWorkerの近くで行い、データベース近傍で接続をプールし、変更を伴わない読み取りクエリの結果をキャッシュする"
+          "text": "書き込みはデータベースへ届くが、キャッシュは破棄されず`max_age`が切れるまで1回目の結果が返ることがある"
         },
         {
-          "text": "SQLを自動的に最適化(書き換え)して実行計画を改善する",
-          "wrongFeedback": "SQLの書き換えや実行計画の最適化は行いません。クエリはそのままデータベースに届きます。"
+          "text": "新しい結果が必要なら`--caching-disabled`の構成へ切り替えるが、その構成では接続プールの効果も失われる",
+          "wrongFeedback": "キャッシュを無効にした構成でも、接続プールと高速な接続セットアップの効果は得られます。新鮮さが必要な読み取りだけをその構成へ振り分ける使い方が案内されています。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "ステートレスなWorkersから毎回データベースに直接接続すると、接続確立だけで複数回の往復が発生し、距離によっては大きな遅延になります。Hyperdriveは①接続セットアップをWorkerと同じロケーション内で完結させ、②オリジンDBに近い場所で接続プールを維持して再利用し、③読み取りクエリの結果をキャッシュする、という3段構えでこの問題を解決します。\n{{diagram:0}}\nキャッシュにヒットしない読み取りや書き込みでも、①②の効果で高速化されます。",
+      "explanation": "Hyperdriveは接続セットアップをWorkerの近くで行い、データベース近傍で接続をプールし、読み取り専用クエリの結果をキャッシュします。\n{{diagram:0}}\nクエリキャッシュは既定で有効で、`max_age`は60秒、`stale_while_revalidate`は15秒です。Hyperdriveは書き込みが起きてもキャッシュ済みの読み取り結果を破棄しないため、`UPDATE`の直後に同じ`SELECT`を投げると`max_age`が切れるまで1回目の結果が返ることがあります。常に新しい結果が必要な読み取りには`--caching-disabled`の構成を別に用意して振り分けます。この構成でも接続プールと高速な接続セットアップの効果は残ります。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/concepts/how-hyperdrive-works/",
-      "hint": "データそのものをユーザーの近くに置くのか、データは動かさずにやり取りの仕方を変えるのか。Hyperdriveがどちらの立場をとるかを考えましょう。",
+      "hint": "書き込みが起きたとき、すでにキャッシュに入っている読み取り結果はどう扱われるでしょうか。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -16240,28 +16240,28 @@
       "id": "wp-010",
       "category": "workers-for-platforms",
       "difficulty": "intermediate",
-      "question": "Outbound Workerを有効にするためのwrangler設定と、有効化によって制限される機能の組み合わせとして正しいものはどれですか？",
+      "question": "Workers for PlatformsでOutbound Workerを設定したときの説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "`dispatch_namespaces`バインディングの`outbound`フィールドに`service`(と必要なら`parameters`)を指定し、有効化するとuser Workerは`connect()`によるTCPソケットを直接作成できなくなる"
+          "text": "user Workerからの`fetch()`はOutbound Workerを経由するようになり、`connect()`によるTCPソケットの作成はできなくなる"
         },
         {
-          "text": "`dispatch_namespaces`バインディングの`outbound`フィールドにサービス名を指定するが、有効化してもuser Workerの機能に制限は一切生じない",
-          "wrongFeedback": "設定方法は正しいですが、Outbound Workerを有効にするとuser Workerは`connect()`によるTCPソケットの直接作成ができなくなります。"
+          "text": "user Workerからの`fetch()`はOutbound Workerを経由するが、`connect()`によるTCPソケットはこれまで通りuser Workerから直接開ける",
+          "wrongFeedback": "Outbound Workerを有効にすると、user Workerは`connect()`による外向きTCPソケットを作れなくなります。外向き通信をOutbound Workerの`fetch`に集約するための制限です。"
         },
         {
-          "text": "`outbound_workers`という独立したトップレベルの設定項目にサービス名を指定し、有効化してもuser Workerの機能に制限は生じない",
-          "wrongFeedback": "独立した`outbound_workers`という設定項目ではなく、`dispatch_namespaces`バインディングの`outbound`フィールドで指定します。また有効化するとuser Workerは`connect()`によるTCPソケット作成ができなくなります。"
+          "text": "設定はuser Worker側のWrangler設定に`outbound`を書いて行い、書かなければuser Workerの通信は変わらない",
+          "wrongFeedback": "Outbound Workerはdynamic dispatch Worker側のWrangler設定で、`dispatch_namespaces`バインディングの`outbound`フィールドに指定します。user Worker側で宣言するものではありません。"
         },
         {
-          "text": "Outbound Workerの設定はuser Worker側のwrangler設定で行い、user Worker自身が自分の出力先を宣言する",
-          "wrongFeedback": "Outbound Workerの設定はuser Worker側ではなく、dynamic dispatch Worker側の`dispatch_namespaces`バインディングで行います。"
+          "text": "Outbound Workerが呼ばれるのはuser Workerが`env.outbound.fetch()`を明示的に呼んだときだけで、通常の`fetch()`は直接外部へ出る",
+          "wrongFeedback": "Outbound Workerはuser Workerからの`fetch()`リクエストで呼び出されます。user Worker側に特別な呼び出しは不要で、`dispatcher.get()`で渡した変数はOutbound Worker側の`env`から参照できます。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "Outbound Workerは、dynamic dispatch Worker側のwrangler設定にある`dispatch_namespaces`バインディングの`outbound`フィールドに`service`(呼び出すOutbound Workerの名前)と、必要なら`parameters`(渡す変数名)を指定して有効にします。Outbound Workerを有効にすると、user Workerは`connect()`による直接のTCPソケット作成ができなくなり、すべての外向き通信がOutbound Workerの`fetch`を経由するようになります。\n{{diagram:0}}",
+      "explanation": "Outbound Workerは、dynamic dispatch Worker側のWrangler設定にある`dispatch_namespaces`バインディングの`outbound`フィールドに`service`(呼び出すOutbound Workerの名前)と、必要なら`parameters`(渡す変数名)を指定して有効にします。有効にするとuser Workerからの`fetch()`リクエストはOutbound Workerで受け取られ、`dispatcher.get()`で渡した変数はOutbound Worker側の`env`から参照できます。あわせてuser Workerは`connect()`による直接のTCPソケット作成ができなくなります。これは外向き通信をすべてOutbound Workerの`fetch`に集約するための制限です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/outbound-workers/",
-      "hint": "外向き通信を「必ず一箇所を通す」ようにするなら、それ以外の直接的な抜け道は許されたままでよいか考えましょう。",
+      "hint": "user Workerが外へ出る手段は`fetch()`だけではありません。それぞれの手段がどう扱われるかを考えましょう。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -21559,28 +21559,28 @@
       "id": "ac-001",
       "category": "zero-trust-access",
       "difficulty": "beginner",
-      "question": "Cloudflare Access(Zero Trust)の目的として正しいものはどれですか？",
+      "question": "Cloudflare Accessで保護したアプリに、IdPでのログインには成功したものの、どのAllowポリシーの条件にも当てはまらないユーザーがアクセスしました。このとき何が起きますか？",
       "options": [
         {
-          "text": "社内向けアプリの手前にIDベースのアクセス制御を挟み、ポリシーに一致したユーザーだけを通す、デフォルト拒否の認証レイヤーを提供する"
+          "text": "どのAllowポリシーにも一致しないため、ログインに成功していてもアプリには到達できず拒否される"
         },
         {
-          "text": "静的アセットをエッジにキャッシュして配信速度を高める、CDNのキャッシュ制御機能",
-          "wrongFeedback": "CDNのキャッシュ制御機能ではありません。認証・認可を扱うアクセス制御の仕組みです。"
+          "text": "Blockポリシーに一致していない限りアクセスは拒否されないので、ログイン済みのユーザーはアプリに到達できる",
+          "wrongFeedback": "Accessはデフォルト拒否です。Blockポリシーに一致しなくても、明示的にAllowポリシーに一致しない限りアクセスは拒否されます。"
         },
         {
-          "text": "社内向けアプリへの大量アクセスを送信元IPごとに検知して自動的に遮断する、DDoS対策専用のレイヤー7フィルタリング機能で、ユーザーの識別は行わない",
-          "wrongFeedback": "DDoS対策のためのレイヤー7フィルタリング機能ではありません。ユーザーの認証・認可を行うアクセス制御レイヤーです。"
+          "text": "Accessは可否を判定せずリクエストをアプリへ渡すため、到達できるかどうかはアプリ側の認可設定で決まる",
+          "wrongFeedback": "Accessはアプリの手前で可否を判定するレイヤーです。ポリシーに一致しないリクエストはアプリに到達しません。"
         },
         {
-          "text": "複数のオリジンサーバーにトラフィックを分散させる、ロードバランシング専用の機能",
-          "wrongFeedback": "ロードバランシング機能ではありません。ユーザーがアプリに到達できるかどうかを判定するアクセス制御の仕組みです。"
+          "text": "一致するポリシーが無い場合は評価が末尾まで続き、最後に並んでいるポリシーの判定がそのまま適用される",
+          "wrongFeedback": "AllowまたはBlockポリシーに一致した時点で評価は止まり、後続のポリシーは判定を覆せません。どれにも一致しなければデフォルト拒否になります。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflare Accessは、社内向けアプリの手前にIDベースのアクセス制御レイヤーを挟み、設定したポリシーに一致したユーザーだけを通す仕組みです。Accessはデフォルトで拒否(deny by default)であり、明示的にAllowポリシーに一致しない限りアクセスは許可されません。\n{{diagram:0}}",
+      "explanation": "Cloudflare Accessはデフォルトで拒否(deny by default)です。IdPでの認証に成功しても、それだけではアプリに到達できず、明示的にAllowポリシーに一致する必要があります。ポリシーはBypassとService Authが先に、その後BlockとAllowが上から順に評価され、いずれかに一致した時点で評価は止まり、後続のポリシーは判定を覆せません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
-      "hint": "アプリの手前に一枚挟まる仕組みの話です。何を確かめてから先へ通すのかを考えましょう。",
+      "hint": "一致するポリシーが1つも無かったとき、この仕組みは既定でどちら側に倒れるのかを考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical",
@@ -23427,28 +23427,28 @@
       "id": "bt-001",
       "category": "bots",
       "difficulty": "beginner",
-      "question": "Cloudflareが提供する3つのBot対策製品の組み合わせとして正しいものはどれですか？",
+      "question": "Bot Fight Modeを有効にしているゾーンで、ボットのカテゴリごとに異なるアクションを設定したくなりました。正しい説明はどれですか？",
       "options": [
         {
-          "text": "Bot Fight Mode(Free、全ドメイン一括)、Super Bot Fight Mode(Pro以上、カテゴリ別)、Bot Management(Enterpriseアドオン、リクエスト単位のスコア)"
+          "text": "Bot Fight Modeにカテゴリ別の設定はなく、Pro以上で使えるSuper Bot Fight Modeへ切り替える"
         },
         {
-          "text": "IP Access Rules(IP単位のブロック)・Zone Lockdown(特定URLの許可IP限定)・User Agent Blocking(UA文字列によるブロック)という、Ruleset Engineの外で動く3つのアクセス制御機能",
-          "wrongFeedback": "これらはRuleset Engine外で動く別のセキュリティ機能です。Bot対策製品の組み合わせとは異なります。"
+          "text": "Bot Fight Modeを有効にしたまま、WAFカスタムルールでカテゴリごとの動作を書き換えれば同じことができる",
+          "wrongFeedback": "Bot Fight ModeはWAFカスタムルールでの調整・再設定ができない製品です。カテゴリごとのアクションはSuper Bot Fight Modeの設定項目として用意されています。"
         },
         {
-          "text": "WAFカスタムルール・レート制限ルール・マネージドルールという、WAFの3機能と同じ組み合わせ",
-          "wrongFeedback": "これらはWAFの3機能であり、Bot対策製品の組み合わせとは異なります。"
+          "text": "カテゴリ別のアクション設定はEnterpriseのBot Managementアドオンだけの機能で、ProやBusinessでは利用できない",
+          "wrongFeedback": "Super Bot Fight ModeはPro・Business・Enterpriseのプランに含まれ、カテゴリ別のアクション設定はここで行えます。Bot Managementアドオンはさらにリクエスト単位のスコアによる制御を足す製品です。"
         },
         {
-          "text": "Turnstile・Page Shield・API Shieldという、Bot対策に関連する別カテゴリの3製品",
-          "wrongFeedback": "これらはBot対策に関連はしますが、Cloudflareが提供する「Bot対策製品」そのものの3種類とは異なります。"
+          "text": "Bot Fight Modeの設定画面でカテゴリごとにAllow・Block・Managed Challengeを選べるので、製品を変える必要はない",
+          "wrongFeedback": "Bot Fight Modeはドメイン全体に対する単純なオン/オフで、検出したボットに計算負荷の高いチャレンジを出します。カテゴリごとのアクションはSuper Bot Fight Modeが追加する機能です。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "Cloudflareは、全ドメインに単純なオン/オフで適用するBot Fight Mode(Free)、カテゴリごとに個別のアクションを設定できるSuper Bot Fight Mode(Pro・Business・Enterprise)、リクエスト単位のボットスコアで細かく制御できるBot Management(Enterpriseの有料アドオン)という3段階のBot対策製品を提供しています。\n{{diagram:0}}",
+      "explanation": "Bot Fight Mode(Free)はドメイン全体に対する単純なオン/オフで、検出したボットに計算負荷の高いチャレンジを出します。カテゴリ(Definitely automated、Likely automated、Verified bots)ごとにアクションを選べるのはPro・Business・Enterpriseに含まれるSuper Bot Fight Modeで、切り替えるときはBot Fight Modeをオフにします。リクエスト単位のボットスコアで制御したい場合はEnterpriseのBot Managementアドオンを使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/",
-      "hint": "問われているのはボットを見分けて対処する製品そのものです。それぞれの制御の細かさがどう違うのかを思い出しましょう。",
+      "hint": "無料で使える方は、どの範囲に対してどれだけ細かく挙動を決められるのかを思い出しましょう。",
       "tags": [
         "bots",
         "practical"
@@ -29018,28 +29018,28 @@
       "id": "sl-002",
       "category": "ssl-tls",
       "difficulty": "beginner",
-      "question": "暗号化モード「Flexible」に関する正しい説明はどれですか？",
+      "question": "オリジンサーバーがHTTPでのリクエストをHTTPSへリダイレクトする設定になっているサイトで、暗号化モードをFlexibleにしたところ、訪問者のブラウザにリダイレクトの繰り返しを示すエラーが表示されるようになりました。この現象の説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "Flexibleモードはオリジン証明書の検証を厳格に行う点でFull(strict)と同等であり、違いは訪問者側の設定のみであるため、この検証基準もFull(strict)と一致する",
-          "wrongFeedback": "Flexibleではオリジン証明書自体が不要です。Full(strict)のような証明書検証は行われません。"
+          "text": "Flexibleでは訪問者とCloudflareの間がHTTPになるため、オリジンが返したHTTPSへのリダイレクトが訪問者にそのまま返り続けている",
+          "wrongFeedback": "Flexibleでは訪問者とCloudflareの間はHTTPSで暗号化されます。平文になるのはCloudflareとオリジンの間です。"
         },
         {
-          "text": "訪問者とCloudflare間はHTTPSで暗号化されるが、Cloudflareとオリジン間はHTTPのまま平文でやり取りされる"
+          "text": "CloudflareはオリジンへHTTPで接続するため、オリジンがHTTPSへのリダイレクトを返し、同じやり取りが繰り返されている"
         },
         {
-          "text": "訪問者とCloudflare間・Cloudflareとオリジン間の両方が常にHTTPSで暗号化される最も安全なモードであり、経路のどこにも平文の区間が残らない",
-          "wrongFeedback": "両方が暗号化されるわけではありません。FlexibleではCloudflareとオリジン間はHTTPで平文のままです。"
+          "text": "Flexibleではオリジンが提示する証明書を検証するため、検証に失敗した接続がリダイレクトとして訪問者に返されている",
+          "wrongFeedback": "Flexibleではオリジンに証明書は不要で、Cloudflareはオリジンへ平文のHTTPで接続します。繰り返しの原因は証明書の検証ではなく、この接続がHTTPであることです。"
         },
         {
-          "text": "訪問者とCloudflare間はHTTPのまま平文でやり取りされ、Cloudflareとオリジン間のみがHTTPSで暗号化されるため、訪問者のブラウザには鍵マークが表示されない",
-          "wrongFeedback": "説明が逆です。Flexibleでは訪問者とCloudflare間がHTTPSで暗号化され、Cloudflareとオリジン間がHTTPのままです。"
+          "text": "オリジン側のリダイレクト設定を残したまま、Cloudflare側でAlways Use HTTPSを有効にすれば、この繰り返しは解消する",
+          "wrongFeedback": "Always Use HTTPSは訪問者からのリクエストをエッジでHTTPSに直す設定で、CloudflareからオリジンへはFlexibleのままHTTPで接続します。オリジン側のリダイレクトをやめるか、FullまたはFull(strict)へ切り替える必要があります。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Flexibleモードでは、訪問者とCloudflare間の通信はHTTPSで暗号化されますが、Cloudflareとオリジン間の通信はHTTPのまま平文でやり取りされます。そのためオリジンサーバーにSSL証明書は不要ですが、機密情報(個人情報やログイン情報)を扱うアプリケーションには推奨されません。\n{{diagram:0}}",
+      "explanation": "Flexibleでは訪問者とCloudflareの間だけがHTTPSで、CloudflareからオリジンへはHTTPで接続します。オリジンがHTTPをHTTPSへリダイレクトする設定だと、Cloudflareは毎回HTTPで接続し、オリジンは毎回HTTPSへのリダイレクトを返すため、やり取りが終わらずリダイレクトの繰り返しになります。オリジン側のリダイレクトをやめてエッジでHTTPSを強制するか、FullまたはFull(strict)へ切り替えます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/",
-      "hint": "Flexibleは、オリジン側に証明書を用意できない場合に選ぶモードです。その前提で、どこまで暗号化できるのかを考えましょう。",
+      "hint": "繰り返しが起きているのは訪問者とCloudflareの間でしょうか、それともCloudflareとオリジンの間でしょうか。",
       "tags": [
         "ssl-tls",
         "practical",
@@ -29118,28 +29118,28 @@
       "id": "sl-004",
       "category": "ssl-tls",
       "difficulty": "beginner",
-      "question": "暗号化モード「Full(strict)」でオリジンが提示する証明書に求められる要件として正しいものはどれですか？",
+      "question": "オリジンに自己署名証明書を置いたまま暗号化モードをFull(strict)に変更したところ、訪問者にエラーが表示されるようになりました。この状況の説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "証明書の発行元さえ公的な認証局であれば要件を満たし、有効期限が切れていることやホスト名が一致しないことは問われない",
-          "wrongFeedback": "発行元だけでなく、有効期限内であることとホスト名の一致も要件に含まれます。"
+          "text": "Full(strict)ではAuthenticated Origin Pullsの設定も必須であり、それを有効にすれば自己署名証明書のままでも通信できる",
+          "wrongFeedback": "Authenticated Origin PullsはFull(strict)に加えて任意で設定できる仕組みです。証明書の要件そのものには、公的な認証局またはOrigin CAからの発行が含まれます。"
         },
         {
-          "text": "自己署名証明書であっても、有効期限内でCommon Nameがリクエストされたホスト名と正確に一致してさえいれば、この要件は満たされるため、自己署名証明書を設置するだけでFull(strict)を問題なく運用できる",
-          "wrongFeedback": "自己署名証明書はFull(strict)の要件を満たしません。公的な認証局またはCloudflareのOrigin CAからの発行が必要です。"
+          "text": "自己署名でも有効期限内でCommon Nameがホスト名と一致していれば要件は満たされるため、疑うべきは証明書の期限切れである",
+          "wrongFeedback": "Full(strict)の要件は、有効期限内であること、公的な認証局またはCloudflareのOrigin CAから発行されていること、CNまたはSANがホスト名と一致することの3点です。自己署名は発行元の条件を満たしません。"
         },
         {
-          "text": "有効期限内・公的な認証局またはCloudflareのOrigin CAからの発行・Common NameまたはSANが要求されたホスト名と一致、の3条件をすべて満たす必要がある"
+          "text": "自己署名証明書は要件を満たさず、公的な認証局かCloudflareのOrigin CAが発行した証明書に入れ替える必要がある"
         },
         {
-          "text": "証明書が有効期限内でありさえすれば要件を満たし、発行元がどこであるか(自己署名を含む)やCommon Name・SANとホスト名の一致は一切問われないため、Full(strict)でも526エラーが発生することはない",
-          "wrongFeedback": "有効期限だけでなく、発行元(公的CAまたはOrigin CA)とホスト名の一致も要件に含まれます。これらを満たさない場合は526エラーに遭遇する可能性があります。"
+          "text": "CloudflareがOrigin CA証明書をオリジンへ自動的に配布するため、しばらく待てばエラーは自然に解消する",
+          "wrongFeedback": "Origin CA証明書はダッシュボードで発行し、秘密鍵とともに自分でオリジンサーバーへインストールする手順が必要です。時間が経てば適用されるものではありません。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "Full(strict)モードでオリジンが提示する証明書は、有効期限内であること・公的な認証局またはCloudflareのOrigin CAから発行されていること・Common NameまたはSubject Alternative Name(SAN)が要求されたホスト名と一致すること、という3つの条件をすべて満たす必要があります。これらを満たさない場合、訪問者は526エラーに遭遇する可能性があります。\n{{diagram:0}}",
+      "explanation": "Full(strict)はFullと同じようにオリジンへHTTPSで接続したうえで、オリジンが提示する証明書に3つの条件を求めます。有効期限内であること、公的な認証局またはCloudflareのOrigin CAから発行されていること、Common NameまたはSubject Alternative Name(SAN)が要求されたホスト名と一致することです。自己署名証明書は2つ目を満たさないため、訪問者は526エラーに遭遇します。Origin CA証明書はダッシュボードで発行し、秘密鍵とともに自分でオリジンへインストールします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/",
-      "hint": "Full(strict)は、Fullに「オリジンが出す証明書を本当に確かめる」を足したモードです。ブラウザが証明書を信頼するときに見ている項目を思い出しましょう。",
+      "hint": "Full(strict)がFullに足しているのは、オリジンが出す証明書そのものへの条件です。ブラウザが証明書を信頼するときに見る項目を思い出しましょう。",
       "tags": [
         "ssl-tls",
         "practical",
