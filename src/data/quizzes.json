@@ -27,7 +27,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare Workersは、Cloudflareのグローバルネットワーク上にある多数のエッジロケーションでコードを実行するサーバーレスプラットフォームです。\n{{diagram:0}}\nリクエストは地理的に最も近いエッジロケーションにルーティングされ、そこでV8アイソレート上にWorkerのコードが実行されます。VMやコンテナのようにOSやランタイム全体を起動する必要がないため、リクエストごとの起動コストが極めて小さいのが特徴です。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/",
-      "hint": "起動のたびにOSやVMをまるごと用意する必要があるかどうかを軸に考えましょう。",
+      "hint": "Workersでは、実行環境の用意もスケールの調整もCloudflare側が受け持ちます。残る違いは『どこで動くか』と『何の上で動くか』の2つです。",
       "tags": [
         "workers",
         "practical",
@@ -132,7 +132,7 @@
       "correctIndex": 2,
       "explanation": "V8アイソレートは、V8エンジンが提供する軽量な実行コンテキストで、変数やコードを安全に隔離しつつ実行できる「サンドボックス」です。\n{{diagram:0}}\n単一のランタイムプロセスが数百〜数千のアイソレートを切り替えながら実行できるため、コンテナやVMのようにリクエストごとにOS/ランタイムを起動する必要がありません。各アイソレートのメモリは互いに完全に分離されており、安全性も確保されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/how-workers-works/",
-      "hint": "新しく部屋を建てるのと、今ある建物の一室を間借りするのとでは、どちらが早く使い始められるか考えましょう。",
+      "hint": "アイソレートは、V8というJavaScriptエンジンが提供する仕組みです。リクエストを処理するとき、アイソレートが何の中に、どの単位で作られるのかを考えましょう。",
       "tags": [
         "workers",
         "overview",
@@ -211,7 +211,7 @@
       "correctIndex": 0,
       "explanation": "ESM(ES Modules)形式のWorkerでは、`export default`されたオブジェクトの`fetch(request, env, ctx)`メソッドがHTTPリクエストのエントリーポイントになります。\n{{diagram:0}}\n`request`は標準Fetch APIのRequestオブジェクト、`env`はバインディング(Workerから外部のリソースを使えるようにする宣言)へのアクセス手段、`ctx`は`waitUntil`などの実行コンテキストAPIを提供します。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/handlers/fetch/",
-      "hint": "ESM形式では`export default`されたオブジェクトの、決まった名前のメソッドが呼び出されます。",
+      "hint": "Workersのハンドラは、`Request`を受け取って`Response`を返す形で書きます。ESM形式では`export default`したオブジェクトのどのメソッドがランタイムから呼ばれるのか、その名前は誰が決めるのかを考えましょう。",
       "tags": [
         "workers",
         "practical",
@@ -298,7 +298,7 @@
       "correctIndex": 3,
       "explanation": "WorkersのRequest/Responseは、ブラウザにも実装されている標準のFetch APIに準拠しています。\n{{diagram:0}}\nそのため、ブラウザでfetch()を使った経験があれば、Workersでのリクエスト/レスポンス操作にもそのまま知識を活かせます。加えて、`cf`プロパティ(接続元の地理情報など)のようなCloudflare独自の拡張も一部提供されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
-      "hint": "「標準」と「独自拡張」、両方の側面があることを意識しましょう。",
+      "hint": "リクエストボディは`request.json()`や`request.arrayBuffer()`など、用途に応じた複数の方法で取り出せます。残る論点は、この`Request`/`Response`がCloudflare独自のものか、もっと広く決まっている仕様に由来するものかです。",
       "tags": [
         "workers",
         "practical",
@@ -1007,7 +1007,7 @@
       "correctIndex": 2,
       "explanation": "`wrangler init` はローカルに新しいWorkerプロジェクトのひな形を作成するコマンドです。\n{{diagram:0}}\n生成されるのは設定ファイル（`wrangler.toml`または`wrangler.jsonc`）と、`src/index.js`（または`.ts`）といった最小限のWorkerコードです。内部的にはcreate-cloudflare-cli（C3）を呼び出しており、フレームワークテンプレートの選択や、生成直後にデプロイするかどうかを対話的に選べます（自動的にデプロイされるわけではありません）。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#init",
-      "hint": "『初期化』が何をするコマンドか、デプロイとの違いを考えてみましょう。",
+      "hint": "`worker-configuration.d.ts`のような型定義ファイルを生成するのは`wrangler types`という別のコマンドです。`init`を実行した直後、どこに何ができているのかを考えましょう。",
       "tags": [
         "wrangler",
         "practical",
@@ -1958,8 +1958,8 @@
       "question": "Workers KV namespaceにバインドされた env.MY_KV から、キー \"config:feature-flags\" の値を取得する正しい呼び出しはどれですか？",
       "options": [
         {
-          "text": "env.MY_KV.fetch(\"config:feature-flags\")は、標準のFetch APIを呼び出しキーの値を取得できる",
-          "wrongFeedback": "fetch()はKV namespaceのメソッドではありません。KVから値を読み取るにはget()を使用します。"
+          "text": "await env.MY_KV.fetch(\"config:feature-flags\")",
+          "wrongFeedback": "KVの読み取りには`get()`を使います。`fetch()`はHTTPリクエストを送るための標準Web APIであり、KV namespaceのバインディングが持つメソッドではありません。"
         },
         {
           "text": "await env.MY_KV.get(\"config:feature-flags\")"
@@ -1969,8 +1969,8 @@
           "wrongFeedback": "キーは\"config:feature-flags\"という1つの文字列です。get()の第2引数は\"json\"などのtypeやcacheTtlを指定するオプションであり、キーをコロンで区切って2つの引数に分けて渡すことはできません。"
         },
         {
-          "text": "env.MY_KV.query(\"config:feature-flags\")は、前方一致で複数キーを検索し値を返すメソッドである",
-          "wrongFeedback": "query()というメソッドはWorkers KVには存在しません。単純なキー取得にはget()を使用します。"
+          "text": "await env.MY_KV.query(\"config:feature-flags\")",
+          "wrongFeedback": "キーを指定して値を1件読み取るメソッドは`get()`です。`query()`という名前のメソッドはKVのバインディングにはなく、キーの前方一致での列挙は`list({ prefix })`が担います。"
         }
       ],
       "correctIndex": 1,
@@ -2135,7 +2135,7 @@
       "correctIndex": 3,
       "explanation": "Cache APIの`caches.default`はCloudflareのエッジキャッシュにHTTPレスポンスを保存・参照するための標準的なAPIです。`match()`でキャッシュを確認し、なければオリジンから取得して`put()`で保存します。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/cache/",
-      "hint": "「HTTPレスポンス」を「キャッシュ」する専用のAPIがあります。",
+      "hint": "`clone()`はレスポンスを複製する標準のWeb APIで、D1はSQLを実行するデータベースです。残る2つのうち、HTTPレスポンスをヘッダーごと預けて、次の同じリクエストにそのまま返せるのはどちらかを考えましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -5496,7 +5496,7 @@
       "correctIndex": 1,
       "explanation": "Pages はリポジトリの「本番ブランチ」(デフォルトは main/master)を設定でき、そのブランチへのプッシュは本番環境へデプロイされます。\n{{diagram:0}}\nそれ以外のブランチやプルリクエストへのプッシュは自動的にプレビューデプロイとして扱われ、本番環境に影響を与えずに動作確認ができます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/git-integration/",
-      "hint": "メインの窓口に出す変更と、下書きとして見せるだけの変更を、Cloudflareはどう区別するか考えましょう。",
+      "hint": "Git連携を一度設定すれば、以降はプッシュを検知して自動でビルドとデプロイが行われます。問われているのは、ブランチとデプロイ先の対応です。",
       "tags": [
         "pages-deploy",
         "practical",
@@ -7207,7 +7207,7 @@
       "correctIndex": 2,
       "explanation": "Workersの課金軸は「リクエスト数」と「実際にCPUを使った時間(CPU時間)」の2つです。外部APIやDBの応答を待っている間は、時計の上で時間が過ぎていてもCPUは使っていないため、この待ち時間(壁時計時間)には課金も制限も発生しません。\n{{diagram:0}}\nこの設計により、I/O待ちが多い処理でも料金が膨らみにくくなっています。\n{{diagram:1}}\n※ Paid(Standard)プランの内訳は、月1000万リクエストまで無料・超過分は100万リクエストあたり$0.30、CPU時間は月3000万ミリ秒まで無料・超過分は100万ミリ秒あたり$0.02です。",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/pricing/",
-      "hint": "「実行時間が長い＝待ち時間が長い」処理と「CPUを使い切っている」処理、どちらが課金対象になるか考えてみましょう。",
+      "hint": "Workersの料金は、コードを置いておくことではなく、実際に動いたことに対して発生します。では、動いている間の『何』を測って課金しているのかを考えましょう。",
       "tags": [
         "architecture",
         "practical",
@@ -13424,7 +13424,7 @@
       "correctIndex": 3,
       "explanation": "Email Service は2つの機能から成ります。Email Sending(Beta)は、ウェルカムメールやパスワードリセットなどのトランザクションメールをアプリから送信します。\n{{diagram:0}}\nEmail Routing は、自分のドメイン宛に届いた受信メールを、既存のメールアドレスへ転送したり、Workerで処理したりします。両者で「アプリからメールを送る・受ける」が実現できます。",
       "referenceUrl": "https://developers.cloudflare.com/email-service/",
-      "hint": "「送る」機能と「受ける(振り分ける)」機能の2本柱です。それに当てはまる説明はどれでしょう。",
+      "hint": "購読者リストの管理や開封率の計測は、メール配信マーケティングツールが担う領域です。Cloudflareのメール関連製品は複数あるので、Email Serviceがそのうちどこを受け持つのかを考えましょう。",
       "tags": [
         "platform-services",
         "practical"
@@ -17031,7 +17031,7 @@
       "correctIndex": 2,
       "explanation": "Universal Endpointは、どのAIプロバイダー宛のリクエストも1つのAI Gatewayのエンドポイントにまとめて送れる仕組みで、フォールバックやリトライにも対応していました。これが現在は非推奨(Deprecated)です。新規の統合では、OpenAI互換のエンドポイントと、フォールバック・リトライ・条件分岐ルーティングを担うDynamic Routingの利用が推奨されています。既存の統合は引き続き動作するので、すぐに壊れるわけではありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/usage/universal/",
-      "hint": "「新しく作るなら別の方法」だが「今動いているものは壊れない」、という移行期特有の状態を考えましょう。",
+      "hint": "Universal Endpointは、payloadで`provider`を指定して複数のプロバイダーを1つの宛先から呼び分けられる仕組みです。問われているのは、この仕組みのいまの位置づけです。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -30199,17 +30199,17 @@
           "wrongFeedback": "競合する製品ではありません。両者は異なる役割を持ち、互いに補完し合う関係にあります。"
         },
         {
-          "text": "Cloudflare Imagesで生成した画像には、すでに最適化済みであるかどうかに関わらず、さらにPolishによる追加の最適化を必ず適用する必要があるとされている",
-          "wrongFeedback": "Cloudflare Imagesで生成された画像はすでに最適化済みであり、Polishを追加で適用する必要はないとされています。"
+          "text": "Cloudflare Imagesで生成した画像にもPolishを重ねて適用することが推奨されており、Polishを有効にしていないゾーンではImagesの出力画像は圧縮されないまま配信される",
+          "wrongFeedback": "Cloudflare Imagesが生成した画像は、生成の時点ですでに最適化された状態です。そのためPolishを重ねて適用する必要はなく、Polishを有効にしていないゾーンでもImages側の出力が圧縮されないまま配信されることはありません。"
         },
         {
-          "text": "PolishはURLを変えずにオリジン画像をキャッシュ内で自動最適化する仕組みで、Cloudflare Imagesは加工した新しい画像を新しいURLで生成するため、Images側の出力にPolishを適用する必要はない"
+          "text": "PolishはURLを変えずにオリジン画像を最適化し、Cloudflare Imagesは加工した画像を新しいURLで生成するため、Images側の出力にPolishを適用する必要はない"
         }
       ],
       "correctIndex": 3,
       "explanation": "Polishは、オリジンから取得した画像をCloudflareのキャッシュ内で自動的に最適化する仕組みで、画像のURLは変わらずマークアップの変更も不要です。一方、Cloudflare Imagesはリサイズ・切り抜き・透かしなどの処理を適用した新しい画像を新しいURLで生成する仕組みで、生成された画像はすでに最適化済みのため、追加でPolishを適用する必要はありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/images/polish/",
-      "hint": "「既存の画像をそのまま軽くする」機能と、「新しい加工済み画像を作り出す」機能は、役割が異なると考えましょう。",
+      "hint": "Cloudflare Imagesが生成する画像は、生成の時点で最適化まで済んだ状態で配信されます。残る違いは、Polishが画像のURLをどう扱うか、そして両者を同じゾーンで併用できるかです。",
       "tags": [
         "speed",
         "practical"
@@ -39898,7 +39898,7 @@
       "correctIndex": 0,
       "explanation": "Spectrumは、SSH・MQTT・メール・ファイル転送・バージョン管理システム・ゲームなど、TCPまたはUDPを使う任意のアプリケーションをCloudflare経由でルーティングし、オリジンを隠蔽してDDoS攻撃から保護するために使われます。HTTP以外のプロトコルのアプリケーションでもCloudflareのネットワークを通せる点が特徴です。\n{{diagram:0}}\n※ 誤答肢に出てくる他機能とは目的が異なります。CDNは静的アセットの配信高速化、CASBはSaaSの設定不備をAPI経由で点検する機能、Gatewayは従業員端末からのDNS/Network/HTTPトラフィックを検査する機能です。",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/",
-      "hint": "「HTTP以外のプロトコルを使うアプリケーション」という共通点を持つ選択肢を探しましょう。",
+      "hint": "静的な画像やCSS・JavaScriptの配信を速くするのは、CDNとCacheが担う役割です。選択肢はそれぞれCloudflareの別々の製品のユースケースなので、Spectrumが何を通すための製品かを考えましょう。",
       "tags": [
         "spectrum",
         "practical"
