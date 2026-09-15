@@ -1707,28 +1707,28 @@
       "id": "wr-011",
       "category": "wrangler",
       "difficulty": "advanced",
-      "question": "`wrangler.toml` に定義したバインディング（KV、R2、環境変数など）に対応するTypeScriptの型を自動生成し、コード内で `env.MY_KV` のような補完を効かせたい場合、どのコマンドを使いますか？",
+      "question": "`wrangler.toml` に定義したバインディング(KV、R2、環境変数など)に対応するTypeScriptの型を自動生成する`wrangler types`の挙動として、正しい説明はどれですか？",
       "options": [
         {
-          "text": "`wrangler types`"
+          "text": "`wrangler types` を実行すると設定ファイルを解析し、既定では全environment分のバインディングを集約した`Env`型を生成する(1つに絞るには`--env`を指定する)"
         },
         {
-          "text": "`wrangler dev --typescript`",
-          "wrongFeedback": "`wrangler dev` はTypeScriptのコードもそのまま実行できますが、バインディングの型定義ファイルを生成するのは別の専用コマンドです。"
+          "text": "`wrangler types` は`--env`を明示的に指定しない限り、どのenvironmentのバインディングも型に反映されず、空の`Env`型が生成されてしまう",
+          "wrongFeedback": "誤りです。`--env`を指定しなくても、`wrangler types`は既定で設定ファイルに定義された全environment分のバインディングを集約して型を生成します。空になることはありません。特定の1つのenvironmentだけに絞りたい場合に`--env`を指定します。"
         },
         {
-          "text": "`tsc --generateBindings`",
-          "wrongFeedback": "TypeScriptコンパイラ標準にそのようなオプションはありません。バインディングの型生成はWrangler自体の機能です。"
+          "text": "`wrangler types --check` を実行すると、指定したパスの型定義ファイルを現在の設定に基づいて毎回上書き再生成し、最新化したうえで正常終了する",
+          "wrongFeedback": "逆です。`--check`は型定義ファイルを再生成せず、現在の内容が最新かどうかだけを確認するオプションです。最新であれば終了コード0、古ければ終了コード1を返します。"
         },
         {
-          "text": "`wrangler deploy --emit-types`",
-          "wrongFeedback": "`wrangler deploy` にそのようなフラグはありません。型生成は専用の別コマンドで行います。"
+          "text": "`wrangler types` が生成する`vars`バインディングの型は、既定では常に`string`のような汎用的な型になり、値ごとのリテラル型を得るには明示的にオプションを指定する必要がある",
+          "wrongFeedback": "逆です。既定(`--strict-vars`が`true`)ではvarsの値ごとのリテラル型・ユニオン型が生成されます。汎用的な`string`型にしたい場合は`--strict-vars=false`を指定します。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "`wrangler types` を実行すると、`wrangler.toml`（または`wrangler.jsonc`）の設定内容を解析し、`Env` インターフェースを含む型定義ファイル（デフォルトでは `worker-configuration.d.ts`）を生成します。\n{{diagram:0}}\n設定ファイルにバインディングを追加・変更するたびに再実行することで、コード側の型定義を常に最新の状態に保てます。tsconfig側でこの生成ファイルを参照するよう設定しておくのが一般的です。\n{{diagram:1}}",
+      "explanation": "`wrangler types`を実行すると、`wrangler.toml`(または`wrangler.jsonc`)の設定内容を解析し、`Env`インターフェースを含む型定義ファイル(既定では`worker-configuration.d.ts`)を生成します。既定では設定ファイルに定義された全environment分のバインディングを集約して型を出力し、特定の1つのenvironmentだけに絞りたい場合は`--env`を指定します。`--env`を指定しなければ型が空になる、ということはありません。\n{{diagram:0}}\nまた`--check`は型を再生成せず、現在の型定義が最新かどうかを確認するだけのオプションです(最新なら終了コード0、古ければ1)。`vars`バインディングの型は既定(`--strict-vars`が`true`)ではリテラル型・ユニオン型になり、汎用的な`string`型にしたい場合は明示的に`--strict-vars=false`を指定します。設定ファイルにバインディングを追加・変更するたびに`wrangler types`を再実行することで、コード側の型定義を最新の状態に保てます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#types",
-      "hint": "設定ファイルの内容をTypeScriptの型として書き出す専用コマンドです。",
+      "hint": "設定ファイルに複数のenvironmentが定義されているとき、`wrangler types`は既定でどこまでの範囲を型に含めるかを考えましょう。",
       "tags": [
         "wrangler",
         "trivia"
@@ -1780,28 +1780,28 @@
       "id": "wr-012",
       "category": "wrangler",
       "difficulty": "advanced",
-      "question": "本番にデプロイしたWorkerの新バージョンに重大な不具合が見つかり、直前の正常に動作していたデプロイへ即座に戻したい場合、最も適切な対応はどれですか？",
+      "question": "本番にデプロイしたWorkerの新バージョンに重大な不具合が見つかり、直前の正常に動作していたデプロイへ即座に戻したい場合、Wranglerのロールバック・バージョン管理機能に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "問題のコードをローカルで手動でGitの過去のコミットに戻し、改めて `wrangler deploy` を実行する",
-          "wrongFeedback": "動作はしますが、Gitの巻き戻し作業やビルドの時間がかかり、即座の切り戻しには向きません。Wranglerには専用のロールバック機能があります。"
+          "text": "`wrangler rollback` を使うと、直前の(または指定した)バージョンで即座に新しいデプロイを作成し、全ルート・ドメインの動作を切り戻せる"
         },
         {
-          "text": "`wrangler rollback` を使って、直前の（または指定した）バージョンへ即座に切り戻す"
+          "text": "`wrangler rollback` はバージョンIDを省略すると、常に最初にデプロイされた最古のバージョンまで戻り、履歴の一番最初の状態を復元する",
+          "wrongFeedback": "逆です。バージョンIDを省略した場合、`wrangler rollback`は最古のバージョンではなく、直前(最新の1つ前)にアップロードされたバージョンへ戻ります。"
         },
         {
-          "text": "Cloudflareサポートに連絡し、手動でのロールバック作業を依頼する。デプロイの巻き戻しはサポート側が履歴を書き換える対応であり、契約者側からは行えない",
-          "wrongFeedback": "サポートへの連絡を待たなくても、Wrangler CLIから自分ですぐにロールバックできます。"
+          "text": "`wrangler rollback` を実行しても新しいデプロイ履歴は作成されず、指定したバージョンの内容を既存デプロイに差分反映するだけである",
+          "wrongFeedback": "逆です。ロールバックは指定したバージョンで新しいデプロイを即座に作成する処理で、それが全ルート・ドメインでアクティブなデプロイになります。差分反映ではありません。"
         },
         {
-          "text": "`wrangler deploy` を何度も繰り返し実行して、いつか元の状態に戻ることを期待する。数十回のデプロイの末に元の状態に落ち着くやり方である",
-          "wrongFeedback": "偶然に頼る方法であり、確実に前のデプロイへ戻す保証がありません。専用のロールバック機能を使うべきです。"
+          "text": "`wrangler versions deploy` は新バージョンを常に100%のトラフィックへ即時デプロイする動作のみが可能で、段階的なトラフィック移行はできない",
+          "wrongFeedback": "逆です。`wrangler versions deploy`は一括デプロイに加えて、複数バージョンへトラフィックを比率で分けて段階的に移行する(Gradual Deployments)こともできます。"
         }
       ],
-      "correctIndex": 1,
-      "explanation": "Wranglerはバージョンとデプロイの履歴を管理しており、`wrangler versions list` で過去のバージョン一覧を確認し、`wrangler rollback [バージョンID]` で即座に切り戻せます(省略時は最新の1つ前のバージョン)。ロールバックは指定したバージョンで新しいデプロイを作る形で反映されます。\n{{diagram:0}}\nまた、より段階的なリリース管理をしたい場合は「バージョンとデプロイ」の仕組み（`wrangler versions upload` で新バージョンを作成し、トラフィックを徐々に振り分ける `wrangler versions deploy`）を使うことで、問題が起きた際の影響範囲を最小化することもできます。\n{{diagram:1}}",
+      "correctIndex": 0,
+      "explanation": "Wranglerはバージョンとデプロイの履歴を管理しており、`wrangler versions list`で過去のバージョン一覧を確認し、`wrangler rollback [バージョンID]`で即座に切り戻せます。バージョンIDを省略した場合は、最古のバージョンではなく直前(最新の1つ前)にアップロードされたバージョンが対象になります。ロールバックは指定したバージョンで新しいデプロイを即座に作成する処理であり、既存デプロイへの差分反映ではありません。\n{{diagram:0}}\nまた、より段階的なリリース管理をしたい場合は「バージョンとデプロイ」の仕組み(`wrangler versions upload`で新バージョンを作成し、トラフィックを徐々に振り分ける`wrangler versions deploy`)を使うことで、問題が起きた際の影響範囲を最小化することもできます。`wrangler versions deploy`は100%一括デプロイだけでなく、比率を指定した段階的なトラフィック移行(Gradual Deployments)も行えます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/",
-      "hint": "コードを書き直すのではなく、Wranglerが管理しているデプロイ履歴を使う方法を考えましょう。",
+      "hint": "バージョンIDを省略したとき、`wrangler rollback`がどのバージョンへ戻るかを正確に思い出しましょう。",
       "tags": [
         "wrangler",
         "practical",
@@ -8400,28 +8400,28 @@
       "id": "wk-018",
       "category": "workers",
       "difficulty": "advanced",
-      "question": "Cloudflare Workersにおける「サブリクエスト」としてカウントされる操作の組み合わせとして適切なものはどれですか?",
+      "question": "Cloudflare Workersにおける『サブリクエスト』のカウントに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "`fetch()`に加え、KV・D1・R2などのバインディング経由の呼び出しとCache API呼び出し"
+          "text": "`fetch()`に加え、KV・D1・R2などのバインディング経由の呼び出しとCache API呼び出しが、1回の着信リクエストあたりの累計としてサブリクエストにカウントされる"
         },
         {
-          "text": "Worker自身が外部から受信した着信HTTPリクエストの総数のみで、Worker内から発生させる呼び出しは含まれない",
-          "wrongFeedback": "それは着信リクエスト数です。サブリクエストは、Workerがリクエストを処理する過程で自ら発生させる送信側の呼び出しを指します。"
+          "text": "`fetch()`やKV・R2などのバインディング呼び出しは、リクエスト全体での累計回数ではなく、同時に応答待ちとなる接続数(最大6)としてのみ管理され、『サブリクエスト』という累計の上限は存在しない",
+          "wrongFeedback": "誤りです。同時に開ける接続数の上限(最大6)と、1回の呼び出し全体で累計何回まで呼び出せるかを数える『サブリクエスト』の上限(Freeで50、Paidで10,000)は別の制限です。サブリクエストの上限は実在します。"
         },
         {
-          "text": "Worker内の`console.log`などログ出力の呼び出し回数のみがカウント対象であり、fetch()やバインディング経由のアクセスは含まれない",
-          "wrongFeedback": "`console.log`はサブリクエストとしてカウントされません。ログ出力はネットワーク越しの呼び出しではないためです。一方でfetch()やKV・D1などバインディング経由の呼び出しはサブリクエストとしてカウントされます。"
+          "text": "`fetch()`がリダイレクトを辿る場合、リダイレクト先への追跡は元の`fetch()`呼び出し1回分としてのみカウントされ、リダイレクトの各ホップはサブリクエストの回数に含まれない",
+          "wrongFeedback": "誤りです。リダイレクトチェーンの各ホップはそれぞれサブリクエストとしてカウントされます。そのため実際のサブリクエスト数は、コード上の`fetch()`呼び出し回数を超えることがあります。"
         },
         {
-          "text": "同一アイソレート内でグローバルスコープに保持された変数やモジュールへのアクセス回数がカウントされ、ネットワーク呼び出しの有無は関係ない",
-          "wrongFeedback": "変数やモジュールへのアクセスはネットワーク越しの呼び出しではないため、サブリクエストにはカウントされません。"
+          "text": "Service Bindingsを介した別Workerの呼び出し(RPCメソッド呼び出しを含む)は、`fetch()`を経由しないため、サブリクエストの上限にはカウントされない",
+          "wrongFeedback": "誤りです。Service Bindings経由の呼び出しは、HTTP形式・RPCメソッド呼び出しのどちらであっても、呼び出し元Workerのサブリクエストとしてカウントされます。追加のリクエスト課金が発生しないことと、サブリクエストとしてカウントされることは別の話です。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "サブリクエストとは、1件の着信リクエストをWorkerが処理する過程で発生させる送信側の呼び出しのことです。\n{{diagram:0}}\n`fetch()`による外部/他Workerへのリクエストだけでなく、KV・D1・R2・Durable Objectsといったバインディング経由の呼び出しや、Cache APIの呼び出しもサブリクエストとしてカウントされます。Service Bindingsで複数のWorkerを連鎖させたり、1リクエスト内で多数のバインディング呼び出しを行ったりする設計では、この仕組みを理解しておかないと想定外に上限へ到達することがあります。上限はプランや設定によって異なり、必要に応じてWranglerの設定で調整できます。\n{{diagram:1}}",
+      "explanation": "サブリクエストとは、1件の着信リクエストをWorkerが処理する過程で発生させる送信側の呼び出しのことです。\n{{diagram:0}}\n`fetch()`による外部/他Workerへのリクエストだけでなく、KV・D1・R2・Durable Objectsといったバインディング経由の呼び出しや、Cache APIの呼び出しもサブリクエストとしてカウントされます。この上限(Freeで50、Paidで10,000)は、同時に開ける接続数の上限(最大6)とは別の制限で、リクエスト全体での累計回数を数えるものです。またリダイレクトチェーンの各ホップもそれぞれサブリクエストとしてカウントされるため、実際の数はコード上の`fetch()`呼び出し回数を超えることがあります。Service Bindings経由の呼び出しも、HTTP形式・RPCメソッド呼び出しのどちらであってもサブリクエストとしてカウントされます(ただし追加のリクエスト課金は発生しません)。Service Bindingsで複数のWorkerを連鎖させたり、1リクエスト内で多数のバインディング呼び出しを行ったりする設計では、この仕組みを理解しておかないと想定外に上限へ到達することがあります。上限はプランや設定によって異なり、必要に応じてWranglerの設定で調整できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/limits/",
-      "hint": "「ネットワーク越しの送信側の呼び出しかどうか」を基準に、それぞれの選択肢を考えましょう。",
+      "hint": "『サブリクエストの上限』と『同時に開ける接続数の上限』は、Cloudflareでは別々に定義された数字です。混同していないか確認しましょう。",
       "tags": [
         "workers",
         "practical"
@@ -16506,23 +16506,23 @@
       "question": "Workers for Platformsの制限に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "Durable Objectのnamespace数にはWorkers for Platforms特有の上限が設けられている",
-          "wrongFeedback": "Workers for PlatformsにはDurable Objectのnamespace数の上限はありません。"
+          "text": "Durable Objectのnamespace数にはWorkers for Platforms特有の上限が設けられており、また現時点ではuser Workerも`wrangler versions deploy`によるGradual Deploymentsに対応しており、段階的なロールアウトが可能である",
+          "wrongFeedback": "Durable Objectのnamespace数に上限はありません。また現時点でuser WorkerはGradual Deploymentsに対応しておらず、変更は一括で100%のトラフィックにデプロイされます。"
         },
         {
-          "text": "user Workerも`wrangler versions deploy`によるGradual Deploymentsに対応しており、段階的なロールアウトが可能である",
-          "wrongFeedback": "現時点でuser WorkerはGradual Deploymentsに対応しておらず、変更は一括で100%のトラフィックにデプロイされます。"
+          "text": "1アカウントで作成できるスクリプト数には上限があり通常のWorkersアカウントと同じ制限が適用されるが、Durable Objectのnamespace数についてはWorkers for Platforms特有の上限はない",
+          "wrongFeedback": "スクリプト数は通常のアカウントと異なり無制限です。一方でDurable Objectのnamespace数に上限がない、という部分は正しい記述です。"
         },
         {
-          "text": "1アカウントで作成できるスクリプト数には上限があり、通常のWorkersアカウントと同じ制限が適用される",
-          "wrongFeedback": "Workers for Platformsでは無制限のスクリプト数が提供されます。通常のアカウントごとのスクリプト数上限は適用されません。"
+          "text": "1アカウントで作成できるスクリプト数には上限がなく無制限だが、namespace内の全Workerで`caches.default`は分離されず通常通り有効になっている",
+          "wrongFeedback": "スクリプト数が無制限という部分は正しいですが、`caches.default`は分離のためnamespace内の全Workerで無効化されています。"
         },
         {
           "text": "分離のためnamespace内の全Workerで`caches.default`が無効化されており、また現時点ではuser WorkerにGradual Deploymentsが未対応で、変更は常に100%のトラフィックへ一括デプロイされる"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Workers for Platformsでは、分離のためnamespace内の全Workerで`caches.default`が無効化されています。また現時点ではuser WorkerはGradual Deploymentsに対応しておらず、変更を加えると新しいバージョンが一括で100%のトラフィックにデプロイされます。一方でスクリプト数やDurable Objectのnamespace数には上限がありません。\n{{diagram:0}}",
+      "explanation": "Workers for Platformsでは、分離のためnamespace内の全Workerで`caches.default`が無効化されています。また現時点ではuser WorkerはGradual Deploymentsに対応しておらず、変更を加えると新しいバージョンが一括で100%のトラフィックにデプロイされます。一方でスクリプト数やDurable Objectのnamespace数には上限がありません。通常のWorkersアカウントと同じスクリプト数制限が適用される、ということもありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/limits/",
       "hint": "Durable Objectのnamespace数に、Workers for Platforms特有の上限はありません。",
       "tags": [
@@ -20532,23 +20532,23 @@
       "question": "同じホスト名・同じ証明書タイプの証明書が複数存在する場合の、Cloudflareの証明書デプロイの優先順位に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "基本的には最も新しく発行された証明書が優先されるが、削除が発生した場合は残っている証明書のうち有効期限が最も遅いものが優先される"
+          "text": "基本的には最も新しく発行された証明書が優先されるが、証明書の削除が発生した場合は残っている証明書のうち有効期限が最も遅いものが優先されるようになり、その後有効期限が近かった証明書が更新されると再びその証明書が優先される"
         },
         {
-          "text": "常に最も古く発行された証明書が優先され、新しく発行された証明書は無視される",
-          "wrongFeedback": "逆です。基本的には最も新しく発行された証明書が優先されます。"
+          "text": "基本的には最も新しく発行された証明書が優先されるが、証明書の削除が発生した場合は残っている証明書のうち有効期限が最も早い(近い)ものが優先され、その証明書が更新されても優先順位は変わらない",
+          "wrongFeedback": "『削除が発生した場合』の説明が逆です。有効期限が最も早いものではなく、最も遅い(最も先の日付の)ものが優先されます。またその後、有効期限が近かった証明書が更新されれば改めて最新の有効期限を持つものとして優先されるため、優先順位が固定されることもありません。"
         },
         {
-          "text": "証明書の削除が発生した場合は、発行日時に関わらず残っている証明書の中で最も有効期限が早い(近い)ものが優先され、その証明書が更新されても優先順位は変わらない",
-          "wrongFeedback": "逆です。削除が発生した場合は、有効期限が最も遅い(遠い)証明書が優先されます。またその後、有効期限が近かった証明書が更新されれば、その証明書が改めて最新の有効期限を持つものとして優先されます。"
+          "text": "常に最も古く発行された証明書が優先され新しく発行された証明書は無視されるが、証明書の削除が発生した場合は残っている証明書のうち有効期限が最も遅いものが優先されるようになり、その後有効期限が近かった証明書が更新されると再びその証明書が優先される",
+          "wrongFeedback": "通常時の説明が逆です。常に最も古い証明書が優先されるのではなく、基本的には最も新しく発行された証明書が優先されます。"
         },
         {
-          "text": "複数の証明書が存在する場合、Cloudflareはランダムに1つを選んで提示する",
-          "wrongFeedback": "ランダムな選択ではありません。発行日時や有効期限に基づいた明確なルールがあります。"
+          "text": "常に最も古く発行された証明書が優先され新しく発行された証明書は無視され、証明書の削除が発生した場合も残っている証明書のうち有効期限が最も早い(近い)ものが優先されたまま、その証明書が更新されても優先順位は変わらない",
+          "wrongFeedback": "両方の説明が逆です。通常時は最も新しく発行された証明書が優先されます。また削除が発生した場合は、有効期限が最も早いものではなく最も遅いものが優先され、その後の更新で優先順位も更新されます。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "同じホスト名・同じ証明書タイプの証明書が複数存在する場合、基本的には最も新しく発行された証明書が優先されます。ただし証明書の削除が発生した場合は、残っている証明書のうち有効期限が最も遅い(最も先の日付の)ものが優先されるようになります。その後、有効期限が近かった証明書が更新されると、再びその証明書が最新の有効期限を持つものとして優先されます。\n{{diagram:0}}",
+      "explanation": "同じホスト名・同じ証明書タイプの証明書が複数存在する場合、基本的には最も新しく発行された証明書が優先されます。常に最も古い証明書が優先される、ということはありません。ただし証明書の削除が発生した場合は、残っている証明書のうち有効期限が最も遅い(最も先の日付の)ものが優先されるようになります。有効期限が最も早いものが優先されるわけではありません。その後、有効期限が近かった証明書が更新されると、再びその証明書が最新の有効期限を持つものとして優先されます。この優先順位は一度決まると固定されるものではなく、更新のたびに再評価されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#certificate-deployment",
       "hint": "新しく発行された証明書が無視されることはありません。",
       "tags": [
@@ -36167,23 +36167,23 @@
       "question": "修復処理が時系列でどう進行するかを踏まえると、CASBのfinding修復ステータスに関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "ステータスはPending(修復予定)・Processing(実行中)・Validating(解決の確認待ち)・Completed(解決を確認済み)・Failed(失敗)・Rejected(権限不足)の6つ"
+          "text": "ステータスはPending(修復予定)・Processing(実行中)・Validating(修復完了後、Logsへの記録待ちであり解決の確認は行われない)・Completed(修復を実行したのみで解決の確認はしていない)・Failed(失敗)・Rejected(権限不足)の6つ",
+          "wrongFeedback": "ValidatingとCompletedの説明が誤りです。Validatingは、CASBが修復を完了させ、findingが解決されたことの確認を待っている状態を意味します(Logsへの記録はCASBが修復アクションを記録する別の仕組みで、Validatingの待機理由ではありません)。またCompletedは、修復を実行しただけでなく、findingが実際に解決されたことまで確認済みの状態を意味します。"
         },
         {
-          "text": "Completedステータスは、CASBが修復処理を実行したことのみを意味し、実際にfindingが解決されたかどうかまでは確認せずに完了として扱われる",
-          "wrongFeedback": "Completedは、修復を実行しただけでなく、findingが実際に解決されたことまで確認済みの状態を意味します。"
+          "text": "ステータスはPending(修復予定)・Processing(実行中)・Validating(修復完了後、Logsへの記録待ちであり解決の確認は行われない)・Completed(解決を確認済み)・Failed(失敗)・Rejected(findingが存在しなかった)の6つ",
+          "wrongFeedback": "ValidatingとRejectedの説明が誤りです。Validatingは、CASBが修復を完了させ、findingが解決されたことの確認を待っている状態を意味します(Logsへの記録待ちではありません)。またRejectedは、CASBがそのfindingを修復する正しい権限を持っていないことを意味し、findingの不存在ではありません。"
         },
         {
-          "text": "Rejectedステータスは、修復対象のfindingがそもそも存在しなかったことを意味する",
-          "wrongFeedback": "Rejectedは、CASBがそのfindingを修復するための正しい権限を持っていないことを意味します。"
+          "text": "ステータスはPending(修復予定)・Processing(実行中)・Validating(解決の確認待ち)・Completed(修復を実行したのみで解決の確認はしていない)・Failed(失敗)・Rejected(findingが存在しなかった)の6つ",
+          "wrongFeedback": "CompletedとRejectedの説明が誤りです。Completedは、修復を実行しただけでなく、findingが実際に解決されたことまで確認済みの状態を意味します。またRejectedは、CASBがそのfindingを修復する正しい権限を持っていないことを意味し、findingの不存在ではありません。"
         },
         {
-          "text": "Validatingステータスは、修復がまだ開始されておらず、CASBが他のfindingの修復を終えて順番が回ってくるのを待っている状態を意味する",
-          "wrongFeedback": "Validatingは、CASBが修復を完了させ、findingが解決されたことの確認を待っている状態を意味します。修復未着手の待機状態を意味するのはPendingです。"
+          "text": "ステータスはPending(修復予定として設定済み)・Processing(実行中)・Validating(解決の確認待ち)・Completed(解決を確認済み)・Failed(失敗)・Rejected(権限不足)の6つ"
         }
       ],
-      "correctIndex": 0,
-      "explanation": "修復のステータスにはPending(修復予定として設定済み)・Processing(修復実行中)・Validating(修復完了後、解決の確認待ち)・Completed(修復完了かつ解決を確認済み)・Failed(修復失敗)・Rejected(権限不足で修復不可)があります。\n{{diagram:0}}",
+      "correctIndex": 3,
+      "explanation": "修復のステータスにはPending(修復予定として設定済み)・Processing(修復実行中)・Validating(修復完了後、解決の確認待ち)・Completed(修復完了かつ解決を確認済み)・Failed(修復失敗)・Rejected(権限不足で修復不可)があります。Validatingが待っているのはLogsへの記録ではなく、findingの解決が確認されることです(CASBは修復アクションをLogs > Adminに記録しますが、これはValidatingの待機理由そのものではありません)。Completedは修復を実行しただけでなく、findingの解決を確認済みであることまで意味します。Rejectedはfindingが存在しなかったことではなく、CASBがそのfindingを修復する正しい権限を持っていないことを意味します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/cloud-and-saas-findings/manage-findings/#remediate-a-finding",
       "hint": "修復は実行して終わりではなく、解決の確認まで行われます。",
       "tags": [
@@ -42320,25 +42320,25 @@
       "question": "Zarazのトリガーで「Click listener」をCSSセレクタ型で設定する際の注意点として、正しいものはどれですか?",
       "options": [
         {
-          "text": "`Wait for actions`の値はミリ秒ではなく秒単位で指定する必要がある",
-          "wrongFeedback": "`Wait for actions`はミリ秒単位で指定します(例: `500`は500ミリ秒)。"
+          "text": "CSSセレクタでは`#`や`.`のような記号を省略すると動作しないため必ず含める必要があり、`<a>`タグのようなリンク要素のクリックを追跡する場合は`href`属性に対するリスナーを個別に作成する必要がある"
         },
         {
-          "text": "`<a>`タグのリンククリックを追跡する場合、要素セレクタを指定するだけで自動的にリンク先への遷移前にイベントが送信される",
-          "wrongFeedback": "`<a>`タグのリンククリックを追跡するには、要素セレクタだけでなく`href`属性に対するリスナーを個別に作成する必要があります。"
+          "text": "CSSセレクタでは`#`や`.`のような記号を省略すると動作しないため必ず含める必要があるが、`<a>`タグのリンククリックを追跡する場合は要素セレクタを指定するだけで自動的にリンク先への遷移前にイベントが送信される",
+          "wrongFeedback": "`#`や`.`の記号が必要という部分は正しいですが、`<a>`タグのリンククリックを追跡するには要素セレクタだけでなく`href`属性に対するリスナーを個別に作成する必要があります。"
         },
         {
-          "text": "セレクタには`#`や`.`のような記号を省略しても正しく動作する",
-          "wrongFeedback": "CSSセレクタでは`#`(ID)や`.`(クラス)の記号を省略すると、Click listenerが正しく動作しません。"
+          "text": "セレクタには`#`や`.`のような記号を省略しても正しく動作するが、`<a>`タグのようなリンク要素のクリックを追跡する場合は`href`属性に対するリスナーを個別に作成する必要がある",
+          "wrongFeedback": "`href`属性のリスナーが必要という部分は正しいですが、CSSセレクタで`#`(ID)や`.`(クラス)の記号を省略すると、Click listenerは正しく動作しません。"
         },
         {
-          "text": "CSSセレクタでは`#`や`.`のような記号を省略すると動作しないため必ず含める必要があり、リンク要素のクリックを追跡する場合は`href`属性に対するリスナーを作成する必要がある"
+          "text": "セレクタには`#`や`.`のような記号を省略しても正しく動作し、`<a>`タグのリンククリックを追跡する場合も要素セレクタを指定するだけで自動的にリンク先への遷移前にイベントが送信される",
+          "wrongFeedback": "どちらも誤りです。CSSセレクタで`#`や`.`の記号を省略すると動作しませんし、`<a>`タグのリンククリックには`href`属性に対する個別のリスナーが必要です。"
         }
       ],
-      "correctIndex": 3,
-      "explanation": "Click listenerをCSSセレクタ型で設定する場合、`#`(ID)や`.`(クラス)などの記号を省略すると正しく動作しないため、必ず含める必要があります。また、`<a>`タグのようなリンク要素のクリックを追跡したい場合は、要素そのものではなく`href`属性に対するリスナーを個別に作成する必要があります。`Wait for actions`はミリ秒単位で指定し、指定した時間だけページ遷移を待たせてリクエストの送信を完了させます。\n{{diagram:0}}",
+      "correctIndex": 0,
+      "explanation": "Click listenerをCSSセレクタ型で設定する場合、`#`(ID)や`.`(クラス)などの記号を省略すると正しく動作しないため、必ず含める必要があります。省略した場合は選択肢2・3のように『正しく動作する』ことはありません。また、`<a>`タグのようなリンク要素のクリックを追跡したい場合は、要素そのものではなく`href`属性に対するリスナーを個別に作成する必要があり、要素セレクタを指定するだけで自動的に追跡されることはありません。なお`Wait for actions`はミリ秒単位で指定し、指定した時間だけページ遷移を待たせてリクエストの送信を完了させます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/reference/triggers/",
-      "hint": "`Wait for actions`はミリ秒単位で指定します。",
+      "hint": "CSSセレクタで`#`(ID)や`.`(クラス)のような記号を省略すると、Click listenerは正しく動作しません。",
       "tags": [
         "zaraz",
         "topic-triggers"
