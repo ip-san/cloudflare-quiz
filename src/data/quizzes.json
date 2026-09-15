@@ -6870,7 +6870,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "Vectorizeインデックスを作成する際は、使用するembeddingモデルの出力次元数に一致するdimensionsと、類似度の計算方法を決めるmetric(cosine/euclidean/dot-product)を指定する必要があり、これらは作成後に変更できない(vectorize/best-practices/create-indexes.md)。一方、metadataによるフィルタ用のインデックスは`wrangler vectorize create-metadata-index`で追加、`delete-metadata-index`で削除でき、インデックス本体の作成時に必須の設定ではなく、後から自由に変更できる(vectorize/reference/client-api.md)。また、`--dimensions`には数値を直接指定する必要があり、embeddingモデル名を渡して自動判定させる仕組みは存在しない。\n{{diagram:0}} なお`--preset`で既知のembeddingモデル名(例: `@cf/baai/bge-base-en-v1.5`)を指定して作成することもでき、その場合はVectorize側が対応する次元数と距離メトリクスを自動設定する。ただしこの場合も内部的に確定した次元数・距離メトリクスは作成後に変更できず、後から別のモデル名に切り替えることはできない(この`--preset`フラグはwranglerのソースコードで確認できる仕様で、developers.cloudflare.comの該当ドキュメントページには記載がない)。",
+      "explanation": "Vectorizeインデックスを作成する際は、使用するembeddingモデルの出力次元数に一致するdimensionsと、類似度の計算方法を決めるmetric(cosine/euclidean/dot-product)を指定する必要があり、これらは作成後に変更できない(vectorize/best-practices/create-indexes.md)。一方、metadataによるフィルタ用のインデックスは`wrangler vectorize create-metadata-index`で追加、`delete-metadata-index`で削除でき、インデックス本体の作成時に必須の設定ではなく、後から自由に変更できる(vectorize/reference/client-api.md)。また、`--dimensions`には数値を直接指定する必要があり、embeddingモデル名を渡して自動判定させる仕組みは存在しない。\n{{diagram:0}} なお`--preset`で既知のembeddingモデル名(例: `@cf/baai/bge-base-en-v1.5`)を指定して作成することもでき、その場合はVectorize側が対応する次元数と距離メトリクスを自動設定する。ただしこの場合も内部的に確定した次元数・距離メトリクスは作成後に変更できず、後から別のモデル名に切り替えることはできない。",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/best-practices/create-indexes/",
       "hint": "『二度と変更できない』とドキュメントが明記しているのがどの設定か、metadataインデックス用の別コマンドの有無と合わせて確認しましょう。",
       "tags": [
@@ -9310,7 +9310,7 @@
         },
         {
           "text": "R2へのレプリケーションを設定するだけで自動的にバックアップされ、SQLファイルとしての書き出しは不要",
-          "wrongFeedback": "D1にはTime Travelというポイントインタイムリストアの仕組みはありますが、R2への自動レプリケーション機能はありません。他DBへの移行や外部保管にはSQLファイルとして明示的に`export`する必要があります。"
+          "wrongFeedback": "D1 を R2 へ定期バックアップする方法自体はあります（Workflows のスケジュール実行から REST API の export エンドポイント(`/d1/database/{id}/export`)を呼ぶ構成が公式に案内されています）。ただしそれは設定を有効にするだけのレプリケーションではなく、R2 に保存されるのは `export` が生成した SQL ダンプそのものです。別のデータベースへ移すには、結局その SQL ファイルを `execute` で流し込む必要があります。"
         }
       ],
       "correctIndex": 2,
