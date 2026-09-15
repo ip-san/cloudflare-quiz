@@ -27539,7 +27539,7 @@
       "correctIndex": 3,
       "explanation": "`http_request_transform`のような1つのフェーズ内では、リクエストやレスポンスのフィールド値は不変(immutable)です。そのため、後続のルールがフィルタ式(条件)を評価する際には、それ以前の同じフェーズ内のルールによる変更を反映した値ではなく、フェーズ開始時点の元の値が使われます。ただし、実際に適用される変更結果自体は、後のルールが前のルールを上書きする形で反映されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/transform/url-rewrite/#important-remarks",
-      "hint": "「実際に反映される最終結果」と「各ルールが条件判定に使う値」は、同じフェーズの中では別々に考える必要があると考えましょう。",
+      "hint": "同じフェーズ内のルールは、決まった順序で評価されます。",
       "tags": [
         "rules",
         "practical"
@@ -27670,7 +27670,7 @@
       "id": "ru-012",
       "category": "rules",
       "difficulty": "advanced",
-      "question": "WAFカスタムルールがすでに評価済みであることを踏まえると、Bulk RedirectsとWAFの実行順序に関する正しい説明はどれですか？",
+      "question": "Bulk RedirectsとWAFの実行順序に関する正しい説明はどれですか？",
       "options": [
         {
           "text": "Bulk RedirectsはWAFより先に実行されるため、WAFがブロックするはずだったリクエストであっても先にリダイレクトが実行されてしまい、攻撃者はブロックログを残さずリダイレクト先へ到達できてしまう",
@@ -27691,7 +27691,7 @@
       "correctIndex": 3,
       "explanation": "Bulk RedirectsはWAFよりも後にリクエスト処理パイプライン上で実行されます。そのため、WAFカスタムルールやレート制限ルールがリクエストをブロックした場合、そのリクエストに対応するBulk Redirectは実行されません。一方、WAFルールがリクエストをログ記録またはチャレンジし、その後リクエストが通過した場合、そのイベントはSecurity EventsやLogpushに引き続き記録されます(後でリダイレクトされたとしても)。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/url-forwarding/bulk-redirects/#bulk-redirects-and-the-waf",
-      "hint": "「先にブロックされてしまったリクエスト」が、その後の処理段階(リダイレクト)まで到達できるかどうかを考えましょう。",
+      "hint": "Bulk RedirectsとWAFには、実行される順序があります。",
       "tags": [
         "rules",
         "practical"
@@ -29196,7 +29196,7 @@
       "id": "sl-006",
       "category": "ssl-tls",
       "difficulty": "advanced",
-      "question": "デフォルト以外のポートを使う場合の挙動を踏まえると、Flexibleモードのポートに関する制限として正しいものはどれですか？",
+      "question": "Flexibleモードのポートに関する制限として正しいものはどれですか？",
       "options": [
         {
           "text": "Flexibleモードは、あらゆるポート番号でのHTTPS接続に対して同じ挙動を保証する",
@@ -29217,7 +29217,7 @@
       "correctIndex": 3,
       "explanation": "Flexibleモードがサポートするのは、デフォルトポート(443)でのHTTPS接続のみです。それ以外のポートを使ったHTTPS接続は、Fullモードの挙動にフォールバックします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/#limitations",
-      "hint": "「標準的なポート」に限定された挙動であり、それ以外では別のモードの挙動に切り替わると考えましょう。",
+      "hint": "訪問者とCloudflareの間は、ポート443でも動作します。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -40241,7 +40241,7 @@
       "correctIndex": 0,
       "explanation": "SpectrumアプリケーションでCloudflare Tunnelの仮想ネットワークをオリジンとして使う場合、アプリケーションタイプはTCPまたはUDPに限られます(HTTP/HTTPSは非対応)。origin_directには単一の、指定した仮想ネットワーク内で到達可能なプライベートIPアドレスのみを指定でき、複数アドレスの指定やホスト名オリジン(origin_dns)、ポート範囲はサポートされません。またProxy Protocolはサポートされておらず、proxy_protocolはoffに設定する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/spectrum/reference/configuration-options/",
-      "hint": "「単一アドレスか複数アドレスか」「ポート範囲は使えるか」「PROXY Protocolは使えるか」の3点を確認しましょう。",
+      "hint": "ポート範囲の指定は使えません。",
       "tags": [
         "spectrum",
         "tunnel"
