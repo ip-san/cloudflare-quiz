@@ -8958,7 +8958,7 @@
       "correctIndex": 2,
       "explanation": "Workers runtime binding(`env.KV.put()`)は1件ずつの書き込みのみをサポートしており、一括書き込み専用メソッドはありません。大量のキーバリューペアをまとめて投入するには、Cloudflare REST APIのbulk書き込みエンドポイント(またはそれをラップするWrangler CLI)を使用します。1回のリクエストで最大10,000ペア、リクエスト全体のサイズは100メガバイト未満という制限があります。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/api/write-key-value-pairs/",
-      "hint": "「Workerの実行中に呼び出すbinding」と「管理用のREST API/CLI」は別物です。",
+      "hint": "数千件をまとめて投入する手段が、どこに用意されているかを考えましょう。Workerのコードから呼ぶ道と、デプロイや運用の側から叩く道では、備えている操作が同じとは限りません。",
       "tags": [
         "kv-cache",
         "practical"
@@ -9099,7 +9099,7 @@
       "correctIndex": 0,
       "explanation": "「A request's cache key is what determines if two requests are the same for caching purposes」と公式ドキュメントにある通り、cacheKeyは2つのリクエストをキャッシュ上で同一とみなすかどうかの判定基準です。cf.cacheKeyで独自の文字列を指定すると、通常はURLなどから自動生成されるキーを上書きし、異なるURLでも同じキーなら同一のキャッシュエントリとして扱われます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/request/",
-      "hint": "2つのリクエストを「同じキャッシュ」として扱うかどうかは、何で見分けるか考えましょう。",
+      "hint": "`cf` に書けるのは、そのfetch()をCloudflareのネットワークとキャッシュがどう扱うかの指示です。別のストレージサービスの設定やオリジンへの認証とは層が違う、という点から絞り込みましょう。",
       "tags": [
         "kv-cache",
         "practical"
@@ -9446,7 +9446,7 @@
       "correctIndex": 0,
       "explanation": "Drizzle ORMは`drizzle-orm/d1`という専用アダプタを提供しており、`drizzle(env.DB)`のようにD1のバインディングをそのまま渡すことでDrizzleのクライアントを初期化できます。これによりスキーマ定義・マイグレーション生成・型安全なクエリビルダをD1上で利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/d1/reference/community-projects/#drizzle-orm",
-      "hint": "D1専用のORM機能を新たに覚える必要があるのか、それとも使い慣れたORMに接続情報を渡すだけなのか考えましょう。",
+      "hint": "この組み合わせで新しく用意するものが、どちら側にあるかを考えましょう。D1側に設定やモードを足すのか、ORM側が用意しているものを使うのか、そもそも何も足さずに済むのか。",
       "tags": [
         "d1",
         "practical"
@@ -9779,7 +9779,7 @@
       "correctIndex": 0,
       "explanation": "ブラウザから異なるオリジンのリソース（この場合R2のエンドポイント）へPUT/GETなどのリクエストを送る際は、対象のバケットにCORS（Cross-Origin Resource Sharing）ポリシーが設定されている必要があります。R2バケットにはオリジン（AllowedOrigins）、許可するHTTPメソッド、許可するヘッダーなどを含むCORSルールを設定できます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/buckets/cors/",
-      "hint": "ブラウザの「オリジン間リクエスト制御」の仕組みを思い出してみましょう。",
+      "hint": "presigned URL を発行してもブラウザがリクエストを止めることがあります。止めているのは誰で、通してよいと言えるのは誰か(送る側のページか、受け取るバケット側か)を考えましょう。",
       "tags": [
         "r2",
         "practical"
@@ -9850,7 +9850,7 @@
       "correctIndex": 3,
       "explanation": "R2 Workers バインディングのget()やput()メソッドは onlyIf オプションで条件付きリクエストをサポートしています。前回取得時のETag(httpEtag)を `etagDoesNotMatch` に渡すと、オブジェクトが変わっていないときは条件が成立せず本文が転送されません。S3の If-None-Match に相当します。逆に `etagMatches` は「変わっていないときだけ処理する」向き(If-Match)で、上書き競合の防止に使います。なお条件が成立しなかった get() は null ではなく、body が undefined の R2Object を返します(null が返るのはキーが存在しない場合と、put() の条件が成立しなかった場合です)。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
-      "hint": "前回取得時の目印と比較して、変わっていなければ処理をスキップする仕組みを考えましょう。",
+      "hint": "同じ中身をもう一度受け取らずに済ませたい、という話です。有効期限のように時間で区切るやり方と、前後で中身が同じかを相手に判定させるやり方があります。R2のメソッドにどちらの手掛かりを渡せるかを考えましょう。",
       "tags": [
         "r2",
         "trivia"
@@ -10210,7 +10210,7 @@
       "correctIndex": 2,
       "explanation": "location hintは、OBJECT_NAMESPACE.get(id, { locationHint: \"enam\" }) のように get() の第2引数として渡すことで、Durable Objectを作成する場所に影響を与えられる仕組みです。ただしこれは保証ではなくベストエフォートで、指定した場所そのものではなく、そこからのレイテンシが最小になるよう選ばれた別のデータセンターに配置されることもあります。また有効なのは対象オブジェクトへの最初のget()呼び出しのみで、Durable Objectは作成後に移動しないため、以降の呼び出しでのhintは無視されます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/reference/data-location/",
-      "hint": "指定した場所に必ず配置されるのか、それとも参考程度なのか考えましょう。",
+      "hint": "location hint が効くのはいつなのか、そして効いたときにどこへ置かれるのか。この2点を分けて、4つの説明がそれぞれどちらの話をしているか確かめましょう。",
       "tags": [
         "do-queues",
         "trivia"
@@ -10282,7 +10282,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflare Queuesでは、デフォルトですべてのキューでconcurrency（同時実行）が有効になっており、Consumerはバックログ（未処理メッセージ数）とその増加速度、および成功/失敗の比率に基づいて自動的に同時実行数をスケールさせます。ダッシュボードやwrangler設定でmax_concurrencyを1〜250の範囲で固定することもできますが、Cloudflareは上流システムに制限がない限り上限を設定せずQueuesの自動スケールに任せることを推奨しています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/configuration/consumer-concurrency/",
-      "hint": "メッセージが溜まってきたり失敗が増えたりしたとき、処理の並列度は勝手に変わるのか考えましょう。",
+      "hint": "max_concurrency を書かずにデプロイしたConsumerがどう動くか、そして自分で同時実行数を決めたい場合に選べる値の幅はどうかを考えましょう。",
       "tags": [
         "do-queues",
         "practical"
@@ -10335,7 +10335,7 @@
       "correctIndex": 2,
       "explanation": "Durable Object内でブロードキャストを行う一般的な実装は、ctx.getWebSockets()で現在保持している全WebSocketを取得し、各接続のreadyStateがWebSocket.OPENであることを確認してからsend()でメッセージを送る方法です。クローズ中の接続に送信しようとすると例外が発生しうるため、状態確認は必須です。この仕組みはWebSocket Hibernation APIとも組み合わせて使え、ハイバネートから復帰した接続に対しても同様に動作します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/",
-      "hint": "今つながっている相手を毎回律儀に確認してから送るのと、記録だけを頼りに送るのと、どちらが安全か考えましょう。",
+      "hint": "ブロードキャストのたびに、接続の一覧をどこから手に入れるかを考えましょう。ハイバネーションを挟んだあとでも同じ入手先が使えるのかも、合わせて確かめてください。",
       "tags": [
         "do-queues",
         "practical"
@@ -10612,7 +10612,7 @@
       "correctIndex": 1,
       "explanation": "`_middleware.js` はそのファイルが置かれたディレクトリ以下の全リクエスト(静的アセットへのリクエストも含む)に対して、対応するルートハンドラより先に実行される共通処理です。\n{{diagram:0}}\n認証チェックなど、`next()` を呼ばずに早期リターンすることでリクエストをブロックできます。複数階層に配置すると、親から子へ順に実行されるミドルウェアチェーンになります。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/functions/middleware/",
-      "hint": "_middleware.jsは、URLとして呼ばれる窓口なのか、それとも他の処理の前に挟まる仕組みなのか考えましょう。",
+      "hint": "掛かる範囲と走る順番の2点で読み比べましょう。どのリクエストにまで届く仕組みなのか、そして複数のミドルウェアを並べたときどちらの端から実行されるのかを確かめてください。",
       "tags": [
         "pages-deploy",
         "practical"
@@ -10836,7 +10836,7 @@
       "correctIndex": 1,
       "explanation": "Pages のビルドキャッシュは、プロジェクト設定(Settings > Build > Build cache)で有効化(Enable)することで、`node_modules` 等の依存関係キャッシュをビルド間で再利用できる機能です。デフォルトで有効になっているわけではありません。依存関係の不整合などでクリーンな状態からビルドし直したい場合は、同じ設定画面からキャッシュをクリア(Clear Cache)します。\n{{diagram:0}}\nこれは配信コンテンツを対象とするCDNキャッシュとは異なる、ビルドプロセス専用のキャッシュです。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/pages/configuration/build-caching/",
-      "hint": "ビルドのたびに依存関係を毎回ゼロからインストールしていたら非効率です。",
+      "hint": "この機能が溜めているのは何で、それがいつ使われるのかを考えましょう。使い始めるために自分で用意したり操作したりする必要があるものがあるかどうかも、合わせて確かめてください。",
       "tags": [
         "pages-deploy",
         "trivia"
@@ -11919,7 +11919,7 @@
       "correctIndex": 2,
       "explanation": "ステートレスなWorkersから毎回データベースに直接接続すると、接続確立だけで複数回の往復が発生し、距離によっては大きな遅延になります。Hyperdriveは①接続セットアップをWorkerと同じロケーション内で完結させ、②オリジンDBに近い場所で接続プールを維持して再利用し、③読み取りクエリの結果をキャッシュする、という3段構えでこの問題を解決します。\n{{diagram:0}}\nキャッシュにヒットしない読み取りや書き込みでも、①②の効果で高速化されます。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/concepts/how-hyperdrive-works/",
-      "hint": "「接続」を速くする工夫が2つ、「クエリ結果」を速くする工夫が1つあります。",
+      "hint": "データそのものをユーザーの近くに置くのか、データは動かさずにやり取りの仕方を変えるのか。Hyperdriveがどちらの立場をとるかを考えましょう。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
