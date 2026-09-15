@@ -27912,7 +27912,7 @@
       "correctIndex": 0,
       "explanation": "Configuration Rulesで「I'm Under Attack」モードを制御するAPI設定プロパティ名は`security_level`で、値には`\"off\"`・`\"essentially_off\"`・`\"under_attack\"`が使えます。Under Attack modeを有効にすると、追加のセキュリティチェックによってレイヤー7 DDoS攻撃の緩和を試みます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/configuration-rules/settings/#im-under-attack",
-      "hint": "オン・オフの単純な真偽値ではなく、複数段階の文字列で表現される設定だと考えましょう。",
+      "hint": "Under Attack専用のプロパティが用意されているのか、それとも別の名前の既存プロパティの値として指定するのかを考えましょう。",
       "tags": [
         "rules",
         "practical"
@@ -28022,7 +28022,7 @@
       "correctIndex": 2,
       "explanation": "Snippetsは、実行時間5ms・メモリ2MB・パッケージサイズ32KBという上限を持つ、軽量でリクエスト属性のマッチングに基づく宣言的な処理向けの機能です。KV・Durable Objects・D1といった永続ストレージへのアクセスや複数言語ランタイム、CLIでの開発、バージョン管理には対応していません。こうした本格的な計算処理やストレージが必要な場合はWorkersを使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/rules/snippets/when-to-use/",
-      "hint": "「ごく短い時間で完結する軽量な処理」と「本格的な計算・永続化を伴う処理」のどちらに向いているか考えましょう。",
+      "hint": "Snippetsの実行時間やメモリの上限が、Snippets独自に決められた値なのか、Workersと共通の値なのか、プランごとに変わる値なのかを考えましょう。",
       "tags": [
         "rules",
         "practical"
@@ -28224,7 +28224,7 @@
       "correctIndex": 1,
       "explanation": "プロキシ済みレコードのTTLは常にAuto(300秒)固定で、この値を手動で編集することはできません。この短いTTLにより、CloudflareがレコードのAnycast IPアドレスを変更した場合でも、その変更が5分以内に反映されるようになっています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/",
-      "hint": "「変更をすばやく反映させたい」という目的のために、あえて短い固定値になっていると考えましょう。",
+      "hint": "プロキシ済みレコードのTTLを利用者が変更できるのか、それとも変更できないのかを考えましょう。",
       "tags": [
         "dns",
         "practical"
@@ -28275,7 +28275,7 @@
       "correctIndex": 3,
       "explanation": "同じ名前に複数のA(またはAAAA)レコードがあり、そのうち1件でもプロキシ済みに設定されている場合、Cloudflareはその名前のすべてのA(またはAAAA)レコードをプロキシ済みとして扱います。個別に一部だけをDNS-onlyのままにしておくことはできません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/proxy-status/#mix-proxied-and-unproxied",
-      "hint": "「1つでも該当すれば、その名前全体に適用される」という全か無かのルールを考えましょう。",
+      "hint": "同じ名前に並ぶAレコードが名前単位でまとめて扱われるのか、それとも1件ずつ別々に扱われるのかを考えましょう。",
       "tags": [
         "dns",
         "practical"
@@ -28425,7 +28425,7 @@
       "correctIndex": 2,
       "explanation": "DNS-only(未プロキシ)レコードのTTLは、非Enterpriseプランで最小60秒、Enterpriseプランで最小30秒から、どちらのプランも最大1日まで設定できます。Autoを選択した場合の値は300秒(5分)です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/#unproxied-records",
-      "hint": "「より短い最小値を設定できる」特典が、どちらのプランに付いているか考えましょう。",
+      "hint": "設定できる最小のTTLが、プランによって変わるのか、それともどのプランでも同じ値なのかを考えましょう。",
       "tags": [
         "dns",
         "practical"
@@ -28527,7 +28527,7 @@
       "correctIndex": 2,
       "explanation": "DNSレコードのクォータは、プランに応じてゾーン単位またはアカウント単位のいずれか一方で適用されます(両方が同時に適用されることはありません)。2024年9月1日より前に作成されたFreeゾーンは1,000件、それ以降に作成されたFreeゾーンは200件、Pro・Businessはそれぞれ3,500件がゾーン単位の上限です。Enterpriseにはゾーン単位の上限がなく、代わりにアカウント単位のクォータ(パブリックゾーン・内部ゾーンそれぞれデフォルト100万件)が適用されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/manage-dns-records/#dns-records-quota",
-      "hint": "「ゾーンごとに数える」プランと「アカウント全体で数える」プランが分かれていると考えましょう。",
+      "hint": "Freeプランのゾーンの上限が、どのゾーンでも同じ値なのか、ゾーンを作った時期によって違うのかを考えましょう。",
       "tags": [
         "dns",
         "practical"
@@ -28836,7 +28836,7 @@
       "correctIndex": 2,
       "explanation": "CNAMEフラット化は、ゾーンApex(`example.com`のようなルートドメイン)でもCNAMEレコードを使えるようにする仕組みです。CloudflareはCNAMEチェーンをたどり(複数回のルックアップが必要な場合もあります)、最終的に到達したIPアドレスを見つけて、CNAMEそのものではなくそのIPアドレスを応答として返します。参照先にA/AAAAレコードがない「dangling CNAME」の場合は、空の応答(NODATA)が返されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/cname-flattening/",
-      "hint": "「CNAMEをそのまま返す」のではなく、「その先をたどって最終的な実体(IPアドレス)を返す」仕組みだと考えましょう。",
+      "hint": "CNAMEフラット化が有効なとき、問い合わせへの応答として実際に何が返るのかを考えましょう。",
       "tags": [
         "dns",
         "practical"
@@ -29703,7 +29703,7 @@
       "correctIndex": 0,
       "explanation": "最小TLSバージョンは、ゾーン単位であればダッシュボードやAPI(`min_tls_version`)から設定できます。ホスト名(サブドメイン)ごとに個別の最小TLSバージョンを設定するには、Advanced Certificate Managerが必要です。またこの設定はCloudflare Pagesのホスト名やR2のカスタムドメインには適用されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/edge-certificates/additional-options/minimum-tls/",
-      "hint": "「ゾーン全体に対する設定」と「個別のホスト名に対するより細かい設定」とで、必要なものが違うと考えましょう。",
+      "hint": "サブドメインごとに違う最小バージョンを持てるのか、それともゾーン単位でしか決められないのかを考えましょう。",
       "tags": [
         "ssl-tls",
         "practical"
@@ -30260,7 +30260,7 @@
       "correctIndex": 0,
       "explanation": "Mirageは2025年9月15日に非推奨となり、現在は提供されていません。ネイティブの遅延読み込み(`loading=\"lazy\"`属性)や`srcset`・`<picture>`要素によるレスポンシブ画像、HTTP/2・HTTP/3の普及といったWeb標準・ブラウザ機能の進化により、Mirageの主な機能が不要になったことが非推奨の理由です。移行先としてはPolish・Image Resizing・ネイティブの遅延読み込み・レスポンシブ画像が推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/speed/optimization/images/mirage/",
-      "hint": "かつてモバイル向けに使われていた機能が、Web標準自体の進化によって役目を終えたと考えましょう。",
+      "hint": "Mirageが今も使える機能なのか、使えないとして既存の設定を持つゾーンはどうなるのかを考えましょう。",
       "tags": [
         "speed",
         "practical"
@@ -31889,7 +31889,7 @@
       "correctIndex": 0,
       "explanation": "リソースモニタリング用ヘッダーはモニタリングを有効にすると自動的にHTMLレスポンスのサンプルへ付与され、検知したすべてのスクリプト・接続を報告します。一方、コンテンツセキュリティルール用ヘッダーは管理者が定義したルールの式に一致するレスポンスの100%へ、サンプリングなしで付与され、そのディレクティブは許可リスト(allowlist)の内容から生成されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/#comparison-of-csp-headers",
-      "hint": "「自動で全体を把握するための仕組み」と「管理者が定義した通りに全件へ適用する仕組み」の違いを考えましょう。",
+      "hint": "2つのヘッダーのうち、どちらが一部のレスポンスにだけ付き、どちらが対象のレスポンス全部に付くのかを考えましょう。",
       "tags": [
         "client-side-security",
         "practical"
@@ -32041,7 +32041,7 @@
           "wrongFeedback": "コード解析だけでなく、URLベース・ドメインベースの脅威インテリジェンス照合も独立した仕組みとして併用されています。"
         },
         {
-          "text": "スクリプトのコード自体を解析する仕組み、URLの脅威インテリジェンス照合、ドメインの脅威インテリジェンス照合という3つの独立した仕組みを組み合わせて判定している"
+          "text": "スクリプトのコード解析、URLの脅威インテリジェンス照合、ドメインの照合という3つの独立した仕組みがあり、Advancedでは3つを組み合わせて判定する"
         },
         {
           "text": "脅威フィードが更新されても、過去に検知済みのスクリプトや接続の分類が再評価されることはなく、最初の判定結果がそのまま維持されるため、管理者が手動で再スキャンを指示する必要がある",
@@ -32055,7 +32055,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflareは、スクリプトのJavaScriptコード自体を解析する仕組み(悪性スクリプト検知)、スクリプトのURLを脅威インテリジェンスと照合する仕組み(悪性URLチェック)、スクリプトのドメインを脅威インテリジェンスと照合する仕組み(悪性ドメインチェック)という3つの独立した仕組みを組み合わせて判定しています。複数の仕組みが同時に悪性と判定した場合、誤検知である可能性は低くなります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/client-side-security/how-it-works/malicious-script-detection/",
-      "hint": "「コードそのもの」「URL」「ドメイン」という3つの異なるレベルでチェックしていることを考えましょう。",
+      "hint": "1つのスクリプトが、複数の仕組みから同時に悪性と見なされることがあるのかどうかを考えましょう。",
       "tags": [
         "client-side-security",
         "practical"
