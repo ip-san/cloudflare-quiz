@@ -4430,28 +4430,28 @@
       "id": "r2-011",
       "category": "r2",
       "difficulty": "advanced",
-      "question": "アプリケーションで扱うデータの種類ごとに最適なCloudflareストレージ製品を選ぶ場合の判断として適切なものはどれですか？",
+      "question": "Cloudflareのドキュメントが、セッションデータ・認証情報(APIキー)・設定データの保存先として推奨しているものはどれですか？",
       "options": [
         {
-          "text": "頻繁に更新されるセッション状態は、強整合性が必須なのでR2に保存すべきである",
-          "wrongFeedback": "R2の書き込み・削除自体は強整合性がありますが、R2はオブジェクトストレージであり、セッション状態のような小さい値への高頻度な読み書きには、Workers KVやDurable Objectsの方がレイテンシ・コストの面で適しています。"
+          "text": "Durable Objectsに保存する。グローバルに一意なインスタンスと厳密な直列化が働き、読み取りも世界中でキャッシュされるため高RPSの読み取りに向いている",
+          "wrongFeedback": "Durable Objectのリクエストは、そのObjectを所有するデータセンターへルーティングされます。読み取りが世界中でキャッシュされるわけではなく、ドキュメントがDurable Objectsを勧めるのはリアルタイムの協調処理や強い整合性が要る場面です。"
         },
         {
-          "text": "画像や動画などの大容量バイナリファイルは、読み取り超低レイテンシが必要なのでWorkers KVに保存すべきである",
-          "wrongFeedback": "KVは値のサイズやコストの観点から大容量バイナリの保存には向きません。大容量バイナリはR2が適しています。"
+          "text": "D1に保存する。セッションはユーザー情報と結合して読むものなので、リレーショナルに扱える製品が推奨されている",
+          "wrongFeedback": "D1が向くのは、ユーザープロファイルや商品一覧・注文といったリレーショナルなデータをSQLで問い合わせる用途です。ドキュメントはセッションデータの保存先としてWorkers KVを挙げています。"
         },
         {
-          "text": "ユーザーの注文履歴のようなリレーショナルな構造を持つデータは、まずR2に1件1ファイルのJSONとして保存し、必要な絞り込み検索はキーのprefix一覧で代替すべきである",
-          "wrongFeedback": "リレーショナルなデータでSQLクエリが必要な場合はD1が適しています。R2にJSONで保存するとクエリ性能や整合性の面で不利です。"
+          "text": "R2に保存する。S3互換のオブジェクトストレージはオブジェクト単位で強い整合性を持ち、頻繁に読まれる小さな値の保存に向いている",
+          "wrongFeedback": "R2が向くのは、アクセス頻度の低いファイルや1オブジェクトがギガバイト級になるような大きなオブジェクトの保存です。小さな値を高頻度に読む用途ではありません。"
         },
         {
-          "text": "商品画像やバックアップファイルはR2、設定値など小さく高頻度に読まれるデータはKV、注文情報のようなリレーショナルデータはD1、というように用途に応じて使い分ける"
+          "text": "Workers KVに保存する。ホットなキーの読み取りは500µs〜10ms程度で返るが、同じキーへの書き込みは1秒あたり1回までという制約がある"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cloudflareのストレージ製品はそれぞれ得意分野が異なります。R2は大容量オブジェクト（画像・動画・バックアップ）、Workers KVは小さな値をグローバルに低レイテンシで読み取る用途（設定値、フィーチャーフラグなど）、D1はリレーショナルなデータをSQLで扱う用途に向いています。\n{{diagram:0}}\n適材適所で組み合わせることで、コストとパフォーマンスの両方を最適化できます。\n{{diagram:1}}",
+      "explanation": "Cloudflareのドキュメントは、セッションデータや認証情報(APIキー)、設定データの保存先としてWorkers KVを推奨しています。これらは毎秒数千回以上読まれる一方で更新はまれ(KVの「同じキーへの書き込みは1秒に1回」という制約の範囲内)であり、即時の整合性も必要としないためです。\n{{diagram:0}}\nよく読まれるキーはKVの内部キャッシュに載り、こうしたホットなキーの読み取りは500µs〜10msほどで返ります。実際にCloudflare Access自身も、ユーザーの資格情報をユーザーの近くで検証するためにKVを使っています。\n{{diagram:1}}\nDurable Objectsはリアルタイムの協調処理や強い整合性が要る状態管理、R2はアクセス頻度の低い大きなオブジェクト、D1はSQLで問い合わせるリレーショナルデータと、それぞれ得意な場面が分かれています。",
       "referenceUrl": "https://developers.cloudflare.com/r2/",
-      "hint": "Workers KVは、大きなバイナリを配信するための保存先ではありません。",
+      "hint": "オブジェクトストレージは、アクセス頻度の低い大きなファイルのための選択肢です。まずそこを外して考えましょう。",
       "tags": [
         "r2",
         "practical",
@@ -4461,65 +4461,57 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "用途別ストレージ選定",
+          "label": "Workers KV と Durable Objects",
           "columns": [
-            {
-              "heading": "R2",
-              "items": [
-                "大容量オブジェクト",
-                "画像・動画・バックアップ",
-                "S3互換API"
-              ]
-            },
             {
               "heading": "Workers KV",
               "items": [
-                "小さな値",
-                "高頻度グローバル読み取り",
-                "結果整合性"
+                "グローバルネットワーク上にキャッシュされる結果整合性のキーバリューストア",
+                "ホットなキーの読み取りは500µs〜10ms程度で返る",
+                "同じキーへの書き込みは1秒あたり1回まで"
               ]
             },
             {
-              "heading": "D1",
+              "heading": "Durable Objects",
               "items": [
-                "リレーショナルデータ",
-                "SQLクエリ",
-                "トランザクション"
+                "リクエストはそのObjectを所有するデータセンターへルーティングされる",
+                "トランザクショナルなストレージAPIで強い整合性を持つ",
+                "リアルタイムの協調処理やデータの局所性が要る場面に向く"
               ]
             }
           ]
         },
         {
           "type": "matrix",
-          "label": "データ種別と最適な製品",
-          "rowHeader": "データ種別",
+          "label": "用途とドキュメントが挙げる製品",
+          "rowHeader": "用途",
           "colHeader": "選定",
           "rows": [
-            "商品画像・動画",
-            "バックアップファイル",
-            "設定値・フィーチャーフラグ",
-            "注文履歴などのリレーショナルデータ"
+            "セッションデータ・APIキー・設定値",
+            "画像や動画などの大きなファイル",
+            "ユーザー情報や注文などのリレーショナルデータ",
+            "リアルタイムの協調処理と強い整合性"
           ],
           "cols": [
-            "推奨製品",
+            "製品",
             "理由"
           ],
           "cells": [
             [
-              "R2",
-              "大容量バイナリ、エグレス無料で配信コストも抑えられる"
-            ],
-            [
-              "R2",
-              "長期保存に強く、取り出し時のエグレス費用もかからない"
-            ],
-            [
               "Workers KV",
-              "小さな値を超低レイテンシでグローバル読み取り"
+              "高頻度の読み取りに向き、即時の整合性を必要としない"
+            ],
+            [
+              "R2",
+              "アクセス頻度の低いファイルや大きなオブジェクトの保存に向く"
             ],
             [
               "D1",
-              "SQLでのリレーショナルクエリが必要"
+              "SQLでの問い合わせが必要なリレーショナルデータ向け"
+            ],
+            [
+              "Durable Objects",
+              "グローバルな一意性とトランザクショナルなストレージを持つ"
             ]
           ]
         }
@@ -9634,28 +9626,28 @@
       "id": "d1-018",
       "category": "d1",
       "difficulty": "advanced",
-      "question": "1つのD1データベースのデータ量が増え続け、単一データベースのストレージ上限に近づいてきた場合、設計対応として適切なものはどれですか？",
+      "question": "テナントごとのデータを1つのD1データベースにまとめて運用してきたところ、そのデータベースのサイズが上限に迫ってきました。Workers Paidプランでの対応として正しいものはどれですか？",
       "options": [
         {
-          "text": "D1では各データベースがデータ量に応じて自動的にシャーディングされてスケールし、ストレージ上限という概念がないため何もする必要はない",
-          "wrongFeedback": "D1の各データベースにはストレージ容量の上限があり、それに近づいた場合は設計上の対応が必要です。1つのデータベースが自動的にシャーディングされるわけではなく、D1は小さなデータベースを多数に分けて水平にスケールさせる設計です。"
+          "text": "1データベースあたりの容量上限は引き上げ対象外のため、テナント単位で複数のデータベースへ分割する"
         },
         {
-          "text": "テナント(顧客)ごとや機能ドメインごとにデータを複数のD1データベースへ分割し、1つのデータベースが肥大化しすぎないようにする"
+          "text": "Limit Increase Request Formから申請して、1つのデータベースの容量上限そのものを引き上げてもらう",
+          "wrongFeedback": "D1で引き上げ申請ができるのは「アカウントあたりのデータベース数」や「アカウントあたりの合計ストレージ」です。1データベースあたりの容量上限(Workers Paidで10 GB)は、それ以上引き上げられません。"
         },
         {
-          "text": "R2をD1の追加ストレージ領域として直接マウントし、透過的に容量を拡張する",
-          "wrongFeedback": "R2をD1のストレージとして透過的にマウントするような機能はありません。"
+          "text": "read replicationを有効にして、各リージョンのレプリカへデータを分散配置し、容量に余裕を作る",
+          "wrongFeedback": "read replicaはプライマリデータベースインスタンスの複製で、読み取りリクエストだけを処理します。同じデータの写しが増えるだけなので、1データベースあたりの容量は増えません。"
         },
         {
-          "text": "上限に達すると古いデータが自動的に削除される機能が標準で有効になっている",
-          "wrongFeedback": "そのような自動削除機能は標準では有効になっていません。データの保持方針はアプリケーション側で設計する必要があります。"
+          "text": "テーブルあたりの行数上限のほうが先に効くので、テーブルを分割して1テーブルあたりの行数を減らす",
+          "wrongFeedback": "D1のテーブルあたりの行数は「Unlimited(データベースあたりのストレージ上限の範囲内)」と定義されています。先に効くのは行数ではなく容量の上限です。"
         }
       ],
-      "correctIndex": 1,
-      "explanation": "D1の各データベースにはストレージ容量の上限があるため、1つの巨大なデータベースにすべてのデータを詰め込むのではなく、テナント(顧客)ごとや機能ドメインごとに複数のD1データベースへ分割する設計(database-per-tenantのようなパターン)が、単一データベースの肥大化を避けるための現実的な対応です。\n{{diagram:0}}",
+      "correctIndex": 0,
+      "explanation": "D1の1データベースあたりの容量上限はWorkers Paidで10 GB、Freeで500 MBです。ドキュメントは「10 GBの上限はこれ以上引き上げられない」と明記しており、この上限だけは引き上げ申請の対象外です。\n{{diagram:0}}\n一方でアカウントあたりのデータベース数(Workers Paidで50,000)やアカウントあたりの合計ストレージは申請で引き上げられます。D1はもともと「10 GB程度の小さなデータベースを多数並べて水平にスケールさせる」設計で、ユーザーごと・テナントごと・エンティティごとにデータベースを分ける使い方が想定されています。read replicationはプライマリの複製を各地に置いて読み取りの応答時間を縮める仕組みで、書き込みはプライマリに転送されるため容量対策にはなりません。",
       "referenceUrl": "https://developers.cloudflare.com/d1/platform/limits/",
-      "hint": "D1のデータベースが、データ量に応じて自動的に分割されることはありません。",
+      "hint": "D1の上限には、申請すれば広げてもらえるものと、そもそも広げられないものがあります。いま詰まっているのはどちらでしょうか。",
       "tags": [
         "d1",
         "practical"
@@ -12919,28 +12911,28 @@
       "id": "px-003",
       "category": "platform-services",
       "difficulty": "advanced",
-      "question": "Turnstile をフォームに導入する際、クライアント側にウィジェットを設置するだけでは不十分な理由として正しいものはどれですか？",
+      "question": "Turnstileを設置したフォームで、ページを開いてから7分後に送信したユーザーだけ検証に失敗します。原因と対処として正しいものはどれですか？",
       "options": [
         {
-          "text": "クライアント側だけだと課金が発生し、サーバー検証を行うと無料になるから",
-          "wrongFeedback": "料金の話ではありません。サーバー検証はセキュリティ上の必須要件で、課金の有無とは無関係です。"
+          "text": "siteverifyはJSON形式のリクエストしか受け付けないため、フォームの`application/x-www-form-urlencoded`をJSONに変換して送るようにする",
+          "wrongFeedback": "siteverifyは`application/x-www-form-urlencoded`と`application/json`の両方を受け付けます(応答は常にJSON)。リクエスト形式は原因ではありません。"
         },
         {
-          "text": "クライアントのトークンは偽造・使い回しが可能なため、サーバー側で Siteverify API を使ってトークンを検証しないと保護が完成しないから"
+          "text": "トークンは生成から300秒で失効するため、`error-codes`に`timeout-or-duplicate`が返る。`turnstile.reset`でトークンを取り直す"
         },
         {
-          "text": "ウィジェットの表示にはリクエストごとにCloudflareからの承認レスポンスが必要で、その承認が下りるまではフォームの内容自体を送信できない仕組みだから",
-          "wrongFeedback": "ウィジェット表示に個別承認は不要です。問題はトークンの検証で、サーバー側での Siteverify が必須という点です。"
+          "text": "`idempotency_key`を付けてsiteverifyを呼び直せば、有効期限を過ぎたトークンでも同じ値のまま検証を通せるので、そのように実装を直す",
+          "wrongFeedback": "`idempotency_key`は検証リクエストを安全に再試行するためのUUIDで、有効期限切れのトークンを生き返らせるものではありません。トークンは自動的に失効し、再利用できません。"
         },
         {
-          "text": "ブラウザによってはウィジェットが動作せず、サーバー側でHTMLを再生成する必要があるから",
-          "wrongFeedback": "ブラウザ互換の問題ではありません。トークンの偽造・再利用を防ぐためにサーバー側検証が必須なのです。"
+          "text": "siteverifyの必須パラメーターである`remoteip`が送信されていないことが原因なので、訪問者のIPアドレスを併せて送るようにする",
+          "wrongFeedback": "siteverifyの必須パラメーターは`secret`と`response`の2つで、`remoteip`は任意です。付けていなくてもこの失敗の原因にはなりません。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "クライアント側のウィジェットが発行するトークンは、攻撃者が任意の文字列をフォーム送信先に送れてしまうため、それだけでは保護になりません。サーバー側で `https://challenges.cloudflare.com/turnstile/v0/siteverify` にシークレットキーとトークンを送って検証する必要があります。\n{{diagram:0}}\nトークンは発行後300秒(5分)で失効し、一度しか検証できません(再利用すると `timeout-or-duplicate` エラー)。",
+      "explanation": "Turnstileのトークンは生成から300秒(5分)で失効し、しかも1回しか検証できません。期限切れのトークンや再送されたトークンをsiteverifyに渡すと検証は失敗し、応答の`error-codes`に`timeout-or-duplicate`が含まれます。\n{{diagram:0}}\n訪問者は5分以内にトークンをバックエンドへ送る必要があり、それを過ぎた場合は`turnstile.reset`関数でウィジェットを更新して新しいトークンを発行させます。なお、siteverifyの必須パラメーターは`secret`(ダッシュボードで発行したシークレットキー)と`response`(クライアントから受け取ったトークン)で、`remoteip`と`idempotency_key`は任意です。`idempotency_key`は検証リクエストを安全に再試行するためのもので、失効したトークンを通すためのものではありません。",
       "referenceUrl": "https://developers.cloudflare.com/turnstile/get-started/server-side-validation/",
-      "hint": "クライアント側だけで完結させても、料金は変わりません。",
+      "hint": "発行されたトークンには寿命があります。時間が経ってしまった後に取れる手は何でしょうか。",
       "tags": [
         "platform-services",
         "practical"
@@ -17071,28 +17063,28 @@
       "id": "ag-007",
       "category": "ai-gateway",
       "difficulty": "intermediate",
-      "question": "AI Gatewayのrate limitingにおける「fixed(固定)」と「sliding(スライディング)」の違いに関する正しい説明はどれですか？",
+      "question": "AI Gatewayには、ゲートウェイの設定で有効にする既定のレート制限と、Dynamic Routingのフローに置くRate Limitノードという2つの仕組みがあります。上限を超えたリクエストの扱いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "fixedは時計の区切りごとにカウントがリセットされ区切りをまたぐと上限の倍近く通ることがあるが、slidingは常に直近の時間幅で数えるため抜け道が生じにくい"
+          "text": "既定のレート制限もRate Limitノードも、超過したリクエストには`429 Too Many Requests`を返して処理しない",
+          "wrongFeedback": "Dynamic RoutingのRate Limitノードは、キーごと・期間ごとのリクエスト件数の上限に達するとフォールバックへ切り替えます。429を返して終わるのは、ゲートウェイの既定のレート制限のほうです。"
         },
         {
-          "text": "fixedは常に直近の時間幅で件数を数えるため抜け道が生じにくく、slidingは時計の区切り(12:00-12:10のような10分ごと)でリセットされるため区切りをまたぐと上限の倍近く通る",
-          "wrongFeedback": "説明が逆です。時計の区切りでリセットされるのがfixed、常に直近の時間幅で数えるのがslidingです。"
+          "text": "既定のレート制限は超過時にフォールバックへ切り替えて別のモデルを呼び、Rate Limitノードは`429 Too Many Requests`を返して処理しない",
+          "wrongFeedback": "2つの説明が入れ替わっています。429を返すのがゲートウェイの既定のレート制限、フォールバックへ切り替えるのがDynamic RoutingのRate Limitノードです。"
         },
         {
-          "text": "slidingは1時間単位でしか設定できず、fixedは秒単位で自由に設定できる",
-          "wrongFeedback": "時間単位の制約の違いではありません。カウントの数え方(区切りでリセットするか、常に直近の幅で数えるか)が違いです。"
+          "text": "既定のレート制限もRate Limitノードも、超過したリクエストはフォールバックへ切り替えて別のモデルを呼ぶ",
+          "wrongFeedback": "ゲートウェイの既定のレート制限では、許可した回数を超えるとサーバーが`429 Too Many Requests`を返し、そのリクエストは処理されません。フォールバックへ回されるわけではありません。"
         },
         {
-          "text": "fixedとslidingは名前が違うだけで、実際の挙動には一切差がない",
-          "wrongFeedback": "実際の挙動に差があります。区切りをまたぐリクエストの扱いが異なります。"
+          "text": "既定のレート制限は超過時に`429 Too Many Requests`を返して処理せず、Rate Limitノードは超過時にフォールバックへ切り替える"
         }
       ],
-      "correctIndex": 0,
-      "explanation": "fixed(固定)ウィンドウは、12:00-12:10、12:10-12:20のように時計の区切りごとにカウントがリセットされます。そのため区切りの直前(12:09)と直後(12:11)にそれぞれ上限いっぱいのリクエストを送ると、実質的に短期間で上限の約2倍のリクエストが通ってしまうことがあります。sliding(スライディング)ウィンドウは常に「直近のX分間」で件数を数えるため、このような抜け道が生じにくくなります。\n{{diagram:0}}",
+      "correctIndex": 3,
+      "explanation": "AI Gatewayのレート制限には2つの層があります。ゲートウェイの設定画面(Settings)で有効にする既定のレート制限は、そのゲートウェイへのリクエストに一律に適用され、許可した回数を超えるとサーバーが`429 Too Many Requests`を返してリクエストを処理しません。\n{{diagram:0}}\n一方、Dynamic Routingのフローに置くRate Limitノードは、キーごと・期間ごとのリクエスト件数の上限を管理し、超過したときはフォールバックへ切り替えます。つまり同じ「レート制限」でも、前者は止める仕組み、後者は別の行き先へ逃がす仕組みです。なお既定のレート制限では、回数と時間枠に加えてfixed(時計の区切りでリセット)とsliding(常に直近の時間幅で計測)のどちらの方式で数えるかも選べます。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/rate-limiting/",
-      "hint": "「時計の目盛りで区切る」のと「常に今から遡って数える」のとで、区切りをまたぐ瞬間の挙動がどう変わるか考えましょう。",
+      "hint": "ゲートウェイ全体に一律にかける設定と、ルーティングのフローの途中に置くノードとでは、上限に達したリクエストがたどる先を分けて考えましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -17100,20 +17092,22 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "fixed と sliding",
+          "label": "上限に達したときの行き先",
           "columns": [
             {
-              "heading": "fixed",
+              "heading": "ゲートウェイの既定のレート制限",
               "items": [
-                "時計の区切りでリセット",
-                "区切りをまたぐと上限の倍近く通ることも"
+                "そのゲートウェイへのリクエストに一律に適用される",
+                "超過すると`429 Too Many Requests`が返り、リクエストは処理されない",
+                "fixedとslidingのどちらで数えるかを選べる"
               ]
             },
             {
-              "heading": "sliding",
+              "heading": "Dynamic RoutingのRate Limitノード",
               "items": [
-                "常に直近の時間幅で計測",
-                "区切りをまたぐ抜け道が生じにくい"
+                "キーごと・期間ごとのリクエスト件数の上限を管理する",
+                "超過するとフォールバックへ切り替わる",
+                "ルーティングフローの途中に置いて使う"
               ]
             }
           ]
@@ -17228,52 +17222,56 @@
       "id": "ag-010",
       "category": "ai-gateway",
       "difficulty": "intermediate",
-      "question": "AI GatewayのDynamic Routingにおける「Rate Limit」ノードと「Budget Limit」ノードの役割として正しいものはどれですか？",
+      "question": "AI GatewayのDynamic Routingでルートを作り、アプリケーションから実際に使うまでの扱いとして正しいものはどれですか？",
       "options": [
         {
-          "text": "Rate LimitノードはA/Bテストや段階的なロールアウトのために、リクエストを確率的に複数の出力へ振り分ける",
-          "wrongFeedback": "確率的な振り分けを行うのはPercentageノードの役割です。Rate Limitノードはリクエスト件数の上限を管理します。"
+          "text": "ルートを保存すると内容がそのまま本番に反映されるので、`Save`した時点でアプリケーションからそのルート名を使い始められる",
+          "wrongFeedback": "`Save`は状態を保存するだけで、変更ごとに新しい下書き(draft)ができます。本番で使えるようにするには、そのバージョンをデプロイする操作が別に必要です(以前のバージョンへは即座にロールバックできます)。"
         },
         {
-          "text": "Rate Limitノードは(自分のキーごと・期間ごとの)リクエスト件数の上限を管理して超過時にフォールバックへ切り替え、Budget Limitノードは同様にコストの上限を管理して超過時にフォールバックへ切り替える"
+          "text": "OpenAI互換エンドポイント`/compat/chat/completions`で、モデル名の位置に`dynamic/<ルート名>`を置く"
         },
         {
-          "text": "どちらも同じ機能で、リクエスト件数とコストの両方を同時に制限する単一のノードである",
-          "wrongFeedback": "Rate LimitノードとBudget Limitノードは別々のノードで、それぞれ制限する対象(件数かコストか)が異なります。"
+          "text": "AI GatewayのREST APIのエンドポイントを呼び、プロバイダー名の位置に`dynamic/<ルート名>`を指定してルートを呼び出す",
+          "wrongFeedback": "ドキュメントは、ルートの呼び出しにOpenAI互換エンドポイント`/compat/chat/completions`を使い、モデル名の位置にルート名を指定すると案内しています。Dynamic Routingは現時点でREST APIでは利用できません。"
         },
         {
-          "text": "Rate LimitノードとBudget Limitノードはどちらも、条件式(例: `user_plan == \"paid\"`)によるIf/Elseの分岐だけを行う",
-          "wrongFeedback": "条件式によるIf/Elseの分岐を行うのはConditionalノードの役割です。Rate Limit/Budget Limitノードは件数・コストの上限管理を行います。"
+          "text": "Metadataはゲートウェイの設定に固定のキー・バリューとして登録しておき、Conditionalノードはそこに登録した値だけを参照して分岐する",
+          "wrongFeedback": "Metadataはリクエストに付ける任意のキー・バリューで、アプリケーション側から渡してルールで参照させるものです。Conditionalノードはリクエストのボディ・ヘッダー・メタデータを参照する式で分岐します。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Dynamic Routingでは、Rate Limitノードが(自分のキーごと・期間ごとの)リクエスト件数の上限を管理し、超過時にフォールバックへ切り替えます。Budget Limitノードは同様にコストの上限を管理し、超過時にフォールバックへ切り替えます。これらはConditional(条件分岐)やPercentage(確率的振り分け)といった他のノードと組み合わせて、コードを変更せずにルーティングフローを構築できます。なお、『A/Bテストや段階的ロールアウトのための確率的振り分け』はPercentageノードの役割であり、Rate LimitノードやBudget Limitノードの役割ではない点に注意してください(ノード名と機能の対応を取り違えやすいポイントです)。\n{{diagram:0}}",
+      "explanation": "Dynamic Routingでは、変更するたびに新しい下書きのバージョンができ、デプロイして初めて本番に反映されます(以前のバージョンへは即座にロールバックできます)。\n{{diagram:0}}\n公開したルートは、OpenAI互換エンドポイント`/compat/chat/completions`に対して、モデル名の位置に`dynamic/<ルート名>`(例: `dynamic/support`)を指定して呼び出します。単一モデルのチャット補完という用途ではOpenAI互換エンドポイントは非推奨とされていますが、ダイナミックルートの呼び出しでは現在もこの方法が必要で、Dynamic RoutingはREST APIでは利用できません。フローの中では、Conditionalノードがリクエストのボディ・ヘッダー・メタデータを参照する式で分岐し、Percentageノードが確率的に振り分け、Rate Limitノードが件数、Budget Limitノードがコストの上限を管理します。Metadataはリクエストに付ける任意のキー・バリューで、アプリケーション側から渡してルールから参照できます。なお利用前提として、ゲートウェイの認証を有効にし、BYOKでプロバイダーのキーを保存しておく必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/dynamic-routing/",
-      "hint": "「件数」を数える仕組みと「金額」を数える仕組みは別物だと考え、それぞれの名前を思い出しましょう。",
+      "hint": "保存しただけでは本番には出ません。バージョンを本番に出す操作が別にあることを思い出しましょう。",
       "tags": [
         "ai-gateway",
         "practical"
       ],
       "diagrams": [
         {
-          "type": "hierarchy",
-          "label": "Dynamic Routingの主なノード",
-          "items": [
+          "type": "flow",
+          "label": "ルートを作って呼び出すまで",
+          "steps": [
             {
-              "text": "Conditional",
-              "sub": "条件によるIf/Else分岐"
+              "text": "ルートを作成する",
+              "sub": "Dynamic Routes から Add Route で名前を付ける"
             },
             {
-              "text": "Percentage",
-              "sub": "確率的な振り分け"
+              "text": "エディタでノードを組む",
+              "sub": "Conditional・Percentage・Rate Limit・Budget Limit・Model"
             },
             {
-              "text": "Rate Limit",
-              "sub": "リクエスト件数の上限"
+              "text": "バージョンを保存する",
+              "sub": "Save で下書きが作られる"
             },
             {
-              "text": "Budget Limit",
-              "sub": "コストの上限"
+              "text": "デプロイして本番に出す",
+              "sub": "以前のバージョンへ即座にロールバックできる"
+            },
+            {
+              "text": "ルート名で呼び出す",
+              "sub": "`/compat/chat/completions` でモデル名の位置に `dynamic/<ルート名>`"
             }
           ]
         }
@@ -22022,28 +22020,28 @@
       "id": "ac-010",
       "category": "zero-trust-access",
       "difficulty": "intermediate",
-      "question": "部分的(CNAME)なDNSセットアップのドメインでCloudflare Tunnelの公開アプリケーションルートを追加する場合の正しい説明はどれですか？",
+      "question": "部分(CNAME)セットアップのゾーンで、Tunnelの公開アプリケーションをゾーンのルート(apex)ドメインで出したい場合の説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "部分(CNAME)セットアップであっても、フルセットアップと同様にCloudflareが自動的にDNSレコードを作成してくれる",
-          "wrongFeedback": "部分(CNAME)セットアップではCloudflareがゾーンを管理していないため、DNSレコードの自動作成は行われず手動作成が必要です。"
+          "text": "部分(CNAME)セットアップはFreeを含むすべてのプランで利用できるので、ゾーンを部分セットアップへ切り替えればapexもそのまま扱える",
+          "wrongFeedback": "部分(CNAME)セットアップを使えるのはBusinessプランとEnterpriseプランの利用者だけです。FreeとProでは利用できません。"
         },
         {
-          "text": "ゾーンのルート(apex)ドメインであっても、CNAMEフラット化に対応していないDNSプロバイダーで問題なくCNAMEレコードを手動作成できる",
-          "wrongFeedback": "CNAMEフラット化に対応していないプロバイダーでは、ルートドメインにCNAMEレコードを作成できません。サブドメインを使う必要があります。"
+          "text": "権威DNSプロバイダーが対応していなくても、Cloudflare側でCNAMEフラット化が行われるため、apexにCNAMEレコードを書けばそのまま解決される",
+          "wrongFeedback": "部分(CNAME)セットアップでは、あなたの元の権威DNSプロバイダーが権威のまま残り、Cloudflareの権威ネームサーバーは使われません。フラット化をするかどうかは権威側のプロバイダー次第です。"
         },
         {
-          "text": "CNAMEレコードの作成先には、常にオリジンサーバーの生のIPアドレス(例: `203.0.113.10`)を直接指定する",
-          "wrongFeedback": "IPアドレスではなく`<ホスト名>.cdn.cloudflare.net`という形式のホスト名を指定します。"
+          "text": "権威DNSプロバイダーがCNAMEフラット化に対応していればapexをプロキシできる。非対応ならサブドメインへリダイレクトするか静的IP/BYOIPを使う"
         },
         {
-          "text": "外部のDNSプロバイダー側で`<ホスト名>.cdn.cloudflare.net`を指すCNAMEレコードを手動作成する必要があり、ゾーンのルート(apex)ドメインはCNAMEの仕様上使用できない"
+          "text": "Cloudflare Registrarで管理しているドメインであれば、Registrar側の設定だけで部分(CNAME)セットアップのapexを解決できる",
+          "wrongFeedback": "部分セットアップはCloudflare Registrarのドメインではサポートされていません。Registrar側の設定だけで解決する話にはなりません。"
         }
       ],
-      "correctIndex": 3,
-      "explanation": "部分(CNAME)セットアップではCloudflareがドメインのDNSゾーンを管理していないため、外部のDNSプロバイダー側で手動でCNAMEレコードを作成する必要があります。作成先(ターゲット)は`<ホスト名>.cdn.cloudflare.net`という形式です。DNS仕様上の制約により、ゾーンのルート(apex)ドメインにはCNAMEレコードを使用できず、CNAMEフラット化に対応していないプロバイダーではサブドメインを使う必要があります。\n{{diagram:0}}",
+      "correctIndex": 2,
+      "explanation": "部分(CNAME)セットアップは、元の権威DNSプロバイダーを保ったままCloudflareのリバースプロキシを使う構成で、BusinessプランとEnterpriseプランで利用できます(Cloudflare Registrarのドメインはサポート対象外です)。この構成ではCloudflareが権威ネームサーバーになっていないため、プロキシしたいホスト名については権威DNSプロバイダー側に`<ホスト名>.cdn.cloudflare.net`を指すCNAMEレコードを手動で作成します。\n{{diagram:0}}\nCNAMEレコードはゾーンのapexには置けないため、apexをCloudflareへプロキシできるのは権威DNSプロバイダーがCNAMEフラット化に対応している場合だけです。対応していない場合は、apexのトラフィックをプロキシ済みのサブドメインへリダイレクトする(例えば`.htaccess`を使う)か、静的IPやBYOIPを使う方法がドキュメントで案内されています。フルセットアップではTunnelに公開アプリケーションルートを追加するとCloudflareがDNSレコードを自動作成しますが、部分セットアップでは自動作成は行われません。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/#partial-cname-setup",
-      "hint": "「Cloudflareがゾーンを管理していない」場合に、誰が・どこに・どんな値でDNSレコードを用意する必要があるか考えましょう。",
+      "hint": "部分(CNAME)セットアップには、そもそもゾーンを載せられるプランと登録先の条件があります。それを満たした先の話として考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -25058,28 +25056,28 @@
       "id": "as-015",
       "category": "api-shield",
       "difficulty": "intermediate",
-      "question": "Sequence Mitigationの「positive security model」と「negative security model」の違いに関する正しい説明はどれですか？",
+      "question": "ダッシュボードのAPI Shieldルールで、`GET /api/v1/accounts/{account_id}/balance` の後に `POST /api/v1/transferFunds` が来ることを求めるシーケンスルールを作りました。あるユーザーがこの2つを正しい順序で呼びましたが、間隔は12分空いていました。このときの挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "positive security modelはネットワークレイヤーの攻撃を、negative security modelはアプリケーションレイヤーの攻撃を、それぞれ別々に対象とする仕組みであり、positiveの検知にはL3/L4のパケットヘッダーのみが使われる",
-          "wrongFeedback": "レイヤー別の区分ではありません。両者ともAPIリクエストの「順序パターン」に着目したモデルで、期待パターン以外を拒否するか、既知の悪性パターンを拒否するかで区別されます。"
+          "text": "2つのリクエストの間隔が10分を超えているため、そこから新しいシーケンスが始まり、このルールはマッチしない"
         },
         {
-          "text": "positive security modelは期待する順序パターン以外のリクエストを行うユーザーをブロックし、negative security modelは既知の悪性なAPI呼び出しシーケンスを行うユーザーをブロックする"
+          "text": "直近10リクエストの中に両方のエンドポイントが含まれてさえいれば、間隔が何分空いていてもこのルールはマッチする",
+          "wrongFeedback": "ダッシュボードのAPI Shieldルールが使うlookback windowには、件数(直近10リクエスト)と時間(10分以内)の両方の条件があります。件数の条件だけでは足りません。"
         },
         {
-          "text": "positive security modelはすべてのリクエストを常に許可するモデルであり、negative security modelはすべてのリクエストを常に拒否するモデルであるため、positiveを有効にしている間はアクセス制御が事実上機能しない",
-          "wrongFeedback": "「常に許可」「常に拒否」という単純な二択ではありません。positiveは期待するパターン以外を拒否し、negativeは既知の悪性パターンだけを拒否します。"
+          "text": "セッション識別子はAPI Shieldが自動的に決めるので、設定をしていなくてもユーザーの追跡は働き、間隔の影響も受けない",
+          "wrongFeedback": "API Shieldは「設定したセッション識別子」を使ってセッションを追跡します。シーケンスミティゲーションを期待どおり動かすには、APIのエンドユーザーごとに一意なセッション識別子を自分で設定する必要があります。"
         },
         {
-          "text": "positive security modelとnegative security modelはどちらもEnterprise Sequence Mitigationの正式リリース(GA)後にのみ利用可能で、Beta期間中はどちらのモデルもダッシュボードの選択肢に表示されない",
-          "wrongFeedback": "Sequence Mitigationは現在Betaですが、positive・negativeいずれのモデルも現時点で利用できます。"
+          "text": "Endpoint Managementに登録していないエンドポイントもシーケンスの一部として記録されるため、順序どおりにマッチする",
+          "wrongFeedback": "エンドポイントへのリクエストを追跡するには、そのエンドポイントがEndpoint Managementに追加されている必要があります。登録されていないエンドポイントはシーケンスに乗りません。"
         }
       ],
-      "correctIndex": 1,
-      "explanation": "positive security modelは、期待する順序パターンの外にあるAPIリクエストを行うユーザーをブロックするモデルです。negative security modelは、既知の悪性なAPI呼び出しシーケンスを行うユーザーをブロックするモデルで、正しいpositiveモデルを設計している間の暫定的な対処として使われることもあります。\n{{diagram:0}}",
+      "correctIndex": 0,
+      "explanation": "ダッシュボードのAPI Shieldルールで作ったシーケンスルールは、lookback windowの中で2つのエンドポイントを照合します。条件は2つあり、Endpoint Managementに登録されたエンドポイントへのリクエストとして互いに10件以内であること、そして互いに10分以内に行われていることです。\n{{diagram:0}}\n同じセッション識別子を持つ2つのリクエストは、間隔が10分以内であればシーケンスとして連結されます。前のリクエストから10分を超えて到着したリクエストは、そこから新しいシーケンスを開始します。今回は12分空いているため、順序自体は正しくてもルールは一致しません。既定のlookback windowでは足りない場合は、アカウントチームに相談するか、複数エンドポイントや時間条件を指定できるシーケンスミティゲーションのカスタムルールを使います。なお、シーケンスの構築時には同じエンドポイントへの連続したリクエストは重複排除されます。",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/sequence-mitigation/#process",
-      "hint": "positive security modelは、すべてのリクエストを許可するものではありません。",
+      "hint": "Endpoint Managementへの登録やセッション識別子の設定とは別に、前後のリクエストを同じシーケンスとして結びつけるための条件があります。",
       "tags": [
         "api-shield",
         "practical"
@@ -25087,18 +25085,20 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "positive と negative security model",
+          "label": "シーケンスが連結される条件",
           "columns": [
             {
-              "heading": "Positive",
+              "heading": "件数の条件",
               "items": [
-                "期待パターン以外を拒否"
+                "現在と直前9件、合わせて10件のリクエストを保持する",
+                "シーケンス構築時に同じエンドポイントへの連続リクエストは重複排除される"
               ]
             },
             {
-              "heading": "Negative",
+              "heading": "時間の条件",
               "items": [
-                "既知の悪性パターンを拒否"
+                "2つのリクエストが10分以内なら同じシーケンスとして続く",
+                "前のリクエストから10分を超えると新しいシーケンスが始まる"
               ]
             }
           ]
@@ -33124,28 +33124,28 @@
       "id": "gw-007",
       "category": "gateway",
       "difficulty": "advanced",
-      "question": "アプリケーションの認証方式によって挙動が変わりうることを踏まえると、TLS復号(TLS decryption)に関する正しい説明はどれですか?",
+      "question": "ECHに対応したサイトへの通信を、TLS復号を有効にしたGatewayが扱う場合の説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "mTLS(相互TLS認証)を使うアプリケーションも、TLS復号によって問題なく検査できる",
-          "wrongFeedback": "mTLSはTLS復号と互換性がありません。GatewayはオリジンへクライアントのTLS証明書を転送できないため、mTLSハンドシェイクが失敗します。回避にはDo Not Inspectポリシーの作成が必要です。"
+          "text": "ECHのハンドシェイクが失敗した場合、ブラウザは接続をそこで打ち切るため、GatewayはHTTPポリシーもネットワークポリシーも適用しないまま通信が終わる",
+          "wrongFeedback": "ECHが失敗したとき、ブラウザは最初のリクエストの暗号化されていないSNIを使ってTLSハンドシェイクをやり直します。接続がそこで打ち切られるわけではありません。"
         },
         {
-          "text": "証明書ピニングを使うアプリケーションでも、Cloudflareのルート証明書を端末の信頼ストアにインストールしさえすれば常に問題なくTLS復号できる",
-          "wrongFeedback": "証明書ピニングを使うアプリはCloudflareの証明書を信頼しないため、証明書をインストールするだけでは解決しません。アプリへの証明書追加やDo Not Inspectポリシーなど別の対応が必要です。"
+          "text": "Do Not Inspectポリシーを作れば、HTTPリクエストのログ記録・ブロックとDLPポリシーの適用は維持したまま、復号の処理だけを外すことができる",
+          "wrongFeedback": "Do Not Inspectポリシーを作った対象については、HTTPリクエストのログ記録とブロック、DLPポリシーの適用、AVスキャンができなくなります。復号だけを外せるわけではありません。"
         },
         {
-          "text": "Gatewayは復号したHTTPSトラフィックにポリシーを適用し、ユーザー側の証明書で再暗号化する。証明書ピニング・mTLS認証・ESNI/ECHを使うアプリケーションはTLS復号と互換性がない"
+          "text": "SNIが暗号化されるためHTTPポリシーは対応づけられないが、ネットワークポリシーのフィルターはSNIとSNI Domainを除いて適用できる"
         },
         {
-          "text": "TLS復号を有効にしなくても、HTTPSトラフィックの完全なURL・ヘッダー・リクエストボディをGatewayが検査できる",
-          "wrongFeedback": "TLS復号を有効にしない限り、HTTPS暗号化内のURL・ヘッダー・リクエストボディはGatewayから見えません。"
+          "text": "Cloudflareのルート証明書を利用者の端末とアプリケーションに追加すれば、暗号化されたSNIをGatewayが読み取れるようになる",
+          "wrongFeedback": "ECHはTLSハンドシェイクの中でSNIそのものを暗号化するため、HTTP検査と非互換です。端末側にCloudflareの証明書を入れても、暗号化されたSNIが読めるようにはなりません。ドキュメントが挙げる対処はブラウザ側でECHを無効にすることです。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "TLS復号を有効にすると、GatewayはHTTPSトラフィックを復号してポリシーを適用したうえで、ユーザー側の証明書で再暗号化します。ただし証明書ピニング・mTLS認証・ESNI/ECHによるハンドシェイク暗号化を使うアプリケーションは、TLS復号と互換性がありません。\n{{diagram:0}}",
+      "explanation": "GatewayはSNI(Server Name Indication)を見てHTTPリクエストとポリシーを対応づけます。ESNIやECHに対応したサイトはTLSハンドシェイクの中でSNIを暗号化するため、Gatewayはどのポリシーを適用すべきか判断できず、HTTP検査と非互換になります。\n{{diagram:0}}\nただし通信が完全に手つかずになるわけではなく、SNIとSNI Domain以外のネットワークポリシーのフィルターは引き続き適用できます。ECHが失敗した場合、ブラウザは最初のリクエストの暗号化されていないSNIでハンドシェイクをやり直すため、この挙動を避けたい場合はブラウザ側でECHを無効にします。なお、証明書ピニングなど別の理由で復号できないアプリケーションにDo Not Inspectポリシーを作ると、そのアプリケーションについてHTTPリクエストのログ記録・ブロック、DLPポリシーの適用、AVスキャンができなくなる点にも注意が必要です。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/http-policies/tls-decryption/#inspection-limitations",
-      "hint": "「復号してポリシーを適用してから再暗号化する」という仕組みが、そもそも成立しない通信方式があることを考えましょう。",
+      "hint": "Do Not Inspectポリシーには、検査をやめること以外にも失うものがあります。何が使えなくなるかを先に確かめましょう。",
       "tags": [
         "gateway",
         "practical"
@@ -33153,21 +33153,20 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "TLS復号の互換性",
+          "label": "ECH利用時にGatewayができること",
           "columns": [
             {
-              "heading": "TLS復号と互換",
+              "heading": "引き続きできる",
               "items": [
-                "一般的なHTTPS通信"
+                "SNIとSNI Domain以外のネットワークポリシーのフィルターを適用する",
+                "SNIヘッダーを含まないポート80・443のトラフィックを絞り込む"
               ]
             },
             {
-              "heading": "TLS復号と非互換",
+              "heading": "できなくなる",
               "items": [
-                "証明書ピニング",
-                "自己署名証明書",
-                "mTLS(相互TLS認証)",
-                "ESNI/ECH"
+                "SNIを手がかりにHTTPポリシーを対応づける",
+                "HTTPS内のURL・ヘッダー・リクエストボディを検査する"
               ]
             }
           ]
