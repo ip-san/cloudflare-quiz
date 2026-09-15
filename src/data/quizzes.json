@@ -18906,15 +18906,15 @@
           "text": "既存のVPC Serviceにバインドするだけなら「Connectivity Directory Bind」で十分だが、新しくVPC Serviceを作成するには「Connectivity Directory Admin」ロールが必要"
         },
         {
-          "text": "VPC Serviceの作成にも既存サービスへのバインドにも、常に同じ「Connectivity Directory Admin」ロールが必要で、ロールによる権限の使い分けはない",
+          "text": "VPC Serviceの作成にも既存サービスへのバインドにも同じ「Connectivity Directory Admin」ロールが必要で、ロールによる権限の使い分けはない",
           "wrongFeedback": "バインドのみなら「Connectivity Directory Bind」ロールで十分です。作成には「Connectivity Directory Admin」が必要という使い分けがあります。"
         },
         {
-          "text": "ロールの区別はダッシュボード操作にのみ適用され、Wrangler CLIからの操作にはロールの制約が一切ない",
+          "text": "ロールの区別はダッシュボード操作にのみ適用され、Wrangler CLIからの操作にはロールの制約がかからない",
           "wrongFeedback": "Wrangler CLIからの操作にも同じロールベースの権限が適用されます。"
         },
         {
-          "text": "VPC ServiceへのバインドにはSuper Administrator権限が必須で、それ以外のロールでは一切バインドできない",
+          "text": "VPC ServiceへのバインドにはSuper Administrator権限が必須で、それ以外のロールではバインドできない",
           "wrongFeedback": "Super Administrator権限は必須ではありません。「Connectivity Directory Bind」ロールでバインドできます。"
         }
       ],
@@ -19901,15 +19901,15 @@
           "text": "Argo、Early Hints、Client-side security、Spectrumなど一部の機能を、顧客が自分のダッシュボードから制御できなくなる"
         },
         {
-          "text": "顧客はカスタムホスト名として追加した時点で、そのドメインのDNSレコードを完全に削除しなければならない",
+          "text": "顧客はカスタムホスト名として追加した時点で、そのドメインのDNSレコードを削除しなければならない",
           "wrongFeedback": "DNSレコードの削除が必須というわけではありません。DNSのCNAMEターゲットをSaaS事業者側に向ける設定が必要です。"
         },
         {
-          "text": "制約は一切なく、カスタムホスト名として管理されるようになった後も、顧客側の設定はSaaS事業者の設定より常に優先されるため、すべてのCloudflare機能を自分のダッシュボードから制御できる",
+          "text": "制約は設けられておらず、カスタムホスト名として管理されるようになった後も、顧客側の設定がSaaS事業者の設定より優先されるため、Cloudflareの機能を自分のダッシュボードから制御できる",
           "wrongFeedback": "制約があります。カスタムホスト名として管理されるホスト名では、顧客が制御できなくなる機能があります。"
         },
         {
-          "text": "顧客はSaaS事業者のアカウントに完全に統合され、以後は独自のCloudflareアカウントを持てなくなる",
+          "text": "顧客はSaaS事業者のアカウントへ統合され、以後は独自のCloudflareアカウントを持てなくなる",
           "wrongFeedback": "顧客が独自のCloudflareアカウントを持てなくなるわけではありません。あくまで一部機能の制御権に関する制約です。"
         }
       ],
@@ -24331,15 +24331,15 @@
           "text": "API Shieldのフルセキュリティスイートは、Enterpriseプラン向けの有料アドオンだが、Endpoint ManagementやSchema validationは全プランで利用できる"
         },
         {
-          "text": "API Shieldはすべての機能がFreeプランを含む全プランで無料かつ無制限に利用できる",
-          "wrongFeedback": "フルセキュリティスイートはEnterprise向けの有料アドオンです。全プランで無料・無制限に使えるわけではありません。"
+          "text": "API Shieldは機能がFreeプランを含む各プランで無料のまま制限なく利用できる",
+          "wrongFeedback": "フルセキュリティスイートはEnterprise向けの有料アドオンです。どのプランでも無料で使えるわけではありません。"
         },
         {
-          "text": "API ShieldはJDCloudを含むすべてのクラウド事業者環境で同様に動作することが保証されている",
+          "text": "API ShieldはJDCloudを含むクラウド事業者環境でも同様に動作することが保証されている",
           "wrongFeedback": "API ShieldはJDCloudの顧客には現在対応していません。"
         },
         {
-          "text": "API Shieldの機能はすべてEnterpriseプランの顧客専用であり、Free・Pro・Businessプランでは一切利用できない",
+          "text": "API Shieldの機能はEnterpriseプランの顧客専用であり、Free・Pro・Businessプランでは利用できない",
           "wrongFeedback": "Endpoint ManagementやSchema validation、Cloudflare管理CAによるmTLSは全プランで利用できます。Enterprise専用というのは誤りです。"
         }
       ],
