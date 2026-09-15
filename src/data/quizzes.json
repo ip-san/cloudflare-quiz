@@ -7613,8 +7613,8 @@
           "wrongFeedback": "Workers Logsは、Workerから出力されるログをリアルタイムに近い形で自動的に取り込み、ダッシュボードで確認できる機能です。"
         },
         {
-          "text": "Tail Workersはログの永続保存専用の機能で、フィルタリングや変換処理はできない",
-          "wrongFeedback": "Tail Workersは、テレメトリデータに対してカスタムのフィルタリング・サンプリング・変換ロジックを適用できる仕組みです。"
+          "text": "Tail WorkersはプロデューサーWorkerの実行とは独立に数分ごとのスケジュールで起動し、その間に蓄積されたイベントを外部の宛先へ送信する",
+          "wrongFeedback": "Tail WorkersはプロデューサーWorkerが呼び出されるたびに、その実行が終わった直後に起動します。時間を決めてまとめて送るのではなく、呼び出しごとにイベントを受け取ります。"
         }
       ],
       "correctIndex": 0,
@@ -10605,8 +10605,8 @@
           "wrongFeedback": "`_middleware.js` は特定URLのAPIエンドポイントではなく、配置されたディレクトリ以下の全リクエストに適用される処理です。"
         },
         {
-          "text": "1つのプロジェクトにつき `_middleware.js` は1ファイルしか配置できず、サブディレクトリごとに個別のミドルウェアを持つことはできない",
-          "wrongFeedback": "`_middleware.js` はディレクトリごとに配置でき、親ディレクトリから子ディレクトリへと順に実行されるチェーンを構成できます。"
+          "text": "`_middleware.js` から `onRequest` を配列でエクスポートした場合、配列の末尾に置いた関数から順に実行される",
+          "wrongFeedback": "配列でエクスポートしたミドルウェアは、先頭に置いた関数から順に実行されます。エラー処理を先頭に置くと、後続の関数で投げられた例外も捕捉できます。"
         }
       ],
       "correctIndex": 1,
@@ -12262,8 +12262,8 @@
           "wrongFeedback": "むしろ逆で、Hyperdriveは外部の既存データベースに接続するためのサービスです。D1はWorkersから直接バインディングで使います。"
         },
         {
-          "text": "MongoDBやRedis、DynamoDBといったNoSQLデータベースが主な対象で、PostgreSQLやMySQLのようなリレーショナルデータベースには対応していない",
-          "wrongFeedback": "対象はPostgres/MySQL系のリレーショナルデータベースです。NoSQLは対象外です。"
+          "text": "MongoDBやDynamoDBといったNoSQLデータベースも接続対象に含まれており、Hyperdriveの接続設定を作ればWorkersからそのまま問い合わせられる",
+          "wrongFeedback": "Hyperdriveが接続できるのはPostgreSQLとMySQL、およびそれらのプロトコルに互換のあるデータベースです。MongoDBやDynamoDBのようなNoSQLデータベースは、対応エンジンの一覧に挙げられていません。"
         },
         {
           "text": "PostgreSQLとMySQLに対応し、AWSやNeonなどでホストされた既存DBやPostgres互換DB(CockroachDBなど)にも接続できる"
@@ -20712,8 +20712,8 @@
           "text": "HTTPエンドポイントやWorkerバインディング経由でイベントを受け取る耐久性のあるバッファ済みキューで、1つのStreamを複数のPipelineから読み取って異なる宛先に振り分けられる"
         },
         {
-          "text": "Streamが受け付けられるデータ形式はProtocol Buffers(protobuf)のみで、JSON形式のデータは受け付けられない",
-          "wrongFeedback": "StreamsはJSON形式のイベントを受け付けます。Protocol Buffers専用ではありません。"
+          "text": "Streamにスキーマを定義すると、送られてきたイベントは取り込みの時点でスキーマに合わせて自動で型変換され、型が合わないフィールドは文字列として格納され、欠けているフィールドには既定値が入った状態でバッファに書き込まれる",
+          "wrongFeedback": "スキーマ検証の扱いが逆です。スキーマに合わないイベントは型変換や既定値の補完を受けることなく、受け付けられたあとに破棄されます。送信する前にデータ側で検証しておく必要があります。"
         },
         {
           "text": "1つのStreamは同時に1つのPipelineからしか読み取ることができず、複数のPipelineで共有することはできない",
@@ -21979,8 +21979,8 @@
           "wrongFeedback": "DNSレコード種別の変更だけでは不十分です。Accessアプリケーションの追加とTunnelでの接続、トークン検証が必要です。"
         },
         {
-          "text": "オリジンサーバーのIPアドレスを直接インターネットに公開し、Access側では追加の設定を一切行わない構成であり、認証はアプリケーション側の機能だけで完結させる",
-          "wrongFeedback": "オリジンIPを直接公開する方法ではありません。Cloudflare Tunnelで接続し、Access側でアプリとポリシーを設定する必要があります。"
+          "text": "Accessにプライベートアプリケーションとして登録し、Tunnelでプライベートネットワークのルートを追加し、利用者の端末にCloudflare One Clientを導入して接続させる",
+          "wrongFeedback": "Tunnelでプライベートネットワークのルートを追加し、Cloudflare One Clientを入れた端末から接続する構成は、プライベートIPやホスト名で社内向けに使えるようにする手順です。利用者が自分の端末をZero Trust組織に登録して接続するため、インターネット上の誰もが使える公開ホスト名にはなりません。"
         },
         {
           "text": "Accessにアプリケーションとポリシーを追加し、Cloudflare Tunnelでオリジンを接続し、アプリ側でAccessトークンを検証する"
@@ -27149,8 +27149,8 @@
           "wrongFeedback": "Rules製品群はEnterprise限定ではなく、全プランで基本的な機能を利用できます。"
         },
         {
-          "text": "Rules製品群を利用するには、事前にWorkersスクリプトを1つ以上デプロイしておく必要があり、Workerがないゾーンではメニュー自体が表示されない",
-          "wrongFeedback": "Workersのデプロイは前提条件ではありません。前提条件はDNSレコードがCloudflareでプロキシされていることです。"
+          "text": "ゾーンがアクティブになっていればRules製品群を利用でき、WebトラフィックだけでなくMXレコードが指すメールサーバー宛ての通信にもルールが適用される",
+          "wrongFeedback": "前提条件はDNSレコードがCloudflareでプロキシされていることです。MXレコードは常にDNSのみの扱いで、メールサーバー宛ての通信がCloudflareのHTTPプロキシを通ることはありません。"
         },
         {
           "text": "ドメイン(またはサブドメイン)のDNSレコードがCloudflareを経由してプロキシされている(オレンジクラウド)必要がある"
@@ -28065,8 +28065,8 @@
           "wrongFeedback": "Cloudflare DNSは権威DNSサービスです。キャッシュDNS専用ではありません。"
         },
         {
-          "text": "Cloudflare DNSはBGP経路のハイジャックに対しては無防備であり、対策できるのはDDoS攻撃のみであるため、経路ハイジャック対策は別途外部サービスで用意する必要がある",
-          "wrongFeedback": "Cloudflare DNSはDDoS攻撃だけでなく、BGP経路のハイジャックからの保護も提供します。"
+          "text": "DNSSECを有効にすると、ゾーンへの署名は利用者側で行い、生成したDSレコードをCloudflareに登録して公開してもらう仕組みになっている",
+          "wrongFeedback": "順序が逆です。DNSSECを有効にすると、Cloudflareがゾーンに署名し、公開鍵を公開し、DSレコードを生成します。利用者が行うのは、生成されたDSレコードをドメインの登録事業者側に登録することです。"
         },
         {
           "text": "AnycastネットワークによるDDoS攻撃・BGP経路ハイジャックからの保護を備えた権威DNSサービスであり、全プランで利用できる"
@@ -40326,8 +40326,8 @@
           "text": "コネクションのイベント数、送受信バイト数、コネクション継続時間などのメトリクスを、イベント種別・アプリケーションID・Colo名などのディメンションで絞り込める"
         },
         {
-          "text": "SpectrumのAnalyticsはダッシュボードでの表示のみに対応しており、APIから取得することはできない",
-          "wrongFeedback": "Spectrum Analyticsはダッシュボードだけでなく、/zones/{zone_id}/spectrum/analytics/events/summary などのAPIエンドポイントからも取得できます。"
+          "text": "Spectrum AnalyticsのAPIから返るのはコネクション1本ごとの生イベントの一覧で、平均や合計は受け取った側で計算する",
+          "wrongFeedback": "Spectrum AnalyticsのAPIは、イベント数の合計や継続時間の平均といった集計済みのメトリクスを返します。コネクション単位の生イベントを一覧で返すものではありません。"
         },
         {
           "text": "SpectrumのAnalyticsではリクエストURLやHTTPステータスコード、キャッシュヒット率ごとの集計が主要な指標として提供され、L4のコネクション情報は含まれない",
@@ -41842,8 +41842,8 @@
           "wrongFeedback": "同意状態はサーバー側データベースではなく、ファーストパーティCookieとしてブラウザ側に保存されます。"
         },
         {
-          "text": "Purposeに紐づいていないツールは、デフォルトでは同意なしには絶対にロードされない仕組みになっている",
-          "wrongFeedback": "Purposeが割り当てられていないツールは、デフォルトでは同意チェックをスキップしてロードされてしまいます。だからこそPurposeの設定確認が重要です。"
+          "text": "ユーザーの同意状態はブラウザの`localStorage`に保存され、ページが読み込まれるたびにZarazがそこから選択を読み出す",
+          "wrongFeedback": "同意状態が保存されるのは`localStorage`ではなく、JSON形式のファーストパーティCookieです。"
         },
         {
           "text": "ユーザーの同意設定はファーストパーティCookieに保存され、各Purpose IDに対してtrue/false/未設定のいずれかの値がマッピングされる"
