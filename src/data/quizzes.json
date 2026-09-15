@@ -862,7 +862,7 @@
       "correctIndex": 3,
       "explanation": "`fetch`ハンドラの外側、つまりモジュールのトップレベルに書かれたコードは、Workerが最初にロードされるときに一度だけ実行されます。\n{{diagram:0}}\n同じアイソレートが複数のリクエストを処理する間(ウォーム状態が続く限り)、この初期化結果は再利用されます。外部APIクライアントの生成など、リクエストごとに繰り返す必要のない処理はここに置くことでCPU時間を節約できます。ただし、アイソレートがいつまでウォーム状態を維持するかはランタイムに委ねられており保証されないため、リクエスト固有の状態(認証情報の書き換えなど)をグローバルスコープの可変変数に保持するのは避けるべきです。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/how-workers-works/",
-      "hint": "「アイソレートが複数のリクエストで再利用されうる」という性質を活かすには、コードをどこに置けばよいでしょうか。",
+      "hint": "`vars`は値を渡すための欄で、コードを書く場所ではありません。",
       "tags": [
         "workers",
         "practical"
@@ -16695,7 +16695,7 @@
       "correctIndex": 1,
       "explanation": "既にWorkerがデプロイされているnamespaceをtrusted modeに切り替えた場合、切り替え前からデプロイされていたWorkerは`request.cf`にアクセスできるようにするために再デプロイが必要です。一方、切り替え後に新しくデプロイするWorkerは自動的に`request.cf`へアクセスできるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/reference/worker-isolation/#trusted-mode",
-      "hint": "設定を切り替えた「タイミング」の前後で、既存のものと新しいものとで扱いに差が出ないか考えましょう。",
+      "hint": "切り替えのために全Workerを削除する必要はありません。",
       "tags": [
         "workers-for-platforms",
         "practical"
@@ -19337,7 +19337,7 @@
       "correctIndex": 1,
       "explanation": "Workers VPCでは、Cloudflare TunnelがQUICトランスポートプロトコル(`auto`または`quic`)で接続している必要があります。Cloudflare Zero Trust向けによく使われる`http2`プロトコルで設定されていると、Workers VPCからのDNS解決などに問題が生じます。QUICはUDPベースのため、アウトバウンドのUDPポート7844を許可しておく必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/tunnel/#create-and-run-tunnel-cloudflared",
-      "hint": "Zero Trust向けの設定とWorkers VPC向けの設定で、要求されるトランスポートが違うことを意識しましょう。",
+      "hint": "QUICが使うのはUDPのポートです。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -19604,7 +19604,7 @@
       "correctIndex": 0,
       "explanation": "VPC Serviceは、あらかじめ登録した特定のホスト・ポートの組み合わせにのみリクエストをルーティングするよう強制する設計になっています。そのため、Workerのコードに脆弱性があり細工されたURLが`fetch()`に渡されたとしても、リクエストは登録済みの1つの宛先に限定され、プライベートネットワーク全体を露出させるSSRF攻撃を防ぐことができます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/workers-vpc/configuration/vpc-services/",
-      "hint": "「行き先を1つに固定しておく」ことが、なぜ攻撃者に自由な宛先を選ばせない防御になるのか考えましょう。",
+      "hint": "この防ぎ方は、デプロイ時にコードを調べることによるものではありません。",
       "tags": [
         "workers-vpc",
         "practical"
@@ -23106,7 +23106,7 @@
       "correctIndex": 0,
       "explanation": "OWASP Core Rulesetのスコア閾値は、Lowが60以上、Medium(デフォルト)が40以上、Highが25以上です。個々のルールが一致するたびにスコアが加算され、その累積であるリクエスト脅威スコアが選択した閾値を超えるとアクションが実行されます。Lowを選ぶと必要な累積スコアが高くなるため、より多くのルールが一致しないとアクションが実行されにくくなります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/reference/owasp-core-ruleset/concepts/",
-      "hint": "「Low」「Medium」「High」というラベルと、実際に設定される数値の大小は必ずしも同じ向きに並ぶとは限らないと考えましょう。",
+      "hint": "個々のOWASPルールのスコアは合算されます。",
       "tags": [
         "waf",
         "practical"
@@ -23214,7 +23214,7 @@
       "correctIndex": 2,
       "explanation": "レート制限ルールでカスタムカウント式(`counting_expression`)を設定すると、それはマッチ式(`expression`)を自動的に拡張したものにはなりません。そのため、例えば「`/api/`宛てで、かつオリジンから`403`が返ったリクエスト」を数えたい場合、カウント式に`/api/`へのパス条件も含めて記述する必要があります。含めないと、意図せず他のパスへの`403`レスポンスまでカウントしてしまいます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/parameters/#increment-counter-when",
-      "hint": "カウント式とマッチ式は別々の設定項目であり、片方を変えたときにもう片方がどうなるかを考えましょう。",
+      "hint": "カウント式にレスポンスのフィールドを含めるには条件があります。",
       "tags": [
         "waf",
         "practical"
@@ -23266,7 +23266,7 @@
       "correctIndex": 3,
       "explanation": "Free・Pro・Businessプランでチャレンジ系アクション(`managed_challenge`・`js_challenge`・`challenge`)を使う場合、APIでは`mitigation_timeout`を`0`に設定する必要があります。これはリクエストスロットリング(制限を超えた分だけアクションを適用し、チャレンジを通過すればカウンターがリセットされる挙動)のみを意味し、固定の継続時間を選ぶことはできません。Enterpriseプランは、Blockアクションを含め、`0`以上の任意の値を継続時間として設定できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/parameters/#for-duration",
-      "hint": "「決まった時間だけ制限し続ける」のか「制限を超えている間だけ都度スロットリングする」のか、プランによる違いを考えましょう。",
+      "hint": "`mitigation_timeout`には秒数を指定します。",
       "tags": [
         "waf",
         "practical"
@@ -23374,7 +23374,7 @@
       "correctIndex": 3,
       "explanation": "Bot Fight ModeはRuleset Engineを使わない単純なオン/オフの切り替えで、Freeプランで利用でき、カスタムルールでスキップすることはできません。一方、Super Bot Fight Mode(SBFM)はPro・Business・Enterpriseプランで利用でき、`http_request_sbfm`フェーズで動作し、「Definitely automated」「Likely automated」「Verified bots」ごとに個別のアクションを設定できるほか、カスタムルールのSkipアクションでバイパスできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/feature-interoperability/",
-      "hint": "「単純なオン/オフでRuleset Engineの外にある仕組み」と「フェーズとして組み込まれ、細かく制御・回避もできる仕組み」の違いを考えましょう。",
+      "hint": "SBFMはFreeプラン専用の機能ではありません。",
       "tags": [
         "waf",
         "practical"
@@ -31381,7 +31381,7 @@
       "correctIndex": 3,
       "explanation": "プライベートネットワークへCIDRルートを追加しただけでは、Cloudflare One Clientユーザーがネットワーク全体にアクセスできてしまう可能性があります。これを防ぐため、プライベートIP空間全体に対するcatch-allのGatewayブロックポリシーを作成し、その上に優先度の高い個別アプリケーションへのAllowポリシーを重ねる構成が推奨されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/",
-      "hint": "「まず全部ブロックしてから、必要な分だけ許可する」という優先順位の付け方を考えましょう。",
+      "hint": "CIDRルートを追加しても、その範囲のサブネットが自動で登録されることはありません。",
       "tags": [
         "tunnel",
         "practical"
@@ -31542,7 +31542,7 @@
       "correctIndex": 3,
       "explanation": "レプリカがすべて同一のトンネルを使い回すのに対し、Load Balancerを使う典型的な構成では、データセンターごとに1つのトンネルを作成し、トンネルごとに1つのLoad Balancerプールを割り当てます。また、プライベートホスト名ルートは現時点でLoad Balancingと互換性がなく、その場合の高可用性確保にはレプリカを使う必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/tunnel-availability/#cloudflare-load-balancers",
-      "hint": "「1つのトンネルを補強する」仕組みと「複数のトンネルを束ねる」仕組みの違いを考えましょう。",
+      "hint": "Load Balancerは、トンネルが非アクティブになったときのフェイルオーバーも行います。",
       "tags": [
         "tunnel",
         "practical"
