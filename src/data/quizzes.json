@@ -6649,51 +6649,50 @@
       "category": "ai-vectorize",
       "difficulty": "intermediate",
       "type": "single",
-      "question": "embedding（埋め込みベクトル）を使った類似検索の仕組みとして正しい説明はどれですか？",
+      "question": "Workers AI の `@cf/baai/bge-base-en-v1.5`（768次元のベクトルを出力）で作った埋め込みを Vectorize に保存したい。インデックスの設定について正しいものはどれですか？",
       "options": [
         {
-          "text": "データをモデルで数値ベクトルに変換し、ベクトル間の距離が近いものを意味的に似ているとして検索する"
+          "text": "作成時に指定するのは次元数だけで、距離メトリックは格納されたベクトルの分布から Vectorize が自動的に選ぶ",
+          "wrongFeedback": "インデックスの作成には名前・次元数・距離メトリックの3つが要ります（docs: Creating an index requires three inputs）。距離メトリックも作成時に指定します。"
         },
         {
-          "text": "画像や音声などのデータには適用できず、テキストデータ専用の技術であるため、画像の類似検索には別途ラベル文字列へのテキスト化が必要になる",
-          "wrongFeedback": "embeddingはテキストだけでなく画像や音声などのデータもベクトル化でき、マルチモーダルな類似検索にも使われます。"
+          "text": "次元数と距離メトリックはインデックスの作成時に決まって変更できず、次元数は埋め込みモデルの出力サイズに合わせる"
         },
         {
-          "text": "テキストをベクトル化せずそのまま文字列として比較し、表記が完全に一致した文書のみを検索結果として返す仕組み",
-          "wrongFeedback": "それは全文検索やキーワード完全一致検索の説明です。embeddingによる検索は『意味的な近さ』を扱う点が異なります。"
+          "text": "次元数は作成時に決まるが、距離メトリックは `query()` を呼ぶたびに `cosine` や `euclidean` を選び直せる",
+          "wrongFeedback": "距離メトリックも作成時に固定される設定です（docs: The (fixed) distance metric to use for calculating vector similarity）。作成後に構成を変えることはできません（docs: The configuration of an index cannot be changed after creation.）。"
         },
         {
-          "text": "SQLのLIKE演算子を使って文字列の部分一致検索を行う仕組みであり、綴りや語順が完全に一致する部分がなければヒットしない",
-          "wrongFeedback": "LIKE演算子による部分一致検索はリレーショナルDBの機能で、ベクトルの意味的類似検索とは仕組みが異なります。"
+          "text": "作成時の次元数は受け入れ可能な上限で、768次元より小さいベクトルはゼロ埋めされて同じインデックスに入る",
+          "wrongFeedback": "次元数は上限ではなく固定値です（docs: Indexes expect to receive dense vectors with the same number of dimensions.）。次元の違うベクトルを混ぜることはできません。"
         }
       ],
-      "correctIndex": 0,
-      "explanation": "embeddingは、テキストなどのデータを固定長の数値ベクトルに変換したもので、意味的に似た内容ほどベクトル空間上で近い位置に配置される。Vectorizeのようなベクトルデータベースは、クエリベクトルとの距離（コサイン類似度・ユークリッド距離・内積など）を計算し、最も近いベクトルを検索結果として返す。\n{{diagram:0}}\nこれにより、キーワードが完全一致しなくても意味的に関連する文書を検索できる。",
+      "correctIndex": 1,
+      "explanation": "Vectorize のインデックスは、名前・次元数・距離メトリックの3つを決めて作ります（docs: Creating an index requires three inputs）。次元数と距離メトリックはどちらも作成時に固定され、あとから構成を変えることはできません（docs: The configuration of an index cannot be changed after creation.）。\n{{diagram:0}}\n次元数は埋め込みモデルの出力サイズで決まるため、`@cf/baai/bge-base-en-v1.5` を使うなら `npx wrangler vectorize create your-index-name --dimensions=768 --metric=cosine` のように768を指定します。距離メトリックは `cosine`、`euclidean`、`dot-product` から選びます。次元数の違うモデルに乗り換えるときは、インデックスを作り直してベクトルを入れ直すことになるので、モデル選定は最初に固めておくのが安全です。",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/what-is-a-vector-database/",
-      "hint": "文字列としては違っても、意味が近ければヒットする検索の仕組みを考えましょう。",
+      "hint": "インデックスを作るときに渡す入力が、名前を含めていくつあるかを思い出しましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
       ],
       "diagrams": [
         {
-          "type": "flow",
-          "label": "embeddingによる類似検索の流れ",
-          "steps": [
+          "type": "comparison",
+          "label": "Vectorize インデックスで固定されるもの",
+          "columns": [
             {
-              "text": "元データ（テキスト）"
+              "heading": "作成時に決めて固定される",
+              "items": [
+                "次元数は埋め込みモデルの出力サイズに合わせて決める",
+                "距離メトリックは `cosine` / `euclidean` / `dot-product` から選ぶ"
+              ]
             },
             {
-              "text": "embeddingモデルでベクトル化"
-            },
-            {
-              "text": "Vectorizeに保存"
-            },
-            {
-              "text": "クエリベクトルとの距離を計算"
-            },
-            {
-              "text": "意味的に近い上位K件を返却"
+              "heading": "あとから変えられる",
+              "items": [
+                "ベクトルは `upsert` で追加や上書きができる",
+                "不要なベクトルは `deleteByIds` で削除できる"
+              ]
             }
           ]
         }
@@ -6704,28 +6703,28 @@
       "category": "ai-vectorize",
       "difficulty": "intermediate",
       "type": "single",
-      "question": "Workers AIとVectorizeを組み合わせたRAG（Retrieval-Augmented Generation）構成の一般的な流れとして正しいものはどれですか？",
+      "question": "Workers AI・Vectorize・D1 を組み合わせたノート検索アプリで、ユーザーの質問に近いノートの本文を取り出す手順として正しいものはどれですか？",
       "options": [
         {
-          "text": "Vectorizeに保存された全文書を毎回LLMのプロンプトにそのまま含めて送信し、どの部分が質問に関連するかの絞り込みは類似度検索ではなくLLM側の注意機構に任せる",
-          "wrongFeedback": "全文書を毎回送るのは非効率かつプロンプト長の制限に反します。RAGでは類似検索で関連する一部の文書のみに絞り込んで使います。"
+          "text": "質問を埋め込みに変換して `VECTOR_INDEX.query()` を呼ぶと `matches` にノート本文が入って返るので、それをそのままプロンプトのコンテキストに差し込む",
+          "wrongFeedback": "`query()` が返すのは一致したベクトルの `id` で、本文は D1 から引き直します（docs: you can retrieve the notes that match the record IDs stored alongside those vectors）。"
         },
         {
-          "text": "質問文をembedding化してVectorizeで類似文書を検索し、関連文書をコンテキストとしてLLMのプロンプトに追加して回答を生成する"
+          "text": "D1 の `notes` テーブルを `LIKE` で先に絞り込み、その結果だけを `VECTOR_INDEX.query()` に渡して意味の近い順に並べ替える",
+          "wrongFeedback": "`query()` に渡すのは質問を変換したベクトルで、D1 の行ではありません（docs: You will convert the query into a vector, and then use the `vector-index` index to find the most similar vectors.）。"
         },
         {
-          "text": "Vectorizeが直接自然言語の回答文を生成し、Workers AIは使用しないため、Vectorizeの検索結果がそのまま最終的な回答文になる",
-          "wrongFeedback": "Vectorizeはベクトルの保存・検索に特化したデータベースであり、自然言語の回答文を生成する機能は持ちません。回答生成はWorkers AIなどのLLMが担います。"
+          "text": "質問を埋め込みに変換して `VECTOR_INDEX.query()` を呼び、返った `id` で D1 の `notes` から本文を `SELECT` する"
         },
         {
-          "text": "ユーザーの質問をそのままLLMに渡し、Vectorizeは生成された応答結果をキャッシュして再利用するためだけに使うため、文書検索はVectorizeではなくLLM自身の知識に依存する",
-          "wrongFeedback": "それはAI Gatewayのキャッシュに近い説明です。VectorizeはRAGにおいて関連文書を検索（retrieval）する中心的な役割を持ちます。"
+          "text": "本文はベクトルと一緒に Vectorize へ `upsert` してあるので、D1 には `id` だけを置き、`query()` が返した本文をそのままプロンプトに使う",
+          "wrongFeedback": "本文が入るのは D1 の `notes` テーブルで、Vectorize へ `upsert` するのは `id` と `values` です（docs: Upsert the `id` and `vectors` into the `vector-index` index in Vectorize）。"
         }
       ],
-      "correctIndex": 1,
-      "explanation": "典型的なRAG構成では、(1) 事前に文書をチャンク分割してWorkers AIでembedding化しVectorizeに保存（本文はD1やR2に保存し、VectorizeにはベクトルIDとmetadataを持たせることが多い）、(2) ユーザーの質問もembedding化してVectorizeでクエリし類似度の高い文書を取得、(3) 取得した文書本文をコンテキストとしてWorkers AIのテキスト生成モデルに渡し、根拠に基づいた回答を生成する、という流れになる。\n{{diagram:0}}",
+      "correctIndex": 2,
+      "explanation": "この構成では、ノート本文は D1 の `notes` テーブルに入れ、Vectorize には `id` と `values`（埋め込み）だけを `upsert` します。保存時は「D1 に行を挿入して `id` を受け取る」「本文を埋め込みに変換する」「`id` とベクトルを Vectorize に入れる」の順です。\n{{diagram:0}}\n検索時は質問を同じモデルで埋め込みに変換し、`VECTOR_INDEX.query(vectors, { topK: 1 })` で近いベクトルを取り、返ってきた `matches[0].id` を使って `SELECT * FROM notes WHERE id = ?` で本文を引きます。`topK` は返すベクトルの件数を決める指定で、5 にすれば上位5件が返ります。こうして取り出した本文をプロンプトのコンテキストに差し込むのが RAG の基本形です。ノートを削除するときは D1 の行と `VECTOR_INDEX.deleteByIds()` の両方を消す必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/workers-ai/guides/tutorials/build-a-retrieval-augmented-generation-ai/",
-      "hint": "『検索（Retrieval）』と『生成（Generation）』、それぞれどのサービスが担当するかを考えましょう。",
+      "hint": "Vectorize へ `upsert` しているのは `id` と `values` の2つです。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -6733,12 +6732,13 @@
       "diagrams": [
         {
           "type": "sequence",
-          "label": "RAG構成の処理シーケンス",
+          "label": "質問からノート本文を取り出すまで",
           "actors": [
             "ユーザー",
             "Worker",
             "Workers AI",
-            "Vectorize"
+            "Vectorize",
+            "D1"
           ],
           "messages": [
             {
@@ -6749,23 +6749,40 @@
             {
               "from": 1,
               "to": 2,
-              "text": "質問をembedding化"
+              "text": "質問を埋め込みに変換"
+            },
+            {
+              "from": 2,
+              "to": 1,
+              "text": "ベクトルを返却",
+              "dashed": true
             },
             {
               "from": 1,
               "to": 3,
-              "text": "類似ベクトルをquery"
+              "text": "`query(vectors, { topK: 1 })`"
             },
             {
               "from": 3,
               "to": 1,
-              "text": "類似文書のID/metadataを返却",
+              "text": "一致したベクトルの `id` を返却",
+              "dashed": true
+            },
+            {
+              "from": 1,
+              "to": 4,
+              "text": "`SELECT * FROM notes WHERE id = ?`"
+            },
+            {
+              "from": 4,
+              "to": 1,
+              "text": "ノート本文を返却",
               "dashed": true
             },
             {
               "from": 1,
               "to": 2,
-              "text": "IDで引いた本文をコンテキストに回答生成を依頼"
+              "text": "本文をコンテキストに回答生成を依頼"
             },
             {
               "from": 2,
@@ -7006,28 +7023,28 @@
       "category": "ai-vectorize",
       "difficulty": "advanced",
       "type": "single",
-      "question": "AI Gatewayのフォールバック（Fallback）機能に関する説明として正しいものはどれですか？",
+      "question": "AI Gateway の Universal endpoint に、Workers AI・OpenAI・別プロバイダーの順で3つの候補を並べたリクエストを送ったところ、レスポンスに `cf-aig-step: 1` が付いていた。この結果の読み方として正しいものはどれですか？",
       "options": [
         {
-          "text": "フォールバックは、AI Gatewayのキャッシュがヒットしなかった場合にのみ発動して元のプロバイダーへリクエストを転送する機能で、プロバイダーの切り替えとは無関係である",
-          "wrongFeedback": "フォールバックはキャッシュミス時の挙動ではなく、リクエストがエラーになった場合に別のプロバイダー/モデルへ自動的に切り替える機能です。"
+          "text": "`cf-aig-step` は成功したステップを1始まりで数えるので、先頭に置いた Workers AI がそのまま成功した",
+          "wrongFeedback": "先頭の候補が成功したときの値は `0` です（docs: `cf-aig-step:0` – The first (primary) model was used successfully.）。`1` は2番目の候補に切り替わったことを表します。"
         },
         {
-          "text": "フォールバックはWorkers AIのモデル同士でのみ利用でき、外部プロバイダーとの組み合わせでは使えない",
-          "wrongFeedback": "AI GatewayはWorkers AIと外部プロバイダー（OpenAIなど）を横断してフォールバック先に指定できます。"
+          "text": "`cf-aig-step` はリトライした回数を表すので、先頭の Workers AI が1回リトライしたうえで成功した",
+          "wrongFeedback": "このヘッダーが表すのは、成功したステップの番号です（docs: the response header `cf-aig-step` indicates which model successfully processed the request by returning the step number.）。リトライ回数は `cf-aig-max-attempts` など別の設定が扱います。"
         },
         {
-          "text": "リクエスト時に複数のプロバイダー/モデルを優先順位付きで指定しておくと、最初のプロバイダーでエラーが発生した場合に自動的に次の候補へリトライしてくれる機能"
+          "text": "`cf-aig-step` は成功したステップを0始まりで数えるので、2番目に置いた OpenAI が処理した"
         },
         {
-          "text": "フォールバックを有効にすると、常に最も安価なプロバイダーが自動的に選ばれ続ける",
-          "wrongFeedback": "フォールバックはコスト最適化のための自動選択機能ではなく、あらかじめ指定した順序でエラー時に代替先へ切り替える仕組みです。"
+          "text": "フォールバックが発動する条件はエラー応答に限られるので、先頭の Workers AI はタイムアウトではなくエラーを返したことになる",
+          "wrongFeedback": "フォールバックはエラー応答だけでなくタイムアウトでも発動します（docs: Cloudflare can trigger your fallback provider in response to request errors or predetermined request timeouts.）。ステップ番号の読み方自体は合っています。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "AI GatewayのUniversal Endpointでフォールバック機能を使うと、優先順位付きで複数のプロバイダー/モデルを1つのリクエストにまとめて指定できる。最初に指定したプロバイダーへのリクエストがエラーやタイムアウトになった場合、Gatewayが自動的に次に指定されたプロバイダーへリクエストをリトライするため、特定のAIプロバイダーで障害やレート制限が発生してもアプリケーション全体の可用性を保ちやすくなる。どのステップで成功したかはレスポンスヘッダー（cf-aig-step）で確認できる。\n{{diagram:0}}",
+      "explanation": "Universal endpoint では、プロバイダーとモデルの候補を優先順に配列で並べ、1回のリクエストにまとめて載せられます。候補は必要なだけ増やせます（docs: You can add as many fallbacks as you need）。先頭の候補がエラーを返すか、設定した時間内に応答を返さなかった場合、Gateway が次の候補へ自動的に進みます（docs: Cloudflare can trigger your fallback provider in response to request errors or predetermined request timeouts.）。\n{{diagram:0}}\nどの候補が実際に応答を返したかはレスポンスヘッダー `cf-aig-step` で分かります。`cf-aig-step:0` が先頭の候補、`cf-aig-step:1` が2番目の候補で、フォールバックするたびに1ずつ増えます。したがって `1` は「先頭が失敗し、2番目が処理した」という意味です。なお同じプロバイダーへの再試行は別の仕組みで、`cf-aig-max-attempts`、`cf-aig-retry-delay`、`cf-aig-backoff` のヘッダーで最大5回まで設定します。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/fallbacks/",
-      "hint": "切り替え先には、外部のプロバイダーも指定できます。",
+      "hint": "`cf-aig-step` の数え方は、配列の添字と同じです。",
       "tags": [
         "ai-vectorize",
         "trivia"
@@ -7035,20 +7052,21 @@
       "diagrams": [
         {
           "type": "flow",
-          "label": "AI Gateway フォールバックの流れ",
+          "label": "フォールバックと `cf-aig-step`",
           "steps": [
             {
-              "text": "リクエスト",
-              "sub": "プロバイダーA（第一候補）を指定"
+              "text": "配列の先頭の候補へリクエスト",
+              "sub": "成功すれば `cf-aig-step: 0`"
             },
             {
-              "text": "プロバイダーAでエラー発生"
+              "text": "エラー応答またはタイムアウトを検知"
             },
             {
-              "text": "AI Gatewayが自動的にプロバイダーB（第二候補）へリトライ"
+              "text": "配列の2番目の候補へ自動的に進む",
+              "sub": "別プロバイダーも指定できる"
             },
             {
-              "text": "プロバイダーBからの応答をクライアントへ返却"
+              "text": "応答に `cf-aig-step: 1` を付けて返す"
             }
           ]
         }
@@ -7744,28 +7762,28 @@
       "id": "ar-009",
       "category": "architecture",
       "difficulty": "intermediate",
-      "question": "Cloudflare上でWorkers + D1 + R2 + Queuesを組み合わせたフルスタック構成において、画像アップロード後に重い処理(サムネイル生成など)を行う場合の一般的な設計パターンはどれですか？",
+      "question": "R2 の Event notifications で `object-create` を Queue に送り、コンシューマ Worker がサムネイルを作る構成にした。通知メッセージの中身と、通知が発生する条件の説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "画像はD1にBLOBとして直接保存し、R2は使用しない",
-          "wrongFeedback": "D1はリレーショナルなSQLiteベースのDBであり、大容量バイナリの保存にはR2のようなオブジェクトストレージを使うのが適しています。"
+          "text": "メッセージ本文にはオブジェクト本体が Base64 で入り、`object-create` は既存オブジェクトの上書きでも発生する",
+          "wrongFeedback": "メッセージ本文に入るのは `bucket` や `object.key` などのメタデータです（docs: `object.key` | String | The key (or name) of the object within the bucket.）。画像本体は `object.key` で R2 から読み直します。"
         },
         {
-          "text": "Workerはアップロードされた画像をR2に保存し、メタデータをD1に書き込んだ後、重い処理のジョブをQueuesに送信して非同期に処理する"
+          "text": "メッセージ本文には `object.key` と `object.size` が入り、`object-create` は既存オブジェクトの上書きでも発生する"
         },
         {
-          "text": "すべての処理をクライアント側のJavaScriptで完結させ、サーバー側のストレージは使用しないため、アップロードした画像やサムネイルはブラウザのlocalStorageの中だけに保持される",
-          "wrongFeedback": "サーバーサイドで永続化や重い処理のオフロードをしないと、複数デバイス間でのデータ共有や非同期処理ができません。"
+          "text": "メッセージ本文にはオブジェクト本体が Base64 で入り、`object-create` が発生するのは新しいキーが作られたときに限られる",
+          "wrongFeedback": "2点とも誤りです。本文はメタデータだけで（docs: `object.key` | String | The key (or name) of the object within the bucket.）、`object-create` は上書きでも発生します（docs: Triggered when new objects are created or existing objects are overwritten.）。"
         },
         {
-          "text": "Workerのリクエストハンドラ内で画像をR2に保存し、サムネイル生成処理まで最後まで同期的に完了させてから、生成済みのURLを含むレスポンスを返す",
-          "wrongFeedback": "重い処理をリクエスト内で同期的に行うとCPU時間の課金が増え、レスポンスも遅延します。重い処理はQueuesで非同期化するのが一般的なパターンです。"
+          "text": "メッセージ本文には `object.key` と `object.size` が入り、`object-create` が発生するのは新しいキーが作られたときに限られる",
+          "wrongFeedback": "`object-create` は新規作成に限りません（docs: Triggered when new objects are created or existing objects are overwritten.）。`PutObject` による上書きでも通知が飛びます。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "典型的な設計では、各サービスの役割を分担します。R2に画像本体を保存し、D1に構造化されたメタデータを保存し、時間のかかる処理はQueuesにジョブとして送信して別のWorker(Queue Consumer)が非同期に処理します。こうすることで、アップロードのリクエスト自体は素早くレスポンスを返しつつ、重い処理をバックグラウンドで安全に実行できます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "R2 の Event notifications は、バケット内のデータが変わったときに Queue へメッセージを送る仕組みです。コンシューマが受け取る本文に入るのは `account`、`action`、`bucket`、`object.key`、`object.size`、`object.eTag`、`eventTime` といったメタデータで、画像そのものは含まれません。サムネイルを作る Worker は `object.key` を使って R2 から対象を読み直します。\n{{diagram:0}}\n`object-create` は新規作成だけでなく既存オブジェクトの上書きでも発生し、`PutObject` / `CopyObject` / `CompleteMultipartUpload` が引き金になります。つまり同じキーに画像を置き直せばサムネイルも作り直されます。特定のディレクトリだけを対象にしたいときは、`npx wrangler r2 bucket notification create <BUCKET_NAME> --event-type object-create --queue <QUEUE_NAME> --prefix \"uploads/\"` のように通知ルール側で絞り込めます。ルールは1バケットあたり100個まで作れます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/queues/",
-      "hint": "「時間のかかる処理をリクエスト内で待たせない」ためにはどのサービスを使うべきか考えてみましょう。",
+      "hint": "Queue に載るのは、オブジェクトの中身ではなく、どのオブジェクトかという情報です。",
       "tags": [
         "architecture",
         "practical"
@@ -7773,48 +7791,44 @@
       "diagrams": [
         {
           "type": "flow",
-          "label": "画像アップロード〜サムネイル生成の流れ",
+          "label": "Event notifications でサムネイルを作る流れ",
           "steps": [
             {
-              "text": "クライアントが画像をアップロード"
+              "text": "クライアントが画像を R2 に `PutObject` する"
             },
             {
-              "text": "WorkerがR2に画像を保存"
+              "text": "R2 が `object-create` イベントを検知する",
+              "sub": "上書きでも発生する"
             },
             {
-              "text": "WorkerがD1にメタデータを書き込み"
+              "text": "通知メッセージが Queue に送られる",
+              "sub": "`object.key` や `object.size` が入る"
             },
             {
-              "text": "Workerがサムネイル生成ジョブをQueuesに送信"
+              "text": "コンシューマ Worker がメッセージを受け取る"
             },
             {
-              "text": "Queue ConsumerのWorkerが非同期でサムネイル生成"
+              "text": "`object.key` で画像を読み直しサムネイルを保存する"
             }
           ]
         },
         {
           "type": "comparison",
-          "label": "各サービスの役割分担",
+          "label": "通知メッセージに入るもの",
           "columns": [
             {
-              "heading": "R2",
+              "heading": "メッセージ本文に入る",
               "items": [
-                "画像本体の保存",
-                "オブジェクトストレージ"
+                "`bucket` と `object.key` でどのオブジェクトかが分かる",
+                "`object.size` と `object.eTag` でサイズと版が分かる",
+                "`action` に `PutObject` などの操作名が入る"
               ]
             },
             {
-              "heading": "D1",
+              "heading": "Worker 側で取りに行く",
               "items": [
-                "構造化メタデータ",
-                "リレーショナルSQL"
-              ]
-            },
-            {
-              "heading": "Queues",
-              "items": [
-                "重い処理の非同期化",
-                "リクエストと処理の分離"
+                "画像のバイト列は `object.key` を使って R2 から読み直す",
+                "生成したサムネイルは Worker が R2 に書き戻す"
               ]
             }
           ]
@@ -11590,28 +11604,28 @@
       "id": "ar-017",
       "category": "architecture",
       "difficulty": "advanced",
-      "question": "本番のWorkerでエラー率が急上昇した。原因を切り分けるための考え方として適切なものはどれですか？",
+      "question": "本番の Worker でエラー率が急上昇した。この Worker は `observability` の `head_sampling_rate` を `0.01` に設定している。Workers Logs に何が残るかの理解として正しいものはどれですか？",
       "options": [
         {
-          "text": "Workers Logsには未捕捉の例外が記録されないため、例外の発生を把握するには`wrangler tail`を常時起動したままにしておく必要がある",
-          "wrongFeedback": "Workers Logsには未捕捉の例外も記録されます（docs: logs include errors and uncaught exceptions）。`wrangler tail`は補助的な手段で、常時起動しておく必要はありません。"
+          "text": "サンプリングはログ1件ごとに独立してかかるため、未捕捉の例外は残っても同じリクエストの `console.log` は落ちる、ということが起きる",
+          "wrongFeedback": "間引かれる単位はリクエストです（docs: All logs within the context of the request are collected.）。対象になったリクエストのログが虫食いになることはありません。"
         },
         {
-          "text": "invocation logはWorker側の設定では無効化できないため、記録されるログの量を抑えたい場合は`console.log`の呼び出しを減らすしかない",
-          "wrongFeedback": "invocation logはwranglerの設定で`invocation_logs = false`を指定すれば無効化できます。`console.log`を減らす以外の手段があります。"
+          "text": "サンプリングはリクエスト単位でかかり、対象になったリクエストの `console.log` は残るが、未捕捉の例外は `wrangler tail` にだけ流れる",
+          "wrongFeedback": "未捕捉の例外も Workers Logs に入ります（docs: Logs include invocation logs, custom logs, errors, and uncaught exceptions.）。`wrangler tail` を常時つないでおく必要はありません。"
         },
         {
-          "text": "Workers Logsなどでエラーの発生箇所を確認し、Worker自体の実行エラー(例外)なのか、fetch()等のサブリクエスト先のエラーなのかをまず切り分ける"
+          "text": "サンプリングはリクエスト単位でかかり、対象になったリクエストでは `console.log` も未捕捉の例外もまとめて残る"
         },
         {
-          "text": "1回の呼び出しごとにinvocation logが複数出力されるため、件数を数える前にまず重複を取り除く処理を行う必要がある",
-          "wrongFeedback": "1回の呼び出しにつき返る invocation log は1つです（docs: Each Workers invocation returns a single invocation log）。重複を取り除く必要はありません。"
+          "text": "サンプリングはログ1件ごとに独立してかかり、未捕捉の例外は対象から外れて `wrangler tail` にだけ流れる",
+          "wrongFeedback": "2点とも誤りです。間引く単位はリクエストで（docs: All logs within the context of the request are collected.）、未捕捉の例外も Workers Logs に入ります（docs: Logs include invocation logs, custom logs, errors, and uncaught exceptions.）。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "障害切り分けの基本は、エラーが発生している「レイヤー」を特定することです。Workers Logsを確認し、Worker内の例外(TypeErrorなど、スタックトレースが記録される)なのか、それともfetch()で呼び出している外部APIやD1/R2などサブリクエスト先のタイムアウト・5xxエラーなのかを見分けます。原因のレイヤーが分かれば、コードの修正、リトライ処理の追加、外部サービス側への問い合わせなど、次の対応を絞り込めます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "Workers Logs には invocation log、`console.log` などのカスタムログ、エラー、そして未捕捉の例外が入ります（docs: Logs include invocation logs, custom logs, errors, and uncaught exceptions.）。例外を見るために `wrangler tail` を常時つないでおく必要はありません。\n{{diagram:0}}\n`head_sampling_rate` はヘッドベースのサンプリングで、間引く単位はログ1件ではなくリクエストです。`0.01` なら100リクエストに1つが記録対象になり、対象になったリクエストについてはその文脈のログがまとめて残ります（docs: All logs within the context of the request are collected.）。だから残った1%については処理の流れを最後まで追えます。\n{{diagram:1}}\nエラー率の調査では、発生頻度の低い例外を取りこぼす可能性があるため、調査中だけ `head_sampling_rate` を上げる判断もあります。設定を省略した場合の既定値は1（100%）で、ログの保持期間は7日です。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/",
-      "hint": "1回の呼び出しにつき、invocation logは1つです。",
+      "hint": "サンプリングはリクエスト単位で効きます。",
       "tags": [
         "architecture",
         "practical",
@@ -11620,40 +11634,49 @@
       ],
       "diagrams": [
         {
-          "type": "flow",
-          "label": "障害切り分けの流れ",
-          "steps": [
+          "type": "comparison",
+          "label": "`head_sampling_rate` が間引く単位",
+          "columns": [
             {
-              "text": "エラー率上昇を検知"
+              "heading": "リクエスト単位（実際の挙動）",
+              "items": [
+                "`0.01` なら100リクエストに1つが記録対象になる",
+                "対象になったリクエストの文脈のログはまとめて残る",
+                "残った1件については処理の流れを最後まで追える"
+              ]
             },
             {
-              "text": "Workers Logsでエラー内容を確認"
-            },
-            {
-              "text": "Worker内の例外か、サブリクエストのエラーかを切り分け"
-            },
-            {
-              "text": "原因箇所(コード/外部API/DB)を特定して対処"
+              "heading": "ログ1件単位（よくある誤解）",
+              "items": [
+                "同じリクエストのログが虫食いになる",
+                "例外だけ残って直前の `console.log` が消える"
+              ]
             }
           ]
         },
         {
-          "type": "comparison",
-          "label": "エラーの発生レイヤーの見分け方",
-          "columns": [
+          "type": "config",
+          "label": "Worker の observability 設定",
+          "filepath": "wrangler.jsonc",
+          "lines": [
             {
-              "heading": "Worker実行エラー",
-              "items": [
-                "コード内の例外(TypeError等)",
-                "Workers Logsにスタックトレースが記録される"
-              ]
+              "text": "{"
             },
             {
-              "heading": "サブリクエスト先のエラー",
-              "items": [
-                "外部API/DBのタイムアウトや5xx",
-                "fetch()の戻り値やcatchで検知"
-              ]
+              "text": "  \"observability\": {"
+            },
+            {
+              "text": "    \"enabled\": true,"
+            },
+            {
+              "text": "    \"head_sampling_rate\": 0.01",
+              "highlight": true
+            },
+            {
+              "text": "  }"
+            },
+            {
+              "text": "}"
             }
           ]
         }
@@ -12684,28 +12707,28 @@
       "id": "hw-017",
       "category": "hyperdrive-workflows",
       "difficulty": "advanced",
-      "question": "Workflowのステップから決済APIのような「二重実行したくない外部API」を呼ぶ場合の設計として、公式のベストプラクティスに沿ったものはどれですか？",
+      "question": "Workflow のステップに `step #1 at ${Date.now()}` のように通過のたびに変わる名前を付けた場合、Workflows エンジンの挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "step.doの外側(runメソッド直下)でAPIを呼べばステップのリトライ対象から外れるため二重実行は起きず、結果も自動的に永続化される",
-          "wrongFeedback": "step.doの外での副作用はむしろアンチパターンです。エンジンの再実行時に何度も走る可能性があり、永続化もされません。副作用は必ずステップの中に入れます。"
+          "text": "状態のキャッシュキーにはステップの実行順インデックスが使われるため、名前が通過ごとに変わっても順序が同じなら前回の結果がそのまま再利用される",
+          "wrongFeedback": "キャッシュキーはステップ名そのものです（docs: Step names act as the `cache key` in your Workflow.）。実行順インデックスではないため、名前が変われば前回の結果は引けません。"
         },
         {
-          "text": "呼び出し結果をグローバル変数に保存しておき、2回目以降はスキップする",
-          "wrongFeedback": "ステップ外の状態(グローバル変数など)に依存してはいけません。実行環境をまたいで保持される保証がないためです。判定は外部システム側の状態を確認して行います。"
+          "text": "ステップ名が状態のキャッシュキーなので、前回と名前が一致しない時点でエンジンが不整合と判断し、インスタンスは失敗して終了する",
+          "wrongFeedback": "名前が一致しないときに起きるのは失敗ではなく再実行です（docs: This will cause the step to be re-run if subsequent steps fail.）。エラーにならず黙って余計に走るのが、この不具合の見つけにくいところです。"
         },
         {
-          "text": "リトライを完全に無効化すれば二重実行は起きないので、それで十分",
-          "wrongFeedback": "リトライを切ると一時障害からの回復力を失います。またステップ外の要因(エンジンの再起動など)による再実行は防げないため、冪等性の確保が本質的な対策です。"
+          "text": "ステップ名が状態のキャッシュキーなので、名前が通過ごとに変わると過去の結果を引けず、後続ステップの失敗をきっかけに再実行される"
         },
         {
-          "text": "ステップは複数回実行されうる前提に立ち、課金済みかを確認してから課金APIを呼ぶ「冪等(idempotent)」な実装にする"
+          "text": "状態のキャッシュキーにはステップの実行順インデックスが使われるため、名前が変わるとインデックスの対応がずれ、後続ステップが別のステップの結果を受け取る",
+          "wrongFeedback": "キャッシュキーはステップ名そのものです（docs: Step names act as the `cache key` in your Workflow.）。インデックスでの照合ではないため、結果が別のステップに配られることはありません。"
         }
       ],
-      "correctIndex": 3,
-      "explanation": "ステップはリトライやエンジンの再起動によって複数回実行される可能性があります。そのため「支払い済みかを外部システムに確認し、済みなら早期リターンしてから課金APIを呼ぶ」というように、何度実行しても結果が変わらない冪等な実装にするのが公式のルールです。\n{{diagram:0}}\nあわせて、副作用は必ず `step.do` の中で行うこと、ステップ外の状態(グローバル変数など)に依存しないことも同じガイドで定められています。",
+      "correctIndex": 2,
+      "explanation": "Workflows は `step.do` に渡した名前を「キャッシュキー」として扱い、その名前で過去の実行結果を引きます（Rules of Workflows: Step names act as the `cache key` in your Workflow.）。名前に `Date.now()` を混ぜると通過のたびに別のキーになり、状態がキャッシュされません。\n{{diagram:0}}\nその結果、後続のステップが失敗してエンジンが `run` を通過し直したとき、本来スキップされるはずのステップまで再び実行されます。エラーにはならず黙って余分に走るため、外部 API を叩くステップだと二重実行として表面化します。一方 `get cat: ${cat}` のように、ステップ出力など決定的な値から組み立てた動的な名前であれば問題ありません。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/build/rules-of-workflows/",
-      "hint": "「リトライされても安全」をコード側でどう保証するか、という問題です。",
+      "hint": "エンジンは「このステップは前に成功したか」をステップ名で照合します。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12713,20 +12736,20 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "冪等なステップ設計",
+          "label": "ステップ名の付け方と再実行",
           "columns": [
             {
-              "heading": "良い実装",
+              "heading": "決定的な名前",
               "items": [
-                "課金済みかを確認してから課金APIを呼ぶ",
-                "副作用はstep.doの中で実行する"
+                "`fetch user data from KV` のように毎回同じ名前になる",
+                "名前でキャッシュを引けるので成功済みステップは再実行されない"
               ]
             },
             {
-              "heading": "悪い実装",
+              "heading": "非決定的な名前",
               "items": [
-                "確認なしでいきなり課金APIを呼ぶ",
-                "step.doの外やグローバル変数に依存する"
+                "`Date.now()` を混ぜると通過のたびに別の名前になる",
+                "キャッシュを引けず、後続の失敗をきっかけに再び実行される"
               ]
             }
           ]
@@ -12737,28 +12760,28 @@
       "id": "hw-018",
       "category": "hyperdrive-workflows",
       "difficulty": "advanced",
-      "question": "非同期処理の実装でCloudflare QueuesとWorkflowsを使い分ける判断として適切なものはどれですか？",
+      "question": "Cloudflare Queues のコンシューマに10件のバッチが届き、8件目の処理で例外を投げた（`ack()` も `retry()` も呼んでいない）。同じ処理を Workflows の連続した `step.do` として書いた場合と並べたとき、再試行の挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "常にWorkflowsを使うべきで、Queuesを選ぶ理由は存在しない",
-          "wrongFeedback": "単発の軽量なジョブを大量にさばくならQueuesのバッチ処理が適しています。要件によって使い分けます。"
+          "text": "Queues はバッチ10件をまとめて再配信し、Workflows は成功済みステップの結果を再利用して失敗したステップだけを実行し直す"
         },
         {
-          "text": "単発メッセージの非同期処理やバッチ配信はQueues、複数ステップの状態保持・ステップ単位のリトライ・長時間の待機が必要な処理はWorkflowsが適する"
+          "text": "Queues はバッチ10件をまとめて再配信し、Workflows はインスタンスを先頭からやり直すため成功済みステップの処理もそのまま再び実行される",
+          "wrongFeedback": "エンジンは `run` を先頭から通過し直しますが、成功済みのステップはキャッシュされた結果を返すだけでコールバックは走りません（docs: after running successfully will not run again）。"
         },
         {
-          "text": "Workflowsはステップが何度も再実行される前提のため読み取り専用の処理しか実行できず、決済や在庫更新のような書き込みを伴う処理はQueuesを使う一択である",
-          "wrongFeedback": "Workflowsに読み取り専用という制約はありません。むしろ決済や在庫更新のような書き込みを伴う多段処理こそWorkflowsの得意分野です。"
+          "text": "Queues は失敗した8件目だけを再配信し、Workflows は成功済みステップの結果を再利用して失敗したステップだけを実行し直す",
+          "wrongFeedback": "明示的に `ack()` していないバッチは、1件の失敗で全体が再配信されます（docs: if a batch of 10 messages is delivered, but the 8th message fails to be delivered, all 10 messages will be retried）。"
         },
         {
-          "text": "QueuesはWorkflowsの旧名称であり、現在は完全に同じ機能を指す",
-          "wrongFeedback": "別のサービスです。Queuesはメッセージキュー、Workflowsは複数ステップの耐久実行エンジンで、併用もできます。"
+          "text": "Queues は失敗した8件目だけを再配信し、Workflows はインスタンスを先頭からやり直すため成功済みステップの処理もそのまま再び実行される",
+          "wrongFeedback": "2点とも誤りです。Queues は明示的な `ack()` がなければバッチ全体を再配信し（docs: all 10 messages will be retried）、Workflows の成功済みステップはキャッシュから返されて再実行されません（docs: after running successfully will not run again）。"
         }
       ],
-      "correctIndex": 1,
-      "explanation": "Queuesは「メッセージを送って、コンシューマがバッチで処理する」単発の非同期処理に向いた仕組みで、デフォルトではバッチ単位でリトライされます(明示的なackで個別メッセージ単位にもできます)。一方Workflowsは「複数ステップの進行状況を永続化しながら、失敗したステップだけをリトライし、必要なら数日単位でスリープする」耐久実行に向いています。\n{{diagram:0}}\n両者は排他ではなく、Queueのコンシューマから `create()` でWorkflowを起動する、といった組み合わせも自然な設計です。",
+      "correctIndex": 0,
+      "explanation": "Queues のコンシューマがバッチの途中で例外を投げると、明示的に `ack()` したメッセージを除いてバッチ全体が再配信されます。10件のうち8件目が失敗すれば、10件がまるごと届き直します。個別に扱いたいときは処理できたメッセージごとに `msg.ack()` を呼び、失敗したものだけ `msg.retry()` に回します。既定の `max_retries` は3回で、超えたメッセージは削除されるか、設定していればデッドレターキューへ送られます。\n{{diagram:0}}\nWorkflows のステップは名前をキーに結果がキャッシュされるため、リトライでエンジンが `run` を通過し直しても、成功済みのステップはキャッシュされた値を返すだけでコールバックは再実行されません。ステップのリトライ既定値は `limit: 5`、`delay: 10000`、`backoff` は指数バックオフ、`timeout` は10分です。",
       "referenceUrl": "https://developers.cloudflare.com/workflows/",
-      "hint": "「1回の処理をさばく」のか「一連の流れを最後まで面倒みる」のか、で分けて考えましょう。",
+      "hint": "明示的な `ack()` を呼んでいないとき、Queues の再配信はコンシューマに渡された塊がそのまま単位になります。",
       "tags": [
         "hyperdrive-workflows",
         "practical"
@@ -12766,22 +12789,22 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "Queues と Workflows の使い分け",
+          "label": "失敗したときに何が再試行されるか",
           "columns": [
             {
-              "heading": "Queues",
+              "heading": "Queues のコンシューマ",
               "items": [
-                "単発メッセージの非同期処理",
-                "バッチ配信と流量の平準化",
-                "デフォルトはバッチ単位でリトライ(ackで個別化可)"
+                "バッチ内の1件が失敗するとバッチ全体が再配信される",
+                "`msg.ack()` したメッセージは再配信の対象から外れる",
+                "既定の `max_retries` は3回で、超えたメッセージは削除される"
               ]
             },
             {
-              "heading": "Workflows",
+              "heading": "Workflows のステップ",
               "items": [
-                "複数ステップの耐久実行",
-                "ステップ単位の状態保持とリトライ",
-                "日単位のスリープや長時間処理"
+                "失敗したステップだけがそのステップの設定に従って再試行される",
+                "成功済みステップは名前をキーにキャッシュされた結果を返す",
+                "既定のリトライ上限は5回で、指数バックオフが使われる"
               ]
             }
           ]
