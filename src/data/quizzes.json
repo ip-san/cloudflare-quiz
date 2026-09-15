@@ -24813,7 +24813,7 @@
       "correctIndex": 0,
       "explanation": "API ShieldのJWT検証は、JWT発行者の検証鍵セット(JWKS。非対称アルゴリズムの公開鍵、またはHMACアルゴリズム用の共通鍵)とJWTの所在場所(ヘッダーまたはCookieとその名前)を含む「トークン検証設定」と、どのホスト名・エンドポイントにルールを適用するか、どのトークン検証設定を使うか、トークン不在時の扱い(Ignore・Mark as non-compliant)、非準拠リクエストへのアクションを指定する「JWT検証ルール」という2つの要素で構成されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/jwt-validation/#process",
-      "hint": "「鍵をどこから持ってくるか」を決める設定と、「どこに適用するか」を決める設定の2つに分かれていると考えましょう。",
+      "hint": "非準拠と判定されたリクエストへの対応は、適用するルールの中でアクションとして指定します。",
       "tags": [
         "api-shield",
         "practical"
@@ -24960,7 +24960,7 @@
       "correctIndex": 2,
       "explanation": "API Discoveryは、似たようなリクエストパスをパス正規化によってグルーピングします。例えば`api.example.com/profile/238`と`api.example.com/profile/392`は、どちらもユーザープロフィールの取得という同じ目的を持つため、`api.example.com/profile/*`のような1つのエンドポイントとしてまとめられます。同様に、同じエンドポイント群を持つ複数のサブドメインも1つにまとめられます。API Discoveryはセッション識別子ベースと機械学習ベースの2つの手法を組み合わせており、Enterpriseプラン限定の機能です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/api-discovery/",
-      "hint": "似た目的を持つ複数のパスを、1つの「型」にまとめる仕組みを考えましょう。",
+      "hint": "数字を含むパスがAPI Discoveryの対象から外れることはありません。",
       "tags": [
         "api-shield",
         "practical"
@@ -25056,7 +25056,7 @@
       "correctIndex": 1,
       "explanation": "positive security modelは、期待する順序パターンの外にあるAPIリクエストを行うユーザーをブロックするモデルです。negative security modelは、既知の悪性なAPI呼び出しシーケンスを行うユーザーをブロックするモデルで、正しいpositiveモデルを設計している間の暫定的な対処として使われることもあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/api-shield/security/sequence-mitigation/#process",
-      "hint": "「期待する動きから外れたら止める」のか「知っている悪い動きをしたら止める」のか、着眼点の違いを考えましょう。",
+      "hint": "positive security modelは、すべてのリクエストを許可するものではありません。",
       "tags": [
         "api-shield",
         "practical"
@@ -35167,7 +35167,7 @@
       "correctIndex": 3,
       "explanation": "既知の制限として、Webカメラ・マイクの利用、NetflixやSpotify Web Playerの利用、H.265/HEVC形式の動画再生は、いずれも現時点でサポートされていないと明記されています。これらは今後実装される可能性がある機能として位置づけられています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/remote-browser-isolation/known-limitations/#website-compatibility",
-      "hint": "リアルタイムの映像・音声処理が絡む機能は、まだ対応が難しい領域だと考えましょう。",
+      "hint": "カメラやマイクを使う操作は、現時点では利用できません。",
       "tags": [
         "browser-isolation",
         "practical"
@@ -42720,7 +42720,7 @@
       "correctIndex": 1,
       "explanation": "`this.setState()`は(1)新しい状態をSQLiteへ保存し、(2)接続中の全WebSocketクライアントへ変更をブロードキャストし、(3)最後に`onStateChanged()`コールバックを発火させます。\n{{diagram:0}}\n状態はJSONシリアライズ可能である必要があります。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/lifecycle/state/",
-      "hint": "「永続化」「同期」「コールバック」の3段階の処理が行われます。",
+      "hint": "保存された状態は、再起動やハイバネーションを挟んでも消えません。",
       "tags": [
         "agents",
         "topic-state"
@@ -42999,7 +42999,7 @@
       "correctIndex": 2,
       "explanation": "`this.broadcast()`は接続中の全WebSocketクライアントへメッセージを送信します。第2引数に接続ID(`connection.id`)の配列を渡すことで、特定の接続を送信対象から除外できます。\n{{diagram:0}}\n例えば「誰かが参加した」という通知を、その本人以外の全員へ送るといった用途に使えます。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/websockets/",
-      "hint": "第2引数で「送らない相手」を指定できます。",
+      "hint": "`broadcast()`を呼び出すと、その時点で接続中のクライアントへ送信されます。",
       "tags": [
         "agents",
         "topic-websockets"
@@ -43177,7 +43177,7 @@
       "correctIndex": 3,
       "explanation": "`routeAgentRequest()`はクライアントから届いたHTTPリクエストのURLを解析し、対応するAgentインスタンスへ自動的にルーティングするための関数です。一方`getAgentByName()`は、サーバー側のコードから特定の名前空間・インスタンス名を指定してAgentインスタンスを取得し、RPC呼び出しやリクエストの転送(`basePath`を使ったカスタムルーティングなど)を行いたい場合に使います。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/communication/routing/",
-      "hint": "「クライアントのURLから自動で」なのか「サーバー側コードから明示的に」なのかがポイントです。",
+      "hint": "`getAgentByName()`は、サーバー側のコードから呼び出して使うものです。",
       "tags": [
         "agents",
         "topic-routing"
@@ -43282,7 +43282,7 @@
       "correctIndex": 0,
       "explanation": "`this.schedule()`は、秒数を指定した遅延実行(`this.schedule(60, \"taskName\", payload)`)、Dateオブジェクトを指定した日時実行、cron文字列を指定した定期実行の3つの方式に対応しています。\n{{diagram:0}}\n一定間隔での繰り返し実行には別途`this.scheduleEvery()`を使います。スケジュールされたタスクはSQLiteのテーブルに保存されて実行順に処理され、Durable Objectの`alarm`を使って正しいタイミングでAgentインスタンスを起こす仕組みで実現されています。",
       "referenceUrl": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
-      "hint": "「1回だけ」「日時指定」「cron」の何種類の方式に、`this.schedule()`自体は対応しているかを考えましょう。",
+      "hint": "スケジュールされたタスクは、Agentが休止していても消えません。",
       "tags": [
         "agents",
         "topic-scheduling"
