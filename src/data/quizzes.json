@@ -11593,25 +11593,25 @@
       "question": "本番のWorkerでエラー率が急上昇した。原因を切り分けるための考え方として適切なものはどれですか？",
       "options": [
         {
-          "text": "まずWorkerのコードを全て書き直し、様子を見る",
-          "wrongFeedback": "原因を特定せずに大規模な書き直しを行うのは非効率で、かえって新たな不具合を生むリスクもあります。まずは切り分けを行うべきです。"
+          "text": "Workers Logsには未捕捉の例外が記録されないため、例外の発生を把握するには`wrangler tail`を常時起動したままにしておく必要がある",
+          "wrongFeedback": "Workers Logsには未捕捉の例外も記録されます（docs: logs include errors and uncaught exceptions）。`wrangler tail`は補助的な手段で、常時起動しておく必要はありません。"
         },
         {
-          "text": "クライアント側のブラウザキャッシュをクリアするようユーザーに案内するだけで、サーバー側は調査しない",
-          "wrongFeedback": "サーバー側のログ調査を行わずにクライアント側だけに原因を求めるのは、切り分けとして不十分です。"
+          "text": "invocation logはWorker側の設定では無効化できないため、記録されるログの量を抑えたい場合は`console.log`の呼び出しを減らすしかない",
+          "wrongFeedback": "invocation logはwranglerの設定で`invocation_logs = false`を指定すれば無効化できます。`console.log`を減らす以外の手段があります。"
         },
         {
           "text": "Workers Logsなどでエラーの発生箇所を確認し、Worker自体の実行エラー(例外)なのか、fetch()等のサブリクエスト先のエラーなのかをまず切り分ける"
         },
         {
-          "text": "エラー率の急上昇はすべてCloudflareのネットワーク障害が原因と判断し、自分たちでは切り分けを行わずCloudflareのステータスページとサポートの対応を待つだけにする",
-          "wrongFeedback": "原因の多くはアプリケーションコードや接続先サービス側にあることも多く、まずは自分たちで切り分けを行うべきです。"
+          "text": "1回の呼び出しごとにinvocation logが複数出力されるため、件数を数える前にまず重複を取り除く処理を行う必要がある",
+          "wrongFeedback": "1回の呼び出しにつき返る invocation log は1つです（docs: Each Workers invocation returns a single invocation log）。重複を取り除く必要はありません。"
         }
       ],
       "correctIndex": 2,
       "explanation": "障害切り分けの基本は、エラーが発生している「レイヤー」を特定することです。Workers Logsを確認し、Worker内の例外(TypeErrorなど、スタックトレースが記録される)なのか、それともfetch()で呼び出している外部APIやD1/R2などサブリクエスト先のタイムアウト・5xxエラーなのかを見分けます。原因のレイヤーが分かれば、コードの修正、リトライ処理の追加、外部サービス側への問い合わせなど、次の対応を絞り込めます。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/",
-      "hint": "障害が起きたとき、まず自分のコードの問題か、頼った外部サービスの問題か、どちらから疑うべきか考えましょう。",
+      "hint": "1回の呼び出しにつき、invocation logは1つです。",
       "tags": [
         "architecture",
         "practical",
