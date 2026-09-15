@@ -20096,7 +20096,7 @@
       "correctIndex": 1,
       "explanation": "証明書のCommon Name(CN)にはRFC 5280により64文字の制限があります。64文字を超えるホスト名の場合、証明書作成時に`ssl.cloudflare_branding`を`true`に設定すると、CNには`sni.cloudflaressl.com`が使われ、実際の長いホスト名はSubject Alternative Name(SAN)として証明書に含まれるようになります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/create-custom-hostnames/#hostnames-over-64-characters",
-      "hint": "長すぎる名前を、証明書の「代表名」ではなく「別名リスト」の方に押し込める方法を考えましょう。",
+      "hint": "実際の長いホスト名が、証明書から消えてしまうのか、それとも別の欄に残るのかを考えましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20147,7 +20147,7 @@
       "correctIndex": 0,
       "explanation": "同一ホスト名に複数タイプの証明書が存在しうる場合、Cloudflareは固定された優先順位で証明書を選択します。優先順位は、Keyless SSL(最優先)→ Custom Legacy → Custom Modern → Custom Hostname(Cloudflare for SaaS)→ Advanced → Advanced(Total TLS)→ Universal(最も低い)、という順です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#certificate-deployment",
-      "hint": "「顧客がより手をかけて用意した証明書」ほど優先され、「Cloudflareが自動発行するデフォルト」ほど優先度が低い、という傾向を考えましょう。",
+      "hint": "同じホスト名にCustom Hostname証明書とAdvanced証明書の両方があるとき、どちらが先に選ばれるのかを考えましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20202,7 +20202,7 @@
       "correctIndex": 1,
       "explanation": "完全に一致するホスト名の場合、優先順位は新しいカスタムホスト名 > レガシーカスタムホスト名 > DNS(論理DNSゾーン)の順です。一方、ワイルドカードホスト名の一致の場合は、DNS(論理DNSゾーン)> 新しいカスタムホスト名の順に優先順位が入れ替わります。たとえばSaaS事業者がワイルドカードの新カスタムホスト名を使っている場合、顧客側のDNSレコードが優先されるため顧客のプラン(Freeなど)の制限がそのまま適用されます。SaaS事業者側のプラン制限を適用したい場合は、顧客側のレコードをDNS-only(プロキシなし)にするか、SaaS事業者側が完全一致のカスタムホスト名を使う必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ssl/reference/certificate-and-hostname-priority/#hostname-priority",
-      "hint": "「ぴったり一致」のときと「ワイルドカードでの一致」のときとで、優先順位の並びが入れ替わることを意識しましょう。",
+      "hint": "ワイルドカードで一致したとき、上に来るのはDNSレコードとカスタムホスト名のどちらなのかを考えましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20256,7 +20256,7 @@
       "correctIndex": 1,
       "explanation": "O2Oは、顧客が(SaaS事業者とは異なる)自分自身のCloudflareゾーンを持ち、そのゾーンでカスタムホスト名に一致するプロキシ済みCNAMEレコードを設定した場合に発生します。この場合、まず顧客のゾーンの設定がトラフィックに適用され、その後SaaS事業者のゾーンの設定が適用されます。SaaS事業者側のリクエストには`cf-connecting-o2o: 1`というHTTPヘッダーが付与され、これによってO2Oトラフィックを検出できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/saas-customers/how-it-works/",
-      "hint": "「顧客自身のCloudflareゾーン」と「SaaS事業者のゾーン」、2つのオレンジ雲を通過するときに何が起きるか考えましょう。",
+      "hint": "顧客側がどの種類のDNSレコードを置いたときにO2Oになるのかを考えましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20364,7 +20364,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare for SaaSのカスタムホスト名クォータ(`allocated`)はソフトリミットで、到達しても新規作成は継続できますが、レスポンスに課金警告が含まれるようになります。非Enterpriseプランには、これとは別に`hard_cap`という強制的なしきい値があり、到達するとAPIが新規作成リクエストを拒否します。Enterpriseプランはこのしきい値を超えても作成を継続できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/quotas-and-billing/",
-      "hint": "「警告が出るだけの上限」と「実際に止められる上限」の、2段階のしきい値があることを意識しましょう。",
+      "hint": "`hard_cap`に到達したあとの扱いが、契約しているプランによって変わるのかどうかを確かめましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20417,7 +20417,7 @@
       "correctIndex": 3,
       "explanation": "作成されたカスタムホスト名は、検証待ちや有効化待ちの状態であっても、削除するまでは使用量カウントに含まれます。未使用のカスタムホスト名を削除すると、その時点で使用量カウントから除外されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/quotas-and-billing/#billable-hostnames",
-      "hint": "「まだ使える状態になっていない」ことと「カウントされない」ことは、同じではないと考えましょう。",
+      "hint": "どの状態のカスタムホスト名までがカウントの対象になるのか、その線引きがどこにあるのかを確かめましょう。",
       "tags": [
         "cloudflare-for-saas",
         "practical"
@@ -20946,7 +20946,7 @@
       "correctIndex": 1,
       "explanation": "wrangler設定ファイルの`pipelines`バインディングでStream ID(`stream`フィールド)を指定し、Worker内で`env.<BINDING>.send(records)`を呼び出すことで、JSONシリアライズ可能なレコードの配列をStreamに送信できます。以前は`stream`フィールドの名前が`pipeline`でしたが、現在は`stream`に名称変更されており、`pipeline`は非推奨警告付きで引き続き動作します。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#send-via-workers",
-      "hint": "Workerからは、HTTPリクエストを自分で組み立てるのではなく、バインディング経由でまとめてレコードを渡せないか考えましょう。",
+      "hint": "バインディング設定の書き方は途中で変わっています。いまのWranglerでそのまま通るのはどの書き方かを考えましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -21003,7 +21003,7 @@
       "correctIndex": 0,
       "explanation": "Cloudflare PipelinesのStreamへのHTTPエンドポイントは`https://{stream-id}.ingest.cloudflare.com`という形式です。Streamで認証を有効にしている場合、リクエストの`Authorization: Bearer`ヘッダーに「Workers Pipeline Send」権限を持つAPIトークンを含める必要があります。イベントはJSON配列としてPOSTします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/streams/writing-to-streams/#send-via-http",
-      "hint": "外部システムやブラウザからでも送れるように、どんな「宛先」と「鍵」が必要か考えましょう。",
+      "hint": "送信先のURLが、アカウントごとに1つに決まるのか、Streamごとに変わるのかを確かめましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -21157,7 +21157,7 @@
       "correctIndex": 1,
       "explanation": "Cloudflare PipelinesのSQL変換は、フィルタ・リシェイプ・UNNEST・キャスト・計算といったステートレスな変換のみをサポートしています。集約(aggregation)・結合(join)・ウィンドウ処理といったステートフルな操作は今後の対応が計画されており、現時点ではまだ利用できません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/platform/pricing/#sql-transforms",
-      "hint": "「1件ずつ独立して処理できる変換」と「複数件をまたいで状態を持つ必要がある処理」の違いを考えましょう。",
+      "hint": "型変換のような処理が、いまの時点で使えるのかどうかを確かめましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -21210,7 +21210,7 @@
       "correctIndex": 2,
       "explanation": "`UNNEST`は、配列を複数の行に展開するための演算子です。`SELECT`句の中でのみ使用でき、1つの`SELECT`文でUNNESTできる配列は1つに制限されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/pipelines/sql-reference/select-statements/#unnest-operator",
-      "hint": "配列の中身を「1行ずつバラす」処理が、どの句でしか使えないか、また同時にいくつまで使えるかを考えましょう。",
+      "hint": "1つの`SELECT`文の中で、複数の配列を同時に展開できるのかどうかを考えましょう。",
       "tags": [
         "pipelines",
         "practical"
@@ -22230,15 +22230,15 @@
       "question": "発行済みのCloudflare Accessサービストークンを完全に無効化(失効)させたい場合の正しい方法はどれですか？",
       "options": [
         {
-          "text": "サービストークンそのものを削除する。Accessアプリケーション編集画面の「Revoke existing tokens」はセッションを無効化するだけで、Client ID/Secretが有効な限り次回リクエストで新たなJWTを取得できてしまう"
+          "text": "サービストークンそのものを削除する。「Revoke existing tokens」は既存セッションを切るだけで、鍵が有効なら次回に新しいJWTを取得できてしまう"
         },
         {
           "text": "Accessアプリケーション編集画面で「Revoke existing tokens」を選択するだけで、Client ID/Secretを使った以降の認証は不可能になる",
           "wrongFeedback": "「Revoke existing tokens」は既存セッションを無効化するだけです。Client ID/Secretが有効なままなら、次回リクエストで新しいJWTを取得できてしまいます。"
         },
         {
-          "text": "サービストークンのClient Secretだけを変更すれば、Client IDは変えずにトークンを無効化できる",
-          "wrongFeedback": "Client Secretだけを個別に変更する機能はありません。無効化するにはトークン自体を削除する必要があります。"
+          "text": "サービストークンのClient Secretをローテーションすれば、Client IDは変わらないままトークン自体が使えなくなる",
+          "wrongFeedback": "ローテーション自体は実在し、Client IDを保ったまま新しいClient Secretが発行されます。ただしトークンは新しいSecretで有効なまま残るため、完全な失効にはなりません。失効させるにはトークンそのものを削除します。"
         },
         {
           "text": "サービストークンの有効期間が経過するまで、管理者はいかなる方法でも無効化できない",
@@ -22248,7 +22248,7 @@
       "correctIndex": 0,
       "explanation": "有効期限を待たずにサービストークンを失効させるには、トークンそのものを削除する必要があります。Accessアプリケーションの編集画面にある「Revoke existing tokens」は、そのトークンで発行済みの既存セッションを無効化するだけであり、Client IDとClient Secretが有効なままであれば、次回のリクエストで新しいJWTを取得できてしまいます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#revoke-service-tokens",
-      "hint": "「今のセッションを切る」のと「鍵そのものを使えなくする」のは別の操作だと考えましょう。",
+      "hint": "その操作のあとも Client ID と Client Secret をそのまま使えるかどうかで、選択肢を見比べましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -22299,7 +22299,7 @@
       "correctIndex": 3,
       "explanation": "AccessがオリジンへのリクエストにJWTを付与する際、JWTは`Cf-Access-Jwt-Assertion`リクエストヘッダーとして送られます。ブラウザ経由のリクエストでは`CF_Authorization`クッキーとしても渡されますが、クッキーは常に転送されるとは限らないため、ドキュメントは`Cf-Access-Jwt-Assertion`ヘッダーの検証を推奨しています。ヘッダーの存在確認だけでなく、署名まで含めて検証しないと、なりすましのリスクが残ります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/",
-      "hint": "「必ず届くとは限らないクッキー」と「常に付与されるヘッダー」のどちらを信頼すべきか考えましょう。",
+      "hint": "オリジンに届いたリクエストの、どこを見て何を確かめれば「なりすまし」を防げるのかを考えましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
@@ -23605,7 +23605,7 @@
       "correctIndex": 1,
       "explanation": "Super Bot Fight Modeは`http_request_sbfm`という専用のRuleset Engineフェーズで動作し、WAFカスタムルール(`http_request_firewall_custom`)よりも後に評価されます。そのため、カスタムルールのSkipアクションを使ってSBFMのフェーズをバイパスする例外を作ることができます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/#ruleset-engine",
-      "hint": "SBFMが「カスタムルールより先」か「後」か、専用のフェーズ名とあわせて考えましょう。",
+      "hint": "SBFMの判定が、WAFカスタムルールより先に行われるのか後に行われるのかを考えましょう。",
       "tags": [
         "bots",
         "practical"
