@@ -167,11 +167,49 @@ describe('applyMark（記録を書く本体）', () => {
     sha: 'abc1234',
     note: null,
     baseline: false,
+    deferred: false,
     ids: [],
     at: '2026-09-06',
     ...o,
   })
   const fresh = () => ({ layers: Object.fromEntries(LAYERS.map((l) => [l, {}])) })
+
+  it('--deferred を付けた記録は deferred を持ち、検証済みには数えない', () => {
+    const q = sample()
+    const ledger = fresh()
+    applyMark(ledger, [q], opts({ ids: [q.id], deferred: true, note: 'ヒントだけ直した。対抗馬0なので保留' }))
+    expect(ledger.layers.hint[q.id].deferred).toBe(true)
+    const d = diffLedger([q], ledger)
+    expect(d.hint.deferred).toBe(1)
+    // 記録はされているので「変わった」「記録なし」には出ない
+    expect(d.hint.changed).toEqual([])
+    expect(d.hint.unrecorded).toEqual([])
+    // 検証済みの数 = 記録 - 基準点 - 保留
+    expect(d.hint.recorded - d.hint.baseline - d.hint.deferred).toBe(0)
+  })
+
+  it('保留の記録は、--note なしの ID 明示 mark で検証済みに昇格できない', () => {
+    const q = sample()
+    const ledger = fresh()
+    ledger.layers.hint[q.id] = {
+      fp: fingerprint(q, 'hint'),
+      at: '2026-09-01',
+      ref: 'old0000',
+      note: '保留',
+      deferred: true,
+    }
+    expect(() => applyMark(ledger, [q], opts({ ids: [q.id] }))).toThrow(/保留\(deferred\)の記録/)
+    expect(ledger.layers.hint[q.id].deferred).toBe(true)
+  })
+
+  it('--note 付きで当て直すと保留が落ちて検証済みになる', () => {
+    const q = sample()
+    const ledger = fresh()
+    ledger.layers.hint[q.id] = { fp: 'stale0000000', at: '2026-09-01', ref: 'old0000', note: '保留', deferred: true }
+    applyMark(ledger, [q], opts({ ids: [q.id], note: '誤答を作り直したので当て直した' }))
+    expect(ledger.layers.hint[q.id].deferred).toBeUndefined()
+    expect(diffLedger([q], ledger).hint.deferred).toBe(0)
+  })
 
   it('note の無い基準点の記録は、--note なしの ID 明示 mark で昇格できない', () => {
     const q = sample()

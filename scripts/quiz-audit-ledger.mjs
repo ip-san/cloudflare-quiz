@@ -158,6 +158,7 @@ export function diffLedger(quizzes, ledger, layers = LAYERS) {
     const unrecorded = []
     const ids = new Set()
     let baseline = 0
+    let deferred = 0
     for (const q of quizzes) {
       if (!inLayer(q, layer)) continue
       ids.add(q.id)
@@ -166,6 +167,7 @@ export function diffLedger(quizzes, ledger, layers = LAYERS) {
       else {
         if (r.fp !== fingerprint(q, layer)) changed.push(q.id)
         if (r.baseline) baseline++
+        if (r.deferred) deferred++
       }
     }
     const dead = Object.keys(rec).filter((id) => !allIds.has(id))
@@ -174,6 +176,7 @@ export function diffLedger(quizzes, ledger, layers = LAYERS) {
       total: ids.size,
       recorded: Object.keys(rec).length - dead.length - outOfLayer.length,
       baseline,
+      deferred,
       changed,
       unrecorded,
       outOfLayer,
@@ -190,10 +193,14 @@ export function statusLines(quizzes, ledger) {
   for (const layer of LAYERS) {
     const r = d[layer]
     // ◐ = 変わってはいないが、基準点（検証済みではない）の記録が 1 件でもある
-    const flag = r.changed.length || r.unrecorded.length ? '⚠️ ' : r.baseline > 0 ? '◐ ' : '✓ '
+    const flag = r.changed.length || r.unrecorded.length ? '⚠️ ' : r.baseline > 0 || r.deferred > 0 ? '◐ ' : '✓ '
+    const parts = []
+    if (r.baseline > 0) parts.push(`基準点 ${r.baseline}`)
+    if (r.deferred > 0) parts.push(`保留 ${r.deferred}`)
+    parts.push(`検証 ${r.recorded - r.baseline - r.deferred}`)
     const recorded =
-      r.baseline > 0
-        ? `記録 ${String(r.recorded).padStart(4)}/${r.total}（基準点 ${r.baseline} / 検証 ${r.recorded - r.baseline}）`
+      parts.length > 1
+        ? `記録 ${String(r.recorded).padStart(4)}/${r.total}（${parts.join(' / ')}）`
         : `記録 ${String(r.recorded).padStart(4)}/${r.total}`
     lines.push(
       `${flag}${layer.padEnd(12)} ${recorded}` +
@@ -235,6 +242,7 @@ export function parseMarkArgs(argv) {
   let note = null
   let bulk = false
   let baseline = false
+  let deferred = false
   const ids = []
   const takeValue = (name, i) => {
     const v = rest[i]
@@ -251,6 +259,7 @@ export function parseMarkArgs(argv) {
       note = takeValue('--note', ++i)
     } else if (a === '--bulk') bulk = true
     else if (a === '--baseline') baseline = true
+    else if (a === '--deferred') deferred = true
     else if (a.startsWith('--')) throw new Error(`unknown option: ${a}`)
     else ids.push(a)
   }
@@ -266,6 +275,8 @@ export function parseMarkArgs(argv) {
     )
   }
   if (baseline && !bulk) throw new Error('--baseline は --bulk と一緒にしか使えない（基準点は層全体に置くもの）')
+  if (deferred && bulk) throw new Error('--deferred は ID を明示したときだけ使える（保留は設問ごとの判断なので層全体には置けない）')
+  if (deferred && !note) throw new Error('--deferred には --note が必須（なぜ検証を保留したのかを残す）')
   if (bulk && ids.length) throw new Error('--bulk と ID は同時に指定できない（--bulk は ID を省くためのもの）')
   if (bulk && !note) throw new Error('--bulk には --note が必須（層の全数検証か基準点か、何をしたかを記録する）')
   for (const id of ids) {
@@ -274,7 +285,7 @@ export function parseMarkArgs(argv) {
     }
   }
   // note は null（指定なし）と ''（--note "" で明示的に空）を区別する。前者だけ前の note を引き継ぐ
-  return { layers, ref, note, bulk, baseline, ids }
+  return { layers, ref, note, bulk, baseline, deferred, ids }
 }
 
 function quizFileIsDirty() {
@@ -288,7 +299,7 @@ function quizFileIsDirty() {
  * quizzes は ref 時点の設問。note は null（指定なし）/ ''（明示的に空）/ 文字列。
  * 戻り値: { n, kept, carried, ignored }。ledger は書き換えられる（保存は呼び手）。
  */
-export function applyMark(ledger, quizzes, { layers, sha, note, baseline, ids, at }) {
+export function applyMark(ledger, quizzes, { layers, sha, note, baseline, deferred, ids, at }) {
   const want = ids.length ? new Set(ids) : null
   if (want) {
     const known = new Set(quizzes.map((q) => q.id))
@@ -319,6 +330,11 @@ export function applyMark(ledger, quizzes, { layers, sha, note, baseline, ids, a
       }
       // 前が基準点なら、note の有無にかかわらず今回の検証を --note で書かせる
       // （基準点の note は「未検証」と書いてあるので引き継げないし、note の無い基準点を黙って昇格させない）
+      if (!note && !baseline && !deferred && prev?.deferred) {
+        throw new Error(
+          `${layer}:${q.id} は保留(deferred)の記録。検証済みに上げるには --note で何を確かめたかを書くこと`
+        )
+      }
       if (!note && !baseline && prev?.baseline) {
         throw new Error(
           `${layer}:${q.id} は基準点の記録。検証済みに上げるには --note で何をどう検証したかを書くこと（基準点の note は引き継げない）`
@@ -332,6 +348,7 @@ export function applyMark(ledger, quizzes, { layers, sha, note, baseline, ids, a
         carried.push(`${layer}:${q.id}`)
       }
       if (baseline) entry.baseline = true
+      if (deferred) entry.deferred = true
       ledger.layers[layer][q.id] = entry
       n++
     }
@@ -340,7 +357,7 @@ export function applyMark(ledger, quizzes, { layers, sha, note, baseline, ids, a
 }
 
 function cmdMark(ledger, argv) {
-  const { layers, ref, note, baseline, ids } = parseMarkArgs(argv)
+  const { layers, ref, note, baseline, deferred, ids } = parseMarkArgs(argv)
   if (quizFileIsDirty()) {
     throw new Error(
       `${QUIZ_REL} に未コミットの変更がある。このまま mark すると HEAD（修正前）の内容を「検証した」と記録してしまう。先にコミットすること`
@@ -354,7 +371,15 @@ function cmdMark(ledger, argv) {
     )
   }
   const at = new Date().toISOString().slice(0, 10)
-  const { n, kept, carried, ignored } = applyMark(ledger, loadQuizzesAt(ref), { layers, sha, note, baseline, ids, at })
+  const { n, kept, carried, ignored } = applyMark(ledger, loadQuizzesAt(ref), {
+    layers,
+    sha,
+    note,
+    baseline,
+    deferred,
+    ids,
+    at,
+  })
   saveLedger(ledger)
   console.log(
     `記録した: ${n} 件（層: ${layers.join(', ')} / ref: ${sha}${note ? ` / ${note}` : ''}${baseline ? ' / 基準点' : ''}）` +
