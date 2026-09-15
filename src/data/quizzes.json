@@ -2687,7 +2687,7 @@
       "correctIndex": 1,
       "explanation": "Workers KVは結果整合性のストアであり、get()には強整合性を指定するオプションは提供されていません(用意されているのはtypeとcacheTtlのみ)。書き込み直後の読み取りに強い一貫性が必要なデータ(在庫数、決済状態、ロック管理など)には、単一インスタンスで直列化されたアクセスを提供するDurable Objectsや、オリジン側のデータベースを検討するのが適切です。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/concepts/how-kv-works/",
-      "hint": "KVのget()に用意されているオプションを思い出してみましょう(強整合性オプションは存在しません)。",
+      "hint": "namespaceを分けても、整合性の振る舞いは変わりません。",
       "tags": [
         "kv-cache",
         "practical"
@@ -37956,7 +37956,7 @@
       "id": "em-008",
       "category": "email-security",
       "difficulty": "advanced",
-      "question": "dispositionとは別の軸で情報が付与される仕組みであることを踏まえると、Email Securityの「Attribute(属性)」に関する正しい説明はどれですか?",
+      "question": "Email Securityの「Attribute(属性)」に関する正しい説明はどれですか?",
       "options": [
         {
           "text": "`ENCRYPTED`という属性は、メッセージが正規の暗号化通信(TLS)で配送されたことを示すものである",
@@ -37977,7 +37977,7 @@
       "correctIndex": 2,
       "explanation": "Attributeはdispositionとは独立して付与される付加的な情報で、1通のメールに複数付与されることがあります。例として、新規登録ドメインからの送信を示す`NEW_DOMAIN_SENDER`、メッセージ自体が暗号化されていることを示す`ENCRYPTED`、実行可能ファイルを含むことを示す`EXECUTABLE`などがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/dispositions-and-attributes/#attributes",
-      "hint": "dispositionが「最終的な1つの結論」であるのに対し、Attributeは「複数付けられるタグ」のようなものだと考えましょう。",
+      "hint": "`ENCRYPTED`という属性は、TLSで配送されたことを示すものではありません。",
       "tags": [
         "email-security",
         "practical"
@@ -38154,7 +38154,7 @@
       "id": "em-012",
       "category": "email-security",
       "difficulty": "advanced",
-      "question": "ライセンス要件と展開のタイムラグを踏まえると、Email SecurityのOutbound DLPに関する正しい説明はどれですか?",
+      "question": "Email SecurityのOutbound DLPに関する正しい説明はどれですか?",
       "options": [
         {
           "text": "DLP Assist add-inを組織全体へ展開すると、伝播にかかる時間は一切なく、即座に(数分以内に)すべてのユーザーへ反映される仕組みになっている",
@@ -38175,7 +38175,7 @@
       "correctIndex": 2,
       "explanation": "Outbound DLPはMicrosoft 365専用の機能で、Microsoft E3またはE5ライセンスが必要です。DLP Assist add-inはメッセージがクライアント側で送信される前にEMLへヘッダーを挿入する仕組みで、組織への伝播には最大24時間かかることがあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/outbound-dlp/#2-dlp-assist-add-in",
-      "hint": "「どのタイミングで」「どこで」ヘッダーが挿入されるのか、送信の前後関係を考えましょう。",
+      "hint": "add-inの展開が全ユーザーに行き渡るまでには時間がかかります。",
       "tags": [
         "email-security",
         "practical"
@@ -38334,7 +38334,7 @@
       "correctIndex": 2,
       "explanation": "Team submissionsはすべて例外なくCloudflareによる人間のレビューを受けます。一方、User submissionsが人間のレビューを受けられるかどうかはPhishGuardの契約有無に依存し、PhishGuard非契約の顧客はTeam submissionsとしての提出でのみ人間による分析を受けられます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/submissions/user-submissions/",
-      "hint": "「誰が提出したか」だけでなく、「その提出が必ず人間の目でレビューされるかどうか」という契約状況による違いを考えましょう。",
+      "hint": "User submissionsは個々の利用者からの提出、Team submissionsは管理者側からの提出です。",
       "tags": [
         "email-security",
         "practical"
