@@ -6845,25 +6845,25 @@
       "question": "Vectorizeのインデックスを作成する際に指定が必要で、かつ作成後に変更できない設定はどれですか？",
       "options": [
         {
-          "text": "フィルタに使うmetadataフィールドの名前と型(string等)のみ",
-          "wrongFeedback": "metadataの型はcreate-metadata-indexコマンドで別途管理されますが、インデックス作成時に必須かつ変更不可なのは次元数と距離メトリクスです。"
+          "text": "フィルタに使うmetadataフィールドの名前と型(string等)のみであり、一度作成すると削除も再作成もできない",
+          "wrongFeedback": "metadataインデックスは`wrangler vectorize create-metadata-index`で追加、`delete-metadata-index`で削除でき、後から変更可能です。作成後に変更できないのは次元数(dimensions)と距離メトリクス(metric)です。"
         },
         {
-          "text": "次元数（dimensions）と距離メトリクス（metric）"
+          "text": "次元数(dimensions)と距離メトリクス(metric)の2つで、どちらもインデックス作成時に指定する"
         },
         {
-          "text": "インデックスに保存できるベクトル数の上限値のみであり、この上限を超えると古いベクトルから自動的に上書きされていく",
-          "wrongFeedback": "作成時に指定して以後固定されるのは次元数と距離メトリクスです。保存できるベクトル数の上限は作成時に指定する設定ではなく、上限を超えた分が古いベクトルから自動的に上書きされることもありません。"
+          "text": "`--preset`でモデル名を指定して作成した場合、後から別のモデル名に指定し直せば設定を切り替えられる",
+          "wrongFeedback": "`--preset`で作成した場合も、内部的には次元数と距離メトリクスが決定されて設定されます。インデックスの設定(configuration)は作成後に変更できないとドキュメントに明記されており、後から別のモデル名に切り替えることはできません(切り替えたい場合は新しいインデックスを作り直す必要があります)。"
         },
         {
-          "text": "インデックスに付ける表示名（ラベル）のみであり、一度設定すると他の名前のインデックスと混同しないよう固定される",
-          "wrongFeedback": "表示名の変更可否が主要な制約ではありません。作成後に変更できないのは、格納するベクトルの構造そのものに関わる設定です。"
+          "text": "インデックスの名前(name)のみであり、次元数や距離メトリクスはインデックス作成後でも別のコマンドで随時変更できる",
+          "wrongFeedback": "インデックスの設定を後から変更するコマンドは存在しません。ドキュメントは『インデックスの設定(configuration)は作成後に変更できない』と明記しており、次元数と距離メトリクスは固定です。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Vectorizeインデックスを作成する際は、使用するembeddingモデルの出力次元数に一致するdimensionsと、類似度の計算方法を決めるmetric（cosine / euclidean / dot-product）を指定する必要があり、これらは作成後に変更できない。例えばembeddingモデルが768次元を出力する場合、対応するVectorizeインデックスもdimensions=768で作成する必要がある。\n{{diagram:0}}",
+      "explanation": "Vectorizeインデックスを作成する際は、使用するembeddingモデルの出力次元数に一致するdimensionsと、類似度の計算方法を決めるmetric(cosine/euclidean/dot-product)を指定する必要があり、これらは作成後に変更できない(vectorize/best-practices/create-indexes.md)。一方、metadataによるフィルタ用のインデックスは`wrangler vectorize create-metadata-index`で追加、`delete-metadata-index`で削除でき、インデックス本体の作成時に必須の設定ではなく、後から自由に変更できる(vectorize/reference/client-api.md)。また、`--dimensions`には数値を直接指定する必要があり、embeddingモデル名を渡して自動判定させる仕組みは存在しない。\n{{diagram:0}} なお`--preset`で既知のembeddingモデル名(例: `@cf/baai/bge-base-en-v1.5`)を指定して作成することもでき、その場合はVectorize側が対応する次元数と距離メトリクスを自動設定する。ただしこの場合も内部的に確定した次元数・距離メトリクスは作成後に変更できず、後から別のモデル名に切り替えることはできない(この`--preset`フラグはwranglerのソースコードで確認できる仕様で、developers.cloudflare.comの該当ドキュメントページには記載がない)。",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/best-practices/create-indexes/",
-      "hint": "embeddingモデルを変更したら、対応するインデックスはどうなるかを考えましょう。",
+      "hint": "『二度と変更できない』とドキュメントが明記しているのがどの設定か、metadataインデックス用の別コマンドの有無と合わせて確認しましょう。",
       "tags": [
         "ai-vectorize",
         "practical"
@@ -6901,8 +6901,8 @@
       "question": "Vectorizeのquery()でmetadataによる絞り込み（フィルタ）を行うために必要な事前準備はどれですか？",
       "options": [
         {
-          "text": "Vectorizeインデックス全体を毎回削除し、metadataを付け直して作り直す",
-          "wrongFeedback": "フィルタのたびにインデックスを再作成する必要はありません。事前にメタデータインデックスを作成しておけば継続的にフィルタが利用できます。"
+          "text": "namespaceによる絞り込みが標準で使えるため、`create-metadata-index`を使わなくても任意のmetadataプロパティで同様にフィルタできる",
+          "wrongFeedback": "namespaceで絞り込めるのは1つの予約された軸のみです。それ以外の任意のmetadataプロパティでフィルタするには、別途`create-metadata-index`でそのプロパティ専用のインデックスを作成する必要があります。"
         },
         {
           "text": "wrangler vectorize create-metadata-index コマンドで、フィルタ対象のmetadataプロパティのインデックスを事前に作成しておく"
@@ -6912,12 +6912,12 @@
           "wrongFeedback": "実際にはquery()を呼ぶ前に、対象のmetadataプロパティに対してメタデータインデックスを作成しておく必要があります。"
         },
         {
-          "text": "R2バケットにmetadataのバックアップを保存し、query()から参照できるようにしておく",
-          "wrongFeedback": "R2はオブジェクトストレージであり、Vectorizeのmetadataフィルタ機能とは無関係です。"
+          "text": "作成前に既にupsertしていたベクトルも、あとから`create-metadata-index`を作成すれば自動的に遡ってフィルタ対象に含まれる",
+          "wrongFeedback": "メタデータインデックスの作成前にupsertされたベクトルは、そのインデックスにmetadataが含まれません。作成後に再度upsertし直したベクトルだけが、期待通りインデックスされます。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Vectorizeでmetadataによるフィルタ検索（例: `filter: { category: \"news\" }`）を行うには、事前に `wrangler vectorize create-metadata-index` でフィルタ対象のプロパティ名と型（string / number / boolean）を指定してメタデータインデックスを作成しておく必要がある。1つのVectorizeインデックスにつき作成できるメタデータインデックスは最大10個までという制限がある。\n{{diagram:0}}",
+      "explanation": "Vectorizeでmetadataによるフィルタ検索(例: `filter: { category: \"news\" }`)を行うには、事前に`wrangler vectorize create-metadata-index`でフィルタ対象のプロパティ名と型(string/number/boolean)を指定してメタデータインデックスを作成しておく必要がある。1つのVectorizeインデックスにつき作成できるメタデータインデックスは最大10個までという制限がある。namespaceによる絞り込みは標準で使えるが、これはnamespace専用の仕組みであり、他の任意のmetadataプロパティには適用できない。また、メタデータインデックスの作成前にupsertされたベクトルにはそのmetadataが含まれないため、作成後に対象ベクトルを再upsertする必要がある。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/vectorize/reference/metadata-filtering/",
       "hint": "metadataでの絞り込みは、何も準備せずにいきなり使えるのかどうか考えましょう。",
       "tags": [
@@ -7831,20 +7831,20 @@
           "text": "エッジのWAF Rate Limiting Rulesで防御し、より細かい制御が必要な場合のみWorker内で追加のロジックを持つ層状の考え方が有効"
         },
         {
-          "text": "レート制限をかけるとオリジンサーバーへの負荷は変わらないため、DDoS対策としては意味がない",
-          "wrongFeedback": "エッジでリクエストをブロックすることでオリジンに到達する前に負荷を軽減でき、DDoSやブルートフォース攻撃対策として有効です。"
+          "text": "WAFのRate Limiting Rulesはリクエスト検知から即座に反映されるため、設定した上限を1件も超過させずに止められる",
+          "wrongFeedback": "実際には検知からカウンタ更新まで数秒程度の遅延が生じることがあり、その間は超過したリクエストが一時的にオリジンへ到達することもあります。『1件も超過させない』精度は保証されていません。"
         },
         {
           "text": "レート制限は必ずWorkerのアプリケーションコード内でKVやDurable Objectsを使って自前実装しなければならず、エッジ側で先に絞り込む仕組みは存在しない",
           "wrongFeedback": "CloudflareにはWAFのRate Limiting Rulesというエッジ層の仕組みがあり、自前実装が必須というわけではありません。"
         },
         {
-          "text": "レート制限はDNSレベルの設定のみで完結し、WAFやWorkerとは無関係の機能である",
-          "wrongFeedback": "レート制限はWAFのRate Limiting RulesやWorker内のロジックに関係する機能であり、DNS設定だけで完結するものではありません。"
+          "text": "Rate Limiting Rulesは常にアカウント全体で1つのルールしか作成できず、エンドポイントごとに別々のルールを用意することはできない",
+          "wrongFeedback": "作成できるルール数はプランによって異なり(例: Freeは1件、Businessは5件、Enterpriseは100件)、常に1つに固定されているわけではありません。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "CloudflareではWAFのRate Limiting Rulesを使い、リクエストがオリジンサーバーに到達する前にエッジで基本的な防御(ブルートフォース対策など)を行えます。さらに、レスポンスコードの監視や動的なユーザー判定など、より細かいビジネスロジックが必要な場合はWorker内で追加の制御を行いますが、その分すべてのリクエストがWorkerを経由するため処理コストは増えます。両者を組み合わせ、エッジでまず絞り込んでからWorkerで細かく制御する層状防御が推奨される考え方です。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "CloudflareではWAFのRate Limiting Rulesを使い、リクエストがオリジンサーバーに到達する前にエッジで基本的な防御(ブルートフォース対策など)を行える。さらに、レスポンスコードの監視や動的なユーザー判定など、より細かいビジネスロジックが必要な場合はWorker内で追加の制御を行うが、その分すべてのリクエストがWorkerを経由するため処理コストは増える。両者を組み合わせ、エッジでまず絞り込んでからWorkerで細かく制御する層状防御が推奨される。ただし、Rate Limiting Rulesはリクエストの検知からカウンタ更新までに数秒程度の遅延があり得るため、上限を1件も超過させない精度は保証されない(waf/rate-limiting-rules.md)。また、作成できるルール数はFree:1件、Pro:2件、Business:5件、Enterprise:100件とプランによって異なり、常に1つに固定されているわけではない。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/rate-limiting-rules/",
       "hint": "Workerのコードに頼る前に、そもそも手前で止められる仕組みがCloudflareにあるか考えましょう。",
       "tags": [
@@ -11520,23 +11520,23 @@
       "question": "APIのレート制限を「1ユーザーあたり1分間に100リクエストまで」のように正確にカウントして実装したい場合、Durable ObjectsとWorkers KVのどちらでカウンタを実装するのが適切ですか？",
       "options": [
         {
-          "text": "Workers KV。同じキーへの書き込みはグローバルに直列化されるため、複数エッジからの同時書き込みでも常に正確な合計値が得られる",
-          "wrongFeedback": "KVは結果整合性のストアで、ある拠点での変更が他の拠点に伝播するまで最大60秒程度かかることがあります。同じキーへの高頻度な更新やアトミックな読み書きには向きません。"
+          "text": "Workers KV。書き込みは行った拠点内では通常すぐに反映されるため、同一拠点からのリクエストに限定すればKVだけで正確なカウンタとして使える",
+          "wrongFeedback": "KVの書き込み拠点内での即時反映は『保証されておらず、依存すべきではない』とドキュメントで明記されています。同一拠点に限定しても正確さは保証されません。"
         },
         {
-          "text": "Durable ObjectsとKVのどちらを使っても差はなく、実装コストの低さだけで選べばよいため、レート制限の正確さよりも実装のシンプルさを優先してストレージを決めるのが合理的である",
-          "wrongFeedback": "整合性の要件が異なるため、正確なカウントが必要なレート制限にはDurable Objectsが適しています。実装コストの低さだけで選ぶべきではありません。"
+          "text": "Durable Objects。ただし`idFromName`で同名から取得しても、呼び出しのたびに別インスタンスが起動し得るため、カウンタはKVに置く必要がある",
+          "wrongFeedback": "`idFromName`で同じ名前から生成したIDは、世界のどこからアクセスしても同じ1つのインスタンスに解決されるとドキュメントで保証されています(重複作成が起きないよう、システムが作成前に他の場所で既に作られていないか確認します)。呼び出しのたびに別インスタンスが起動することはありません。"
         },
         {
           "text": "Durable Objects。ユーザーごとに単一インスタンスを割り当て、単一スレッド実行の中でカウンタを正確にインクリメント・判定できる"
         },
         {
-          "text": "Workers KV。書き込み回数に制限がないため、リクエストのたびにカウンタを更新しても問題なく、高頻度なレート制限の判定にもそのまま使えるだけの一貫性が保証されている",
-          "wrongFeedback": "KVは結果整合性のストアであり、一貫性は保証されません。また同じキーに対して秒間数十〜数百回規模で書き込むようなワークロードには不向きとされており、頻繁な更新が必要なカウンタには適していません。"
+          "text": "Workers KV。『同一キーへの書き込みは1秒に1回まで』というレート制限さえ守っていれば、複数拠点から同時に書き込みが発生しても最終的な値は必ず正確な合計になる",
+          "wrongFeedback": "KVは結果整合性のストアで、同一キーへの同時書き込みは上書き合戦(最後に書いた値が勝つ)になり得ます。書き込み頻度の上限を守っていても、正確な合計が保証されるわけではありません。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "Workers KVは結果整合性のストアで、ある拠点での書き込みが他の拠点に反映されるまで最大60秒程度かかることがあり、アトミックな読み書きや高頻度の更新が必要なワークロードには向きません。一方Durable Objectsは、ユーザーごとに単一のインスタンスを割り当てれば、単一スレッド実行の中でカウンタの読み取り・インクリメント・閾値判定を競合なく正確に行えます。\n{{diagram:0}}\n{{diagram:1}}",
+      "explanation": "Workers KVは結果整合性のストアで、ある拠点での書き込みが他の拠点に反映されるまで最大60秒程度かかることがあり、アトミックな読み書きや高頻度の更新が必要なワークロードには向かない。書き込みを行った拠点内であっても、変更が即座に見えることは保証されておらず、依存すべきではないとドキュメントは明記している。また、同一キーへの同時書き込みは最後に書いた値が勝つ形で上書きされ得るため、書き込み頻度の上限(1秒に1回)を守っていても正確な合計が保証されるわけではない。一方Durable Objectsは、ユーザーごとに単一のインスタンスを割り当てれば、単一スレッド実行の中でカウンタの読み取り・インクリメント・閾値判定を競合なく正確に行える。ドキュメントも、より強い整合性が必要な場合はDurable Objectsの利用を勧めている。\n{{diagram:0}}\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/kv/concepts/how-kv-works/",
       "hint": "「正確なカウント」と「結果整合性」は相性が良いか、それとも悪いか考えてみましょう。",
       "tags": [
@@ -17157,25 +17157,25 @@
       "question": "Spend limitの予算に達した場合の挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "予算に達すると、`AI Gateway Run`権限の有無に関わらずそのアカウントに紐づくすべてのAI Gatewayの利用が例外なく即座に完全停止してしまう",
-          "wrongFeedback": "予算超過の影響は該当するルールのスコープ(モデル・プロバイダー・カスタムメタデータなど)に限定され、アカウント全体の利用が停止するわけではありません。"
+          "text": "Spend limitは即座に反映されるため、予算超過の瞬間からは1件のリクエストも取りこぼさず、必ず`429`でブロックされる",
+          "wrongFeedback": "Spend limitは結果整合性で判定されており、リクエストのコストは完了後に記録されます。同時多発的なリクエストのバーストがあると、判定が追いつくまでの間に一時的に予算を超過することがあります。"
         },
         {
           "text": "デフォルトでは`429`でブロックされるが、Dynamic Routingでフォールバックモデルを設定しておけば超過時に自動的にそちらへルーティングできる"
         },
         {
-          "text": "予算に達しても常に処理は継続され、後から請求書に追加料金として反映されるだけである",
+          "text": "予算に達しても処理は継続され、その超過分についても後から請求書に追加料金としてまとめて反映されるだけであり、リクエストが拒否されることはない",
           "wrongFeedback": "デフォルトの挙動はリクエストのブロック(`429`)です。処理を継続して後から請求するものではありません。"
         },
         {
-          "text": "予算に達すると、そのリクエストのキャッシュだけが自動的に無効化される",
-          "wrongFeedback": "キャッシュの無効化ではなく、`429`によるリクエストのブロック(または設定によるフォールバック)が挙動です。"
+          "text": "Spend limitは1つのGatewayにつき1つのルールしか設定できないため、モデルやプロバイダーごとに別々の予算を設けることはできない",
+          "wrongFeedback": "Spend limitは1つのGatewayにつき最大20ルールまで設定でき、モデル・プロバイダー・カスタムメタデータの組み合わせごとに個別の予算バケットを作れます。1ルールに固定されているわけではありません。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Spend limitの予算に達すると、デフォルトではリクエストが`429 Too Many Requests`でブロックされます。ブロックする代わりに、Dynamic Routingでプライマリモデルとフォールバックモデルを構成し、プライマリモデル側に予算を設定しておけば、予算超過時に自動的にフォールバックモデルへルーティングするよう構成することもできます。\n{{diagram:0}}",
+      "explanation": "Spend limitの予算に達すると、デフォルトではリクエストが`429 Too Many Requests`でブロックされる。ブロックする代わりに、Dynamic Routingでプライマリモデルとフォールバックモデルを構成し、プライマリモデル側に予算を設定しておけば、予算超過時に自動的にフォールバックモデルへルーティングするよう構成することもできる。ただしSpend limitは結果整合性で判定されており、リクエストコストは完了後に記録されるため、同時多発的なリクエストのバーストがあると判定が追いつくまでの間に一時的に予算を超過することがある。また、Spend limitは1つのGatewayにつき最大20ルールまで設定でき、モデル・プロバイダー・カスタムメタデータの次元ごとに個別の予算バケットを作れる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/features/spend-limits/#behavior-when-a-limit-is-reached",
-      "hint": "予算を使い切ったときに「止める」以外にも、「安い代替手段に切り替える」という選択肢があることを考えましょう。",
+      "hint": "予算に達したリクエストは、デフォルトでは処理を続けず拒否されます。この事実と各選択肢を照らし合わせましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -17316,22 +17316,22 @@
           "text": "`base_url`にAPIパスの一部(例: `/v1`)を含めると、リクエスト側の`/v1`と重複し、`/v1/v1/chat/completions`のような誤ったパスになってしまう"
         },
         {
-          "text": "`base_url`をHTTPSではなくHTTPで登録しても問題なく動作する",
+          "text": "`base_url`をHTTPSではなくHTTPのURLとして登録しても動作上とくに問題はなく、そのまま通常どおりリクエストを転送できる",
           "wrongFeedback": "`base_url`はHTTPSのURLである必要があり、HTTPは許可されていません。"
         },
         {
-          "text": "`base_url`に複数のslugを同時に登録することができず、1つのslugにつき複数のURLを割り当てる必要がある",
-          "wrongFeedback": "カスタムプロバイダーは1つのslugに1つの`base_url`を登録する単位であり、そのような制約はありません。よくある失敗は`base_url`とリクエストパスの間でパスの重複や欠落が起きることです。"
+          "text": "同じslugを持つカスタムプロバイダーをもう一度作成しようとしても、後から作成した方が既存の設定を自動的に上書きするだけで、エラーにはならない",
+          "wrongFeedback": "同じslugで作成しようとすると`409 Conflict`エラー(`A custom provider with this slug already exists`)になり、既存の設定を無言で上書きすることはありません。"
         },
         {
-          "text": "アップストリームプロバイダーが404を返す原因は常にAI Gateway側の一時的な障害であり、`base_url`やリクエストパス側の設定を見直す必要はなく、しばらく時間を置いて再試行すれば自然に解消する",
-          "wrongFeedback": "404の主な原因は`base_url`の設定ミスやリクエストパスの誤りであることが多く、まず設定を確認すべきとされています。"
+          "text": "アップストリームプロバイダーが404を返す場合、まず確認すべきはCloudflare側のインフラ障害の有無であり、`base_url`やリクエストパスの設定を見直す必要は基本的にない",
+          "wrongFeedback": "404の主な原因は`base_url`の設定ミスやリクエストパスの誤りであることが多く、Cloudflare側の障害を疑う前に、まず`custom-{slug}/`のプレフィックスやパスの重複・欠落を確認すべきとされています。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "よくある失敗は、`base_url`にAPIパスの一部(`/v1`など)を含めてしまい、リクエストURL側にも同じセグメントが含まれることで、アップストリームへのパスが重複してしまうことです(例: `/v1/v1/chat/completions`)。`base_url`にはルートドメインのみを設定し、パスはリクエスト側に任せるのが正しい設定です。\n{{diagram:0}}",
+      "explanation": "よくある失敗は、`base_url`にAPIパスの一部(`/v1`など)を含めてしまい、リクエストURL側にも同じセグメントが含まれることで、アップストリームへのパスが重複してしまうことである(例: `/v1/v1/chat/completions`)。`base_url`にはルートドメインのみを設定し、パスはリクエスト側に任せるのが正しい設定である。また、`base_url`はHTTPSのURLである必要があり(`Must start with https://`)、HTTPは許可されない。同じslugで別のプロバイダーを作成しようとすると`409 Conflict`エラーになり、既存設定を無言で上書きすることはない。アップストリームから404が返る場合、最も多い原因は`base_url`やリクエストパスの設定ミスであり、Cloudflare側の一時的な障害を疑う前に`custom-{slug}/`プレフィックスとパスの重複・欠落を確認すべきとされている。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/custom-providers/#404-when-making-requests-to-a-custom-provider",
-      "hint": "同じ「道順の一部」を2つの場所に重複して書いてしまうと何が起きるか考えましょう。",
+      "hint": "`base_url`は`https://`で始まる必要があります。この事実と各選択肢を照らし合わせましょう。",
       "tags": [
         "ai-gateway",
         "practical"
@@ -17477,20 +17477,20 @@
           "text": "`patchLog()`は特定のログエントリにフィードバックやスコア、メタデータを後から追加でき、`getLog()`は特定のログエントリの詳細を取得できる"
         },
         {
-          "text": "`getLog()`はログの内容を取得するだけでなく、そのログに対応するリクエストを再実行(リプレイ)する機能も持ち、再実行した結果は元のログエントリ自体を新しいレスポンス内容で上書きする形で保存される",
-          "wrongFeedback": "`getLog()`はログ内容を取得するだけの読み取り専用メソッドです。リクエストの再実行機能はありません。"
+          "text": "`getLog()`の戻り値は`Promise<void>`であり、ログの中身を直接取得することはできず、別途Analyticsダッシュボードで確認する必要がある",
+          "wrongFeedback": "`getLog()`の戻り値は`Promise<AiGatewayLog>`で、呼び出すとログの詳細をそのまま取得できます。`Promise<void>`を返すのは`patchLog()`の方です。"
         },
         {
-          "text": "`getUrl()`は常にOpenAIプロバイダー専用のURLしか返せず、他のプロバイダーには使えない",
-          "wrongFeedback": "`getUrl()`は任意のプロバイダー名を引数として渡すことができ、プロバイダーごとのエンドポイントURLを取得できます。引数を省略すればゲートウェイ自体のベースURLを返します。"
+          "text": "`getUrl()`に引数を渡さずに呼び出すとエラーになるため、呼び出し側は必ず何らかのプロバイダー名を渡さなければならない",
+          "wrongFeedback": "`getUrl()`の`provider`引数はオプショナルです。省略するとゲートウェイ自体のベースURLが返され、エラーにはなりません。"
         },
         {
-          "text": "`patchLog()`はログエントリを毎回完全に置き換える(丸ごと上書きする)ことしかできず、一部のプロパティだけを部分的に更新することは一切許可されていない",
-          "wrongFeedback": "`patchLog()`の第2引数のプロパティはすべてオプショナルで、指定したプロパティだけを部分的に更新できます。"
+          "text": "`patchLog()`の戻り値は更新後のログ全体を表す`AiGatewayLog`型のオブジェクトであり、呼び出し側はこれを使って更新結果を確認できる",
+          "wrongFeedback": "`patchLog()`の戻り値は`Promise<void>`で、更新後のログ内容そのものは返しません。更新結果を確認したい場合は別途`getLog()`を呼び出す必要があります。"
         }
       ],
       "correctIndex": 0,
-      "explanation": "`env.AI.gateway(name)`が返すゲートウェイインスタンスは、`patchLog(logId, {...})`で特定のログエントリにフィードバック・スコア・メタデータを後から追加でき、`getLog(logId)`で特定のログエントリの詳細を取得できます。`getUrl(provider?)`はゲートウェイのベースURL、またはプロバイダー名を渡した場合はそのプロバイダー専用のエンドポイントURLを返します。\n{{diagram:0}}",
+      "explanation": "`env.AI.gateway(name)`が返すゲートウェイインスタンスは、`patchLog(logId, {...})`で特定のログエントリにフィードバック・スコア・メタデータを後から追加でき(戻り値は`Promise<void>`)、`getLog(logId)`で特定のログエントリの詳細を取得できる(戻り値は`Promise<AiGatewayLog>`)。`getUrl(provider?)`の`provider`引数はオプショナルで、省略するとゲートウェイのベースURLを、指定するとそのプロバイダー専用のエンドポイントURLを返す。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/usage/worker-binding-methods/#envaigateway",
       "hint": "「後から評価情報を付け足す」のと「内容を確認する」のは、別々のメソッドとして用意されていると考えましょう。",
       "tags": [
@@ -21852,25 +21852,25 @@
       "question": "Cloudflare Accessの「よくある設定ミス」として文書で警告されているものはどれですか？",
       "options": [
         {
-          "text": "Excludeルールを1つも設定しないと、ポリシーが正常に保存できずエラーになる",
+          "text": "Excludeルールを1つも設定していないと、そのポリシーはCloudflare Access側の保存処理の際に必ずエラーとして弾かれてしまい、保存自体ができなくなる",
           "wrongFeedback": "Excludeルールは必須ではありません。すべてのポリシーに最低1つ必要なのはIncludeルールです。"
         },
         {
-          "text": "Service AuthポリシーのIncludeルールにIPレンジやIPリストのSelectorを設定すると、その時点でポリシー全体が自動的に無効化されるため、Selectorにはサービストークンのみを指定する必要がある",
-          "wrongFeedback": "そのような無効化の仕様はありません。よくある設定ミスとして警告されているのは、Allowポリシーの「Everyone」や「One-time PIN」の誤指定です。"
+          "text": "Requireルールに国とメールドメインなど複数の条件を追加すれば、Includeルールと同様にOR条件で対象範囲を広げられるつもりで設定してしまう",
+          "wrongFeedback": "実際にはRequireルールの複数条件はAND条件として扱われます。ドキュメントの例では、国とメールドメインをそれぞれRequireで2つ指定すると両方を同時に満たす必要があり、条件が厳しくなりすぎて誰もアクセスできなくなる、という逆方向の設定ミスが説明されています。"
         },
         {
           "text": "AllowポリシーのIncludeルールでSelectorを「Everyone」に設定する、またはLogin Methodsで「One-time PIN」を指定してしまう"
         },
         {
-          "text": "Bypassポリシーを1つでも作成すると、アカウント内の他のすべてのポリシーが自動的に無効になる",
-          "wrongFeedback": "そのような仕様はありません。Bypassポリシーは、一致したリクエストにのみ制御なしの状態を適用します。"
+          "text": "Bypassポリシーに、AllowやBlockと同じ感覚でメールアドレス指定のSelectorを付けて、特定ユーザーだけを対象にしようとしてしまう",
+          "wrongFeedback": "Bypassは認証を強制しないため、メールアドレスなどID(アイデンティティ)に基づくSelectorはそもそも設定できません。Bypassで指定できるのはIPやパスなど非IDベースの条件に限られます。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "AccessのドキュメントはAllowポリシーにおける2つのよくある設定ミスを挙げています。1つはIncludeルールのSelectorを「Everyone」に設定してしまうこと、もう1つはLogin Methodsで「One-time PIN」を指定してしまうことです。どちらも結果的に誰でもアプリへ到達できてしまうため注意が必要です。\n{{diagram:0}}",
+      "explanation": "AccessのドキュメントはAllowポリシーにおける2つのよくある設定ミスを挙げている。1つはIncludeルールのSelectorを「Everyone」に設定してしまうこと、もう1つはLogin Methodsで「One-time PIN」を指定してしまうことである。どちらも結果的に誰でもアプリへ到達できてしまうため注意が必要。すべてのポリシーに最低1つ必要なのはIncludeルールで、Excludeルールは必須ではない。また、Requireルールに複数の値を追加すると、これらはAND条件として扱われるため、複数のRequireルールを組み合わせすぎると逆に誰もアクセスできなくなる設定ミスが起こり得る(意図した範囲より狭くなる)。Bypassポリシーは認証を強制しない分、メールアドレスなどID(アイデンティティ)ベースのSelectorは使えず、IPやパスなど非IDベースの条件に限られる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#common-cloudflare-access-misconfigurations",
-      "hint": "「特定の条件を絞ったつもりが、実質的に全員が当てはまってしまう」設定を考えましょう。",
+      "hint": "すべてのポリシーに最低1つ必要なのはIncludeルールです。この事実と各選択肢を照らし合わせましょう。",
       "tags": [
         "zero-trust-access",
         "practical"
