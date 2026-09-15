@@ -28075,7 +28075,7 @@
       "correctIndex": 3,
       "explanation": "Cloudflare DNSは、そのドメインのDNSレコードについて正式な回答を返す側、つまり権威DNSとして動くサービスです。問い合わせを他所へ取り次ぐキャッシュDNS(フルリゾルバ)とは役割が違います。世界中の拠点が同じIPアドレスで応答するAnycastネットワークの上で動くため、DDoS攻撃やBGP経路のハイジャック・リーク(誤った経路情報の広告)からドメインを保護できます。すべてのCloudflareプランで利用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/dns/",
-      "hint": "DNSが攻撃や妨害で止まると、その先のサービスも丸ごと届かなくなります。Cloudflareがこの土台をどこまで守っているのかを考えましょう。",
+      "hint": "Cloudflare DNSは、特定のプランでだけ使える追加サービスではありません。どのプランでも使える土台だという前提で、4つの説明を見比べましょう。",
       "tags": [
         "dns",
         "practical"
