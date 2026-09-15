@@ -17,6 +17,9 @@
  *   バッククォートの偏り     正解肢だけが持つ／持たない状態を防ぐ（既存 lint はこの向きを見ない）
  *   survivingGenuine 非空   modify なら本物の対抗馬が残ることの申告を要求する
  *
+ * `proposedWrongFeedback` は `proposedOptions` が無くても単独で適用できる。
+ * 誤答の本文は正しいが解説だけ直したい場合に使う（担当2人が「適用できない」と報告した）。
+ *
  *   node scripts/apply-sweep-verdicts.mjs <file...> [--dry-run]
  */
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -59,11 +62,14 @@ export function checkFinding(finding, quiz) {
       if (bt[ci] && bt.filter(Boolean).length === 1) problems.push(`${quizId}: 正解肢だけがバッククォートを持つ`)
       if (!bt[ci] && bt.filter(Boolean).length === 3) problems.push(`${quizId}: 正解肢だけがバッククォートを持たない`)
     }
-    const wf = finding.proposedWrongFeedback
-    if (wf) {
-      if (wf.length !== 4) problems.push(`${quizId}: proposedWrongFeedback が4要素でない`)
-      else if (wf[ci] != null) problems.push(`${quizId}: 正解位置の wrongFeedback が null でない`)
-    }
+  }
+  // proposedWrongFeedback は proposedOptions が無くても単独で受ける
+  // （誤答本文は正しいが解説だけ直したい場合。担当2人が「適用できない」と報告した）
+  const wf = finding.proposedWrongFeedback
+  if (wf) {
+    const ci = finding.correctIndex ?? quiz.correctIndex
+    if (wf.length !== 4) problems.push(`${quizId}: proposedWrongFeedback が4要素でない`)
+    else if (wf[ci] != null) problems.push(`${quizId}: 正解位置の wrongFeedback が null でない`)
   }
   return problems
 }
@@ -86,6 +92,14 @@ export function applyFinding(finding, quiz) {
     })
     for (const o of quiz.options) if (o.wrongFeedback === undefined) delete o.wrongFeedback
     fields.push('options')
+  }
+  if (!finding.proposedOptions && finding.proposedWrongFeedback) {
+    const ci = quiz.correctIndex
+    finding.proposedWrongFeedback.forEach((text, i) => {
+      if (i === ci) return
+      if (text) quiz.options[i].wrongFeedback = text
+    })
+    fields.push('wrongFeedback')
   }
   if (finding.proposedHint) {
     quiz.hint = finding.proposedHint

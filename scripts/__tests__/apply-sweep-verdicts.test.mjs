@@ -126,3 +126,38 @@ describe('適用', () => {
     expect(q.options[2].wrongFeedback).toBe('fc')
   })
 })
+
+describe('wrongFeedback だけの変更', () => {
+  const quiz = (over = {}) => ({
+    id: 'y-001',
+    correctIndex: 1,
+    hint: 'h',
+    options: [
+      { text: 'a', wrongFeedback: '古いa' },
+      { text: 'b' },
+      { text: 'c', wrongFeedback: '古いc' },
+      { text: 'd', wrongFeedback: '古いd' },
+    ],
+    ...over,
+  })
+
+  it('proposedOptions が無くても適用できる', () => {
+    const q = quiz()
+    const fields = applyFinding({ quizId: 'y-001', proposedWrongFeedback: ['新しいa', null, '新しいc', null] }, q)
+    expect(q.options[0].wrongFeedback).toBe('新しいa')
+    expect(q.options[2].wrongFeedback).toBe('新しいc')
+    expect(q.options[3].wrongFeedback).toBe('古いd') // null は据え置き
+    expect(q.options[1].text).toBe('b')
+    expect(fields).toEqual(['wrongFeedback'])
+  })
+
+  it('正解位置に値があれば止める', () => {
+    const f = {
+      quizId: 'y-001',
+      verdict: 'modify',
+      survivingGenuine: '誤答2',
+      proposedWrongFeedback: ['a', 'これは要らない', 'c', 'd'],
+    }
+    expect(checkFinding(f, quiz()).some((p) => /null でない/.test(p))).toBe(true)
+  })
+})
