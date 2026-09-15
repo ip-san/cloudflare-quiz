@@ -8737,7 +8737,7 @@
       "correctIndex": 2,
       "explanation": "Gradual Deployments（段階的デプロイ）は、新しいバージョンをまず `wrangler versions upload` でアップロードするところから始まります。このコマンドはコードを新バージョンとして登録するだけで、即座にはトラフィックへ反映されません。\n{{diagram:0}}\nその後 `wrangler versions deploy` を使って、新旧バージョン間のトラフィック配分（例: 新バージョンに10%、旧バージョンに90%）を指定しながら段階的に切り替えていくことで、問題があった場合の影響範囲を最小限に抑えられます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/versions-and-deployments/gradual-deployments/",
-      "hint": "新しい荷物を倉庫に届けるのと、実際に店頭に並べる量を決めるのを、別の作業として考えましょう。",
+      "hint": "段階的リリースは、ダッシュボードだけでなくWrangler CLIからも操作できます。",
       "tags": [
         "wrangler",
         "trivia"
@@ -22972,7 +22972,7 @@
       "id": "wf-011",
       "category": "waf",
       "difficulty": "advanced",
-      "question": "契約しているCloudflareのプランによって上限値が変わる、マネージドルールがリクエストボディを検査する際の最大サイズに関する正しい説明はどれですか？",
+      "question": "マネージドルールがリクエストボディを検査する際の最大サイズに関する正しい説明はどれですか？",
       "options": [
         {
           "text": "上限を超えた部分は自動的に切り捨てられたうえで元のリクエストに再結合されるため、検査結果には一切影響せず、プランごとの上限値を気にする必要もない設計になっている",
@@ -22993,7 +22993,7 @@
       "correctIndex": 1,
       "explanation": "マネージドルールがリクエストボディを検査する最大サイズは、Enterpriseプランで128KB、Freeプランで1MB、それ以外の有料プランではデフォルトでより低い値です(サポートへの問い合わせで引き上げ可能)。上限を超えた部分の内容は完全には分析されない可能性があり、`http.request.body.truncated`フィールドでボディが切り詰められたかどうかを検知できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/#maximum-body-size",
-      "hint": "プランによって「どこまで読んでもらえるか」が違い、読み切れなかった場合を検知するフィールドがあることを考えましょう。",
+      "hint": "上限を超えたリクエストについては、そのことをあとから確認できる専用のフィールドが用意されています。",
       "tags": [
         "waf",
         "practical"
@@ -31633,7 +31633,7 @@
       "id": "tn-016",
       "category": "tunnel",
       "difficulty": "advanced",
-      "question": "接続先ネットワークの制約によって挙動が変わりうることを踏まえると、`cloudflared tunnel run`の設定フラグに関する正しい説明はどれですか?",
+      "question": "`cloudflared tunnel run`の設定フラグに関する正しい説明はどれですか?",
       "options": [
         {
           "text": "`--protocol`のデフォルト値は`auto`で、通常は`quic`プロトコルが自動的に選ばれるが、UDP接続を確立できない環境では`http2`にフォールバックする"
@@ -31654,7 +31654,7 @@
       "correctIndex": 0,
       "explanation": "`--protocol`のデフォルト値は`auto`で、通常は`quic`プロトコルを自動的に選択します。cloudflaredがUDP接続を確立できない環境では`http2`にフォールバックします。`--region us`はアメリカ国内のデータセンターのみを経由するよう制限する機能、`--loglevel debug`はリクエストURLやヘッダーまで含む詳細なログを出力する機能、`--retries`のデフォルトは5回です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/#protocol",
-      "hint": "「自動選択、ただし条件次第で別方式に切り替わる」という挙動を考えましょう。",
+      "hint": "`--retries`には既定の回数が決まっています。",
       "tags": [
         "tunnel",
         "practical"
@@ -31735,7 +31735,7 @@
       "id": "tn-018",
       "category": "tunnel",
       "difficulty": "advanced",
-      "question": "サービスを停止させずに運用し続けることを前提とすると、cloudflaredの自動更新とゼロダウンタイム更新に関する正しい説明はどれですか?",
+      "question": "cloudflaredの自動更新とゼロダウンタイム更新に関する正しい説明はどれですか?",
       "options": [
         {
           "text": "Windows版のcloudflaredも他のOSと同様に自動更新され、手動でのアップデート操作は不要である",
@@ -31756,7 +31756,7 @@
       "correctIndex": 1,
       "explanation": "cloudflaredはデフォルトで24時間ごとに更新確認・再起動を行います(`--autoupdate-freq`のデフォルトは`24h`)。Windows版は自動更新されず、`cloudflared update`による手動アップデートが必要です。ダウンタイムなしで更新・設定変更を反映するには、新しいバージョン(または新しい設定)のインスタンスを先に起動して正常動作を確認してから、古いインスタンスを停止するという手順を踏みます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/update-cloudflared/#update-with-multiple-cloudflared-instances",
-      "hint": "「古いものを止めてから新しいものを起動する」のではなく、その逆の順序を考えましょう。",
+      "hint": "`--autoupdate-freq`の既定値は1時間ではなく、もっと長い間隔です。",
       "tags": [
         "tunnel",
         "practical"
@@ -42008,7 +42008,7 @@
       "correctIndex": 2,
       "explanation": "データレイヤー互換モードを有効にすると、`dataLayer.push({event: \"purchase\", price: 24})`のような呼び出しを自動的に`zaraz.track(\"purchase\", {price: 24})`相当の呼び出しに変換してくれます。ただし、このモードはEコマースイベントの自動マッピングには対応しておらず、Eコマースデータを扱いたい場合はE-commerce APIを使う必要があります。\n{{diagram:0}}\nまたこの機能はスクリプトを小さく保つためデフォルトで無効になっており、公式にも`dataLayer`自体の利用は推奨されていません。",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/advanced/datalayer-compatibility/",
-      "hint": "`dataLayer.push()`が変換される先のメソッド名と、対応していない用途は何かを考えましょう。",
+      "hint": "このモードはスクリプトを小さく保つため、初期状態では有効になっていません。",
       "tags": [
         "zaraz",
         "topic-data-layer"
@@ -42278,7 +42278,7 @@
       "correctIndex": 0,
       "explanation": "`zaraz.track()`はカスタムイベントをその場でリアルタイムに記録するための関数、`zaraz.set()`は一度変数を設定すれば以降のすべての`track()`呼び出しに自動的に付与されるようにするショートカット、`zaraz.ecommerce()`はEコマース関連のデータをトリガーやアクションを個別に設定しなくても複数のツールへ送信できる統一メソッドです。`zaraz.track()`は`async`関数であり、必要に応じて`await`で完了を待つこともできます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/zaraz/get-started/",
-      "hint": "3つの関数がそれぞれ何のために用意されているのか、役割の違いを整理しましょう。",
+      "hint": "`zaraz.track()`は`async`関数であり、`await`で完了を待つこともできます。",
       "tags": [
         "zaraz",
         "topic-web-api"
