@@ -7673,19 +7673,19 @@
       "question": "Cloudflare上でリアルタイムコラボレーション機能(複数クライアント間で状態を同期する必要がある機能)を設計する場合、状態管理の観点から最も適した設計はどれですか？",
       "options": [
         {
-          "text": "通常のWorkerだけで状態をグローバル変数として保持し、すべてのリクエストで共有するため、世界中のどのクライアントも同一のメモリ上のオブジェクトを直接読み書きする",
-          "wrongFeedback": "Workerのグローバルスコープの状態はisolateごとのものであり、複数のisolateやエッジロケーション間で確実に共有される保証はありません。Workersはステートレスな実行が前提です。"
+          "text": "通常のWorkerだけで状態をグローバル変数として保持し、複数のリクエスト間で共有することで、世界中のクライアントが同一のメモリ上のオブジェクトを直接読み書きする",
+          "wrongFeedback": "Workerのグローバルスコープはisolateごとのもので、isolateのメモリは互いに分離されています。別のisolateやエッジロケーションのリクエストが同じオブジェクトを読み書きすることはなく、可変な状態をグローバルスコープに置くことは推奨されていません。"
         },
         {
-          "text": "すべての状態をWorkers KVに保存し、リクエストのたびに読み書きするだけで、書き込みは即座に全エッジロケーションへ伝播しリアルタイムに反映される",
-          "wrongFeedback": "KVは結果整合性(eventual consistency)のストアであり、書き込みが全エッジへ即座に伝播する保証がないため、リアルタイム同期には不向きです。"
+          "text": "状態をWorkers KVに保存し、リクエストのたびに読み書きするだけで、書き込みは即座に全エッジロケーションへ伝播しリアルタイムに反映される",
+          "wrongFeedback": "KVは結果整合性のストアです。変更が行われたロケーションでは通常すぐ反映されますが、他のロケーションでは60秒以上かかることがあり、即座の伝播は保証されません。"
         },
         {
           "text": "Durable Objectsを使い、コラボレーションセッションごとに単一インスタンスで強い整合性を持つ状態を保持する"
         },
         {
-          "text": "状態をクライアント側のlocalStorageだけで管理し、各クライアントが定期的にポーリングして差分を取り込むことでサーバー側では一切保持しない",
-          "wrongFeedback": "クライアントだけで状態を持つと、複数クライアント間でのリアルタイムな状態同期ができません。"
+          "text": "状態をクライアント側のlocalStorageだけで管理し、各クライアントが定期的にポーリングして差分を取り込むことでサーバー側では保持しない",
+          "wrongFeedback": "サーバー側に共有の状態を持たないため、複数クライアント間の調整ができません。Durable Objectsのようにグローバルに一意な単一インスタンスが調整点になる仕組みが必要です。"
         }
       ],
       "correctIndex": 2,
@@ -15248,16 +15248,16 @@
       "question": "Containerのアカウントレベルの上限に関する説明として正しいものはどれですか？",
       "options": [
         {
-          "text": "同時実行数の上限は各Workerごとの`max_instances`の設定値の合計と常に一致するため、各Workerの設定を積み上げるだけで同時実行数を無制限に引き上げられる",
-          "wrongFeedback": "`max_instances`はWorkerごとの上限であり、それとは別にアカウント全体の同時メモリ・vCPU・ディスクの上限が存在します。"
+          "text": "同時実行数の上限は各Workerごとの`max_instances`の設定値の合計と一致するため、各Workerの設定を積み上げるだけで同時実行数を引き上げられる",
+          "wrongFeedback": "`max_instances`はWorkerごとの上限です。これとは別に、1アカウントあたり同時メモリ6TiB・同時vCPU 1,500・同時ディスク30TBというアカウント単位の上限が適用されます。"
         },
         {
-          "text": "コンテナイメージの保存容量に上限はなく、過去にプッシュした全イメージを無制限に保持できる",
-          "wrongFeedback": "1アカウントあたりのイメージ総ストレージには50GBという上限があり、`wrangler containers images delete`などで空き容量を確保する必要があります。"
+          "text": "コンテナイメージの総ストレージ容量は1アカウントあたり500GBであり、アカウント単位で上限が設けられているのはこのイメージ容量だけである",
+          "wrongFeedback": "1アカウントあたりのイメージ総ストレージは500GBではなく50GBです。またアカウント単位の上限はイメージ容量だけでなく、同時メモリ・同時vCPU・同時ディスクにもあります。"
         },
         {
-          "text": "アカウント単位の上限は一切なく、契約したインスタンスタイプの範囲内であれば、コンテナの台数・合計メモリ・イメージ保存容量のいずれにも制限なく同時実行できてしまう",
-          "wrongFeedback": "同時メモリ6TiB、同時vCPU 1,500、同時ディスク30TBといったアカウント単位の上限に加え、コンテナイメージの総ストレージにも50GBの上限が存在します。"
+          "text": "アカウント単位の上限はなく、契約したインスタンスタイプの範囲内であれば、コンテナの台数・合計メモリ・イメージ保存容量のいずれにも制限なく同時実行できてしまう",
+          "wrongFeedback": "アカウント単位の上限は存在します。同時メモリ6TiB・同時vCPU 1,500・同時ディスク30TBに加え、イメージ総ストレージ50GBが1アカウントあたりに適用されます。"
         },
         {
           "text": "1アカウントあたり同時に使える合計メモリ・vCPU・ディスクの上限があり、コンテナイメージの総ストレージ容量にも上限(50GB)がある"
@@ -15311,19 +15311,19 @@
       "question": "Container対応Workerのデフォルトのロールアウト(rollout)動作について正しい説明はどれですか？",
       "options": [
         {
-          "text": "全てのコンテナインスタンスが一斉に停止され、新しいコードのインスタンスに一括で置き換わる",
-          "wrongFeedback": "既定は一括ではありません。`max_instances`が2以上なら2段階(10%→100%)、省略または2未満なら単発100%の段階的なロールアウトになります。"
+          "text": "`wrangler deploy`の既定の動作ではコンテナインスタンスが一斉に停止されて新しいイメージのインスタンスへ一括で置き換わり、`rollout_step_percentage`を明示したときだけ段階的なロールアウトになる",
+          "wrongFeedback": "既定が一括置き換えというのが誤りです。`rollout_step_percentage`を書かなくても、`max_instances`が2以上なら既定値は`[10, 100]`の2段階になります(2未満または省略なら単発の100%)。"
         },
         {
           "text": "Workerのコードは即座に更新される一方、コンテナインスタンスは`max_instances`が2以上なら既定で2段階(10%→100%)のローリングデプロイで更新される"
         },
         {
-          "text": "ロールアウト中に更新対象となったインスタンスは即座に強制終了(`SIGKILL`)され、`SIGTERM`による正常終了の猶予期間は一切与えられない",
-          "wrongFeedback": "更新対象になったインスタンスにはまず`SIGTERM`が送られ、15分間は正常終了のための猶予が与えられます。それでも停止しない場合に`SIGKILL`が送られます。"
+          "text": "ロールアウト中に更新対象となったインスタンスは即座に強制終了(`SIGKILL`)され、`SIGTERM`による正常終了の猶予期間は与えられない",
+          "wrongFeedback": "更新対象になったインスタンスにはまず`SIGTERM`が送られ、終了までに最大15分の猶予があります。15分経ってもプロセスが動いていた場合に`SIGKILL`が送られます。"
         },
         {
-          "text": "Worker本体のコード更新とコンテナインスタンスの更新は常に同時に完了する",
-          "wrongFeedback": "Workerのコードは即座に更新されますが、コンテナインスタンスは段階的にロールアウトされるため、更新完了までにはタイムラグがあります。"
+          "text": "Worker本体のコード更新とコンテナインスタンスの更新は同時に完了する",
+          "wrongFeedback": "Workerのコードはイメージとロールアウトの処理より先に有効化されます。デプロイの成功はロールアウトが始まったことを意味するだけで、全インスタンスの置き換え完了とは一致しません。"
         }
       ],
       "correctIndex": 1,
@@ -22796,19 +22796,19 @@
       "question": "Block(ブロック)アクションが返すHTTPステータスコードに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "ステータスコードのカスタマイズはすべてのプランで無条件に利用でき、プランによる制限は存在しない",
-          "wrongFeedback": "レスポンスのカスタマイズはProプラン以上の機能です。すべてのプランで無条件に使えるわけではありません。"
+          "text": "ブロック時のレスポンス内容とステータスコードのカスタマイズはEnterpriseプラン限定の機能であり、Pro・Businessプランのカスタムルールやレート制限ルールでは既定のステータスコードがそのまま返る",
+          "wrongFeedback": "Enterprise限定ではありません。Proプラン以上の顧客が、カスタムルールやレート制限ルールごとにレスポンス(HTML・JSON・XML・プレーンテキスト)とステータスコードをカスタマイズできます。"
         },
         {
           "text": "多くのセキュリティ機能では`403`、レート制限ルールによるBlockでは`429`が返され、Proプラン以上ではルールごとにレスポンス内容やステータスコードを変更できる"
         },
         {
-          "text": "レート制限ルールによるBlockは他のセキュリティ機能と同じく常に`403`を返し、Proプラン以上でカスタマイズできるのはレスポンス本文だけで、`429`というステータスコードが使われることはない",
-          "wrongFeedback": "レート制限ルールによるBlockでは`429`(Too Many Requests)が返されるのが一般的です。またProプラン以上でカスタマイズできるのはレスポンス本文だけではなく、ステータスコードも`400`〜`499`の範囲で変更できます。"
+          "text": "レート制限ルールによるBlockは他のセキュリティ機能と同じく`403`を返し、Proプラン以上でカスタマイズできるのはレスポンス本文だけである",
+          "wrongFeedback": "レート制限ルールによるBlockでは`429`(Too Many Requests)が返されます。またProプラン以上でカスタマイズできるのはレスポンス本文だけではなく、ステータスコードも対象です。"
         },
         {
-          "text": "どの機能がBlockアクションを実行してもステータスコードは常に`500`固定であり、変更することはできない",
-          "wrongFeedback": "ステータスコードは`500`固定ではありません。多くのセキュリティ機能では`403`、レート制限ルールでは`429`が返されます。"
+          "text": "どの機能がBlockアクションを実行してもステータスコードは`500`固定であり、Proプラン以上に許されているのはレスポンス本文の差し替えにとどまる",
+          "wrongFeedback": "`500`固定ではありません。多くのセキュリティ機能では`403`、レート制限ルールでは`429`が返され、Proプラン以上ではステータスコードも変更できます。"
         }
       ],
       "correctIndex": 1,
@@ -24720,16 +24720,16 @@
           "text": "`cf.api_gateway.fallthrough_detected`フィールドを使えば、Endpoint Managementに一致しないリクエストに対してカスタムルールで独自のロジックを組める"
         },
         {
-          "text": "フォールスルールールはEndpoint Managementに登録済みのエンドポイントに対してのみ発動し、未登録のエンドポイントへのリクエストには一切反応しないため、把握していない古いエンドポイントへの攻撃はこのルールでは検知も阻止もできない",
-          "wrongFeedback": "逆です。フォールスルールールは、Endpoint Managementに登録された既知のエンドポイントに一致「しない」リクエストに対して発動する仕組みです。"
+          "text": "フォールスルールールはEndpoint Managementに登録済みのエンドポイントに対してのみ発動する仕組みで、`cf.api_gateway.fallthrough_detected`は登録済みオペレーションに一致したリクエストで`true`になる",
+          "wrongFeedback": "逆です。フォールスルールールは、既知のオペレーションに一致「しない」リクエストにマッチします。`cf.api_gateway.fallthrough_detected`が`true`になるのも、登録されていないエンドポイントへのリクエストです。"
         },
         {
-          "text": "フォールスルールールはEnterpriseプラン限定の機能であり、`Security rules`ページのSchema validation設定自体がFree・Pro・Businessプランのダッシュボードでは一切表示されない",
-          "wrongFeedback": "フォールスルールールはEnterprise限定という記載はなく、Schema validation自体は全プランで利用できる機能の一部として設定できます。"
+          "text": "フォールスルールールの前提となるSchema validationはEnterpriseプラン限定で、Free・Pro・Businessプランではアップロードできるスキーマの枠が0件に設定されている",
+          "wrongFeedback": "Schema validationはEnterprise限定ではありません。Freeでもアップロードできるスキーマは5件・合計200kBの枠があり、Pro(5件)・Business(10件)にもそれぞれ枠があります。"
         },
         {
-          "text": "フォールスルールールは有効化した瞬間に、すべてのAPIエンドポイントへのリクエストを無条件にブロックしてしまう",
-          "wrongFeedback": "フォールスルールールが対象とするのは、Endpoint Managementに登録されたエンドポイントに一致しないリクエストだけです。登録済みのエンドポイントへの正規リクエストは対象外です。"
+          "text": "フォールスルールールはWAFのカスタムルールではなくSchema validationの設定画面にあるトグルで、アクションは`Log`に固定されている",
+          "wrongFeedback": "フォールスルールールはWAFのカスタムルールとして作成します。アクションも`Log`固定ではなく、Free・Pro・Businessでは`Block`、Enterpriseでは`Log`または`Block`が選べます。"
         }
       ],
       "correctIndex": 0,
@@ -25471,19 +25471,19 @@
       "question": "Randomステアリングを使ってアクティブ-アクティブ構成(いわゆるラウンドロビン)を実現する方法として正しいものはどれですか？",
       "options": [
         {
-          "text": "Weightの設定は`endpoint_steering`という別のオブジェクトを使い、Pool内の個々のエンドポイント単位でのみ可能で、Poolレベルでの重み付けはどのオブジェクトを使っても一切設定できない",
-          "wrongFeedback": "Poolレベルでも`random_steering`オブジェクトを使ってWeightを設定できます。エンドポイント単位に限定されているわけではありません。"
+          "text": "Weightの設定は`endpoint_steering`という別のオブジェクトを使い、Pool内の個々のエンドポイント単位でのみ可能で、Pool間の比率は管理画面に並べたPoolの順番と各Poolが持つエンドポイント数の合計から自動的に決まる",
+          "wrongFeedback": "Poolレベルでも重みを設定できます。APIの`random_steering`オブジェクトでPoolごとにWeightを設定し、各Poolへ送るトラフィックの割合を決められます。Poolの並び順やエンドポイント数から自動的に決まるわけではありません。"
         },
         {
-          "text": "Randomステアリングでは、各リクエストごとに毎回すべてのPoolへ同時にトラフィックが複製されて送信される",
-          "wrongFeedback": "トラフィックが複製されて全Poolに同時送信されるわけではありません。ランダムに選ばれた1つの健全なPoolへ送られます。"
+          "text": "Randomステアリングでは、1つのリクエストが複数のPoolへ同時に複製されて送信され、最初に応答したPoolの結果が利用者に返される",
+          "wrongFeedback": "トラフィックは複製されません。Randomステアリングは健全なPoolの中から1つをランダムに選び、そのPoolへリクエストを送ります。"
         },
         {
           "text": "Randomステアリングを選択すると健全なPoolの中からランダムに1つが選ばれ、`random_steering`オブジェクトでPoolごとにWeightを設定すればトラフィックの割合を調整できる"
         },
         {
-          "text": "Randomステアリングは名前の通り常に完全に均等な確率でPoolを選ぶ仕様であり、Weightによる比率の調整はできない",
-          "wrongFeedback": "Weightによる比率調整が可能です。`random_steering`オブジェクトでPoolごとの重みを設定すれば、均等でない比率でのトラフィック分配ができます。"
+          "text": "Randomステアリングでは各Poolが選ばれる確率は均等に固定されており、比率を変えたい場合はDynamic steeringへ切り替えることになる",
+          "wrongFeedback": "確率は固定ではありません。`random_steering`オブジェクトでPoolごとのWeightを設定すれば、Randomステアリングのままで各Poolへ送る割合を変えられます。"
         }
       ],
       "correctIndex": 2,
@@ -25669,19 +25669,19 @@
       "question": "Least Outstanding Requestsステアリングに関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "このステアリングを使うと、Poolの健全性ステータスやセッションアフィニティの設定は完全に無視される",
-          "wrongFeedback": "Poolの健全性ステータスやセッションアフィニティ、アダプティブルーティングも考慮に入れられます。完全に無視されるわけではありません。"
+          "text": "このステアリングを使うと、Poolの健全性ステータスやセッションアフィニティの設定は無視される",
+          "wrongFeedback": "このステアリングはPoolの健全性ステータス・アダプティブルーティング・セッションアフィニティも考慮に入れます。"
         },
         {
-          "text": "DNS-onlyのLoad BalancerでもLeast Outstanding Requestsは未完了リクエスト数を正確に把握して完全にフル機能で動作し、他のSteering Policyと全く同じ精度で処理される",
-          "wrongFeedback": "DNS-onlyのLoad Balancerでは未完了リクエスト数を把握できないため常に0とみなされ、実質的に`random_steering`のWeightのみに基づく動作になります。"
+          "text": "DNS-onlyのLoad BalancerでもLeast Outstanding Requestsは各Poolの未完了リクエスト数を実測して選択に反映するため、プロキシ経由のLoad Balancerと同じ挙動になる",
+          "wrongFeedback": "DNS-onlyのLoad Balancerでは、各Poolの未完了リクエスト数が0とみなされます。そのため実質的に`random_steering`のWeightだけでトラフィックが振り分けられ、プロキシ経由と同じ挙動にはなりません。"
         },
         {
           "text": "各Poolの未完了(outstanding)のリクエスト数と`random_steering`のWeightを考慮してPoolを選び、保留中のリクエストが多いPoolほど選ばれる重みが相対的に小さくなる"
         },
         {
-          "text": "このステアリングは、Poolに割り当てた緯度・経度の`latitude`/`longitude`のような地理的な近さのみを基準に選び、リクエストの処理状況は一切考慮しないため、最も近いPoolが過負荷になると自動的にオフラインとして扱われ除外される",
-          "wrongFeedback": "地理的な近さではなく、各Poolの処理中(未完了)のリクエスト数と`random_steering`のWeightを考慮してPoolを選びます。また、未完了リクエストが多いPoolは選ばれる重みが相対的に小さくなるだけで、過負荷を理由に自動的にオフライン扱いされるわけではありません。"
+          "text": "このステアリングは、Poolに割り当てた緯度・経度の`latitude`/`longitude`のような地理的な近さのみを基準に選び、リクエストの処理状況は考慮しないため、最も近いPoolが過負荷になると自動的にオフラインとして扱われ除外される",
+          "wrongFeedback": "地理的な近さではなく、各Poolの未完了リクエスト数と`random_steering`のWeightを考慮して選びます。また未完了が多いPoolは選ばれる重みが相対的に小さくなるだけで、過負荷を理由にオフライン扱いされるわけではありません。"
         }
       ],
       "correctIndex": 2,
@@ -25884,16 +25884,16 @@
           "text": "Degradedは、一部のエンドポイントが不健全でもHealth Thresholdを下回っていない状態を指し、Poolはまだトラフィックを受け取ることができる"
         },
         {
-          "text": "Degradedは、1つでもエンドポイントが不健全になった時点でそのPoolが即座にトラフィックを受け取れなくなる状態を指し、しきい値による猶予のような仕組みは一切設けられていない",
-          "wrongFeedback": "Degradedの時点ではまだトラフィックを受け取れます。トラフィックを受け取れなくなるのはHealth Thresholdを下回るCriticalの状態です。"
+          "text": "Degradedは、1つでもエンドポイントが不健全になった時点でそのPoolが即座にトラフィックを受け取らなくなる状態を指す",
+          "wrongFeedback": "Degradedは1つ以上のエンドポイントが不健全でも、Pool自体はまだ健全とみなされトラフィックを受け取れる状態です。受け取れなくなるのはHealth Thresholdを下回ったCriticalです。"
         },
         {
-          "text": "Criticalは、Poolのすべてのエンドポイントが健全な状態を指す、最も望ましいステータスである",
-          "wrongFeedback": "説明が逆です。すべてのエンドポイントが健全なのはHealthyです。CriticalはHealth Thresholdを下回り、トラフィックを受け取れなくなる状態です。"
+          "text": "CriticalはHealth Thresholdを下回った状態を指し、そのPoolがFallback Poolに指定されていれば、他のPoolが健全なときでもトラフィックを受け取り続ける",
+          "wrongFeedback": "Fallback Poolに指定されたCriticalなPoolがトラフィックを受け取るのは、他のPoolも不健全な場合に限られます。他のPoolが健全なら、そのPoolにはトラフィックは流れません。"
         },
         {
-          "text": "Healthy・Degraded・Criticalの判定にはMonitorの設定が一切不要で、Monitorを設定していないPoolでも自動的にこれらのステータスが計算される",
-          "wrongFeedback": "Monitorが設定されていないPoolでは健全性ステータスは考慮されず、ステアリングの判断材料にはなりません。"
+          "text": "Healthy・Degraded・Criticalの判定にはMonitorの設定が不要で、Monitorを設定していないPoolでも自動的にこれらのステータスが計算される",
+          "wrongFeedback": "Monitorが付いていないPoolのステータスは`Health unknown`になり、ステアリングでも健全性が考慮されません。Healthy・Degraded・Criticalの判定にはMonitorが必要です。"
         }
       ],
       "correctIndex": 0,
@@ -26567,19 +26567,19 @@
       "question": "Cache Rulesと、レガシーのPage Rulesおよびゾーン全体のキャッシュ設定との優先順位に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "同じパスに対してキャッシュ用のPage Rulesが設定されている場合、常にPage Rulesの設定が優先され、Cache Rulesの設定は無視される",
-          "wrongFeedback": "優先順位が逆です。同じパスに対してPage Rulesが実装されていても、設計上Cache Rulesの方が優先されます。"
+          "text": "同じパスに対してキャッシュ用のPage Rulesが設定されている場合、Page Rulesの設定が優先され、Cache Rulesの設定は無視される",
+          "wrongFeedback": "優先順位が逆です。同じパスにキャッシュ用のPage Rulesが設定されていても、設計上Cache Rulesの設定のほうが優先され、無視されるのはPage Rules側です。"
         },
         {
           "text": "同じパスに対してキャッシュ用のPage Rulesが設定されていても、設計上Cache Rulesが優先され、またCache Ruleはゾーン全体のキャッシュ設定よりも具体的であるためマッチするリクエストに対して優先される"
         },
         {
-          "text": "Page RulesとCache Rulesは完全に独立した別々の処理パイプラインで動作するため、互いに優先順位という概念自体が存在しない",
-          "wrongFeedback": "優先順位という概念は存在します。設計上、同じパスに対してはCache RulesがPage Rulesより優先されます。"
+          "text": "Page RulesとCache Rulesは独立した別々の処理パイプラインで動作するため、互いに優先順位という概念自体が存在しない",
+          "wrongFeedback": "両者は独立ではありません。同じパスに対してどちらが効くかという優先順位が定められており、設計上Cache RulesがPage Rulesより優先されます。"
         },
         {
-          "text": "ゾーン全体で設定したBrowser Cache TTLの値は、個別のCache Ruleで異なる値を設定していても、常にゾーン全体の設定が優先される",
-          "wrongFeedback": "優先順位が逆です。Cache Ruleの方がゾーン全体の設定よりも具体的であるため、マッチするリクエストに対してはCache Ruleの設定が優先されます。"
+          "text": "ゾーン全体で`example.com`のBrowser Cache TTLを4時間に設定している場合、`/feed`にマッチするCache Ruleで10秒を指定していてもゾーン全体の4時間が優先されるため、Cache Ruleの値を効かせるにはゾーン全体の設定を先に解除しておく必要がある",
+          "wrongFeedback": "逆です。Cache Ruleはゾーン全体の設定より具体的なので、`/feed`へのリクエストではCache Ruleの10秒がゾーン全体の4時間を上書きします。ゾーン全体の設定を解除する必要はありません。"
         }
       ],
       "correctIndex": 1,
@@ -26664,16 +26664,16 @@
       "question": "カスタマイズしていない場合のデフォルトのキャッシュキーを構成する要素として正しいものはどれですか？",
       "options": [
         {
-          "text": "リクエストの`Cookie`ヘッダーを含むすべてのヘッダーが無条件にキャッシュキーへ含まれる",
-          "wrongFeedback": "すべてのヘッダーとCookieが無条件に含まれるわけではありません。デフォルトではフルURLと一部の特定のヘッダーのみが含まれます。"
+          "text": "リクエストの`Cookie`ヘッダーと`User-Agent`ヘッダーが、フルURLと並んで既定のキャッシュキーの構成要素になっている",
+          "wrongFeedback": "既定のキャッシュキーに入るヘッダーは、`Origin`ヘッダー、`x-http-method-override`などのメソッドオーバーライド系、`x-forwarded-host`などのルーティング系です。`Cookie`や`User-Agent`は含まれません。"
         },
         {
-          "text": "訪問者のIPアドレスがデフォルトのキャッシュキーに常に含まれ、訪問者ごとに個別のキャッシュエントリが作られる",
-          "wrongFeedback": "訪問者のIPアドレスはデフォルトのキャッシュキーには含まれません。"
+          "text": "訪問者のIPアドレスがデフォルトのキャッシュキーに含まれ、訪問者ごとに個別のキャッシュエントリが作られる",
+          "wrongFeedback": "訪問者のIPアドレスは既定のキャッシュキーに含まれません。含まれていれば訪問者ごとにエントリが分かれ、キャッシュがほとんど効かなくなります。"
         },
         {
-          "text": "`http.request.uri.path`が示すURLのパス部分のみで構成され、スキームやホスト名、クエリ文字列は一切含まれないため、同じパスであればホストが異なっても同一のキャッシュエントリが使われる",
-          "wrongFeedback": "パス部分のみではありません。スキーム・ホスト・URI・クエリ文字列を含むフルURLに加え、`Origin`ヘッダーや一部のルーティングヘッダーも含まれます。"
+          "text": "`http.request.uri.path`が示すURLのパス部分のみで構成され、スキームやホスト名、クエリ文字列は含まれないため、同じパスであればホストが異なっても同一のキャッシュエントリが使われる",
+          "wrongFeedback": "パス部分のみではありません。スキーム・ホスト・クエリ文字列を含むフルURLが既定のキャッシュキーに入るため、ホストが違えば別のキャッシュエントリになります。"
         },
         {
           "text": "スキーム・ホスト・URI・クエリ文字列を含むフルURLに加えて、`Origin`リクエストヘッダーや`x-forwarded-host`などのルーティング関連ヘッダーも含まれる"
@@ -26682,7 +26682,7 @@
       "correctIndex": 3,
       "explanation": "デフォルトのキャッシュキーは、スキーム・ホスト・URI・クエリ文字列を含むフルURLに加えて、`Origin`リクエストヘッダー、メソッドオーバーライド関連のヘッダー、`x-forwarded-host`のようなルーティング関連ヘッダーで構成されます。すべてのヘッダーやCookie、訪問者のIPアドレスがデフォルトで含まれるわけではありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cache/how-to/cache-keys/",
-      "hint": "訪問者のIPアドレスは、既定のキャッシュキーには入りません。",
+      "hint": "キャッシュキーは「どの資源を指すか」を表すものです。訪問者ごとに変わる情報は、既定では入りません。",
       "tags": [
         "cache",
         "practical"
@@ -26977,19 +26977,19 @@
       "question": "クエリ文字列の扱いを制御する「Caching Level(キャッシュレベル)」の3段階の組み合わせとして正しいものはどれですか？",
       "options": [
         {
-          "text": "`GET`リクエストのみを対象とする段階、`POST`リクエストのみを対象とする段階、すべてのHTTPメソッドを対象とする段階の3つ",
-          "wrongFeedback": "HTTPメソッドによる区分ではありません。キャッシュレベルはクエリ文字列の扱い方によって区分されます。"
+          "text": "`GET`リクエストのみを対象とする段階、`GET`と`HEAD`を対象とする段階、`POST`も含めて対象とする段階の3つ",
+          "wrongFeedback": "HTTPメソッドによる区分ではありません。Caching Levelの3段階は`No Query String`・`Ignore Query String`・`Standard`で、クエリ文字列の扱い方によって区分されます。"
         },
         {
           "text": "クエリ文字列なしのURLのみキャッシュする`No Query String`、内容に関わらず同一リソース扱いにする`Ignore Query String`、クエリ文字列ごとに別エントリを作る標準の`Standard`の3段階"
         },
         {
-          "text": "画像のみキャッシュする段階、`.css`/`.js`のみキャッシュする段階、すべての静的ファイルをキャッシュする段階の3つ",
-          "wrongFeedback": "ファイル種別による区分ではありません。キャッシュレベルはクエリ文字列の扱い方によって区分されます。"
+          "text": "画像のみキャッシュする段階、`.css`/`.js`のみキャッシュする段階、フォントや動画も含めた静的ファイルをキャッシュする段階の3つ",
+          "wrongFeedback": "ファイル種別による区分ではありません。Caching Levelの3段階は`No Query String`・`Ignore Query String`・`Standard`で、クエリ文字列の扱い方によって区分されます。"
         },
         {
-          "text": "APIレスポンスヘッダーの`cache-level`が常にすべてのクエリ文字列を無視する段階、常にすべて考慮する段階、ランダムに無視するかどうかを決める段階の3つ",
-          "wrongFeedback": "ランダムに決める段階というものはありません。実際の3段階は`No Query String`・`Ignore Query String`・`Standard`です。"
+          "text": "ダッシュボードの表記に対応するAPI値のうち、`Basic`はクエリ文字列ごとに別エントリを作る既定の段階、`Simplified`はクエリ文字列を含まないURLのときだけ配信する段階、`Aggressive`はクエリ文字列を無視してどのURLにも同じリソースを返す段階を指す",
+          "wrongFeedback": "対応が入れ替わっています。API値の`Basic`が`No Query String`、`Simplified`が`Ignore Query String`、`Aggressive`が`Standard`(既定)です。"
         }
       ],
       "correctIndex": 1,
@@ -28509,19 +28509,19 @@
       "question": "Cloudflare DNSレコードの作成数の上限(クォータ)に関する正しい説明はどれですか？",
       "options": [
         {
-          "text": "レコード数のクォータはPro・Businessプランにのみ適用され、Free・Enterpriseプランにはゾーン単位・アカウント単位のいずれの上限も存在しないため、この2プランでは技術的な制約なく無制限にDNSレコードを追加し続けられる",
-          "wrongFeedback": "Free・Enterpriseにも上限は存在します。Freeはゾーン単位、Enterpriseはアカウント単位のクォータが適用されます。"
+          "text": "レコード数のクォータはPro・Businessプランにのみ適用され、Free・Enterpriseプランにはゾーン単位・アカウント単位のいずれの上限も設けられていない",
+          "wrongFeedback": "Free・Enterpriseにも上限はあります。Freeはゾーン単位(作成日により1,000件または200件)、Enterpriseはアカウント単位(既定100万件)のクォータが適用されます。"
         },
         {
-          "text": "プランに関わらず、常にゾーン単位とアカウント単位の両方のクォータが同時に適用され、たとえばFreeゾーンではゾーン単位の上限とアカウント単位の上限が同時に評価され、より小さい方の値がそのゾーンの上限として採用される",
-          "wrongFeedback": "両方が同時に適用されることはありません。プランに応じて、ゾーン単位またはアカウント単位のいずれか一方でクォータが適用されます。"
+          "text": "プランに関わらず、ゾーン単位とアカウント単位の両方のクォータが同時に適用され、たとえばFreeゾーンではゾーン単位の上限とアカウント単位の上限が同時に評価され、より小さい方の値がそのゾーンの上限として採用される",
+          "wrongFeedback": "クォータはプランに応じてゾーン単位かアカウント単位のどちらか一方で適用され、両方が同時に適用されることはありません。"
         },
         {
           "text": "2024年9月1日より前に作成されたFreeゾーンは1,000件、それ以降は200件、Pro・Businessは3,500件が上限で、Enterpriseはアカウント単位のクォータが適用される"
         },
         {
-          "text": "すべてのプランで、レコード数の上限は一律3,500件であり、作成日やプランによる違いは存在しない",
-          "wrongFeedback": "一律3,500件ではありません。Freeプランは1,000件または200件(作成日による)、Enterpriseはアカウント単位のクォータが適用されます。"
+          "text": "ゾーン単位の上限はFree・Pro・Businessで共通の3,500件とされており、ゾーンの作成日はクォータの判定に影響しない",
+          "wrongFeedback": "3,500件はPro・Businessの値です。Freeゾーンは`2024-09-01 00:00:00 UTC`より前に作成されたものが1,000件、それ以降に作成されたものが200件で、作成日によって変わります。"
         }
       ],
       "correctIndex": 2,
@@ -29987,19 +29987,19 @@
       "question": "RUM(リアルユーザーモニタリング)のFreeプランにおけるデフォルトの挙動として正しいものはどれですか？",
       "options": [
         {
-          "text": "RUMはEnterpriseプラン限定の機能であり、Freeプランでは一切利用できない。ダッシュボードに設定項目が表示されず、アップグレードが唯一の有効化方法とされる",
-          "wrongFeedback": "RUMはFreeプランでも自動的に有効化されています。Enterprise限定というのは誤りです。"
+          "text": "RUMはEnterpriseプラン限定の機能で、Free・Pro・Businessプランに表示されるのはObservatoryの合成テスト(synthetic test)の結果だけである",
+          "wrongFeedback": "RUMはEnterprise限定ではありません。Freeプランの顧客はRUMが自動的に有効化された状態で、実ユーザーの計測値を見られます。"
         },
         {
           "text": "Freeプランでは自動的にRUMが有効化され、デフォルトではEEA/UK/スイスのトラフィックが除外されるが、この設定はオフに切り替えられる"
         },
         {
-          "text": "Freeプランでは、RUMは明示的に有効化しない限り常に無効のままである",
-          "wrongFeedback": "Freeプランでは自動的にRUMが有効化されています。明示的な有効化操作は不要です。"
+          "text": "Freeプランでは、ダッシュボードでRUMを明示的に有効化しない限り、実ユーザーの計測値は収集されないままである",
+          "wrongFeedback": "Freeプランでは RUMが自動的に有効化されており、明示的な有効化操作をしなくても実ユーザーの計測値が集まります。"
         },
         {
-          "text": "Freeプランでは、GDPR対象のEUを含むすべての地域のトラフィックデータが、地域の除外設定を一切持たないまま例外なく自動的に収集される",
-          "wrongFeedback": "Freeプランではデフォルトで EUのトラフィックが除外されます。すべての地域が自動的に含まれるわけではありません。"
+          "text": "Freeプランでは自動的にRUMが有効化され、EEA/UK/スイスのトラフィックもそのまま計測対象に含まれる",
+          "wrongFeedback": "Freeプランでは既定でEEA/UK/スイスのトラフィックが除外されます。必要ならこの除外をオフに切り替えられます。"
         }
       ],
       "correctIndex": 1,
@@ -30705,16 +30705,16 @@
           "text": "Freeプランのデフォルトの圧縮方式はZstandardで、Pro・BusinessプランのデフォルトはBrotli、EnterpriseプランのデフォルトはGzipである"
         },
         {
-          "text": "すべてのプランでデフォルトの圧縮方式は共通してBrotliであり、プランによる違いは存在しない",
-          "wrongFeedback": "プランによって異なります。Freeプランのデフォルトの圧縮方式はZstandard、Pro・BusinessはBrotli、EnterpriseはGzipです。"
+          "text": "Free・Pro・Businessプランのデフォルトの圧縮方式は共通してBrotliで、EnterpriseプランだけがZstandardを既定としている",
+          "wrongFeedback": "プランごとに異なります。Freeの既定はZstandard、Pro・BusinessがBrotli、EnterpriseがGzipです。"
         },
         {
-          "text": "Enterpriseプランのデフォルトの圧縮方式はZstandardであり、Freeプランのデフォルトの圧縮方式はGzipで、訪問者の`accept-encoding`ヘッダーに関わらず常にこの方式が適用される",
-          "wrongFeedback": "説明が逆です。Freeプランのデフォルトの圧縮方式はZstandard、Enterpriseプランのデフォルトの圧縮方式はGzipです。また実際に適用される方式は、訪問者が`accept-encoding`ヘッダーで対応を示している方式にも依存します。"
+          "text": "Enterpriseプランのデフォルトの圧縮方式はZstandardであり、FreeプランのデフォルトはGzip、Pro・BusinessプランのデフォルトはBrotliで、オリジンへコンテンツを取りに行くときも同じプラン別の方式が使われる",
+          "wrongFeedback": "FreeとEnterpriseが入れ替わっています。Freeの既定がZstandard、Enterpriseの既定がGzipです。またオリジンへのリクエストでは、プランに関わらず`accept-encoding: br, gzip`が送られます。"
         },
         {
-          "text": "Freeプランはデフォルトでランダムに圧縮方式を切り替え、Pro以上のプランでは常にGzipのみが使われる",
-          "wrongFeedback": "ランダムな切り替えではありません。Freeプランのデフォルトの圧縮方式はZstandardで、Gzipが既定なのはEnterpriseプランです。"
+          "text": "Freeプランのデフォルトは圧縮なしで、Pro以上のプランではGzipが既定の圧縮方式として使われる",
+          "wrongFeedback": "Freeの既定は圧縮なしではなくZstandardです。Gzipが既定なのはEnterpriseで、Pro・BusinessはBrotliです。"
         }
       ],
       "correctIndex": 0,
@@ -32243,19 +32243,19 @@
       "question": "プランによるClient-side securityの機能差に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "コンテンツセキュリティルール(旧ポリシー)は、Advancedを契約していなくてもすべてのプランで無制限に利用できる",
-          "wrongFeedback": "コンテンツセキュリティルールはClient-Side Security Advanced契約者専用の機能です。"
+          "text": "コンテンツセキュリティルール(旧ポリシー)はBusinessプラン以上で作成でき、Enterpriseプランでは作成できるルール数が5件まで増えるため、Client-Side Security Advancedを追加契約しなくても正のセキュリティモデル(positive security model)を実装できる",
+          "wrongFeedback": "コンテンツセキュリティルールを作成できるのはClient-Side Security Advancedの契約者だけです。Free・Pro・Business・Enterpriseの作成可能数はいずれも0件で、Advancedのみ5件です。"
         },
         {
           "text": "Free・Proプランではスクリプトモニタリングのみにアクセスでき、ドメインベースの脅威インテリジェンスは全顧客が利用できるが、悪性スクリプト検知やURLベースの脅威インテリジェンスにはClient-Side Security Advancedが必要である"
         },
         {
-          "text": "Free・Proプランではスクリプトモニタリングと接続(connection)モニタリングの両方に完全にアクセスできる",
-          "wrongFeedback": "Free・Proプランではスクリプトモニタリングのみアクセスでき、接続モニタリングは含まれません。"
+          "text": "Free・Proプランではスクリプトモニタリングと接続(connection)モニタリングの両方にアクセスできる",
+          "wrongFeedback": "接続(connection)モニタリングはBusinessプラン以上の機能です。Free・Proでアクセスできるのはスクリプトモニタリングです。"
         },
         {
-          "text": "ドメインベースの脅威インテリジェンスも悪性スクリプト検知と同じくClient-Side Security Advancedの契約者専用の機能であり、Free・Proプランでは一切利用できない",
-          "wrongFeedback": "ドメインベースの脅威インテリジェンスはすべての顧客が利用できます。Advanced限定なのは悪性スクリプト検知とURLベースの脅威インテリジェンスです。"
+          "text": "ドメインベースの脅威インテリジェンスも悪性スクリプト検知と同じくClient-Side Security Advancedの契約者専用の機能である",
+          "wrongFeedback": "ドメインベースの脅威インテリジェンスはすべての顧客が利用できます。Advancedが必要なのは悪性スクリプト検知(悪性コード解析)とURLベースの脅威インテリジェンスです。"
         }
       ],
       "correctIndex": 1,
@@ -33572,16 +33572,16 @@
       "question": "Gatewayのポリシーの優先順位(order of precedence)に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "複数のポリシーが一致した場合、Gatewayはすべての一致したポリシーの内容を合成し、最も制限の強いアクション(Block)を最終的なアクションとして採用する",
-          "wrongFeedback": "合成は行われません。最初に一致したポリシーでただちに評価が停止し(first match)、それ以降のポリシーは適用されません。"
+          "text": "複数のポリシーが一致した場合、Gatewayは一致したポリシーの内容を合成し、最も制限の強いアクション(Block)を最終的なアクションとして採用する",
+          "wrongFeedback": "合成は行われません。最初に一致したAllowまたはBlockのポリシーで評価が停止し、それ以降のポリシーがその判断を上書きすることはありません。"
         },
         {
-          "text": "APIでポリシーを作成する際、優先順位を明示的に指定しない場合、常に優先順位1から割り当てられる",
-          "wrongFeedback": "優先順位1からではなく、1000から割り当てが始まります。新しいポリシーが追加されるたびに、その時点の最大値に1〜100のランダムな整数を加えた値になります。"
+          "text": "APIでポリシーを作成する際、優先順位を明示的に指定しない場合、優先順位は1から順に割り当てられる",
+          "wrongFeedback": "1からではなく`1000`から割り当てが始まります。以降は新しいポリシーが追加されるたびに、その時点の最大値へ1〜100のランダムな整数を加えた値になります。"
         },
         {
-          "text": "優先順位は降順で評価される仕組みになっており、最も大きい数値を持つポリシーが他のどのポリシーよりも先に評価されるため、既存の複数のポリシーの中では優先順位番号が最も大きいものが常に先に適用される",
-          "wrongFeedback": "昇順で評価され、最も小さい数値(最も低い優先順位番号)を持つポリシーが最初に評価されます。"
+          "text": "優先順位は降順で評価される仕組みになっており、最も大きい数値を持つポリシーが先に評価されるため、ダッシュボードの一覧では最も下に並ぶポリシーが最初に適用される",
+          "wrongFeedback": "昇順です。最も小さい数値のポリシーから評価されます。ダッシュボードでは優先順位が上から下の順に並ぶため、最初に適用されるのは一番上のポリシーです。"
         },
         {
           "text": "優先順位は昇順で評価され、最も小さい数値を持つポリシーが最初に評価される。最初に一致したポリシーでただちに評価が停止するfirst matchの原則に従う"
@@ -35554,19 +35554,19 @@
       "question": "機能が動作することと検査が行われることは別だという点を踏まえると、Clientless Web IsolationとTLS復号の関係に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "TLS復号を有効にすると、Clientless Web Isolationでは証明書ピニングを使うサイトも含めてすべてのサイトに問題なく対応できる",
-          "wrongFeedback": "証明書ピニングを使うサイトはTLS復号と非互換であり、Do Not Inspectポリシーのような対応が必要です。"
+          "text": "TLS復号を有効にすると、証明書ピニングを使うサイトに対してはGatewayが自動的にDo Not Inspectを適用して復号を飛ばすため、管理者がポリシーを追加しなくてもリモートブラウザからそれらのサイトへ問題なく接続できる",
+          "wrongFeedback": "自動では適用されません。証明書ピニングを使うサイトに接続するには、管理者がそのアプリケーションやドメインに対してDo Not InspectのHTTPポリシーを作る必要があります。"
         },
         {
-          "text": "Clientless Web Isolationを機能させるには、TLS復号を必ず有効にする必要があり、TLS復号なしでは一切動作しない",
-          "wrongFeedback": "TLS復号を有効にしなくてもClientless Web Isolation自体は機能します。ただしHTTPポリシーを適用するにはTLS復号が必要です。"
+          "text": "Clientless Web Isolationを機能させるにはTLS復号を有効にする必要があり、TLS復号なしではリモートブラウザのセッション自体が開始されない",
+          "wrongFeedback": "Clientless Web IsolationはTLS復号を有効にしなくても機能します。TLS復号が必要になるのは、そのトラフィックにHTTPポリシーを適用する場合です。"
         },
         {
           "text": "Clientless Web Isolation自体はTLS復号を有効にしなくても機能するが、GatewayがHTTPポリシーによってトラフィックの中身を検査・フィルタリングするにはTLS復号が必須である"
         },
         {
-          "text": "TLS復号の有無はHTTPポリシーの適用可否には影響せず、TLS復号なしでもすべてのHTTPポリシーを適用できる",
-          "wrongFeedback": "GatewayがHTTPポリシーで検査・フィルタリングを行うにはTLS復号によってトラフィックの中身を見える状態にする必要があります。"
+          "text": "TLS復号の有無はHTTPポリシーの適用可否には影響せず、TLS復号なしでもHTTPポリシーによる検査とフィルタリングが行われる",
+          "wrongFeedback": "影響します。HTTPポリシーがHTTPSトラフィックを検査するにはTLS復号が必要で、復号しなければ フルURL・ヘッダー・ボディはGatewayから見えません。"
         }
       ],
       "correctIndex": 2,
@@ -38287,16 +38287,16 @@
           "text": "「Soft delete - user recoverable」はMicrosoft 365顧客専用、「Move to trash」はGoogle Workspaceユーザー専用のオプションであり、残る3つのアクションはいずれのプラットフォームでも利用できる"
         },
         {
-          "text": "「Move to trash」はMicrosoft 365ユーザー専用のオプションとして提供されており、Google Workspaceの顧客はこのオプションを一切利用できない",
-          "wrongFeedback": "逆です。「Move to trash」はGoogle Workspaceユーザー専用のオプションです。"
+          "text": "「Move to trash」はMicrosoft 365ユーザー専用のオプションとして提供されており、選ぶとメッセージは受信箱から完全に取り除かれ、管理者だけが復元できる状態になる",
+          "wrongFeedback": "2点違います。「Move to trash」はGoogle Workspaceユーザー専用です。また移動先はユーザーのゴミ箱(削除済みアイテム)で、管理者だけが復元できる形になるのは「Hard delete - admin recoverable」のほうです。"
         },
         {
-          "text": "「Soft delete - user recoverable」はGoogle Workspaceユーザー専用のオプションとして提供されており、Microsoft 365の顧客はこのオプションを一切利用できない",
-          "wrongFeedback": "逆です。「Soft delete - user recoverable」はMicrosoft 365顧客専用のオプションです。"
+          "text": "「Soft delete - user recoverable」はGoogle Workspaceユーザー専用のオプションとして提供されており、メッセージはユーザーの「Recoverable Items - Deleted」フォルダーへ移され、ユーザー自身が見つけて復元できる",
+          "wrongFeedback": "「Recoverable Items - Deleted」フォルダーへ移してユーザー自身が復元できる、という動作の説明は正しいのですが、プラットフォームが逆です。これはMicrosoft 365顧客専用のオプションです。"
         },
         {
-          "text": "Auto-movesで選択できるアクションはすべてのプラットフォームで共通であり、プラットフォームによる利用制限は一切存在しない",
-          "wrongFeedback": "「Soft delete」「Move to trash」のようにプラットフォームごとに利用できるオプションが異なります。"
+          "text": "プラットフォームによる制限があるのは「Hard delete - admin recoverable」だけで、これはMicrosoft 365顧客のみが選択でき、「Soft delete - user recoverable」「Move to trash」「Move to junk」「No action」の4つはどちらのプラットフォームでも選べる",
+          "wrongFeedback": "「Hard delete - admin recoverable」にプラットフォームの限定はありません。専用オプションは「Soft delete - user recoverable」(Microsoft 365顧客専用)と「Move to trash」(Google Workspaceユーザー専用)の2つです。"
         }
       ],
       "correctIndex": 0,
@@ -42508,16 +42508,16 @@
       "question": "Zaraz設定の「Auto-inject script」に関する説明として、正しいものはどれですか?",
       "options": [
         {
-          "text": "「Auto-inject script」はiframe要素には常に適用されず、別途「Iframe injection」を有効にしても効果を持たない",
-          "wrongFeedback": "「Iframe injection」を有効にすると、Zarazスクリプトをiframe要素にも挿入するようになります。「効果を持たない」という説明は誤りです。"
+          "text": "「Auto-inject script」を有効にすると`iframe`要素にもZarazスクリプトが挿入されるため、「Iframe injection」は挿入先をトップレベルの文書だけに戻すための設定である",
+          "wrongFeedback": "「Iframe injection」は、オンにするとZarazスクリプトを`iframe`要素にも挿入するための設定です。挿入先をトップレベルだけに戻す設定ではありません。"
         },
         {
-          "text": "デフォルトでは無効になっており、有効化しない限りZarazはウェブサイト上でまったく動作しないため、設定直後は必ずこの項目を手動でオンにする必要がある",
-          "wrongFeedback": "「Auto-inject script」はデフォルトで有効になっています。無効化した場合はスクリプトを手動で追加する必要があります。"
+          "text": "デフォルトでは無効になっており、設定直後にこの項目を手動でオンにしてはじめてZarazスクリプトがページへ挿入される",
+          "wrongFeedback": "「Auto-inject script」はデフォルトで有効です。手動でスクリプトを追加する必要が出てくるのは、この設定をオフにした場合です。"
         },
         {
-          "text": "この設定を無効化しても、Zarazの動作には一切影響がなく、常に自動でスクリプトが挿入され続けるため、これは見た目だけのオプションである",
-          "wrongFeedback": "この設定を無効化すると、Zarazは自動的なスクリプトの挿入を停止するため、動作に影響します。"
+          "text": "この設定を無効化してもZarazスクリプトの自動挿入は続き、変わるのは`iframe`要素への挿入可否だけである",
+          "wrongFeedback": "この設定をオフにすると、Zarazはドメインへのスクリプトの自動挿入を停止します。`iframe`への挿入可否だけが変わるわけではありません。"
         },
         {
           "text": "デフォルトで有効になっており、無効化した場合はZarazスクリプトを手動でサイトに追加する必要がある"

@@ -566,7 +566,6 @@ const TAIL_LEN = 12
 const REVIEWED_PARALLEL_TAILS = [
   { id: 'ar-012', tail: ': 1024 bytes', why: '設問が値と鍵のサイズの組み合わせを並べる形。単位で揃うのは当然' },
   { id: 'dl-012', tail: 'することが推奨されている', why: '「どう設定するのが推奨か」を問う設問。推奨形で揃うのは当然' },
-  { id: 'em-014', tail: 'ションを一切利用できない', why: 'Google/Microsoft の鏡写しで正解が「どちらも使える」。定石' },
 ]
 
 function lintParallelDistractorTails(quiz) {
