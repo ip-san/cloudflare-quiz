@@ -12828,7 +12828,7 @@
       "correctIndex": 1,
       "explanation": "Turnstileは、従来のCAPTCHA(歪んだ文字や画像選択)を利用者に見せることなく、訪問者が人間かボットかを判定するプライバシー重視の代替手段です。\n{{diagram:0}}\nCloudflareにサイトのトラフィックをルーティングしていなくてもWebサイトに埋め込めるため、フォームの不正送信対策などに手軽に導入できます。",
       "referenceUrl": "https://developers.cloudflare.com/turnstile/",
-      "hint": "「CAPTCHA」で疲れた経験を思い出しましょう。Turnstileはその課題をどう解決するサービスでしょうか。",
+      "hint": "この製品が扱うのは、通信の保護・アクセスしてきた相手の性質・訪問数の計測・認証情報の保管のどれか、という軸で4肢を見比べましょう。",
       "tags": [
         "platform-services",
         "practical"
@@ -13643,7 +13643,7 @@
       "correctIndex": 0,
       "explanation": "Browser Run(旧 Browser Rendering)は、Cloudflareのグローバルネットワーク上でヘッドレス(画面を表示せず、プログラムから操作する形)の Chrome を動かし、手元にブラウザを用意しなくてもブラウザ操作を自動化できるサービスです。\n{{diagram:0}}\nスクリーンショットの取得、ページのPDF化、Webスクレイピング、E2Eテスト、コンテンツ生成などに使えます。",
       "referenceUrl": "https://developers.cloudflare.com/browser-run/",
-      "hint": "「ヘッドレスブラウザ」を誰が・どこで動かすのかを考えましょう。利用者側か、Cloudflare側か。",
+      "hint": "製品名の `Browser Run` が示すのは「ブラウザを何かする」ことです。誰のブラウザを、どこで、何のために扱う製品なのかという軸で4肢を見比べましょう。",
       "tags": [
         "platform-services",
         "practical"
@@ -13793,7 +13793,7 @@
       "correctIndex": 2,
       "explanation": "Workers Logsは、Cloudflare WorkerのHTTPリクエスト情報や`console.log`の出力、例外情報などを自動的に収集し、ダッシュボード上でフィルタ・分析できるようにする観測性(observability)機能です。\n{{diagram:0}}\n新規に作成したWorkerにはデフォルトでこの設定が有効になっています。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/",
-      "hint": "デプロイ後に「本番で何が起きているか」を知りたいとき、Cloudflareのダッシュボードで確認できる仕組みを考えてみましょう。",
+      "hint": "この機能が扱う対象はログです。そのログがどの時点(ローカルでの開発中か、デプロイ後の稼働中か)のもので、どこで見るものなのかという2つの軸で4肢を見比べましょう。",
       "tags": [
         "observability",
         "practical",
@@ -13970,7 +13970,7 @@
       "correctIndex": 3,
       "explanation": "Workers Analytics Engineは、Workerから`writeDataPoint()`でデータポイントを書き込み、SQL APIで集計・分析できる仕組みです。ユーザーIDやエンドポイントなど値の種類が非常に多い指標でも、性能を落とさず記録・分析できます。\n{{diagram:0}}\n従量課金ベースの利用状況分析やSaaSの顧客別ダッシュボード構築などに使われます。",
       "referenceUrl": "https://developers.cloudflare.com/analytics/analytics-engine/",
-      "hint": "「種類が非常に多い値」を、性能を落とさず記録して後からSQLで調べたい場面を思い浮かべましょう。",
+      "hint": "4肢はそれぞれ別の領域(整合性・スキーマ管理・コード品質・計測)の課題を述べています。`Analytics` という名前が指す領域はどれかを考えましょう。",
       "tags": [
         "observability",
         "practical"
@@ -14021,7 +14021,7 @@
       "correctIndex": 2,
       "explanation": "Workers Logsに`console.log(\"user_id: \" + 123)`のような文字列ではなく`console.log({ user_id: 123 })`のようなオブジェクトを渡すと、`user_id`などのキーがフィールドとして自動的に抽出・インデックスされます。これにより、そのキーに対する絞り込み検索が容易になります。\n{{diagram:0}}\n文字列に埋め込んだ場合はテキスト一致検索しかできません。",
       "referenceUrl": "https://developers.cloudflare.com/workers/observability/logs/workers-logs/#logging-structured-json-objects",
-      "hint": "後から「このユーザーのログだけ見たい」と思ったとき、検索しやすいのはどちらの書き方でしょうか。",
+      "hint": "4肢は「速さ」「回数の上限」「サイズの上限」「後からの扱いやすさ」という別々の観点を述べています。出力の書き方を変えたときに実際に変わるのはどの観点かを考えましょう。",
       "tags": [
         "observability",
         "practical"
@@ -14775,7 +14775,7 @@
       "correctIndex": 2,
       "explanation": "Containersは、任意のプログラミング言語・ランタイムで書かれたコードや、既存のDockerイメージとして配布されているアプリケーションを、Workerと連携させてCloudflareのネットワーク上で実行できるようにする仕組みです。CPUコアの並列利用や大きなメモリ・ディスクを必要とする処理、フルのファイルシステムやLinux的な環境が必要な処理に向いています。\n{{diagram:0}}\nWorkers Paidプランで利用できます。",
       "referenceUrl": "https://developers.cloudflare.com/containers/",
-      "hint": "Workersだけでは実行しにくい「特定の言語ランタイムやファイルシステムが必要な処理」を、どう実行するかを考えましょう。",
+      "hint": "4肢は「起動の速さ」「配信用の保管」「コードを動かす場」「データの複製」という別々の役割を述べています。`Containers` という名前が指すのはどの役割かを考えましょう。",
       "tags": [
         "containers",
         "practical"
@@ -14999,7 +14999,7 @@
       "correctIndex": 0,
       "explanation": "`defaultPort`は、`fetch()`や`containerFetch()`がコンテナプロセスと通信する際に使うポート番号です。コンテナがこのポートで待ち受けを始めるまでリクエストはブロックされます。`sleepAfter`は、アクティビティがない状態が一定時間続いた場合にコンテナを停止するまでの時間(デフォルト`\"10m\"`)です。\n{{diagram:0}}\nリクエストのたびにこのタイマーはリセットされます。",
       "referenceUrl": "https://developers.cloudflare.com/containers/reference/container-class/#properties",
-      "hint": "「どのポートで会話するか」と「どれくらい放置したら休ませるか」という2つの設定だと考えましょう。",
+      "hint": "2つのプロパティ名(`defaultPort` と `sleepAfter`)が、それぞれ何を表す名前として自然かを考えましょう。4肢は同じ2つのプロパティに別々の意味を割り当てています。",
       "tags": [
         "containers",
         "practical"
