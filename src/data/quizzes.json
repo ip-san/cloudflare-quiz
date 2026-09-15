@@ -37479,7 +37479,7 @@
       "correctIndex": 3,
       "explanation": "1回のリモートキャプチャ実行で選択できるデバイスは最大10台までです。Windowsデバイスは同時に複数のリモートキャプチャを実行することがサポートされておらず、既に実行中の状態で新たなキャプチャを開始すると即座に失敗します。対象デバイスはZero Trust組織に登録されている必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/diagnostics/client-packet-capture/#start-a-remote-capture",
-      "hint": "「一度に選べるデバイス数」と「同時実行の可否」は別々の制約だと考えましょう。",
+      "hint": "「一度に選べるデバイスの数」と「同じデバイスで複数のキャプチャを並行して走らせられるか」を、それぞれ確かめましょう。",
       "tags": [
         "dex",
         "practical"
@@ -37578,7 +37578,7 @@
       "correctIndex": 0,
       "explanation": "推奨される確認項目は、対象ユーザーが使用しているCloudflare One ClientのバージョンがDEXに対応しているか、そのユーザーに割り当てられたデバイスプロファイルでDEXが有効になっているか、CloudflareのオーケストレーションAPIへの通信がローカルのファイアウォールやSSLインスペクションプロキシによってブロックされていないか、の3点です。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/troubleshooting/#no-data-displayed-for-certain-users",
-      "hint": "「クライアントのバージョン」「機能の有効化設定」「通信経路のブロック」という3つの層で確認することを考えましょう。",
+      "hint": "「設定そのものが入っていないのか」「設定は入っているのに通信が途中で遮られているのか」を分けて考えましょう。",
       "tags": [
         "dex",
         "practical"
@@ -37679,7 +37679,7 @@
       "correctIndex": 2,
       "explanation": "多くの場合、単一のパターン評価だけでは最終判定が確定せず、複数の要素・非要素を組み合わせて正規のフィッシングキャンペーンと無害なトラフィックを区別しています。またMimecastのような一部のURLリライト方式はデコードできないという制約があります。Email SecurityはSMTP・IMAP・POP3のようなメールプロトコルを対象とします。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/how-es-detects-phish/#scope",
-      "hint": "「1つの手がかりだけで決めつけない」という判定方式の考え方を考えましょう。",
+      "hint": "判定が1つの手がかりで決まるのか、いくつもの手がかりを重ねて決まるのかを考えましょう。",
       "tags": [
         "email-security",
         "practical"
@@ -37730,7 +37730,7 @@
       "correctIndex": 1,
       "explanation": "QRコードに似た画像をURLへ解決し、そのうえで他の悪性URL検知手法(継続的クロールやMLモデルなど)を適用するという仕組みで検知されます。QRコードフィッシング(Quishing)はEmail Securityの検知対象カテゴリの1つとして明記されています。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/how-es-detects-phish/#malicious-urls-associated-with-qr-codes-qr-code-phishing-attacks-quishing",
-      "hint": "画像に埋め込まれたQRコードを、まず「文字列としてのURL」に変換してから判定していると考えましょう。",
+      "hint": "画像そのものの中身にまで踏み込んで調べるのか、送信元などメールの周辺情報から判断するのか、という軸で考えましょう。",
       "tags": [
         "email-security",
         "practical"
@@ -38053,7 +38053,7 @@
       "correctIndex": 2,
       "explanation": "リージョナル処理はUS・Germany・India・Australiaの4リージョンをサポートしています。Data Localization Suite(DLS)自体の購入は不要ですが、MX/InlineまたはBCC/Journalingでデプロイした顧客のみが利用でき、API(配信後)デプロイでは利用できません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/reference/regional-processing/",
-      "hint": "「利用できるデプロイモデルが限定されている」という制約と、「別製品の購入は不要」という点の両方を押さえましょう。",
+      "hint": "どのデプロイ方式で導入した顧客が使えるのか、そして別製品の追加購入が要るのか要らないのか、を分けて考えましょう。",
       "tags": [
         "email-security",
         "practical"
@@ -38149,7 +38149,7 @@
       "correctIndex": 3,
       "explanation": "Retro ScanはMicrosoft 365アカウント専用の機能で、最大14日間分のメールをスキャンします。レポートの詳細一覧には最大1,000件までのメールが表示されます。Email Securityを未購入の顧客でも無料で試すことができます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/retro-scan/",
-      "hint": "現在の対策で見逃していないかを確認するための機能に、いくつかの数値的な上限が設けられていることを考えましょう。",
+      "hint": "対象となるメールのプラットフォームはどれか、そしてスキャンする期間やレポートに載るメールの数に上限があるのかないのか、をそれぞれ確かめましょう。",
       "tags": [
         "email-security",
         "practical"
@@ -38409,7 +38409,7 @@
       "correctIndex": 2,
       "explanation": "無効と判定される理由には、EMLファイルが添付されていないこと、誤ったファイル拡張子で提出されたこと、誤ったチームまたはユーザーのエイリアス宛てに提出されたことの3つがあります。無効な提出はSubmission IDや提出メールで検索して確認できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/submissions/invalid-submissions/",
-      "hint": "提出という行為そのものが、届く前の段階で形式的に成立しなかったケースを考えましょう。",
+      "hint": "無効になる原因が、メールの中身の判定や提出者の立場にあるのか、それとも提出のしかた(形式や宛先)にあるのかを考えましょう。",
       "tags": [
         "email-security",
         "practical"
@@ -38618,7 +38618,7 @@
       "correctIndex": 2,
       "explanation": "Cloudflare WANへのオンランプには、IPトラフィックを自動接続・振り分けするCloudflare One Applianceのほか、GRE/IPsecトンネルに対応するサードパーティ機器、公衆インターネットを経由しない専用接続を提供するCloudflare Network Interconnect(CNI)、Cloudflare Tunnel、WARPなど複数の選択肢があります。クラウドリソースについてはMulti-Cloud Networkingでオンランプ作成を自動化できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/on-ramps/",
-      "hint": "1つの方法に限定せず、機器の種類や接続手段ごとに複数の選択肢が用意されている点に注目しましょう。",
+      "hint": "オンランプが1つの方式に限られるのか、複数の方式から選べるのかを考えましょう。",
       "tags": [
         "magic-wan",
         "practical"
@@ -38673,7 +38673,7 @@
       "correctIndex": 0,
       "explanation": "GREはステートレスで設定がシンプルですが暗号化を行いません。IPsecはトラフィックを暗号化し送信元を認証するため、より強固なセキュリティを提供します。どちらもカプセル化によってヘッダーが追加されるため、標準MTU(1500バイト)に収まるようMSSを調整する必要があります。またCloudflare WANはAnycast IPアドレスを使うモデルを採用しており、特定の1台のサーバーに固定されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/gre-ipsec-tunnels/#tunnels-and-encapsulation",
-      "hint": "「設定のしやすさ」と「セキュリティの強さ」のどちらを優先するかで使い分けが変わる、という軸で考えましょう。",
+      "hint": "暗号化の有無だけでなく、カプセル化にともなうMSSの扱いや、Cloudflare側のトンネル接続モデルについての記述も、1つずつ正確かどうか確かめましょう。",
       "tags": [
         "magic-wan",
         "practical"
@@ -38888,7 +38888,7 @@
       "correctIndex": 0,
       "explanation": "BGPがルートをアドバタイズすると、Cloudflareはデフォルトの優先度100でVirtual Networkルーティングテーブルに自動的に追加します。ただし同じプレフィックス・優先度を持つ静的ルートが存在する場合は、静的ルートが優先されます。優先度は数値が小さいほど高く、同じプレフィックス・優先度を持つ複数のBGPルートがある場合はECMPでトラフィックが分配されます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-wan/reference/traffic-steering/#set-priority-for-bgp-routes",
-      "hint": "「自動で割り当てられるデフォルト値」と「手動設定と競合したときにどちらが勝つか」という2つの論点を分けて考えましょう。",
+      "hint": "BGPで届いたルートに優先度が自動で付くのか手動で決めるのか、そして静的ルートと競合したときにどちらが勝つのか、を分けて考えましょう。",
       "tags": [
         "magic-wan",
         "practical"
