@@ -31404,7 +31404,7 @@
       ],
       "correctIndex": 3,
       "explanation": "プライベートネットワークへCIDRルートを追加しただけでは、Cloudflare One Clientユーザーがネットワーク全体にアクセスできてしまう可能性があります。これを防ぐため、プライベートIP空間全体に対するcatch-allのGatewayブロックポリシーを作成し、その上に優先度の高い個別アプリケーションへのAllowポリシーを重ねる構成が推奨されています。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/private-net/",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/network-policies/",
       "hint": "CIDRルートを追加しても、その範囲のサブネットが自動で登録されることはありません。",
       "tags": [
         "tunnel",
