@@ -530,6 +530,7 @@ const VALID_DOC_PAGES = [
   'pages/functions/middleware/',
   'pages/functions/routing/',
   'pages/get-started/direct-upload/',
+  'pages/get-started/c3/',
   'queues/',
   'queues/configuration/batching-retries/',
   'queues/configuration/consumer-concurrency/',

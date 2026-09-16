@@ -149,6 +149,8 @@ export const DOC_PAGES = [
   { name: 'pages/functions/middleware' },
   { name: 'pages/functions/routing' },
   { name: 'pages/get-started/direct-upload' },
+  // 2026-09-16 追加: wr-001 の図(wrangler init が生成する src/index.ts)の根拠。C3 の --lang 既定値
+  { name: 'pages/get-started/c3' },
   { name: 'queues' },
   { name: 'queues/configuration/batching-retries' },
   { name: 'queues/configuration/consumer-concurrency' },
