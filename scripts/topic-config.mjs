@@ -314,6 +314,8 @@ export const DOC_PAGES = [
   { name: 'ssl/origin-configuration/ssl-modes/full-strict' },
   { name: 'ssl/origin-configuration/ssl-modes/ssl-only-origin-pull' },
   { name: 'ssl/edge-certificates/universal-ssl' },
+  // 2026-09-16 追加: sl-016 の正解肢のHSTS側の根拠
+  { name: 'ssl/edge-certificates/additional-options/http-strict-transport-security' },
   { name: 'ssl/origin-configuration/origin-ca' },
   { name: 'ssl/edge-certificates/custom-certificates' },
   { name: 'ssl/edge-certificates/advanced-certificate-manager' },

@@ -309,6 +309,7 @@ const VALID_DOC_PAGES = [
   'ssl/origin-configuration/ssl-modes/full-strict/',
   'ssl/origin-configuration/ssl-modes/ssl-only-origin-pull/',
   'ssl/edge-certificates/universal-ssl/',
+  'ssl/edge-certificates/additional-options/http-strict-transport-security/',
   'ssl/origin-configuration/origin-ca/',
   'ssl/edge-certificates/custom-certificates/',
   'ssl/edge-certificates/advanced-certificate-manager/',
