@@ -20,6 +20,10 @@
  * `proposedWrongFeedback` は `proposedOptions` が無くても単独で適用できる。
  * 誤答の本文は正しいが解説だけ直したい場合に使う（担当2人が「適用できない」と報告した）。
  *
+ * `proposedDiagrams` は `{index, path, from, to}` のパッチとして当てる。
+ * **担当3人が「図を当てるスクリプトが無い」と報告し、そのたびに手で当てていた**ので取り込んだ。
+ * `from` が現行値と一致しなければ当てない。
+ *
  *   node scripts/apply-sweep-verdicts.mjs <file...> [--dry-run]
  */
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -74,6 +78,34 @@ export function checkFinding(finding, quiz) {
   return problems
 }
 
+/**
+ * `diagrams[0].columns[1].items` のようなパスを辿って、その位置の値を読み書きする。
+ * 掃引の担当は図の差し替えを `{index, path, from, to}` のパッチで出してくる。
+ * **`from` が現行値と一致しなければ当てない**（提案が古い可能性があるため）。
+ */
+function resolvePath(root, path) {
+  const parts = path.match(/[^.[\]]+/g) ?? []
+  let node = root
+  for (let i = 0; i < parts.length - 1; i++) {
+    node = node?.[/^\d+$/.test(parts[i]) ? Number(parts[i]) : parts[i]]
+    if (node == null) return null
+  }
+  const last = parts[parts.length - 1]
+  return { parent: node, key: /^\d+$/.test(last) ? Number(last) : last }
+}
+
+export function applyDiagramPatch(quiz, patch) {
+  const path = patch.path.startsWith('diagrams') ? patch.path : `diagrams[${patch.index ?? 0}].${patch.path}`
+  const spot = resolvePath(quiz, path)
+  if (!spot || spot.parent == null) return `パスが解決できない: ${path}`
+  const current = spot.parent[spot.key]
+  if (patch.from !== undefined && JSON.stringify(current) !== JSON.stringify(patch.from)) {
+    return `図の現行値が from と一致しない: ${path}`
+  }
+  spot.parent[spot.key] = patch.to
+  return null
+}
+
 /** finding を quiz に当てる。checkFinding を通したものだけ渡すこと */
 export function applyFinding(finding, quiz) {
   const fields = []
@@ -108,6 +140,12 @@ export function applyFinding(finding, quiz) {
   if (finding.proposedExplanation) {
     quiz.explanation = finding.proposedExplanation
     fields.push('explanation')
+  }
+  const patches = finding.proposedDiagrams ?? []
+  if (patches.length) {
+    const errs = patches.map((pt) => applyDiagramPatch(quiz, pt)).filter(Boolean)
+    if (errs.length) throw new Error(errs.join(' / '))
+    fields.push(`diagrams(${patches.length})`)
   }
   return fields
 }

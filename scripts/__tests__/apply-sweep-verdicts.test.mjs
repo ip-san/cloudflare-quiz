@@ -161,3 +161,51 @@ describe('wrongFeedback だけの変更', () => {
     expect(checkFinding(f, quiz()).some((p) => /null でない/.test(p))).toBe(true)
   })
 })
+
+describe('図のパッチ', () => {
+  const quizWithDiagram = () => ({
+    id: 'z-001',
+    correctIndex: 0,
+    options: [{ text: 'a' }, { text: 'b' }, { text: 'c' }, { text: 'd' }],
+    diagrams: [
+      {
+        type: 'comparison',
+        label: '古いラベル',
+        columns: [
+          { heading: 'A', items: ['x', 'y'] },
+          { heading: 'B', items: ['z'] },
+        ],
+      },
+    ],
+  })
+
+  it('配列を差し替えられる', () => {
+    const q = quizWithDiagram()
+    const fields = applyFinding(
+      {
+        quizId: 'z-001',
+        proposedDiagrams: [{ index: 0, path: 'diagrams[0].columns[0].items', from: ['x', 'y'], to: ['p', 'q'] }],
+      },
+      q
+    )
+    expect(q.diagrams[0].columns[0].items).toEqual(['p', 'q'])
+    expect(fields).toEqual(['diagrams(1)'])
+  })
+
+  it('文字列も差し替えられる', () => {
+    const q = quizWithDiagram()
+    applyFinding(
+      { quizId: 'z-001', proposedDiagrams: [{ path: 'diagrams[0].label', from: '古いラベル', to: '新しいラベル' }] },
+      q
+    )
+    expect(q.diagrams[0].label).toBe('新しいラベル')
+  })
+
+  it('from が現行値と違えば当てずに止める', () => {
+    const q = quizWithDiagram()
+    expect(() =>
+      applyFinding({ quizId: 'z-001', proposedDiagrams: [{ path: 'diagrams[0].label', from: '別の値', to: 'x' }] }, q)
+    ).toThrow(/from と一致しない/)
+    expect(q.diagrams[0].label).toBe('古いラベル')
+  })
+})
