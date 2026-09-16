@@ -131,6 +131,7 @@ const VALID_DOC_PAGES = [
   'ssl/reference/certificate-statuses/',
   'ssl/reference/certificate-and-hostname-priority/',
   'cloudflare-one/access-controls/policies/',
+  'cloudflare-one/networks/resolvers-and-proxies/proxy-endpoints/',
   'containers/',
   'containers/get-started/',
   'containers/reference/container-class/',

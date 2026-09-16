@@ -32788,7 +32788,7 @@
       "id": "gw-001",
       "category": "gateway",
       "difficulty": "beginner",
-      "question": "Cloudflare Gatewayが提供する3種類のポリシーと、従来のファイアウォールとの対応関係に関する正しい説明はどれですか?",
+      "question": "Cloudflare GatewayのDNS・Network・HTTPの3種類のポリシーと、従来のファイアウォールとの対応関係に関する正しい説明はどれですか?",
       "options": [
         {
           "text": "DNSポリシーはIPアドレス・ポート・プロトコルで制御するLayer 4のステートフルファイアウォール(FWaaS)に相当し、Networkポリシーはドメインへの接続が確立される前にブロックするDNSレイヤーのフィルタリングに相当し、HTTPポリシーはTLS復号とディープパケットインスペクションを行うLayer 7のアプリケーションファイアウォールに相当する",
@@ -32862,7 +32862,7 @@
         },
         {
           "text": "PACファイル経由のプロキシエンドポイントで接続した場合、ブラウザのHTTPトラフィックだけでなくDNS・Networkポリシーも同様に適用される",
-          "wrongFeedback": "PACファイル経由のプロキシエンドポイントはブラウザのHTTPトラフィックのみが対象で、Networkポリシーは適用されません。"
+          "wrongFeedback": "一般的なプロキシエンドポイント(Authorizationエンドポイント)はブラウザのHTTPトラフィックのみが対象で、Networkポリシーは適用されません。ただしEnterprise限定のSource IPプロキシエンドポイントは非HTTPのTCPトラフィックも扱えるため、専用のProxy Endpointセレクタを使ったNetworkポリシーを適用できる場合があります。"
         },
         {
           "text": "接続方式に関わらず、常に同じ組み合わせのポリシーが適用されるため、接続方式を意識する必要はない",
@@ -33703,7 +33703,7 @@
       ],
       "correctIndex": 3,
       "explanation": "カテゴリがまだ付与されていないサブドメインは親ドメインのカテゴリを継承しますが、Cloudflareが実際にそのサブドメインを分類した場合は、そのサブドメイン自身のカテゴリのみが適用されます。コンテンツカテゴリ・セキュリティリスク・セキュリティ脅威はそれぞれ異なる手法で決定される独立した分類軸です。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/domain-categories/#content-categories",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/traffic-policies/domain-categories/",
       "hint": "サブドメインの分類が、親ドメインの分類とどういう関係になるのかを考えましょう。",
       "tags": [
         "gateway",

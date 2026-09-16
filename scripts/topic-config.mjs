@@ -53,6 +53,8 @@ export const DOC_PAGES = [
   { name: 'cloudflare-for-platforms/workers-for-platforms/reference/worker-isolation' },
   { name: 'cloudflare-for-platforms/workers-for-platforms/reference/local-development' },
   { name: 'cloudflare-one/access-controls/policies' },
+  // 2026-09-16 追加: gw-002 のSource IPプロキシエンドポイント例外の根拠
+  { name: 'cloudflare-one/networks/resolvers-and-proxies/proxy-endpoints' },
   { name: 'containers' },
   { name: 'containers/get-started' },
   { name: 'containers/reference/container-class' },
