@@ -21885,11 +21885,11 @@
         },
         {
           "text": "Bypassポリシーに、AllowやBlockと同じ感覚でメールアドレス指定のSelectorを付けて、特定ユーザーだけを対象にしようとしてしまう",
-          "wrongFeedback": "Bypassは認証を強制しないため、メールアドレスなどID(アイデンティティ)に基づくSelectorはそもそも設定できません。Bypassで指定できるのはIPやパスなど非IDベースの条件に限られます。"
+          "wrongFeedback": "Bypassは認証を強制しないため、メールアドレスなどID(アイデンティティ)に基づくSelectorはそもそも設定できません。Bypassで指定できるのはIPアドレスや国など非IDベースのSelectorに限られます。特定のパスだけを対象にしたい場合は、そのパスを含むAccessアプリケーションを別に作り、そこにBypassポリシーを当てます。"
         }
       ],
       "correctIndex": 2,
-      "explanation": "AccessのドキュメントはAllowポリシーにおける2つのよくある設定ミスを挙げている。1つはIncludeルールのSelectorを「Everyone」に設定してしまうこと、もう1つはLogin Methodsで「One-time PIN」を指定してしまうことである。どちらも結果的に誰でもアプリへ到達できてしまうため注意が必要。すべてのポリシーに最低1つ必要なのはIncludeルールで、Excludeルールは必須ではない。また、Requireルールに複数の値を追加すると、これらはAND条件として扱われるため、複数のRequireルールを組み合わせすぎると逆に誰もアクセスできなくなる設定ミスが起こり得る(意図した範囲より狭くなる)。Bypassポリシーは認証を強制しない分、メールアドレスなどID(アイデンティティ)ベースのSelectorは使えず、IPやパスなど非IDベースの条件に限られる。\n{{diagram:0}}",
+      "explanation": "AccessのドキュメントはAllowポリシーにおける2つのよくある設定ミスを挙げている。1つはIncludeルールのSelectorを「Everyone」に設定してしまうこと、もう1つはLogin Methodsで「One-time PIN」を指定してしまうことである。どちらも結果的に誰でもアプリへ到達できてしまうため注意が必要。すべてのポリシーに最低1つ必要なのはIncludeルールで、Excludeルールは必須ではない。また、Requireルールに複数の値を追加すると、これらはAND条件として扱われるため、複数のRequireルールを組み合わせすぎると逆に誰もアクセスできなくなる設定ミスが起こり得る(意図した範囲より狭くなる)。Bypassポリシーは認証を強制しない分、メールアドレスなどID(アイデンティティ)ベースのSelectorは使えず、IPアドレスや国など非IDベースのSelectorに限られる。特定のパスだけをBypassの対象にしたい場合は、Selectorで指定するのではなく、そのパスを含むAccessアプリケーションを別に作ってBypassポリシーを当てる。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/#common-cloudflare-access-misconfigurations",
       "hint": "すべてのポリシーに最低1つ必要なのはIncludeルールです。この事実と各選択肢を照らし合わせましょう。",
       "tags": [
@@ -23012,7 +23012,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "マネージドルールがリクエストボディを検査する最大サイズは、Enterpriseプランで128KB、Freeプランで1MB、それ以外の有料プランではデフォルトでより低い値です(サポートへの問い合わせで引き上げ可能)。上限を超えた部分の内容は完全には分析されない可能性があり、`http.request.body.truncated`フィールドでボディが切り詰められたかどうかを検知できます。\n{{diagram:0}}",
+      "explanation": "マネージドルールがリクエストボディを検査する最大サイズは、Enterpriseプランで128KB、Freeプランで1MB、それ以外の有料プランではデフォルトでより低い値です(サポートへの問い合わせで引き上げ可能)。上限を超えた部分の内容は完全には分析されない可能性があります。プランにリクエストボディのフィールドが含まれていれば、カスタムルールで`http.request.body.truncated`フィールドを参照し、ボディが切り詰められたリクエストに対して適切なアクションを当てられます。このフィールドで分かるのは切り詰めが起きたかどうかであって、切り捨てられた中身そのものではありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/waf/managed-rules/#maximum-body-size",
       "hint": "上限を超えたリクエストについては、そのことをあとから確認できる専用のフィールドが用意されています。",
       "tags": [
