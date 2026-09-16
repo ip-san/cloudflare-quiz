@@ -25332,7 +25332,7 @@
         },
         {
           "text": "Monitorを設定しなくても、Load Balancerは自動的にすべてのエンドポイントの健全性をデフォルトで把握できるため、Monitorを追加しなくても不健全なエンドポイントへのトラフィックは自動的に避けられる",
-          "wrongFeedback": "Monitorを設定しない場合、健全性は考慮されず、Load Balancerは常にプライマリのPoolにのみトラフィックを送ります。"
+          "wrongFeedback": "Monitorを設定しない場合、健全性は考慮されなくなります。既定のOff - Failoverステアリングでは、この状態でプライマリのPoolにのみトラフィックを送ります(Random等の他のステアリングでは挙動が異なります)。"
         },
         {
           "text": "MonitorはCloudflareのCDNキャッシュヒット率やエッジのレスポンスタイムを監視してダッシュボードにグラフ表示する機能であり、オリジンエンドポイントの健全性判定とは無関係である",
@@ -25524,8 +25524,8 @@
           "wrongFeedback": "訪問者数のカウントによる仕組みではありません。ヘルスモニターのRTT(往復時間)データに基づいて最も高速なPoolを選ぶ仕組みです。"
         },
         {
-          "text": "Dynamic Steeringが正しく機能するためには、Health Monitor RegionをEnterprise限定の`All Data Centers`にする以外の方法はなく、非Enterpriseの`All Regions`ではRTTプロファイルが構築されない",
-          "wrongFeedback": "`All Data Centers`はEnterprise限定の選択肢の1つですが、非Enterpriseでも選べる`All Regions`でもDynamic Steeringは正しく機能します。"
+          "text": "Dynamic Steeringが正しく機能するためには、Health Monitor Regionを`All Data Centers`にする以外の方法はなく、`All Regions`ではRTTプロファイルが構築されない",
+          "wrongFeedback": "`All Data Centers`だけが選択肢ではありません。`All Regions`でもDynamic Steeringは正しく機能します。"
         },
         {
           "text": "ヘルスモニターのRTT(往復時間)データをもとにした指数加重移動平均(EWMA)を使って各地域・データセンターで最も高速なPoolを判定し、あるPoolを初めて有効化した際はRTTプロファイルの構築に約10分かかる"
@@ -25536,7 +25536,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Dynamic Steeringは、ヘルスモニターのRTT(往復時間)データをもとにした指数加重移動平均(EWMA)を使って、各Cloudflareリージョンやデータセンターごとに最も高速なPoolを判定します。あるPoolでDynamic Steeringを初めて有効化した際は、RTTプロファイルの構築のために約10分の猶予が必要です。この機能が正しく機能するには、Health Monitor Regionを`All Regions`(または Enterprise限定の`All Data Centers`)に設定する必要があります。\n{{diagram:0}}",
+      "explanation": "Dynamic Steeringは、ヘルスモニターのRTT(往復時間)データをもとにした指数加重移動平均(EWMA)を使って、各Cloudflareリージョンやデータセンターごとに最も高速なPoolを判定します。あるPoolでDynamic Steeringを初めて有効化した際は、RTTプロファイルの構築のために約10分の猶予が必要です。この機能が正しく機能するには、Health Monitor Regionを`All Regions`または`All Data Centers`に設定する必要があります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/dynamic-steering/",
       "hint": "「過去の応答速度の実測データ」を平均化して、最速のPoolを継続的に選び直す仕組みだと考えましょう。",
       "tags": [

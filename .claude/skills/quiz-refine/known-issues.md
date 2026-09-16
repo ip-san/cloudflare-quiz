@@ -3781,3 +3781,11 @@ cx-014 は settings.md 側を踏襲しており ok。**片方だけを見て他�
 wrongFeedback に残って設問が自分自身と食い違った。修正は「主張単位」で行うこと——
 wrong と判定した主張は同じ設問の全フィールドを grep し、残る場所を全部直す。
 fact-sweep-prompt.md に必須手順として追記済み。
+
+## 2026-09-16: Health Monitor RegionのEnterprise限定範囲も公式docs同士で矛盾（lb-006）
+
+monitors.md L65/L69 は All Data Centers / All Regions の**両方**を (Enterprise only) と明記。
+dynamic-steering.md L32 は All Data Centers だけを「The Enterprise-only ... option」と呼ぶ。
+live の production パーシャル(monitor-health-check-regions-options.mdx)でも All Regions は
+Enterprise only。上流矛盾の3例目(CASB間隔、script-monitorパスに続く)。
+**矛盾下では、どちらか一方に依存する主張を設問に置かないこと**（lb-006はプラン主張を除去済み）。
