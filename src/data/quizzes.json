@@ -29169,7 +29169,7 @@
       "id": "sl-005",
       "category": "ssl-tls",
       "difficulty": "advanced",
-      "question": "訪問者がリクエストしたスキームに応じてオリジンへの接続方法が変わる他のモードとの違いを踏まえると、「Strict(SSL-Only Origin Pull)」モードに関する正しい説明はどれですか？",
+      "question": "「Strict(SSL-Only Origin Pull)」モードに関する正しい説明はどれですか？",
       "options": [
         {
           "text": "オリジン証明書の検証要件はFullモードと同じで、期限切れや自己署名の証明書でも受け入れられる",
