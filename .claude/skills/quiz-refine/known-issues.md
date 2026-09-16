@@ -3768,3 +3768,9 @@ cb-016の引用元(troubleshoot-casb#understand-scan-frequency)は「初回は�
 **両方ともliveのproductionブランチで再確認済み＝キャッシュのドリフトではなく上流の不整合。**
 各設問は自分の引用元に忠実なので両方ok。**片方だけを見て他方を「誤り」と判定しないこと。**
 どちらかのページが改訂されたら要再チェック。
+
+## 2026-09-16: Client-Side Securityのレポート送信パスも公式docs同士で食い違い（cx-014）
+
+settings.md L26 は same-hostname 時のパスを `script-monitor`(ハイフン)、csp-header.md L25 は
+`script_monitor`(アンダースコア)と表記。CASBスキャン間隔(cb-001/cb-016)に続く上流不整合の2例目。
+cx-014 は settings.md 側を踏襲しており ok。**片方だけを見て他方を「誤り」と判定しないこと。**
