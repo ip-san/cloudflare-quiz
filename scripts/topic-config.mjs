@@ -208,6 +208,9 @@ export const DOC_PAGES = [
   { name: 'waf' },
   { name: 'waf/feature-interoperability' },
   { name: 'waf/custom-rules' },
+  // 2026-09-16 追加: wf-008 の決め手（Bot Fight Mode はスキップ不可）の根拠が
+  // このページにしか無い。設問の根拠に使うページは必ずここへ載せること
+  { name: 'waf/custom-rules/skip/options' },
   { name: 'ruleset-engine/rules-language/actions' },
   // 廃止済みの Firewall Rules。bt-002 の解説が Allow / Bypass を定義しており、
   // ruleset-engine の actions ページはこの2つを「別体系」としてここへ委ねている（2026-09-02）

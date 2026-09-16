@@ -212,6 +212,7 @@ const VALID_DOC_PAGES = [
   'waf/',
   'waf/feature-interoperability/',
   'waf/custom-rules/',
+  'waf/custom-rules/skip/options/',
   'ruleset-engine/rules-language/actions/',
   'firewall/cf-firewall-rules/actions/',
   'ruleset-engine/rules-language/expressions/',
