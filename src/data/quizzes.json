@@ -17732,11 +17732,11 @@
       "options": [
         {
           "text": "JavaScript・iOS・Android向けの専用SDKを提供しており、開発者は生のWebRTC APIを直接扱う必要がない",
-          "wrongFeedback": "Cloudflare Realtimeは意図的にSDKを提供せず、生のWebRTC APIへのアクセスを前提としています。"
+          "wrongFeedback": "Cloudflare Realtime SFUは意図的にSDKを提供せず、生のWebRTC APIへのアクセスを前提としています。"
         },
         {
           "text": "TCP接続のみをサポートし、UDPベースの通信には対応していないため、すべてのメディアストリームはTCP上でカプセル化されて送受信される",
-          "wrongFeedback": "WebRTCは通常UDPをベースにしており、Cloudflare RealtimeもUDPベースの通信を前提としています。"
+          "wrongFeedback": "WebRTCは通常UDPをベースにしており、Cloudflare Realtime SFUもUDPベースの通信を前提としています。"
         },
         {
           "text": "特定のリージョンを意識せずWebRTCによる音声・映像・データのリアルタイム通信を実現できるインフラ"
@@ -17817,7 +17817,7 @@
               ]
             },
             {
-              "heading": "Cloudflare Realtime",
+              "heading": "Realtime SFU",
               "items": [
                 "Session/Trackのみ提供",
                 "room相当はアプリ側で実装"
@@ -17831,7 +17831,7 @@
       "id": "rt-003",
       "category": "realtime",
       "difficulty": "beginner",
-      "question": "Cloudflare Realtimeにおける「Session」の説明として正しいものはどれですか？",
+      "question": "Cloudflare Realtime SFUにおける「Session」の説明として正しいものはどれですか？",
       "options": [
         {
           "text": "音声・映像・データそれぞれの種類ごとに個別に作成する必要がある管理単位",
@@ -17878,7 +17878,7 @@
       "id": "rt-004",
       "category": "realtime",
       "difficulty": "beginner",
-      "question": "Cloudflare Realtimeにおける「Track」の説明として正しいものはどれですか？",
+      "question": "Cloudflare Realtime SFUにおける「Track」の説明として正しいものはどれですか？",
       "options": [
         {
           "text": "1つのSessionには最大1つのTrackしか含めることができない",
@@ -18045,7 +18045,7 @@
       "id": "rt-007",
       "category": "realtime",
       "difficulty": "intermediate",
-      "question": "Cloudflare Realtimeの無料枠に関する正しい説明はどれですか？",
+      "question": "Cloudflare Realtime(SFU・TURN)の無料枠に関する正しい説明はどれですか？",
       "options": [
         {
           "text": "無料枠を使い切ると、それ以降はサービスが完全に利用停止され、追加の従量課金は発生しない",
@@ -18064,7 +18064,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cloudflare Realtimeでは、アカウントごとに月1,000GBまでのCloudflareからクライアントへのデータ転送(egress)が無料です。クライアントからCloudflareへのデータ転送(ingress)は常に無料です。この無料枠はSFUとTURNの両方の利用を合算したものです。\n{{diagram:0}}",
+      "explanation": "Cloudflare Realtime(SFU・TURN)では、アカウントごとに月1,000GBまでのCloudflareからクライアントへのデータ転送(egress)が無料です。クライアントからCloudflareへのデータ転送(ingress)は常に無料です。この無料枠はSFUとTURNの両方の利用を合算したものです。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/limits/",
       "hint": "「送る方向」によって無料かどうかが変わることを意識しましょう。",
       "tags": [
@@ -18568,7 +18568,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Cloudflare Realtimeの課金は、Cloudflareのエッジからアプリケーションへ送信されるデータ(egress)のみを対象としています。SFUとTURNの無料枠(月1,000GB)は合算で、請求もまとめて1つの明細項目として表示されます。TURNとSFU(またはCloudflare StreamのWHIP/WHEP)の間のトラフィックは二重に課金されることはありません。\n{{diagram:0}}",
+      "explanation": "Cloudflare Realtime(SFU・TURN)の課金は、Cloudflareのエッジからアプリケーションへ送信されるデータ(egress)のみを対象としています。SFUとTURNの無料枠(月1,000GB)は合算で、請求もまとめて1つの明細項目として表示されます。TURNとSFU(またはCloudflare StreamのWHIP/WHEP)の間のトラフィックは二重に課金されることはありません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/realtime/sfu/pricing/",
       "hint": "TURNとSFUを同時に使っても、料金が単純に2倍になることはありません。",
       "tags": [
@@ -18578,7 +18578,7 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "Realtimeの料金体系",
+          "label": "Realtime(SFU・TURN)の料金体系",
           "columns": [
             {
               "heading": "課金対象",
