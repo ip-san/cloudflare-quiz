@@ -13780,7 +13780,7 @@
         },
         {
           "text": "リクエストとレスポンスのメタデータや `console.log()` の出力を、対応する外部のストレージやログ基盤へ継続的に配送する機能",
-          "wrongFeedback": "ログを外部の保存先へ継続的に配送するのはWorkers Logpushです。Workers LogsはログをCloudflareアカウント内に書き込み、Workerごとにダッシュボードから照会する機能で、外部へ送りたい場合はLogpushやTail Workersを併用します。"
+          "wrongFeedback": "ログを外部の保存先へ継続的に配送するのはWorkers Logpushです。Workers LogsはログをCloudflareアカウント内に書き込み、Workerごとにダッシュボードから照会する機能で、外部へ送りたい場合はOpenTelemetryエクスポート(推奨)やLogpush、Tail Workersを併用します。"
         },
         {
           "text": "Workerから出力されるログ(リクエスト情報や`console.log`、例外)を自動収集し、ダッシュボードでフィルタ・分析できる機能"
