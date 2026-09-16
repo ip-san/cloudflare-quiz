@@ -8619,7 +8619,7 @@
       ],
       "correctIndex": 1,
       "explanation": "KVやD1、R2などのリソースは、`wrangler.toml` にバインディングを書くだけでは作成されません。まず `wrangler kv namespace create <名前>` のようなCLIサブコマンド（D1なら`wrangler d1 create`、R2なら`wrangler r2 bucket create`）を実行して実際のリソースをCloudflare上に作成し、\n{{diagram:0}}\n返却された `id`（やバケット名）を `wrangler.toml` の該当セクションに記述することで、初めてWorkerからバインディング経由でアクセスできるようになります。\n{{diagram:1}}",
-      "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/",
+      "referenceUrl": "https://developers.cloudflare.com/kv/get-started/",
       "hint": "KVネームスペースという実体は、いつ、何によって作られるのでしょうか。設定ファイルを書いた時点なのか、CLIコマンドを実行した時点なのか、開発サーバーを起動した時点なのかを考えましょう。",
       "tags": [
         "wrangler",
@@ -8692,7 +8692,7 @@
       ],
       "correctIndex": 1,
       "explanation": "Cloudflare Workersは独自のランタイム上で動作しますが、`nodejs_compat` が有効だと `node:buffer` や `node:events` といった一部のNode.js組み込みAPIが利用できます。\n{{diagram:0}}\n`compatibility_date` が `2026-08-04` 以降のWorkers/Pagesプロジェクトでは、`nodejs_compat` と `nodejs_compat_v2` の両方がデフォルトで有効になり、追加設定なしに組み込みAPIとポリフィルが使えます。それより前の日付を使っている場合のみ、`compatibility_flags = [\"nodejs_compat\"]` を明示して opt-in する必要があります(既存プロジェクトが日付を更新する際、書いてあるフラグを消す必要はありません)。",
-      "referenceUrl": "https://developers.cloudflare.com/workers/configuration/compatibility-dates/",
+      "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/nodejs/",
       "hint": "この設定は`compatibility_`で始まる項目で行います。",
       "tags": [
         "wrangler",
