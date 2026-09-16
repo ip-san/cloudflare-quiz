@@ -22135,11 +22135,11 @@
         },
         {
           "text": "Service Authポリシーのみのアプリでは、`cf-access-token`という生ヘッダーの送信が禁止されている",
-          "wrongFeedback": "`cf-access-token`ヘッダーでの送信自体は禁止されていません。重要なのは、Allowポリシーがない場合は毎回サービストークンのヘッダーを送る必要があるという点です。"
+          "wrongFeedback": "`cf-access-token`ヘッダーでの送信自体は禁止されていません。サービストークンによる認証では、`CF-Access-Client-Id`と`CF-Access-Client-Secret`のヘッダーを認証したいHTTPリクエストごとに送信します。"
         },
         {
           "text": "初回認証で発行された`CF_Authorization`クッキーを一度取得すれば、JWTの有効期限に関わらず永久に再利用でき、以降サービストークンのヘッダーを送る必要はない",
-          "wrongFeedback": "JWTには有効期限があり、Service Authポリシーのみのアプリではクッキーを再利用できないため、リクエストごとにサービストークンのヘッダーを送る必要があります。"
+          "wrongFeedback": "JWTには`exp`(有効期限)が含まれており、永久に有効というのは誤りです。サービストークンによる認証では、ヘッダーを認証したいHTTPリクエストごとに送信する必要があります。"
         }
       ],
       "correctIndex": 1,
@@ -22156,13 +22156,13 @@
           "label": "クッキー再利用の可否",
           "columns": [
             {
-              "heading": "Allowポリシーあり",
+              "heading": "ブラウザでのIdPログイン",
               "items": [
-                "CF_Authorizationクッキーを再利用可"
+                "CF_Authorizationクッキーで以降のリクエストを継続"
               ]
             },
             {
-              "heading": "Service Authのみ",
+              "heading": "サービストークン認証",
               "items": [
                 "毎回サービストークンを送信"
               ]
@@ -26827,7 +26827,7 @@
           "wrongFeedback": "Regionalの説明が違います。Regional Tiered Cacheは上位層への問い合わせをやめるものではなく、遠くの上位層へ行く前に下位層の近くにある地域ハブのデータセンターを一段挟むものです(ダッシュボードでも Middle Tier Cache として設定します)。他の3つの説明は合っています。"
         },
         {
-          "text": "最適な上位層をCloudflareが自動選択するSmart、全データセンターを上位層として使えるGeneric Global、1〜2リージョンに上位層を絞るRegional、独自構成のCustomがある"
+          "text": "最適な上位層をCloudflareが自動選択するSmart、全データセンターを上位層として使えるGeneric Global、上位層が1〜2リージョンに集中する場合に有効なRegional、独自構成のCustomがある"
         },
         {
           "text": "上位層をCloudflareが自動で選ぶSmartはEnterprise限定で、無料プランを含む他のプランでは全データセンターを上位層として使うGeneric Globalだけが選べる",
@@ -26857,11 +26857,11 @@
             },
             {
               "text": "Generic Global Tiered Cache",
-              "sub": "全データセンターが上位層"
+              "sub": "全データセンターが上位層(Enterprise専用)"
             },
             {
               "text": "Regional Tiered Cache",
-              "sub": "1〜2リージョンに集中"
+              "sub": "上位層が1〜2リージョンに集中する場合に有効(Enterprise専用)"
             },
             {
               "text": "Custom Tiered Cache",
