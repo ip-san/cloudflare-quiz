@@ -42117,7 +42117,7 @@
         },
         {
           "text": "Zaraz Monitoringは、Zaraz Paidプランを契約しているアカウントのみが利用できる機能であり、Freeプランのアカウントではメニュー自体がグレーアウトされて表示される",
-          "wrongFeedback": "Zaraz Monitoringの利用がPaidプラン限定であるとは説明されていません。Zaraz自体は全プランで利用可能な機能です。"
+          "wrongFeedback": "ZarazのすべてのFeatureとツールは、どのアカウントでも常に利用できるとドキュメントが明言しています。MonitoringがPaidプラン限定という事実はありません。"
         },
         {
           "text": "Eventsの集計対象にはPageviewイベントは含まれず、`zaraz.track()`によるイベントのみが対象になるため、ページ遷移のみのサイトではEventsが常にゼロ件になる",
