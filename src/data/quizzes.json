@@ -11957,7 +11957,7 @@
         },
         {
           "text": "キャッシュはデフォルト無効で、クエリごとにSQLコメントでキャッシュ指示を書く必要があるため、コメントを書き忘れたクエリは常にデータベースへ直接アクセスすることになる",
-          "wrongFeedback": "クエリキャッシュはデフォルトで有効です。SQLコメントによる指示という仕組みもありません。"
+          "wrongFeedback": "クエリキャッシュはデフォルトで有効です。SQLコメントでキャッシュを指示するAPIは文書化されていません(コメントに揮発性関数名を書くと意図せず対象外になることはあります)。"
         },
         {
           "text": "SELECT文であればLASTVAL()やNOW()のような揮発性(volatile)関数を含んでいても、結果が`max_age`の間キャッシュされる",
@@ -12009,7 +12009,7 @@
         },
         {
           "text": "読み取りクエリの先頭にNO_CACHEコメントを付ける",
-          "wrongFeedback": "SQLコメントでキャッシュを制御する仕組みはありません。キャッシュの有効/無効はHyperdrive設定単位で決まります。"
+          "wrongFeedback": "SQLコメントをキャッシュ制御に使うAPIは文書化されていません(コメント内の関数名で意図せず対象外になることはあっても、`NO_CACHE`のような任意の指示はできません)。キャッシュの有効/無効はHyperdrive設定単位で決まります。"
         },
         {
           "text": "同じHyperdrive設定で書き込めば、該当するキャッシュはwrite-throughで自動的に無効化されるので特別な対処は不要",
@@ -12059,7 +12059,7 @@
       "options": [
         {
           "text": "`wrangler.toml` に接続文字列を平文でそのまま記述する",
-          "wrongFeedback": "接続文字列(パスワードを含む)は `wrangler hyperdrive create` でCloudflare側に登録し、設定ファイルには発行されたIDだけを書きます。平文の接続情報をコミットする必要はありません。"
+          "wrongFeedback": "接続文字列(パスワードを含む)は `wrangler hyperdrive create` でCloudflare側に登録し、設定ファイルには発行されたIDを書くのが基本です(ローカル開発で `localConnectionString` を追加する場合を除く)。平文の接続情報をコミットする必要はありません。"
         },
         {
           "text": "Cloudflareダッシュボードからデータベースのダンプファイルをアップロードする",
@@ -12136,7 +12136,7 @@
       "options": [
         {
           "text": "`wrangler dev`でのローカル実行でも本番と同じHyperdriveのクエリキャッシュが自動的に効くため、キャッシュ挙動の検証もローカルで完結できる",
-          "wrongFeedback": "ローカル実行(localConnectionString使用時)ではHyperdriveのキャッシュは効きません。キャッシュ挙動の確認は本番相当の環境が必要です。"
+          "wrongFeedback": "ローカル実行(localConnectionString使用時)ではHyperdriveのキャッシュは効きません。キャッシュ挙動の確認は `wrangler dev --remote` かデプロイ後の環境で行います。"
         },
         {
           "text": "`localConnectionString` に設定した開発用DBへWorkerが直接接続する。ただしクエリキャッシュはローカルでは効かない"
@@ -12151,7 +12151,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`wrangler dev` はデフォルトでWorkerをローカルマシン上で実行します。このときHyperdriveバインディングは、設定した `localConnectionString`(ローカルまたはリモートのDB接続文字列)を使ってデータベースへ直接接続します。\n{{diagram:0}}\n注意点として、このモードではHyperdriveのクエリキャッシュは効きません。キャッシュを含めた挙動の検証は、デプロイ後の環境で行う必要があります。",
+      "explanation": "`wrangler dev` はデフォルトでWorkerをローカルマシン上で実行します。このときHyperdriveバインディングは、設定した `localConnectionString`(ローカルまたはリモートのDB接続文字列)を使ってデータベースへ直接接続します。\n{{diagram:0}}\n注意点として、このモードではHyperdriveのクエリキャッシュは効きません。キャッシュを含めた挙動の検証は、`wrangler dev --remote` でデプロイ済みのHyperdrive設定に接続するか、実際にデプロイした環境で行います。",
       "referenceUrl": "https://developers.cloudflare.com/hyperdrive/configuration/local-development/",
       "hint": "ローカル実行のとき、Workerからのクエリがどの経路をたどるのかをまず考えましょう。経路が変わるなら、その途中で働いていた機能の扱いも合わせて確かめる必要があります。",
       "tags": [
@@ -12171,7 +12171,7 @@
               ]
             },
             {
-              "heading": "デプロイ後(本番)",
+              "heading": "デプロイ後 / --remote(本番相当)",
               "items": [
                 "Hyperdrive経由で接続",
                 "プーリングとキャッシュが有効"
