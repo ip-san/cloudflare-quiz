@@ -4450,7 +4450,7 @@
       ],
       "correctIndex": 3,
       "explanation": "Cloudflareのドキュメントは、セッションデータや認証情報(APIキー)、設定データの保存先としてWorkers KVを推奨しています。これらは毎秒数千回以上読まれる一方で更新はまれ(KVの「同じキーへの書き込みは1秒に1回」という制約の範囲内)であり、即時の整合性も必要としないためです。\n{{diagram:0}}\nよく読まれるキーはKVの内部キャッシュに載り、こうしたホットなキーの読み取りは500µs〜10msほどで返ります。実際にCloudflare Access自身も、ユーザーの資格情報をユーザーの近くで検証するためにKVを使っています。\n{{diagram:1}}\nDurable Objectsはリアルタイムの協調処理や強い整合性が要る状態管理、R2はアクセス頻度の低い大きなオブジェクト、D1はSQLで問い合わせるリレーショナルデータと、それぞれ得意な場面が分かれています。",
-      "referenceUrl": "https://developers.cloudflare.com/r2/",
+      "referenceUrl": "https://developers.cloudflare.com/workers/platform/storage-options/",
       "hint": "オブジェクトストレージは、アクセス頻度の低い大きなファイルのための選択肢です。まずそこを外して考えましょう。",
       "tags": [
         "r2",
