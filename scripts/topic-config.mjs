@@ -558,6 +558,8 @@ export const DOC_PAGES = [
   { name: 'workers/configuration/placement' },
   { name: 'workers/configuration/secrets' },
   { name: 'workers/framework-guides/web-apps/nextjs' },
+  // 2026-09-16 追加: pg-007 の @opennextjs/cloudflare パッケージ名の根拠
+  { name: 'workers/framework-guides/web-apps/opennext' },
   { name: 'workers/get-started/guide' },
   { name: 'workers/observability/logs' },
   { name: 'workers/platform/limits' },

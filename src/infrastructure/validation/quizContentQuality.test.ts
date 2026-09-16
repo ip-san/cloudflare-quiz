@@ -587,6 +587,7 @@ const VALID_DOC_PAGES = [
   'workers/configuration/placement/',
   'workers/configuration/secrets/',
   'workers/framework-guides/web-apps/nextjs/',
+  'workers/framework-guides/web-apps/opennext/',
   'workers/get-started/guide/',
   'workers/observability/logs/',
   'workers/observability/logs/logpush/',
