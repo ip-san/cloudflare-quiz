@@ -24,7 +24,7 @@ function hasTermMjsFromSource() {
   const fn = src.match(/function hasTermMjs\(text, term\) \{[\s\S]*?\n\}/)
   if (!fn) throw new Error('hasTermMjs が見つからない')
   const WORDISH = /[A-Za-z0-9_]/
-  // biome-ignore lint/security/noGlobalEval: 実装のずれを見張るのが目的なので、実物を評価する
+  // `new Function` で実物を評価する。実装のずれを見張るのが目的なので、コピーではなく本体を読む
   return new Function('WORDISH', `${fn[0]}; return hasTermMjs`)(WORDISH)
 }
 

@@ -60,8 +60,13 @@ export function checkFinding(finding, quiz) {
       }
       const len = opts.map((t) => t.length)
       if (len[ci] === Math.max(...len)) problems.push(`${quizId}: 正解肢が最長（${len.join('/')}）`)
-      const nAbs = opts.filter((t) => ABS.test(t)).length
-      if (nAbs > 2) problems.push(`${quizId}: 絶対表現が ${nAbs}/4 肢（上限2）`)
+      // 本当の欠陥は「数が多いこと」ではなく**偏り**——誤答3つだけが断定し、正解肢はしない形。
+      // 粗く「4肢中2つまで」としていたが、これは docs の by default 等に忠実な設問
+      // （bi-014 は3肢、cb-002 は4肢が絶対表現を持つ）の編集まで塞いでいた。
+      // check-absolute-skew.mjs と同じ定義に揃える。
+      if (!ABS.test(opts[ci]) && opts.every((t, i) => i === ci || ABS.test(t))) {
+        problems.push(`${quizId}: 誤答3つだけが絶対表現を持ち、正解肢は持たない（偏り）`)
+      }
       const bt = opts.map((t) => t.includes('`'))
       if (bt[ci] && bt.filter(Boolean).length === 1) problems.push(`${quizId}: 正解肢だけがバッククォートを持つ`)
       if (!bt[ci] && bt.filter(Boolean).length === 3) problems.push(`${quizId}: 正解肢だけがバッククォートを持たない`)

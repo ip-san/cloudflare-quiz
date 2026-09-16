@@ -55,15 +55,27 @@ describe('掃引の判定を当てる前の検査', () => {
     expect(checkFinding(f, quiz()).some((p) => /正解肢が最長/.test(p))).toBe(true)
   })
 
-  it('絶対表現が3肢以上なら止める', () => {
+  it('誤答3つだけが絶対表現を持ち正解肢が持たないなら止める（偏り）', () => {
     const f = {
       quizId: 'x-001',
       verdict: 'modify',
       survivingGenuine: '誤答2',
-      proposedOptions: ['常にAAAA', '正解', '一切BBBB', '必ずCCCC'],
+      proposedOptions: ['常にAAAA', '正解の肢', '一切BBBB', '必ずCCCC'],
       proposedWrongFeedback: ['a', null, 'c', 'd'],
     }
-    expect(checkFinding(f, quiz()).some((p) => /絶対表現/.test(p))).toBe(true)
+    expect(checkFinding(f, quiz()).some((p) => /偏り/.test(p))).toBe(true)
+  })
+
+  it('正解肢も絶対表現を持つなら、4肢すべてにあっても止めない', () => {
+    // bi-014 / cb-002 のように docs の by default に忠実な設問がある
+    const f = {
+      quizId: 'x-001',
+      verdict: 'modify',
+      survivingGenuine: '誤答2',
+      proposedOptions: ['常にAAAA', '必ず正解の肢', '一切BBBB', 'すべてのCCC'],
+      proposedWrongFeedback: ['a', null, 'c', 'd'],
+    }
+    expect(checkFinding(f, quiz()).some((p) => /偏り/.test(p))).toBe(false)
   })
 
   it('正解肢だけがバッククォートを持つなら止める', () => {
