@@ -58,6 +58,9 @@ export const DOC_PAGES = [
   { name: 'containers/reference/container-class' },
   { name: 'containers/platform/pricing' },
   { name: 'containers/guides/local-dev' },
+  // 2026-09-16 追加: ct-016 の outbound 傍受のニュアンス(enableInternetと独立)の
+  // 根拠がこのページにしか無い。設問の根拠に使うページは必ずここへ載せること
+  { name: 'containers/guides/outbound-traffic' },
   { name: 'containers/platform/limits' },
   { name: 'containers/configuration/scaling-and-routing' },
   { name: 'containers/configuration/rollouts' },

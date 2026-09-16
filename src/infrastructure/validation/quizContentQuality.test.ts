@@ -136,6 +136,7 @@ const VALID_DOC_PAGES = [
   'containers/reference/container-class/',
   'containers/platform/pricing/',
   'containers/guides/local-dev/',
+  'containers/guides/outbound-traffic/',
   'containers/platform/limits/',
   'containers/configuration/scaling-and-routing/',
   'containers/configuration/rollouts/',
