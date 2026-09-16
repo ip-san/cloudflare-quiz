@@ -287,6 +287,8 @@ export const DOC_PAGES = [
   { name: 'rules/transform/response-header-modification' },
   { name: 'rules/url-forwarding' },
   { name: 'rules/url-forwarding/single-redirects' },
+  // 2026-09-16 追加: ru-010 のステータスコード表(301/302/307/308)の根拠
+  { name: 'rules/url-forwarding/single-redirects/settings' },
   { name: 'rules/url-forwarding/bulk-redirects' },
   { name: 'rules/origin-rules' },
   { name: 'rules/origin-rules/features' },

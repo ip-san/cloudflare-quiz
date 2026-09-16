@@ -283,6 +283,7 @@ const VALID_DOC_PAGES = [
   'rules/transform/response-header-modification/',
   'rules/url-forwarding/',
   'rules/url-forwarding/single-redirects/',
+  'rules/url-forwarding/single-redirects/settings/',
   'rules/url-forwarding/bulk-redirects/',
   'rules/origin-rules/',
   'rules/origin-rules/features/',

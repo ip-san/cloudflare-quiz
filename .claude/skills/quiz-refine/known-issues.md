@@ -3796,3 +3796,10 @@ server-side-validation の本文は「期限切れは timeout-or-duplicate」、
 エラーコード表は「timeout-or-duplicate=検証済み / invalid-input-response=不正・期限切れ」。
 上流不整合の4例目。px-003/px-004 は**シナリオに固有な本文側**に準拠して ok。
 表側に寄せる改訂が入ったらこの2問は要再チェック。
+
+## 2026-09-16: SpectrumのIP Accessルール対応アクションも概説と詳細で不整合（sc-006）
+
+limitations.md の概説は「allowlist, block, and challenge」と書くが、
+configuration-options.md は「allow または block のみ尊重」と明言（L4トラフィックに
+HTTP対話型のchallengeは適用不能）。上流不整合の5例目。**概説と詳細が食い違うときは
+詳細・仕様側のページを正とする**（sc-006はこの原則で ok 判定）。

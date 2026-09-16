@@ -27610,7 +27610,7 @@
       ],
       "correctIndex": 1,
       "explanation": "301(恒久的)と302(一時的)は、リダイレクトの際にリクエストメソッドがPOSTからGETへダウングレードされることがあります。一方、307(一時的)と308(恒久的)はリクエストメソッドを保持します。「恒久的か一時的か」と「メソッドを保持するかどうか」という2つの軸で4種類のコードが整理されます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/rules/url-forwarding/",
+      "referenceUrl": "https://developers.cloudflare.com/rules/url-forwarding/single-redirects/settings/",
       "hint": "メソッドが必ずGETに変わるわけではありません。",
       "tags": [
         "rules",
