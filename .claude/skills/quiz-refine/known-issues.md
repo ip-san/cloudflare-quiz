@@ -3774,3 +3774,10 @@ cb-016の引用元(troubleshoot-casb#understand-scan-frequency)は「初回は�
 settings.md L26 は same-hostname 時のパスを `script-monitor`(ハイフン)、csp-header.md L25 は
 `script_monitor`(アンダースコア)と表記。CASBスキャン間隔(cb-001/cb-016)に続く上流不整合の2例目。
 cx-014 は settings.md 側を踏襲しており ok。**片方だけを見て他方を「誤り」と判定しないこと。**
+
+## 2026-09-16: 「一箇所直して同じ設問の別フィールドを見落とす」が1日で3例（ai-009/cx-005/em-001）
+
+いずれも今日の修正自体が原因: 誤った主張を1フィールドで直し、同じ主張が解説や
+wrongFeedback に残って設問が自分自身と食い違った。修正は「主張単位」で行うこと——
+wrong と判定した主張は同じ設問の全フィールドを grep し、残る場所を全部直す。
+fact-sweep-prompt.md に必須手順として追記済み。

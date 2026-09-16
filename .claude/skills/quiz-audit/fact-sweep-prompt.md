@@ -81,6 +81,15 @@ docs と突き合わせてください。図の修正は `proposedDiagrams`（`{
   `proposedExplanation` … 解説文を直す場合
   `proposedQuestion` … 設問文を直す場合
 
+## 直すときの必須手順: 同じ主張を設問の全フィールドで grep する
+
+**今日3回起きた見落とし**(ai-009/cx-005/em-001): 誤った主張を1フィールドで直したのに、
+同じ主張が同じ設問の別フィールド(解説・wrongFeedback・図・設問文)に残り、
+**修正後の設問が自分自身と食い違う**状態になった。
+wrong / overbroad と判定した主張は、その設問の question / options 4つ /
+wrongFeedback 4つ / explanation / diagrams を必ず同じキーワードで grep し、
+残る場所をすべて proposedXXX に含めること。1フィールドだけの修正案は不完全とみなす。
+
 ## 守る条件
 
 - **`docRef` は「ファイル名 L行番号」をセットで書き、必ず該当ファイルを実際に開くこと。**
