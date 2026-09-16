@@ -33844,11 +33844,11 @@
       "question": "DLPプロファイルを作成しただけの状態に関する正しい説明はどれですか?",
       "options": [
         {
-          "text": "DLPプロファイルは検知パターンを定義するだけであり、実際にスキャンを開始するには、そのプロファイルを使うDLPポリシー(GatewayのHTTPポリシー)を別途作成する必要がある"
+          "text": "DLPプロファイルは検知パターンを定義するだけであり、GatewayのHTTPトラフィックをログ記録・ブロックするには、そのプロファイルを使うDLPポリシー(GatewayのHTTPポリシー)を別途作成する必要がある"
         },
         {
           "text": "DLPプロファイルを作成した時点で、Gatewayを通過するすべてのHTTPトラフィックへ自動的にスキャンが開始される",
-          "wrongFeedback": "プロファイルを作成しただけではスキャンは開始されません。プロファイルは検知パターンを定義するだけで、実際にスキャンを動かすにはDLPポリシー(GatewayのHTTPポリシー)の作成が必要です。"
+          "wrongFeedback": "プロファイルを作っただけでは、Gatewayを通るすべてのHTTPトラフィックが対象にはなりません。ログ記録やブロックを動かすにはDLPポリシー(GatewayのHTTPポリシー)が必要です。ポリシー無しで働くPassive Detectionも、調べるのはランダムに抽出された一部のトラフィックだけです。"
         },
         {
           "text": "DLPプロファイルは他のGatewayセレクタ(HTTP MethodやApplicationなど)とAND/OR条件で組み合わせることができず、1つのHTTPポリシーにはDLP Profileセレクタを単独でしか指定できない",
@@ -33860,7 +33860,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "DLPプロファイルは検知パターンを定義するだけの設定であり、それ自体ではスキャンは開始されません。実際にスキャンを動かすには、そのプロファイルを「DLP Profile」セレクタとして使うDLPポリシー(GatewayのHTTPポリシー)を別途作成する必要があります。\n{{diagram:0}}",
+      "explanation": "DLPプロファイルは検知パターンを定義するだけの設定であり、それ自体ではログ記録もブロックも行われません。GatewayのHTTPトラフィックにアクションを効かせるには、そのプロファイルを「DLP Profile」セレクタとして使うDLPポリシー(GatewayのHTTPポリシー)を別途作成する必要があります。\n{{diagram:0}}\nなお、ポリシーを作る前の下調べとしてPassive Detectionが用意されています。アカウント内のいずれかのプロファイルで有効になっている検知エントリについて、ランダムに抽出されたGatewayトラフィックの一部をスキャンし、どの種類の機密データがどこへ流れているかをダッシュボードに出します。ただしこれはトラフィックの扱いを変えるものではなく、Gatewayでのログ記録やブロックはHTTPポリシーを作って初めて動きます。同じプロファイルをAI Gatewayで使う場合は、GatewayのHTTPポリシーではなくAI Gateway側のDLPポリシーでFlagかBlockを指定します。",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/data-loss-prevention/dlp-policies/#2-create-a-dlp-policy",
       "hint": "プロファイルを作った直後に、Gatewayを通る通信に何が起きるのかを考えましょう。そのプロファイルがどこで使われる設定なのかも合わせて確かめてください。",
       "tags": [
@@ -33870,19 +33870,19 @@
       "diagrams": [
         {
           "type": "flow",
-          "label": "DLPを有効化する手順",
+          "label": "DLPポリシーでアクションを動かす手順",
           "steps": [
             {
               "text": "DLPプロファイルを設定(検知パターンを定義)"
             },
             {
-              "text": "この時点ではスキャンは開始されない"
+              "text": "この時点ではログ記録もブロックも行われない"
             },
             {
               "text": "DLP ProfileセレクタでHTTPポリシーを作成"
             },
             {
-              "text": "ポリシー作成後にスキャンが開始される"
+              "text": "ポリシー作成後にアクションが適用される"
             }
           ]
         }

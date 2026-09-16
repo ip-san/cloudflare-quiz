@@ -401,6 +401,11 @@ export const DOC_PAGES = [
   { name: 'cloudflare-one/data-loss-prevention/data-classification/build-a-data-class' },
   { name: 'cloudflare-one/data-loss-prevention/saas-apps' },
   { name: 'cloudflare-one/data-loss-prevention/dlp-settings' },
+  // 2026-09-16 追加: dl-002 の正解肢を覆した Passive Detection がキャッシュ対象外で、
+  // ドリフトを検出できなかった。設問の根拠に使うページは必ずここへ載せること
+  { name: 'cloudflare-one/data-loss-prevention/passive-detection' },
+  { name: 'ai-gateway/features/dlp' },
+  { name: 'ai-gateway/features/dlp/set-up-dlp' },
   { name: 'cloudflare-one/remote-browser-isolation' },
   { name: 'cloudflare-one/remote-browser-isolation/isolation-policies' },
   { name: 'cloudflare-one/remote-browser-isolation/canvas-remoting' },
