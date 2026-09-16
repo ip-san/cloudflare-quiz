@@ -17397,14 +17397,14 @@
         },
         {
           "text": "リトライの遅延(`cf-aig-retry-delay`)は分単位で指定し、最大60分まで設定できる",
-          "wrongFeedback": "リトライの遅延はミリ秒単位で指定し、最大5秒までという制約があります。"
+          "wrongFeedback": "リトライの遅延はミリ秒単位で指定し、上限は60秒(60,000ミリ秒)です。分単位ではなく、60分まで設定できるわけでもありません。"
         },
         {
           "text": "タイムアウトは`cf-aig-request-timeout`で、リトライは`cf-aig-max-attempts`など3つの別ヘッダーの組み合わせで指定する"
         }
       ],
       "correctIndex": 3,
-      "explanation": "AI Gatewayでは、リクエストタイムアウトを`cf-aig-request-timeout`ヘッダー(ミリ秒)で指定します。リトライは`cf-aig-max-attempts`(最大5回)、`cf-aig-retry-delay`(ミリ秒、最大5秒)、`cf-aig-backoff`(`constant`/`linear`/`exponential`)という3つのヘッダーの組み合わせで制御します。\n{{diagram:0}}\nタイムアウトは「エラーを返すか、リトライを起こす」ための仕組みです。そのため最後のリトライ試行だけは例外で、もう後がないぶん打ち切らずに完了まで待ちます。つまりタイムアウト値は「1回の試行を何秒で見切って次へ回すか」を決めるもので、全体の所要時間の上限ではありません。",
+      "explanation": "AI Gatewayでは、リクエストタイムアウトを`cf-aig-request-timeout`ヘッダー(ミリ秒)で指定します。リトライは`cf-aig-max-attempts`(最大5回)、`cf-aig-retry-delay`(ミリ秒、最大60秒)、`cf-aig-backoff`(`constant`/`linear`/`exponential`)という3つのヘッダーの組み合わせで制御します。\n{{diagram:0}}\nタイムアウトは「エラーを返すか、リトライを起こす」ための仕組みです。そのため最後のリトライ試行だけは例外で、もう後がないぶん打ち切らずに完了まで待ちます。つまりタイムアウト値は「1回の試行を何秒で見切って次へ回すか」を決めるもので、全体の所要時間の上限ではありません。",
       "referenceUrl": "https://developers.cloudflare.com/ai-gateway/configuration/request-handling/",
       "hint": "「どれだけ待つか」と「何回・どのくらいの間隔で再試行するか」は、別々の設定項目に分かれていることを意識しましょう。",
       "tags": [
@@ -17426,7 +17426,7 @@
               "heading": "リトライ",
               "items": [
                 "cf-aig-max-attempts(最大5)",
-                "cf-aig-retry-delay(最大5秒)",
+                "cf-aig-retry-delay(最大60秒)",
                 "cf-aig-backoff"
               ]
             }
@@ -25616,28 +25616,28 @@
       "id": "lb-008",
       "category": "load-balancing",
       "difficulty": "beginner",
-      "question": "Geo Steeringと他のLoad Balancing機能の互換性に関する正しい説明はどれですか？",
+      "question": "Geo Steeringでリージョンに割り当てたPoolの扱いについて、正しい説明はどれですか？",
       "options": [
         {
-          "text": "Geo Steeringはカスタムルールと完全に互換性があり、Geo Steeringが有効なLoad Balancerに適用したカスタムルールも常に期待通りに動作し、リージョンごとのPool選択をカスタムルール側から上書きできる",
-          "wrongFeedback": "互換性はありません。Geo Steeringが有効なLoad Balancerにカスタムルールを適用しても、期待通りには機能しません。"
+          "text": "同じリージョンに割り当てられるPoolは1つだけで、複数のPoolをフェイルオーバー順に並べておくことはできない",
+          "wrongFeedback": "同じリージョンには複数のPoolを割り当てられます。並べた順序がそのままフェイルオーバーの順序として使われ、先頭のPoolが利用できなければ次のPoolが使われます。"
         },
         {
-          "text": "Geo Steeringで一度あるリージョンにPoolを追加すると、そのPoolはGeo Steeringの設定から削除しなくても自由に削除できる",
-          "wrongFeedback": "リージョンに追加したPoolは、Geo Steeringの設定から削除するまで、そのPool自体を削除することはできません。"
+          "text": "リージョンに割り当てたPoolを先に削除すれば、そのリージョンのGeo Steeringの割り当ても一緒に消えるため、設定を編集する手順を踏む必要はない",
+          "wrongFeedback": "順序が逆で、Pool側から先に削除することはできません。リージョンに割り当てたPoolは、Geo Steeringの設定からそのPoolを外すまで削除できない状態のままです。"
         },
         {
           "text": "Geo SteeringのPool設定は、Traffic Steeringの方式を別の方式に変更すると自動的に削除される",
           "wrongFeedback": "Traffic Steeringの方式を変更しても、Geo Steeringの設定は自動的には削除されません。明示的に設定から削除する必要があります。"
         },
         {
-          "text": "カスタムLoad Balancingルールは、Geo Steeringと互換性がなく、Geo Steeringが設定されたLoad Balancerに適用したカスタムルールは期待通りに機能しない"
+          "text": "あるリージョンにPoolを割り当てると、Geo Steeringの設定からそのPoolを外すまで、Pool自体を削除することはできない"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Geo Steeringは、訪問者がいるリージョンごとに、どのPool（オリジンをまとめたグループ）へ振り分けるかを指定する方式です。このGeo Steeringと、任意の条件を書けるカスタムLoad Balancingルールは互換性がなく、Geo Steeringが設定されたLoad Balancerにカスタムルールを適用しても期待通りには機能しません。\n{{diagram:0}}\n※ ドキュメントはこれを「互換性がない」という制約として示すのみで、内部で何が競合するのかという理由は説明していません。仕組みから導ける話ではなく、覚えておく制約です。\n※ あるリージョンに追加したPoolは、Geo Steeringの設定から明示的に外すまで削除できません。この設定はTraffic Steeringの方式を別のものに変えても自動的には消えないため、手動で外す必要があります。",
+      "explanation": "Geo Steeringは、訪問者のいる国やリージョンごとに、どのPool（オリジンをまとめたグループ）へ振り分けるかを指定する方式です。同じリージョンには複数のPoolを割り当てられ、並べた順序がそのままフェイルオーバーの順序として使われます。\n{{diagram:0}}\nこのとき、リージョンに割り当てたPoolには「Geo Steeringの設定から外すまで、Pool自体を削除できない」という制約がかかります。しかもこの割り当ては、Traffic Steeringの方式を別のものに変更しても自動的には消えません。使わなくなったPoolを片付けるときは、先にGeo Steeringの設定から外す、という順序になります。",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/traffic-steering/steering-policies/geo-steering/",
-      "hint": "Geo Steeringは「このリージョンからの訪問者はこのPoolへ」とリージョンごとに振り分け先を決める方式です。任意の条件で振り分け先を決めるカスタムルールを同じLoad Balancerに足したとき、ドキュメントがどう言っているかを思い出してみましょう。",
+      "hint": "リージョンに割り当てたPoolは、Geo Steeringの設定と結びついたままになります。その結びつきが、いつ・どうやって切れるのかを考えましょう。",
       "tags": [
         "load-balancing",
         "practical"
@@ -25645,18 +25645,18 @@
       "diagrams": [
         {
           "type": "comparison",
-          "label": "Geo Steeringとの互換性",
+          "label": "リージョンに割り当てたPoolの扱い",
           "columns": [
             {
-              "heading": "互換",
+              "heading": "割り当て中のPool",
               "items": [
-                "Pool・地域単位のルーティング"
+                "Geo Steeringの設定から外すまで削除できない"
               ]
             },
             {
-              "heading": "非互換",
+              "heading": "方式を変更したとき",
               "items": [
-                "カスタムLoad Balancingルール"
+                "Geo Steeringへの割り当ては自動では消えない"
               ]
             }
           ]
@@ -26168,7 +26168,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "Geo Steeringを使っている場合、「Failover across pools」は同じ地理的グループ内のPoolのみを対象とします。例えば北米(NA)のPoolがすべて不健全になっても、それだけでは自動的に欧州(EU)のPoolへはフェイルオーバーせず、グローバルなFallback Poolへトラフィックが向かいます。クロスリージョンのフェイルオーバーを実現したい場合は、各リージョンのPoolリストに、フォールバック先として使いたいPoolを追加のPoolとして明示的に含める必要があります。\n{{diagram:0}}",
+      "explanation": "Geo Steeringを使っている場合、「Failover across pools」は同じ地理的グループ内のPoolのみを対象とします。例えば北米(NA)のPoolがすべて不健全になっても、それだけでは自動的に欧州(EU)のPoolへはフェイルオーバーせず、グローバルなFallback Poolへトラフィックが向かいます。クロスリージョンのフェイルオーバーを実現したい場合は、各リージョンのPoolリストに、フォールバック先として使いたいPoolを追加のPoolとして明示的に含めます。APIで管理するLoad Balancerであれば、ロケーションごとにフォールバック先を指定できるPool setsを使う手もあります。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/load-balancing/understand-basics/adaptive-routing/#failover-across-pools",
       "hint": "「地理的なグループの壁」を越えたフェイルオーバーが自動的に起きるかどうかを考えましょう。",
       "tags": [
