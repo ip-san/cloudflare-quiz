@@ -376,7 +376,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`env`は、設定ファイル(`wrangler.jsonc`/`wrangler.toml`)で定義したバインディングにアクセスするためのオブジェクトです。\n{{diagram:0}}\nKVネームスペース、D1データベース、R2バケット、シークレット、環境変数などは、すべてこの`env`引数を通じて参照します。ESM形式ではグローバル変数としてバインディングにアクセスすることはなく、必ず各ハンドラに渡される`env`経由でアクセスします。\n{{diagram:1}}",
+      "explanation": "`env`は、設定ファイル(`wrangler.jsonc`/`wrangler.toml`)で定義したバインディングにアクセスするためのオブジェクトです。\n{{diagram:0}}\nKVネームスペース、D1データベース、R2バケット、シークレット、環境変数などは、この`env`を通じて参照します。ESM形式では、レガシーのService Worker形式のようにバインディング名がそのままグローバル変数になることはありません。ハンドラの外側から参照したい場合は、`cloudflare:workers`から`env`をインポートしても同じバインディングにアクセスできます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/runtime-apis/bindings/",
       "hint": "ESM形式のWorkerでは、外側にあるものをグローバルなスコープからではなく、ハンドラの引数として受け取ります。第2引数が運んでくるのは何かを考えましょう。",
       "tags": [
@@ -705,7 +705,7 @@
         }
       ],
       "correctIndex": 3,
-      "explanation": "Cron Triggerで定期実行されるWorkerは、`scheduled(event, env, ctx)`ハンドラを実装する必要があります。\n{{diagram:0}}\nCron設定は`wrangler.jsonc`/`wrangler.toml`の`triggers.crons`で行い、指定した時刻になるとHTTPリクエストなしで`scheduled`ハンドラが呼び出されます。ローカル開発では`/cdn-cgi/handler/scheduled`へのリクエストで動作を確認できます。\n{{diagram:1}}",
+      "explanation": "Cron Triggerで定期実行されるWorkerは、`scheduled(event, env, ctx)`ハンドラを実装する必要があります。\n{{diagram:0}}\nCron設定は`wrangler.jsonc`/`wrangler.toml`の`triggers.crons`で行い、指定した時刻になるとHTTPリクエストなしで`scheduled`ハンドラが呼び出されます。第1引数は`ScheduledController`で、公式ドキュメントでは`controller`という名前で書かれ、`controller.cron`や`controller.scheduledTime`を参照できます。ローカル開発では`/cdn-cgi/local/scheduled`へのリクエストで動作を確認できます。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/configuration/cron-triggers/",
       "hint": "HTTPリクエストが来ているわけではないので、`fetch`ではありません。",
       "tags": [
@@ -784,7 +784,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "レガシーのService Worker形式は`addEventListener('fetch', event => ...)`のようにグローバルスコープにイベントリスナーを登録し、バインディングもグローバル変数として扱っていました。\n{{diagram:0}}\n一方、ESM形式では`export default`されたオブジェクトの各ハンドラ(`fetch`、`scheduled`など)に`env`引数が渡され、バインディングは必ずこの`env`経由でアクセスします。グローバルスコープを汚染しないため、複数の関数間でバインディングを受け渡す際は明示的に`env`を渡す必要があります。Cloudflareは新規開発ではESM形式の使用を推奨しています。\n{{diagram:1}}",
+      "explanation": "レガシーのService Worker形式は`addEventListener('fetch', event => ...)`のようにグローバルスコープにイベントリスナーを登録し、バインディングもグローバル変数として扱っていました。\n{{diagram:0}}\n一方、ESM形式では`export default`されたオブジェクトの各ハンドラ(`fetch`、`scheduled`など)に`env`引数が渡され、バインディングはこの`env`経由でアクセスします。グローバルスコープを汚染しないため、複数の関数からバインディングを使うときは`env`を引数として渡すか、`cloudflare:workers`から`env`をインポートします。Service Worker形式は公式ドキュメントで非推奨(サポートは継続するが新機能が使えない場合がある)と明記されており、新規開発ではESM形式が推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/reference/migrate-to-module-workers/",
       "hint": "バインディングへのアクセス方法が、グローバル変数経由か、引数経由かの違いに注目しましょう。",
       "tags": [
@@ -918,7 +918,7 @@
       "options": [
         {
           "text": "リクエスト数のみに基づいて課金され、処理内容やCPU使用量は課金額に一切影響しない",
-          "wrongFeedback": "リクエスト数に加えて、実際に消費したCPU時間も課金要素になります。"
+          "wrongFeedback": "Workers Paidの標準(Standard)料金では、リクエスト数に加えて、実際に消費したCPU時間も課金要素になります。"
         },
         {
           "text": "コードが実際にCPUを使用して処理を行っている時間(CPU時間)を基準に課金され、外部APIやデータベースへのI/O待ち時間はCPU時間としてカウントされない"
@@ -929,11 +929,11 @@
         },
         {
           "text": "Workerに割り当てたメモリ量と実行時間の積(MB・秒)を基準に課金され、CPU時間やリクエスト数は課金額に影響しないため、メモリ上限を下げることが最も効果的なコスト削減策になる",
-          "wrongFeedback": "Workersの課金の中心はメモリ使用量ではなくCPU時間です。またリクエスト数も課金対象であり、課金はリクエスト数とCPU時間の組み合わせで決まります。"
+          "wrongFeedback": "標準(Standard)料金では、メモリ量と実行時間の積ではなく、リクエスト数と消費したCPU時間の組み合わせで課金されます。経過時間(duration)そのものは課金対象ではありません。"
         }
       ],
       "correctIndex": 1,
-      "explanation": "Cloudflare Workersの実行時間に関する課金は、コードが実際にCPUを消費して処理を行っている「CPU時間」を基準にしています。\n{{diagram:0}}\n外部APIの応答待ちやデータベースクエリの完了待ちなど、CPUを使わずに待機している時間(I/O待ち)はCPU時間としてカウントされません。これは、リクエストの処理時間全体(壁時計時間)に対して課金される一般的なサーバー型の課金モデルとは異なる点です。\n{{diagram:1}}",
+      "explanation": "Workers Paidの標準(Standard)料金では、実行時間の課金は、コードが実際にCPUを消費して処理を行っている「CPU時間」を基準にしています。経過時間(duration)そのものは課金対象ではありません。\n{{diagram:0}}\n外部APIの応答待ちやデータベースクエリの完了待ちなど、CPUを使わずに待機している時間(I/O待ち)はCPU時間としてカウントされません。これは、リクエストの処理時間全体(壁時計時間)に対して課金される一般的なサーバー型の課金モデルとは異なる点です。なお、旧来の使用モデル(Workers UnboundとWorkers Bundled)を設定したままのアカウントも残っており、公式には標準料金への移行が推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/platform/pricing/",
       "hint": "課金額は、リクエストを何回送ったかという数だけで決まるのか、それとも処理の中身によっても変わるのか考えましょう。",
       "tags": [
@@ -1207,7 +1207,7 @@
         },
         {
           "text": "`name` と `main` の2つだけが必須で、`compatibility_date` は省略すると常に最新のランタイムが自動的に使われる",
-          "wrongFeedback": "`compatibility_date` は必須項目です。省略すると最新のランタイムが自動で使われる、という挙動ではありません。"
+          "wrongFeedback": "`compatibility_date` は必須項目です。API経由のアップロードで指定がない場合は、フラグが有効になる前の最も古い日付（2021-11-02）が使われ、最新のランタイムが自動で選ばれるわけではありません。"
         },
         {
           "text": "`name`、`main`、`compatibility_date` に加えて `account_id`（アカウントID）も必須で、設定ファイルに書かないとデプロイできない",
@@ -1219,7 +1219,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "`wrangler.toml`（または`wrangler.jsonc`）は、Workerの設定を定義する中心的なファイルです。\n{{diagram:0}}\n公式ドキュメントは、Workerをデプロイするのに最低限必要なキーとして `name`（Workerの識別名）、`main`（エントリーポイント）、`compatibility_date`（ランタイムの挙動を固定する互換性日付）の3つを挙げています。`compatibility_date` は省略できません。省略すると最新のランタイムが自動で使われる、という挙動ではありません。一方 `account_id` は任意で、環境変数 `CLOUDFLARE_ACCOUNT_ID` からも与えられます。`compatibility_flags` も任意で、`compatibility_date` と必ず対で指定する必要はありません。`route`/`routes` も任意です。それ以外の項目（bindingsや環境変数など）は必要に応じて追加します。",
+      "explanation": "`wrangler.toml`（または`wrangler.jsonc`）は、Workerの設定を定義する中心的なファイルです。\n{{diagram:0}}\n公式ドキュメントは、Workerをデプロイするのに最低限必要なキーとして `name`（Workerの識別名）、`main`（エントリーポイント）、`compatibility_date`（ランタイムの挙動を固定する互換性日付）の3つを挙げています。ただし静的アセットのみのWorkerでは `main` は任意であるとドキュメントに明記されています。`compatibility_date` は省略できません。API経由のアップロードで指定がない場合は、フラグが有効になる前の最も古い日付（2021-11-02）が使われ、最新のランタイムが自動で選ばれるわけではありません。一方 `account_id` は任意で、環境変数 `CLOUDFLARE_ACCOUNT_ID` からも与えられます。`compatibility_flags` も任意で、`compatibility_date` と必ず対で指定する必要はありません。`route`/`routes` も任意です。それ以外の項目（bindingsや環境変数など）は必要に応じて追加します。",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/configuration/",
       "hint": "アカウントIDは、設定ファイルに書かなくてもデプロイできます。",
       "tags": [
@@ -1262,7 +1262,7 @@
       "options": [
         {
           "text": "`npm create cloudflare@latest -- --template=nextjs`",
-          "wrongFeedback": "`--template` に渡すのは `user/repo` のような既存リポジトリの参照で、フレームワーク名ではありません。フレームワークは対話プロンプトで選びます。"
+          "wrongFeedback": "`--template` に渡すのは `user/repo` のような既存リポジトリの参照で、フレームワーク名ではありません。フレームワークは対話プロンプトで選ぶか、`--framework=next` のようにフレームワーク用のフラグで指定します。"
         },
         {
           "text": "`npm create cloudflare@latest`"
@@ -1277,7 +1277,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "`npm create cloudflare@latest`（C3 = create-cloudflare CLI）は、Next.js・Astro・Remix・Honoなど各種フレームワークのテンプレートから対話形式でプロジェクトを作成できるスキャフォールディングツールです。\n{{diagram:0}}\nフレームワークの選択は対話プロンプトで行うもので、`--template`オプションはGitHubなどの既存リポジトリを指定するためのものであり、`nextjs`のようなフレームワーク名を直接渡す用途ではありません。`wrangler init --from-dash`はダッシュボード上にすでに存在するWorkerの内容を取り込むためのオプションで、新規にフレームワークをスキャフォールディングするものではありません。`wrangler pages deploy`はビルド済みの静的アセットをアップロードするコマンドで、依存関係のインストールやテンプレートからの生成は行いません。依存関係のインストールから初回デプロイまでを一連のフローでサポートしてくれるため、フレームワークを使ったアプリケーションを始める際の入口として推奨されています。\n{{diagram:1}}",
+      "explanation": "`npm create cloudflare@latest`（C3 = create-cloudflare CLI）は、Next.js・Astro・Remix・Honoなど各種フレームワークのテンプレートから対話形式でプロジェクトを作成できるスキャフォールディングツールです。\n{{diagram:0}}\nフレームワークは対話プロンプトで選べるほか、`--framework=next`のようにフレームワーク用のフラグで非対話的に指定することもできます。`--template`オプションはGitHubなどの既存リポジトリ（`user/repo`など）を指定するためのものであり、`nextjs`のようなフレームワーク名を直接渡す用途ではありません。`wrangler init --from-dash`はダッシュボード上にすでに存在するWorkerの内容を取り込むためのオプションで、新規にフレームワークをスキャフォールディングするものではありません。`wrangler pages deploy`はビルド済みの静的アセットをアップロードするコマンドで、依存関係のインストールやテンプレートからの生成は行いません。依存関係のインストールから初回デプロイまでを一連のフローでサポートしてくれるため、フレームワークを使ったアプリケーションを始める際の入口として推奨されています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/get-started/guide/",
       "hint": "このコマンドは依存関係のインストールまで済ませ、そのまま最初のデプロイに進めます。",
       "tags": [
@@ -1355,7 +1355,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "`wrangler dev` はデフォルトでローカルにWorkersランタイム（workerd）をエミュレートして実行するため、高速でオフラインでも動作します。\n{{diagram:0}}\n一方 `--remote` を付けると、実際にCloudflareのネットワーク上にコードをアップロードして実行するため、ローカルでは再現しづらい実際のエッジ環境固有の挙動を確認できます。ただしネットワーク往復が発生する分、応答は遅くなります。\n{{diagram:1}}",
+      "explanation": "`wrangler dev` はデフォルトでローカルにWorkersランタイム（workerd）をエミュレートして実行するため、高速でオフラインでも動作します。\n{{diagram:0}}\n一方 `--remote` を付けると、Workerのコードが一時的なプレビュー環境としてCloudflareのインフラにアップロードされて実行され、すべてのバインディングもデプロイ済みのリソースに接続されます。ローカルでは再現しづらいネットワーク固有の挙動を確認できますが、変更のたびにアップロードが走るため反復は目に見えて遅くなります。公式ドキュメントは現在この全リモート実行を「レガシー」と位置づけており、多くの用途ではローカル実行のまま必要なバインディングだけを`remote: true`にする方法を勧めています。\n{{diagram:1}}",
       "referenceUrl": "https://developers.cloudflare.com/workers/wrangler/commands/workers/#dev",
       "hint": "デフォルトのモードは『ローカル』か『リモート』か、それぞれのメリットを考えてみましょう。",
       "tags": [
