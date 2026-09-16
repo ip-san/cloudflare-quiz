@@ -23535,22 +23535,22 @@
       "options": [
         {
           "text": "SBFMはBot Fight Modeより機能を絞り込んだ簡易版であり、追加要素は特にないため、より安価なプランでシンプルに運用したいユーザー向けに用意されている",
-          "wrongFeedback": "SBFMは簡易版ではなく、カテゴリ別アクションやBot Analyticsなど、Bot Fight Modeにはない機能を追加します。"
+          "wrongFeedback": "SBFMは簡易版ではなく、カテゴリ別アクションや分析機能(Bot Report等)など、Bot Fight Modeにはない機能を追加します。"
         },
         {
           "text": "SBFMはBot Fight Modeと全く同じ機能を提供するが、対象プランがFreeからProに変わるだけであり、料金が上がる分、検出精度が自動的に底上げされる",
-          "wrongFeedback": "プランの違いだけではありません。SBFMはカテゴリ別アクション・Bot Analytics・WAFカスタムルールによる例外設定など機能面でも追加があります。なお両者は同じ検出技術を使っており、SBFMにしたからといって検出精度が自動的に底上げされるわけではありません。"
+          "wrongFeedback": "プランの違いだけではありません。SBFMはカテゴリ別アクション・分析機能(Bot Report等)・WAFカスタムルールによる例外設定など機能面でも追加があります。なお両者は同じ検出技術を使っており、SBFMにしたからといって検出精度が自動的に底上げされるわけではありません。"
         },
         {
           "text": "SBFMはBot Fight Modeにはない、リクエスト単位の1〜99のボットスコアを提供し、任意のしきい値でカスタムルールを組める",
           "wrongFeedback": "リクエスト単位のボットスコアを使った細かい制御はBot Managementの機能です。SBFMにはこの粒度の制御はありません。"
         },
         {
-          "text": "カテゴリごとに設定可能なアクション、Bot Analytics、WAFカスタムルールのSkipアクションによる例外設定を追加する"
+          "text": "カテゴリごとに設定可能なアクション、限定的な分析機能(Bot Report等)、WAFカスタムルールのSkipアクションによる例外設定を追加する"
         }
       ],
       "correctIndex": 3,
-      "explanation": "Bot Fight ModeもSuper Bot Fight Mode(SBFM)も、サイトに来る自動化されたアクセス(ボット)を検出して対処する機能です。Bot Fight Modeが一律のオン/オフしか持たないのに対し、SBFMはカテゴリ(Definitely automated＝ほぼ確実に自動化・Likely automated＝自動化の可能性が高い・Verified bots＝身元が確認されたボット)ごとに個別のアクションを設定でき、加えてBot Analytics(ボット判定の状況を確認する分析画面)と、WAFカスタムルールのSkipアクションによる例外設定(特定の条件に当てはまるリクエストだけボット対策の対象から外す指定)を追加します。\n{{diagram:0}}\n※ リクエスト単位のボットスコアを使った細かい制御はSBFMには含まれません。それはBot Managementという別製品の領域です。",
+      "explanation": "Bot Fight ModeもSuper Bot Fight Mode(SBFM)も、サイトに来る自動化されたアクセス(ボット)を検出して対処する機能です。Bot Fight Modeが一律のオン/オフしか持たないのに対し、SBFMはカテゴリ(Definitely automated＝ほぼ確実に自動化・Likely automated＝自動化の可能性が高い・Verified bots＝身元が確認されたボット)ごとに個別のアクションを設定でき、加えて分析機能(ボット判定の状況を確認する画面)と、WAFカスタムルールのSkipアクションによる例外設定(特定の条件に当てはまるリクエストだけボット対策の対象から外す指定)を追加します。\n{{diagram:0}}\n※ 分析機能の内容はプランで異なります。Proは`Security` > `Analytics` > `Bot analysis`のBot Reportのみ、Business以上は専用のBot Analyticsツールが使えます。\n※ リクエスト単位のボットスコアを使った細かい制御はSBFMには含まれません。それはBot Managementという別製品の領域です。",
       "referenceUrl": "https://developers.cloudflare.com/bots/get-started/super-bot-fight-mode/",
       "hint": "上位版で増えるのは、運用者が手を加えられる範囲です。どこまで自分で選べるようになるのかを考えましょう。",
       "tags": [
@@ -23572,7 +23572,7 @@
               "heading": "SBFM",
               "items": [
                 "カテゴリ別アクション",
-                "Bot Analytics",
+                "分析機能(Bot Report等)",
                 "Skipによる例外設定"
               ]
             }
