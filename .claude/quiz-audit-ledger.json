@@ -603,21 +603,21 @@
       },
       "at-011": {
         "fp": "35ddcb803494",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "at-012": {
         "fp": "43fcd6541439",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "at-013": {
         "fp": "1494db82a7cd",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "at-014": {
         "fp": "c2049d5aa4bd",
@@ -981,15 +981,15 @@
       },
       "ch-002": {
         "fp": "ea0059ff8ea8",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ch-003": {
         "fp": "9e2f0ff06b57",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ch-004": {
         "fp": "3591be34bf40",
@@ -1059,9 +1059,9 @@
       },
       "ch-015": {
         "fp": "06fe4ee1a723",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ch-016": {
         "fp": "c895924faf8d",
@@ -1071,15 +1071,15 @@
       },
       "ch-017": {
         "fp": "d5af2e7e7a4c",
-        "at": "2026-09-15",
-        "ref": "45ea609",
-        "note": "対抗馬0だった誤答を作り直し（6回目）"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ch-018": {
         "fp": "2c136228febb",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "cs-001": {
         "fp": "f04ad1851c97",
@@ -2157,9 +2157,9 @@
       },
       "gw-018": {
         "fp": "03ff39e97183",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "hw-001": {
         "fp": "4a9998fe2d69",
@@ -3267,27 +3267,27 @@
       },
       "ru-005": {
         "fp": "7d4900beebd8",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ru-006": {
         "fp": "b49e04350496",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ru-007": {
         "fp": "e66a92fffffe",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ru-008": {
         "fp": "c7ec99d533b4",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ru-009": {
         "fp": "a3b008a0cdb8",
@@ -3333,15 +3333,15 @@
       },
       "ru-016": {
         "fp": "ce71971e3832",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ru-017": {
         "fp": "a72b7c693939",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "ru-018": {
         "fp": "9f5a2c5dcbb1",
@@ -3447,15 +3447,15 @@
       },
       "sc-017": {
         "fp": "dcc82cfaace0",
-        "at": "2026-09-13",
-        "ref": "10e9322",
-        "note": "設問層の解消。正解と同じ名前を含む誤答を入れて名前一致を無効化、極性と軸の偏りも解消した"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "sc-018": {
         "fp": "fcfe0f6becc0",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "sl-001": {
         "fp": "78ddc7fc822b",
@@ -3525,9 +3525,9 @@
       },
       "sl-012": {
         "fp": "b24e47a399d8",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "sl-013": {
         "fp": "279b505b5a09",
@@ -3687,9 +3687,9 @@
       },
       "tn-003": {
         "fp": "c686b0bd7b51",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "tn-004": {
         "fp": "29a23f25ea71",
@@ -3765,9 +3765,9 @@
       },
       "tn-016": {
         "fp": "e7343807075c",
-        "at": "2026-09-02",
-        "ref": "3c271dc",
-        "note": "2026-08-28 誤答2,268肢の全数裏取り台帳"
+        "at": "2026-09-16",
+        "ref": "1c92297",
+        "note": "docs取り直し差分の検証(refresh-6): 12ページdiff+70 docRef照合で20問ok。実質変化3か所は全設問cross-grepで影響ゼロ。tn-003はreferenceUrlをcreate-local-tunnelへ付け替え"
       },
       "tn-017": {
         "fp": "1bca27689cb1",

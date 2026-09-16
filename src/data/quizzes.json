@@ -30947,7 +30947,7 @@
       ],
       "correctIndex": 0,
       "explanation": "ローカル管理トンネルはCLI(`cloudflared tunnel login`・`create`など)で作成し、アカウント証明書(cert.pem)やトンネル認証情報ファイル、ingressルールなどをオリジン側のconfig.ymlに保持します。一方リモート管理トンネルはダッシュボードやAPIで作成し、発行されたトークンを使って`cloudflared tunnel run --token`のようにcloudflaredをそのトンネルに関連付けます。設定はCloudflare側に保存されます。\n{{diagram:0}}",
-      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/create-remote-tunnel/",
+      "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/create-local-tunnel/",
       "hint": "設定ファイルがオリジン側にあるかCloudflare側にあるか、という保存場所の違いに注目しましょう。",
       "tags": [
         "tunnel",
