@@ -175,6 +175,8 @@ const VALID_DOC_PAGES = [
   'browser-run/',
   'browser-run/how-to/',
   'browser-run/how-to/deploy-worker/',
+  'browser-run/quick-actions/screenshot-endpoint/',
+  'browser-run/playwright/',
   'email-service/',
   'email-service/get-started/route-emails/',
   'email-service/get-started/send-emails/',

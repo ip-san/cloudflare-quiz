@@ -96,6 +96,9 @@ export const DOC_PAGES = [
   { name: 'email-service/get-started/send-emails' },
   { name: 'browser-run' },
   { name: 'browser-run/how-to/deploy-worker' },
+  // 2026-09-16 追加: px-017 の /screenshot エンドポイントと @cloudflare/playwright の根拠
+  { name: 'browser-run/quick-actions/screenshot-endpoint' },
+  { name: 'browser-run/playwright' },
   { name: 'browser-run/how-to' },
   { name: 'hyperdrive' },
   { name: 'hyperdrive/get-started' },

@@ -3789,3 +3789,10 @@ dynamic-steering.md L32 は All Data Centers だけを「The Enterprise-only ...
 live の production パーシャル(monitor-health-check-regions-options.mdx)でも All Regions は
 Enterprise only。上流矛盾の3例目(CASB間隔、script-monitorパスに続く)。
 **矛盾下では、どちらか一方に依存する主張を設問に置かないこと**（lb-006はプラン主張を除去済み）。
+
+## 2026-09-16: Turnstileのトークン期限切れエラーコードも公式docs内で不整合（px-003/px-004）
+
+server-side-validation の本文は「期限切れは timeout-or-duplicate」、同ページの
+エラーコード表は「timeout-or-duplicate=検証済み / invalid-input-response=不正・期限切れ」。
+上流不整合の4例目。px-003/px-004 は**シナリオに固有な本文側**に準拠して ok。
+表側に寄せる改訂が入ったらこの2問は要再チェック。
