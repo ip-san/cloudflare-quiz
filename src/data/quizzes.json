@@ -36676,7 +36676,7 @@
         }
       ],
       "correctIndex": 1,
-      "explanation": "ユーザーから接続不良の申告があった際、DEXを使うことで問題がデバイス・ネットワーク・Cloudflareのどこに起因しているかを切り分けられます。DEXの利用にはCloudflare One Clientをデバイスへインストールし、Zero Trust組織へ登録しておく必要があります。AccessアプリやGatewayルーティングされたサイト、Tunnel接続されたリソースへの接続確認にも活用できます。\n{{diagram:0}}",
+      "explanation": "ユーザーから接続不良の申告があった際、DEXを使うことで問題がデバイス・ネットワーク・Cloudflareのどこに起因しているかを切り分けられます。DEXの利用にはCloudflare One Clientをデバイスへインストールし、Zero Trust組織へ登録しておく必要があります。登録済みのデバイスはデバイス状態のテレメトリを自動的にDEXへ送信し、合成テストの作成は任意です。AccessアプリやGatewayルーティングされたサイト、Tunnel接続されたリソースへの接続確認にも活用できます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/insights/dex/#when-a-user-reports-a-problem",
       "hint": "「原因がどこにあるか」を切り分けるための道具であり、切り分けの対象は1つではないことを考えましょう。",
       "tags": [
@@ -36695,7 +36695,7 @@
               "text": "デバイス監視で端末の健全性を確認"
             },
             {
-              "text": "合成テストでネットワーク・アプリの応答を確認"
+              "text": "(任意)合成テストでネットワーク・アプリの応答を確認"
             },
             {
               "text": "原因がデバイス・ネットワーク・Cloudflareのどこかを特定"
