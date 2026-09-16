@@ -37629,7 +37629,7 @@
         }
       ],
       "correctIndex": 0,
-      "explanation": "配信前(pre-delivery、MX/Inline)はMXレコードをCloudflareへ向けることで、メールが受信箱に届く前にスキャンします。配信後(post-delivery、API/BCC-Journaling)はメールが受信箱に届いた後にスキャンし、MXレコードの変更は不要です。統合方式はプロバイダによって異なり、Microsoft 365はMicrosoft Graph API、Google WorkspaceはBCCが使われます。\n{{diagram:0}}",
+      "explanation": "配信前(pre-delivery、MX/Inline)はMXレコードをCloudflareへ向けることで、メールが受信箱に届く前にスキャンします。配信後(post-delivery、API/BCC-Journaling)はメールが受信箱に届いた後にスキャンし、MXレコードの変更は不要です。統合方式はプロバイダによって異なり、Microsoft 365はMicrosoft Graph APIまたはジャーナリング、Google WorkspaceはBCCが使われます。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/cloudflare-one/email-security/setup/#1-choose-a-deployment",
       "hint": "「メールが受信箱に届く前」と「届いた後」、どちらのタイミングでスキャンするかという時系列の違いを考えましょう。",
       "tags": [
