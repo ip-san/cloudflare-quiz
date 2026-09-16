@@ -598,6 +598,7 @@ const VALID_DOC_PAGES = [
   'workers/reference/migrate-to-module-workers/',
   'workers/runtime-apis/bindings/',
   'workers/runtime-apis/bindings/service-bindings/',
+  'workers/runtime-apis/rpc/error-handling/',
   'workers/runtime-apis/cache/',
   'workers/runtime-apis/context/',
   'workers/runtime-apis/handlers/fetch/',

@@ -565,6 +565,8 @@ export const DOC_PAGES = [
   { name: 'workers/reference/migrate-to-module-workers' },
   { name: 'workers/runtime-apis/bindings' },
   { name: 'workers/runtime-apis/bindings/service-bindings' },
+  // 2026-09-16 追加: dq-018 のRPC例外のスタックトレースの扱いの根拠
+  { name: 'workers/runtime-apis/rpc/error-handling' },
   { name: 'workers/runtime-apis/cache' },
   { name: 'workers/runtime-apis/context' },
   { name: 'workers/runtime-apis/handlers/fetch' },

@@ -10472,7 +10472,7 @@
         }
       ],
       "correctIndex": 2,
-      "explanation": "Durable Object Stubは、リモートのDurable Objectに対してメソッドを呼び出すRPCクライアントとして機能します。Durable Objectクラスに定義した非プライベートなメソッドは自動的にRPC経由で公開され、Worker側からはstub.methodName()のように、HTTPのfetch()を経由せず直接呼び出せます。呼び出しはすべて非同期でシリアライズ可能な型を受け渡しし、例外は呼び出し元に伝播します（スタックトレースは含まれません）。また同一のスタブに対して複数回呼び出しを行った場合、それらは呼び出した順序どおりにDurable Objectへ配信されることが保証されており、これはE言語に由来する「E-order semantics」と呼ばれます。ただし異なるスタブ間ではこの順序保証は適用されません。\n{{diagram:0}}",
+      "explanation": "Durable Object Stubは、リモートのDurable Objectに対してメソッドを呼び出すRPCクライアントとして機能します。Durable Objectクラスに定義した非プライベートなメソッドは自動的にRPC経由で公開され、Worker側からはstub.methodName()のように、HTTPのfetch()を経由せず直接呼び出せます。呼び出しはすべて非同期でシリアライズ可能な型を受け渡しし、例外は呼び出し元に伝播します（ただし提供側の元のスタックトレースは保存されず、呼び出し元では再構築された別のスタックが見えることがあります）。また同一のスタブに対して複数回呼び出しを行った場合、それらは呼び出した順序どおりにDurable Objectへ配信されることが保証されており、これはE言語に由来する「E-order semantics」と呼ばれます。ただし異なるスタブ間ではこの順序保証は適用されません。\n{{diagram:0}}",
       "referenceUrl": "https://developers.cloudflare.com/durable-objects/api/stub/",
       "hint": "RPCの呼び出しで、呼び出し元の処理が完全に止まることはありません。",
       "tags": [
